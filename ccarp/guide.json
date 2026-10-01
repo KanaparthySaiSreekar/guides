@@ -1,0 +1,25 @@
+{
+ "slug": "ccarp",
+ "code": "CCAR-P",
+ "name": "Claude Certified Architect – Professional",
+ "summary": "Prep for Anthropic's CCAR-P exam, built on the official seven-domain blueprint.",
+ "order": 10,
+ "apps": [
+  {
+   "slug": "portal",
+   "name": "Study Portal",
+   "title": "CCAR-P Study Portal",
+   "shortName": "CCAR-P Portal",
+   "description": "Domain guides, the cheat sheet, trap patterns and timed mock exams, with a plan that counts down to your exam date.",
+   "fit": "Best on a laptop"
+  },
+  {
+   "slug": "flashcards",
+   "name": "Flashcards",
+   "title": "CCAR-P Flashcards",
+   "shortName": "CCAR-P Cards",
+   "description": "Concept cards and the exam questions with every option explained. Tap to reveal, swipe to move on.",
+   "fit": "Made for phones"
+  }
+ ]
+}
