@@ -1,5 +1,5 @@
 // CCAR-P Flashcards: cache-first, so it opens offline. Each deploy has a new cache name and refreshes in the background.
-const PREFIX = "guides/ccarp/flashcards@", CACHE = PREFIX + "2leasb";
+const PREFIX = "guides/ccarp/flashcards@", CACHE = PREFIX + "1zn0h7";
 const LEGACY = ["ccarp-fc-"];
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 // Handle only this app's own files, so the site's other pages and apps are never intercepted.

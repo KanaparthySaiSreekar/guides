@@ -9,7 +9,10 @@ Live at https://kanaparthysaisreekar.github.io/guides/ (GitHub Pages, `main` bra
 | `/` | Hub: lists every guide (generated from each `<guide>/guide.json`) |
 | [`/ccarp/`](https://kanaparthysaisreekar.github.io/guides/ccarp/) | CCAR-P home: [Study Portal](https://kanaparthysaisreekar.github.io/guides/ccarp/portal/), [Flashcards](https://kanaparthysaisreekar.github.io/guides/ccarp/flashcards/) |
 | `/<guide>/<app>/` | One app: its own service worker scope, cache, manifest and icons, so apps never touch each other |
-| `/assets/` | Fonts, stylesheet and icon shared by the hub, guide homes and `404.html` |
+| `/assets/` | Fonts, stylesheet and icon shared by the hub, guide homes and `404.html`, and the usage-log script |
+
+Every page and app keeps a usage log (opens, study activity, IP address, device) for the site owner; each visitor sees a
+one-time notice. Collector and dashboard: https://guides-audit.kana-hive.workers.dev/admin (admin key required).
 
 ## Adding a guide or an app
 

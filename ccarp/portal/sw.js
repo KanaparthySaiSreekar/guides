@@ -1,5 +1,5 @@
 // CCAR-P Study Portal: cache-first, so it opens offline. Each deploy has a new cache name and refreshes in the background.
-const PREFIX = "guides/ccarp/portal@", CACHE = PREFIX + "sclqxf";
+const PREFIX = "guides/ccarp/portal@", CACHE = PREFIX + "1md7450";
 const LEGACY = ["ccarp-portal-"];
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 // Handle only this app's own files, so the site's other pages and apps are never intercepted.

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; connect-src https://guides-audit.kana-hive.workers.dev; base-uri 'none'; form-action 'none'">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#F3F6FB" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B1628" media="(prefers-color-scheme: dark)">
@@ -41,8 +41,10 @@
 <h2 id="offline">Offline and on your phone</h2>
 <p>Each app keeps a copy of itself after your first visit, so it opens without a connection. To keep one on your phone, open it and add it to your home screen (on iPhone: Share, then Add to Home Screen).</p>
 <p>Your progress stays in this browser on this device. The Study Portal can export it from Settings.</p>
+<p>This site keeps a usage log: your IP address, device and browser, the pages you open and the answers you give, so its owner can see how the guides are used.</p>
 </section>
 </main>
 </div>
+<script src="../assets/track.js" data-endpoint="https://guides-audit.kana-hive.workers.dev/e" data-app="ccarp"></script>
 </body>
 </html>
