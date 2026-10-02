@@ -4,6 +4,7 @@
  "name": "Claude Certified Architect – Professional",
  "summary": "Prep for Anthropic's CCAR-P exam, built on the official seven-domain blueprint.",
  "order": 10,
+ "progressNote": "The Study Portal can export it from Settings.",
  "apps": [
   {
    "slug": "portal",

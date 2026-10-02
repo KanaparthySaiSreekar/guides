@@ -8,6 +8,7 @@ Live at https://kanaparthysaisreekar.github.io/guides/ (GitHub Pages, `main` bra
 |---|---|
 | `/` | Hub: lists every guide (generated from each `<guide>/guide.json`) |
 | [`/ccarp/`](https://kanaparthysaisreekar.github.io/guides/ccarp/) | CCAR-P home: [Study Portal](https://kanaparthysaisreekar.github.io/guides/ccarp/portal/), [Flashcards](https://kanaparthysaisreekar.github.io/guides/ccarp/flashcards/) |
+| [`/gcp-pca/`](https://kanaparthysaisreekar.github.io/guides/gcp-pca/) | GCP-PCA home: [Field Guide](https://kanaparthysaisreekar.github.io/guides/gcp-pca/field-guide/) |
 | `/<guide>/<app>/` | One app: its own service worker scope, cache, manifest and icons, so apps never touch each other |
 | `/assets/` | Fonts, stylesheet and icon shared by the hub, guide homes and `404.html`, and the usage-log script |
 

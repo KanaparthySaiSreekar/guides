@@ -1,7 +1,7 @@
-// CCAR-P Flashcards: cache-first, so it opens offline. Each deploy has a new cache name and refreshes in the background.
-const PREFIX = "guides/ccarp/flashcards@", CACHE = PREFIX + "1fxg23y";
-const LEGACY = ["ccarp-fc-"];
-const ASSETS = ["./","./index.html","./manifest.webmanifest","./icon-180.png","./icon-192.png","./icon-512.png"];
+// PCA Field Guide 2026: cache-first, so it opens offline. Each deploy has a new cache name and refreshes in the background.
+const PREFIX = "guides/gcp-pca/field-guide@", CACHE = PREFIX + "19onoqh";
+const LEGACY = [];
+const ASSETS = ["./","./index.html","./manifest.webmanifest","./icon-180.png","./icon-192.png","./icon-512.png","./fonts/bricolage-grotesque-latin-ext-normal-500-800.woff2","./fonts/bricolage-grotesque-latin-normal-500-800.woff2","./fonts/fonts.css","./fonts/ibm-plex-mono-latin-ext-normal-400.woff2","./fonts/ibm-plex-mono-latin-ext-normal-500.woff2","./fonts/ibm-plex-mono-latin-ext-normal-600.woff2","./fonts/ibm-plex-mono-latin-normal-400.woff2","./fonts/ibm-plex-mono-latin-normal-500.woff2","./fonts/ibm-plex-mono-latin-normal-600.woff2","./fonts/ibm-plex-sans-latin-ext-italic-400.woff2","./fonts/ibm-plex-sans-latin-ext-normal-400.woff2","./fonts/ibm-plex-sans-latin-italic-400.woff2","./fonts/ibm-plex-sans-latin-normal-400.woff2","./fonts/OFL.txt"];
 // Handle only this app's own files, so the site's other pages and apps are never intercepted.
 const OWN = new Set(ASSETS.map(a => new URL(a, self.location).href));
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())); });

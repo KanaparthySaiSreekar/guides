@@ -108,15 +108,19 @@
       p.textContent = 'This site keeps a usage log: your IP address, device and browser, the pages you open and the answers you give, so its owner can see how the guides are used.';
       ok.type = 'button';
       ok.textContent = 'OK';
+      // Colours come from the page so the notice matches it in light and dark: the site's token names first, then other
+      // common names (--ink, --line-strong, --accent-ink), then the page's own computed text colour.
+      const bs = getComputedStyle(document.body), ink = bs.color || '#15233A';
       Object.assign(box.style, {
         position: 'fixed', left: '12px', right: '12px', bottom: 'calc(12px + env(safe-area-inset-bottom, 0px))', zIndex: '2147483000', maxWidth: '560px', margin: '0 auto',
         display: 'flex', alignItems: 'center', gap: '14px', padding: '14px 14px 14px 18px', borderRadius: '14px', font: 'inherit', fontSize: '14px', lineHeight: '1.45',
-        background: 'var(--surface, #fff)', color: 'var(--text, #15233A)', border: '1px solid var(--border-strong, #C3CEDF)', boxShadow: 'var(--shadow-lg, 0 18px 40px -16px rgba(21,35,58,.35))',
+        background: 'var(--surface, var(--bg, #fff))', color: `var(--text, var(--ink, ${ink}))`, border: '1px solid var(--border-strong, var(--line-strong, rgba(127,127,127,.4)))',
+        boxShadow: 'var(--shadow-lg, 0 18px 40px -16px rgba(0,0,0,.45))',
       });
       Object.assign(p.style, { margin: '0', flex: '1' });
       Object.assign(ok.style, {
         flex: 'none', minHeight: '44px', minWidth: '64px', padding: '0 18px', border: '0', borderRadius: '10px', cursor: 'pointer', font: 'inherit', fontWeight: '600',
-        background: 'var(--accent, #2F5FD0)', color: 'var(--on-accent, #fff)',
+        background: 'var(--accent, #2F5FD0)', color: 'var(--on-accent, var(--accent-ink, #fff))',
       });
       ok.addEventListener('click', () => { ls.set('guides.notice', '1'); push('notice_ok', {}); box.remove(); });
       box.append(p, ok);
