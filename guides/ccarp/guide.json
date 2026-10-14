@@ -8,23 +8,32 @@
  "apps": [
   {
    "slug": "portal",
+   "engine": "portal",
    "name": "Study Portal",
    "title": "CCAR-P Study Portal",
    "shortName": "CCAR-P Portal",
    "description": "Domain guides, the cheat sheet, trap patterns and timed mock exams, with a plan that counts down to your exam date.",
    "fit": "Best on a laptop",
-   "icon": "guides/ccarp/icons/portal",
-   "build": "dist/ccarp/portal.html"
+   "head": [
+    "<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">",
+    "<meta name=\"mobile-web-app-capable\" content=\"yes\">",
+    "<meta name=\"apple-mobile-web-app-title\" content=\"CCAR-P Portal\">",
+    "<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\">",
+    "<meta name=\"theme-color\" content=\"#F3F6FB\" media=\"(prefers-color-scheme: light)\">",
+    "<meta name=\"theme-color\" content=\"#0B1628\" media=\"(prefers-color-scheme: dark)\">"
+   ]
   },
   {
    "slug": "flashcards",
+   "engine": "flashcards",
    "name": "Flashcards",
    "title": "CCAR-P Flashcards",
    "shortName": "CCAR-P Cards",
    "description": "Concept cards and the exam questions with every option explained. Tap to reveal, swipe to move on.",
    "fit": "Made for phones",
-   "icon": "guides/ccarp/icons/icon",
-   "build": "dist/ccarp/flashcards.html"
+   "head": [
+    "<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">"
+   ]
   }
  ],
  "legacy": {

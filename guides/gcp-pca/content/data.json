@@ -1,0 +1,445 @@
+{
+ "domainShort": {
+  "1": "Design & planning",
+  "2": "Provisioning",
+  "3": "Security & compliance",
+  "4": "Processes",
+  "5": "Implementation",
+  "6": "Operations"
+ },
+ "domainFull": {
+  "1": "Designing and planning a cloud solution architecture",
+  "2": "Managing and provisioning a cloud solution infrastructure",
+  "3": "Designing for security and compliance",
+  "4": "Analyzing and optimizing technical and business processes",
+  "5": "Managing implementation",
+  "6": "Ensuring solution and operations excellence"
+ },
+ "weights": {
+  "1": 25,
+  "2": 17.5,
+  "3": 17.5,
+  "4": 15,
+  "5": 12.5,
+  "6": 12.5
+ },
+ "cases": {
+  "alto": {
+   "name": "Altostrat Media",
+   "sum": "Media company (podcasts, interviews, news, documentaries) adopting generative AI for personalization, natural-language interaction and self-service support. Reliability and cost management are the top priorities.",
+   "env": [
+    "GKE for content management and delivery",
+    "Media library in Cloud Storage; BigQuery as the warehouse",
+    "Cloud Run functions for transcoding, metadata and recommendations",
+    "Legacy on-premises ingestion and archival, to be migrated",
+    "Google Identity plus third-party identity providers",
+    "Cloud Monitoring and Prometheus; alerts mostly by email"
+   ],
+   "req": [
+    "Reliable workflows across cloud and on-premises; simpler infrastructure; rapid deployment",
+    "Modern, centrally managed CI/CD; Kubernetes on-premises and in the cloud",
+    "Secure, high-performance hybrid connectivity for ingestion",
+    "Lower storage cost while staying highly available",
+    "24/7 natural-language support and advanced chatbots",
+    "Summaries, NLP and vision metadata, harmful-content filtering",
+    "Auditable, explainable AI; trend insights for content strategy"
+   ]
+  },
+  "cym": {
+   "name": "Cymbal Retail",
+   "sum": "Fast-growing online retailer with a huge catalog. Three initiatives: generative-AI catalog enrichment, conversational commerce using Discovery AI, and stack modernization to cut manual work and costs.",
+   "env": [
+    "A mix of on-premises and cloud systems",
+    "MySQL, SQL Server, Redis and MongoDB",
+    "Kubernetes clusters",
+    "SFTP file transfers and ETL batch jobs",
+    "Catalog search via SQL on product names and categories",
+    "IVR plus call-center agents who key in orders",
+    "Grafana, Nagios and Elastic for monitoring"
+   ],
+   "req": [
+    "Generate attributes that match the catalog taxonomy",
+    "Generate and edit product images",
+    "Natural-language product discovery",
+    "Scale with catalog growth",
+    "Human-in-the-loop review interface",
+    "Secure, compliant data handling",
+    "Lower call-center and data-center costs"
+   ]
+  },
+  "ehr": {
+   "name": "EHR Healthcare",
+   "sum": "Software-as-a-service electronic health records provider, growing fast and replacing its colocation facilities with Google Cloud. Needs scale, an updated DR plan and continuous deployment.",
+   "env": [
+    "Several colocation facilities; one lease expiring",
+    "Containerized web apps on Kubernetes",
+    "MySQL, MS SQL Server, Redis and MongoDB",
+    "Legacy insurer integrations stay on-premises for now",
+    "Users in Microsoft Active Directory",
+    "Open-source monitoring; email alerts often ignored"
+   ],
+   "req": [
+    "Onboard insurance providers quickly",
+    "At least 99.9% availability; lower latency",
+    "Centralized visibility and proactive action",
+    "Healthcare trend insights and predictions",
+    "Regulatory compliance; lower administration cost",
+    "Secure, high-performance hybrid connection",
+    "Consistent container management, logging and alerting"
+   ]
+  },
+  "km": {
+   "name": "KnightMotives Automotive",
+   "sum": "Car maker modernizing the in-vehicle, buying and service experience with AI across all models. Wants reliable build-to-order, better dealer tools and revenue from data monetization.",
+   "env": [
+    "Mostly on-premises, some apps on other clouds",
+    "Outdated mainframe supply chain and ERP",
+    "Dealers have no budget for new equipment",
+    "Fragmented vehicle code bases",
+    "Poor connectivity to plants and rural vehicles",
+    "Obsolete AI infrastructure and siloed data"
+   ],
+   "req": [
+    "Consistent AI-powered in-vehicle experience; rural connectivity",
+    "Plant-to-HQ network upgrades; hybrid cloud",
+    "Autonomous-driving AI, simulation and compliance",
+    "Data monetization with strict privacy",
+    "EU data protection; security after past breaches",
+    "Better build-to-order, dealer tools and CRM",
+    "Upskilling and business–IT communication"
+   ]
+  }
+ },
+ "syllabus": [
+  {
+   "d": 1,
+   "subs": [
+    {
+     "s": "1.1",
+     "t": "Designing a cloud solution infrastructure that meets business requirements",
+     "i": [
+      "Business use cases and product strategy",
+      "Identifying functional and non-functional requirements",
+      "Business continuity plan",
+      "Cost optimization",
+      "Supporting the application design",
+      "Integration patterns with external systems",
+      "Movement of data",
+      "Design decision trade-offs",
+      "Workload disposition strategies (build, buy, modify, deprecate)",
+      "Success measurements (KPIs, ROI, metrics)",
+      "Security and compliance",
+      "Observability"
+     ]
+    },
+    {
+     "s": "1.2",
+     "t": "Designing a cloud solution infrastructure that meets technical requirements",
+     "i": [
+      "Familiarity with the Google Cloud Well-Architected Framework",
+      "High availability and failover design",
+      "Flexibility of cloud resources",
+      "Scalability to meet growth requirements",
+      "Performance and latency",
+      "Gemini Cloud Assist",
+      "Backup and recovery"
+     ]
+    },
+    {
+     "s": "1.3",
+     "t": "Designing network, storage, and compute resources",
+     "i": [
+      "Integration with on-premises and multicloud environments",
+      "Google Cloud AI and ML solutions (Gemini models, Agent Builder, Model Garden, AI Hypercomputer)",
+      "Cloud-native networking (VPC, peering, firewalls, load balancers, routing, container networking, Shared VPC, Private Service Connect)",
+      "Choosing data processing solutions",
+      "Choosing storage types (object, file, databases)",
+      "Mapping compute needs to platforms (GKE, Cloud Run, Cloud Run functions)",
+      "Choosing compute resources (Spot VMs, custom machine types, specialized workloads)"
+     ]
+    },
+    {
+     "s": "1.4",
+     "t": "Creating a migration plan (documents and architectural diagrams)",
+     "i": [
+      "Integrating solutions with existing systems",
+      "Assessing and migrating systems and data (Migration Center)",
+      "Migration methodologies, workload testing, network planning, dependency planning",
+      "Software license implications and financial impact"
+     ]
+    },
+    {
+     "s": "1.5",
+     "t": "Envisioning future solution improvements",
+     "i": [
+      "Cloud and technology improvements",
+      "Evolution of business needs",
+      "Cloud-first design approach"
+     ]
+    }
+   ]
+  },
+  {
+   "d": 2,
+   "subs": [
+    {
+     "s": "2.1",
+     "t": "Configuring network topologies",
+     "i": [
+      "Extending to on-premises environments (hybrid networking)",
+      "Extending to multicloud, including Google Cloud-to-Google Cloud communication",
+      "Security protection (intrusion protection, access control, firewalls)",
+      "VPC design and load balancing (access to cloud, internet, cloud-adjacent services)"
+     ]
+    },
+    {
+     "s": "2.2",
+     "t": "Configuring individual storage systems",
+     "i": [
+      "Data storage allocation",
+      "Data processing and compute provisioning",
+      "Security and access management",
+      "Configuration for data transfer and latency",
+      "Data retention and lifecycle management",
+      "Data growth planning",
+      "Data protection (backup and recovery)"
+     ]
+    },
+    {
+     "s": "2.3",
+     "t": "Configuring compute systems",
+     "i": [
+      "Compute resource provisioning",
+      "Compute volatility configuration (Spot vs standard)",
+      "Cloud-native networking for compute (Compute Engine, GKE, serverless networking, VMware Engine)",
+      "Infrastructure orchestration, resource configuration and patch management",
+      "Container orchestration",
+      "Serverless computing"
+     ]
+    },
+    {
+     "s": "2.4",
+     "t": "Leveraging Gemini Enterprise Agent Platform for end-to-end ML workflows",
+     "i": [
+      "Agent Platform Pipelines to automate and orchestrate the ML lifecycle",
+      "Preparing for Agent Platform data integration",
+      "AI Hypercomputer: GPUs and TPUs for training and serving, consumption models, large-scale training, Cloud Run functions and Agent Platform for AI workloads"
+     ]
+    },
+    {
+     "s": "2.5",
+     "t": "Configuring prebuilt solutions or APIs with Agent Platform",
+     "i": [
+      "Differentiating the Google AI APIs (Search, Conversation, Vision, Image, Video, Audio)",
+      "Integrating Gemini Enterprise features (AI agents, NotebookLM)",
+      "Integrating Model Garden models into a solution"
+     ]
+    }
+   ]
+  },
+  {
+   "d": 3,
+   "subs": [
+    {
+     "s": "3.1",
+     "t": "Designing for security",
+     "i": [
+      "Identity and Access Management (IAM)",
+      "Resource hierarchy (organizations, folders, projects)",
+      "Data security (key management, encryption, secret management)",
+      "Separation of duties",
+      "Security controls (auditing, VPC Service Controls, context-aware access, organization policy, hierarchical firewall policy)",
+      "Customer-managed encryption keys with Cloud KMS",
+      "Secure remote access (IAP, service account impersonation, Chrome Enterprise Premium, Workload Identity Federation)",
+      "Securing the software supply chain",
+      "Securing AI (Model Armor, Sensitive Data Protection, secure model deployment)"
+     ]
+    },
+    {
+     "s": "3.2",
+     "t": "Designing for compliance",
+     "i": [
+      "Legislation and regulation (health records, children’s privacy, data privacy, ownership, sovereignty)",
+      "Commercial requirements (credit card data, PII)",
+      "Industry certifications (for example SOC 2)",
+      "Audits, including logs"
+     ]
+    }
+   ]
+  },
+  {
+   "d": 4,
+   "subs": [
+    {
+     "s": "4.1",
+     "t": "Analyzing and defining technical processes",
+     "i": [
+      "Software development lifecycle (SDLC)",
+      "Continuous integration and continuous deployment",
+      "Troubleshooting and root cause analysis",
+      "Testing and validation of software and infrastructure",
+      "Service catalog and provisioning",
+      "Disaster recovery"
+     ]
+    },
+    {
+     "s": "4.2",
+     "t": "Analyzing and defining business processes",
+     "i": [
+      "Stakeholder management (influencing, facilitation)",
+      "Change management",
+      "Team assessment and skills readiness",
+      "Decision-making processes",
+      "Customer success management",
+      "Cost and resource optimization (CapEx and OpEx)",
+      "Business continuity"
+     ]
+    }
+   ]
+  },
+  {
+   "d": 5,
+   "subs": [
+    {
+     "s": "5.1",
+     "t": "Advising development and operations teams on deployment",
+     "i": [
+      "Application and infrastructure deployment",
+      "API management best practices (Apigee)",
+      "Testing frameworks (load, unit, integration)",
+      "Data and system migration and management tooling",
+      "Gemini Cloud Assist"
+     ]
+    },
+    {
+     "s": "5.2",
+     "t": "Interacting with Google Cloud programmatically",
+     "i": [
+      "Cloud Shell Editor, Cloud Code and Cloud Shell terminal",
+      "Google Cloud SDKs (gcloud, gsutil, bq)",
+      "Cloud emulators (Bigtable, Spanner, Pub/Sub, Firestore)",
+      "Infrastructure as code (Terraform)",
+      "Google API access best practices",
+      "Google API client libraries"
+     ]
+    }
+   ]
+  },
+  {
+   "d": 6,
+   "subs": [
+    {
+     "s": "6.1",
+     "t": "Operational excellence pillar of the Well-Architected Framework",
+     "i": [
+      "Principles and recommendations of the operational excellence pillar"
+     ]
+    },
+    {
+     "s": "6.2",
+     "t": "Google Cloud Observability",
+     "i": [
+      "Monitoring and logging",
+      "Profiling and benchmarking",
+      "Alerting strategies"
+     ]
+    },
+    {
+     "s": "6.3",
+     "t": "Deployment and release management",
+     "i": [
+      "Deployment and release management"
+     ]
+    },
+    {
+     "s": "6.4",
+     "t": "Supporting deployed solutions",
+     "i": [
+      "Assisting with the support of deployed solutions"
+     ]
+    },
+    {
+     "s": "6.5",
+     "t": "Quality control",
+     "i": [
+      "Evaluating quality control measures"
+     ]
+    },
+    {
+     "s": "6.6",
+     "t": "Reliability of solutions in production",
+     "i": [
+      "Chaos engineering, penetration testing and load testing"
+     ]
+    }
+   ]
+  }
+ ],
+ "plan": [
+  {
+   "t": "Foundations and the case studies",
+   "i": [
+    "Read the v6.1 exam guide end to end and note anything unfamiliar",
+    "Read all four case-study PDFs twice and summarize each in five lines",
+    "Read the Well-Architected Framework pillar overviews",
+    "Cheat sheet: Compute, Storage and Databases blocks",
+    "Google Skills: start the Cloud Architect learning path",
+    "Drill: Domain 1, 20 questions with feedback"
+   ]
+  },
+  {
+   "t": "Networking, hybrid and identity",
+   "i": [
+    "Cheat sheet: Networking, Load balancing and Identity blocks",
+    "Lab: custom VPC with Shared VPC, Cloud NAT, Private Google Access and a firewall policy",
+    "Lab: global external Application Load Balancer with Cloud Armor and Cloud CDN",
+    "Be able to choose between Shared VPC, peering, NCC and PSC in seconds",
+    "Drill: Domain 2, 20 questions",
+    "Case drill: EHR Healthcare"
+   ]
+  },
+  {
+   "t": "Data, migration and cost",
+   "i": [
+    "Cheat sheet: Data, Migration and Cost blocks",
+    "Practice the transfer-time arithmetic until it’s automatic",
+    "Lab: Cloud SQL with HA plus a cross-region replica, then promote it",
+    "Lab: BigQuery partitioning and clustering; compare bytes scanned",
+    "Drill: Domain 4, 15 questions",
+    "Case drill: Cymbal Retail"
+   ]
+  },
+  {
+   "t": "Security, compliance and AI",
+   "i": [
+    "Cheat sheet: Security, Compliance and AI & ML blocks",
+    "Lab: a VPC Service Controls perimeter in dry-run mode, and IAP in front of a web app",
+    "Lab: call Gemini on Agent Platform with structured output, then try Model Armor",
+    "Learn the product-name changes table by heart",
+    "Drill: Domain 3, 20 questions",
+    "Case drills: Altostrat Media and KnightMotives"
+   ]
+  },
+  {
+   "t": "Delivery, operations and reliability",
+   "i": [
+    "Cheat sheet: Reliability, Operations, Delivery and Well-Architected blocks",
+    "Lab: Cloud Build → Artifact Registry → Cloud Deploy canary to Cloud Run",
+    "Lab: define an SLO and a burn-rate alert in Cloud Monitoring",
+    "Drill: Domains 5 and 6, all questions",
+    "Mistakes review: explain every miss in your own words"
+   ]
+  },
+  {
+   "t": "Mocks and logistics",
+   "i": [
+    "Full mock 1 (50 questions, timed); read every explanation",
+    "Targeted drills on your weakest domain",
+    "Full mock 2; aim for 80% or more",
+    "Google’s official sample questions",
+    "Signals self-test with answers hidden: get every one",
+    "Book through Google’s portal (Pearson VUE), run the OnVUE system test, check your ID"
+   ]
+  }
+ ]
+}

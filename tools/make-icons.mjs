@@ -38,7 +38,7 @@ const pca = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width
   <rect x="230" y="286" width="60" height="60" rx="12" fill="#FBEEDB" stroke="#B86A10" stroke-width="8"/>
   <rect x="322" y="286" width="60" height="60" rx="12" fill="#E2EAFA" stroke="#1D4FBF" stroke-width="8"/>
 </svg>`;
-const ICONS = { icon: [svg, 'guides/ccarp/icons/icon'], portal: [portal, 'guides/ccarp/icons/portal'], pca: [pca, 'guides/gcp-pca/icon'] };
+const ICONS = { icon: [svg, 'guides/ccarp/icons/flashcards'], portal: [portal, 'guides/ccarp/icons/portal'], pca: [pca, 'guides/gcp-pca/icons/portal'] };
 const pick = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(ICONS);
 for (const name of pick) { if (!ICONS[name]) throw new Error(`unknown icon ${name}`); fs.mkdirSync(P(ICONS[name][1], '..'), { recursive: true }); fs.writeFileSync(P(`${ICONS[name][1]}.svg`), ICONS[name][0]); }
 const b = await launch({ port: 9360 });

@@ -1,0 +1,18 @@
+{
+ "title": "PCA Study Portal 2026",
+ "description": "Unofficial study guide for the Google Cloud Professional Cloud Architect exam (guide v6.1), current to October 2026.",
+ "brandLabel": "PCA Study Portal, overview",
+ "mark": "PCA",
+ "brand": "Study Portal",
+ "year": "2026",
+ "storage": "pca26",
+ "mock": {
+  "full": 50,
+  "half": 25,
+  "fullMin": 120,
+  "halfMin": 60,
+  "cases": 2,
+  "perCaseFull": 7,
+  "perCaseHalf": 4
+ }
+}

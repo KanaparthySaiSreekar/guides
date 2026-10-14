@@ -1,0 +1,42 @@
+[
+ {
+  "id": "overview",
+  "heading": "h-overview",
+  "tab": "Overview"
+ },
+ {
+  "id": "plan",
+  "heading": "h-plan",
+  "tab": "Study plan"
+ },
+ {
+  "id": "syllabus",
+  "heading": "h-syl",
+  "tab": "Syllabus"
+ },
+ {
+  "id": "cheatsheet",
+  "heading": "h-cs",
+  "tab": "Cheat sheet"
+ },
+ {
+  "id": "cases",
+  "heading": "h-cases",
+  "tab": "Case studies"
+ },
+ {
+  "id": "mock",
+  "heading": "h-mock",
+  "tab": "Mock exams"
+ },
+ {
+  "id": "examday",
+  "heading": "h-day",
+  "tab": "Exam day"
+ },
+ {
+  "id": "resources",
+  "heading": "h-res",
+  "tab": "Resources"
+ }
+]

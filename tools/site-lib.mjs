@@ -118,6 +118,49 @@ self.addEventListener('fetch', e => {
   return Buffer.byteLength(out);
 }
 
+// An app that moved to another address inside its guide (guide.moved: [{ from, to, name, cachePrefix }]): the old address
+// redirects to the new app, keeping the #section, and the old service worker is replaced by one that deletes the old cache,
+// unregisters itself and sends any open window to the new address, so installed copies stop serving the old app.
+// Progress is kept: it lives in localStorage, and every page on the site shares one origin.
+function writeMoved(dir, guide, site) {
+  for (const m of guide.moved || []) {
+    if (!SLUG.test(m.from) || !SLUG.test(m.to)) throw new Error(`${guide.slug}: bad moved app ${m.from} -> ${m.to}`);
+    const target = guide.apps.find(a => a.slug === m.to);
+    if (!target) throw new Error(`${guide.slug}: ${m.from} moved to unknown app ${m.to}`);
+    if (guide.apps.some(a => a.slug === m.from)) throw new Error(`${guide.slug}: ${m.from} is both an app and a moved address`);
+    const to = `${site.base}${guide.slug}/${m.to}/`, d = path.join(dir, m.from);
+    fs.mkdirSync(d, { recursive: true });
+    fs.writeFileSync(path.join(d, 'index.html'), `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="refresh" content="0; url=${to}">
+<link rel="canonical" href="${site.origin}${to}">
+<title>Moved · ${esc(m.name)}</title>
+<script>location.replace(${JSON.stringify(to)} + location.hash);</script>
+</head>
+<body style="font:16px/1.5 system-ui,sans-serif;margin:40px 20px;color:#15233A;background:#F3F6FB">
+<p>${esc(m.name)} is now the <a href="${to}">${esc(target.name)}</a>. Your progress carries over.</p>
+</body>
+</html>
+`);
+    fs.writeFileSync(path.join(d, 'sw.js'), `// ${m.name} moved to ${to}
+// Replaces the old offline worker: deletes its cache, unregisters, and sends any open window to the new address.
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', e => e.waitUntil((async () => {
+  const ks = await caches.keys();
+  await Promise.all(ks.filter(k => k.startsWith(${JSON.stringify(m.cachePrefix)})).map(k => caches.delete(k)));
+  await self.clients.claim();
+  const wins = await self.clients.matchAll({ type: 'window' });
+  await self.registration.unregister();
+  await Promise.all(wins.map(w => w.navigate(${JSON.stringify(to)} + (w.url.includes('#') ? '#' + w.url.split('#')[1] : '')).catch(() => null)));
+})()));
+`);
+  }
+}
+
 // A guide's folder: replaced whole, then filled by build(dir) with one subfolder per app, then the home page and guide.json.
 export function writeGuide(repo, guide, build, site = SITE) {
   if (!SLUG.test(guide.slug)) throw new Error(`bad guide slug ${guide.slug}`);
@@ -126,6 +169,7 @@ export function writeGuide(repo, guide, build, site = SITE) {
   replaceDir(dir, 'guide.json');
   build(dir);
   for (const a of guide.apps) if (!fs.existsSync(path.join(dir, a.slug, 'index.html'))) throw new Error(`${guide.slug}/${a.slug} was not built`);
+  writeMoved(dir, guide, site);
   const tiles = guide.apps.map(a => `<li><a class="tile" href="${a.slug}/">
 <img src="${a.slug}/icon-192.png" alt="" width="60" height="60">
 <span class="tile-body"><h2>${esc(a.name)}</h2><p>${esc(a.description)}</p><p class="meta">${esc(a.fit)} · Works offline</p></span>
@@ -154,8 +198,8 @@ ${tiles}
 ${site.analytics ? `<p>This site keeps a usage log: your IP address, device and browser, the pages you open and the answers you give, so its owner can see how the guides are used.</p>\n` : ''}</section>
 </main>`;
   fs.writeFileSync(path.join(dir, 'index.html'), page({ title: `${guide.code} · ${site.title}`, description: guide.summary, assets: '../assets/', body, track: trackFor(site, guide.slug) }));
-  const { legacy, ...meta } = guide;
-  fs.writeFileSync(path.join(dir, 'guide.json'), JSON.stringify({ ...meta, apps: guide.apps.map(({ build: _b, icon: _i, files: _f, ...a }) => a) }, null, 1) + '\n');
+  const { legacy, moved: _moved, ...meta } = guide;
+  fs.writeFileSync(path.join(dir, 'guide.json'), JSON.stringify({ ...meta, apps: guide.apps.map(({ build: _b, icon: _i, files: _f, engine: _e, head: _h, ...a }) => a) }, null, 1) + '\n');
   return dir;
 }
 

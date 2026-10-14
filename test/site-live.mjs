@@ -135,10 +135,10 @@ if (checkLegacy) {
 const APPS = {
   'ccarp/flashcards': `!!document.querySelector('.home h1') && document.title === 'CCAR-P Flashcards'`,
   'ccarp/portal': `document.title.includes('CCAR-P Study Portal') && document.querySelector('#app').children.length > 0 && !!document.querySelector('#app h1, #app h2')`,
-  'gcp-pca/field-guide': `document.title === 'PCA Field Guide 2026' && !document.getElementById('v-overview').hidden && !!document.querySelector('#domainBars .bar-row')`,
+  'gcp-pca/portal': `document.title === 'PCA Study Portal 2026' && !document.getElementById('v-overview').hidden && !!document.querySelector('#domainBars .bar-row')`,
 };
 // Apps that bring their own font files must render with them, not a fallback, online and offline.
-const FONTS = { 'gcp-pca/field-guide': ['Bricolage Grotesque', 'IBM Plex Sans'] };
+const FONTS = { 'gcp-pca/portal': ['Bricolage Grotesque', 'IBM Plex Sans'] };
 const fontsOk = fams => `document.fonts.ready.then(() => ${JSON.stringify(fams)}.every(f => [...document.fonts].some(x => x.family.replace(/["']/g, '') === f && x.status === 'loaded')))`;
 const ALL = GUIDES.flatMap(g => g.apps.map(app => ({ key: `${g.slug}/${app.slug}`, url: `${ORIGIN}${BASE}${g.slug}/${app.slug}/` })));
 for (const { key, url } of ALL) {
@@ -218,7 +218,7 @@ else {
   // GCP-PCA: a domain drill through the real UI (start, answer, check, finish) and a ticked syllabus objective.
   const button = t => `[...document.querySelectorAll('button')].find(b => b.textContent === ${JSON.stringify(t)})`;
   await go(`${ORIGIN}${BASE}gcp-pca/`, 1500);
-  await go(`${ORIGIN}${BASE}gcp-pca/field-guide/#mock`, 3000);
+  await go(`${ORIGIN}${BASE}gcp-pca/portal/#mock`, 3000);
   await until(`!!${button('Start drill')}`);
   await q(`${button('Start drill')}.click()`); await b.sleep(500);
   await q(`document.querySelector('.opts .opt').click()`); await b.sleep(300);
@@ -242,7 +242,7 @@ else {
     const { events } = await adminApi(`/api/events?dev=${d.dev}&limit=500`);
     const types = new Set(events.map(e => e.t));
     for (const t of ['open', 'notice_ok', 'session_start', 'answer', 'session_end', 'card_rate', 'checklist', 'active']) ok(types.has(t), `usage: '${t}' events logged`);
-    const pca = new Set(events.filter(e => e.app === 'gcp-pca/field-guide').map(e => e.t));
+    const pca = new Set(events.filter(e => e.app === 'gcp-pca/portal').map(e => e.t));
     ok(['open', 'session_start', 'answer', 'session_end', 'checklist'].every(t => pca.has(t)), `usage: field guide study events logged (${[...pca].join(', ')})`);
     ok(new Set(events.map(e => e.app)).size >= 6, `usage: events tagged by app (${[...new Set(events.map(e => e.app))].join(', ')})`);
     if (!local) ok((await adminApi(`/api/devices/${d.dev}`, { method: 'DELETE' })).ok, 'usage: test device erased from the live log');

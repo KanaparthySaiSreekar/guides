@@ -1,0 +1,61 @@
+  <div class="sec-head">
+    <p class="eyebrow">Logistics, pacing and technique</p>
+    <h2 id="h-day">Exam day</h2>
+    <p>Since 2 March 2026, Google Cloud exams are delivered by Pearson VUE. You still register and manage the exam through Google’s certification portal (CM Connect), and you don’t need a separate Pearson account.</p>
+  </div>
+  <div class="cols">
+    <div class="panel"><h4>The week before</h4><ul>
+      <li>Re-read all four case studies, then recall each requirement-to-service table from memory.</li>
+      <li>Take one last full mock under exam timing.</li>
+      <li>Check that your government ID matches your registration name exactly.</li>
+      <li>Online (OnVUE): run Pearson’s system test on the same computer and network you will use. Use a wired connection if you can, and close VPNs and other apps.</li>
+      <li>Test centre: confirm the location and arrival time.</li>
+    </ul></div>
+    <div class="panel"><h4>On the day</h4><ul>
+      <li>Check in early. Online check-in includes photos of your ID and your workspace.</li>
+      <li>Online: a clear desk, one monitor, nobody else in the room, and no notes, phone or smartwatch within reach.</li>
+      <li>Don’t count on a scheduled break. Check the current candidate rules before you start.</li>
+      <li>Case studies open in a split-screen pane during their questions.</li>
+    </ul></div>
+    <div class="panel"><h4>After you submit</h4><ul>
+      <li>You see a provisional pass or fail on screen. The official result follows by email, typically within 7–10 days.</li>
+      <li>The certificate is valid for 2 years.</li>
+      <li>Retake waits: 14 days after the first attempt, 60 days after the second, and one year after the third. Each attempt is charged in full.</li>
+      <li>Renewal: the renewal exam (adds 2 years, opens 60 days before expiry), or Google Skills courses or badges in the final year (adds 1 year).</li>
+    </ul></div>
+  </div>
+
+  <div class="two">
+    <div class="block">
+      <h3>Pacing for 120 minutes</h3>
+      <div class="tbl narrow fluid"><table>
+        <thead><tr><th>Checkpoint</th><th>Where you should be</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">0:00</td><td class="plain">Start. Don’t read the case studies in full; you already know them.</td></tr>
+          <tr><td class="mono">0:40</td><td class="plain">About question 20. Flag anything over 3 minutes and move on.</td></tr>
+          <tr><td class="mono">1:25</td><td class="plain">All questions answered once, flagged ones included (best guess).</td></tr>
+          <tr><td class="mono">1:25–1:50</td><td class="plain">Revisit flagged questions.</td></tr>
+          <tr><td class="mono">1:50–2:00</td><td class="plain">Make sure nothing is blank. There’s no penalty for guessing.</td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="block">
+      <h3>Reading a question</h3>
+      <ol>
+        <li>Read the last sentence first to see what is being asked: design, first step, or most cost-effective.</li>
+        <li>Mark the constraints: cost, operational overhead, time, compliance, “Google-recommended,” existing skills or tools.</li>
+        <li>Eliminate options that break a stated constraint or add work the question didn’t ask for.</li>
+        <li>Between the last two, choose the one that meets every constraint with the most managed, least-privilege, documented approach.</li>
+        <li>For case questions, check the option against the case’s business and technical requirements and its executive statement.</li>
+        <li>On “choose two,” each choice must be correct on its own.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Tie-breakers Google’s answers tend to follow</h3>
+    <div class="cols">
+      <div class="panel"><ul><li>Managed or serverless over self-managed.</li><li>A built-in product feature over custom code or scripts.</li><li>Preventive controls (organization policy, VPC Service Controls) over detective ones (scripts, reviews).</li></ul></div>
+      <div class="panel"><ul><li>Least privilege, groups and no keys over broad roles and shared credentials.</li><li>Automation and IaC over console clicks.</li><li>Incremental, lower-risk change (canary, waves, strangler pattern) over a big bang.</li></ul></div>
+      <div class="panel"><ul><li>Measure first (Migration Center, SLOs, Recommender) before you buy or redesign.</li><li>Mitigate first (roll back), then find the root cause.</li><li>The current product names: Agent Platform, Cloud Run functions, Sensitive Data Protection.</li></ul></div>
+    </div>
+  </div>

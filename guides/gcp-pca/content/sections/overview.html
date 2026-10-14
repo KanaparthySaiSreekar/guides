@@ -1,0 +1,90 @@
+  <div class="hero">
+    <p class="eyebrow">Google Cloud certification · Professional Cloud Architect · exam guide v6.1 · checked 1 Oct 2026</p>
+    <h1 id="h-overview">The Professional Cloud Architect exam, as it stands in October 2026</h1>
+    <p class="lede">This guide covers the v6.1 syllabus with the product names the exam now uses, the four current case studies, <span id="qcount">149</span> original practice questions with explanations, and a plan for the weeks before your exam. It is unofficial and independent of Google.</p>
+    <dl class="facts">
+      <div><dt>Length</dt><dd>2 hours</dd></div>
+      <div><dt>Questions</dt><dd>50–60, single and multiple select</dd></div>
+      <div><dt>Case studies</dt><dd>2 of 4 · 20–30% of questions</dd></div>
+      <div><dt>Fee</dt><dd>US$200 + tax</dd></div>
+      <div><dt>Delivery</dt><dd>Pearson VUE centre or online</dd></div>
+      <div><dt>Languages</dt><dd>English, Japanese</dd></div>
+      <div><dt>Valid for</dt><dd>2 years</dd></div>
+      <div><dt>Pass mark</dt><dd>Not published</dd></div>
+    </dl>
+    <div class="countdown">
+      <label for="examDate">Your exam date</label>
+      <input type="date" id="examDate">
+      <output class="count-out" id="daysLeft" for="examDate">Set a date to see days remaining</output>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="block">
+      <div class="sec-head"><h2>Where the marks are</h2><p>Approximate share of the exam per domain, from the official v6.1 guide.</p></div>
+      <div class="bars" id="domainBars"></div>
+      <div class="bar-scale" aria-hidden="true"><span>0%</span><span>12.5%</span><span>25%</span></div>
+      <p class="muted" style="font-size:.9rem">Case-study questions count toward these domains. Domain 1 alone is a quarter of the exam, and the new AI objectives (2.4, 2.5, and “Securing AI” in 3.1) appear across the case studies too.</p>
+    </div>
+    <div class="block">
+      <div class="sec-head"><h2>What changed since older prep material</h2><p>Most courses, dumps and blog posts online still describe the previous exam. These are the dated changes that matter.</p></div>
+      <ol class="timeline">
+        <li><span class="tl-date">30 Oct 2025</span><div class="tl-body"><b>Exam guide v6.1 goes live</b><span>Altostrat Media, Cymbal Retail and KnightMotives Automotive replace Helicopter Racing League, Mountkirk Games and TerramEarth. EHR Healthcare stays. New AI sections 2.4 and 2.5, “Securing AI” in 3.1, and the Well-Architected Framework as a required lens.</span></div></li>
+        <li><span class="tl-date">2 Mar 2026</span><div class="tl-body"><b>Exams move to Pearson VUE</b><span>Kryterion and Webassessor are gone. Content and format are unchanged. You still register through Google’s certification portal, then sit at a Pearson VUE centre or online with OnVUE.</span></div></li>
+        <li><span class="tl-date">31 Mar 2026</span><div class="tl-body"><b>Deployment Manager reaches end of support</b><span>Terraform, Infrastructure Manager and Config Connector are the infrastructure-as-code answers.</span></div></li>
+        <li><span class="tl-date">22 Apr 2026</span><div class="tl-body"><b>Vertex AI becomes Gemini Enterprise Agent Platform</b><span>Announced at Cloud Next. The exam guide was updated to the new names, for example “Agent Platform Pipelines.”</span></div></li>
+        <li><span class="tl-date">Jul 2026</span><div class="tl-body"><b>Renewal through Google Skills</b><span>PCA holders can renew by completing designated courses or skill badges in the final year (adds 1 year), or by taking the renewal exam (adds 2 years).</span></div></li>
+        <li><span class="tl-date">Sep 2026</span><div class="tl-body"><b>Professional Agentic Architect launches</b><span>A separate certification (beta 8–30 Sep). It doesn’t change the PCA, so don’t confuse the two guides.</span></div></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="sec-head"><h2>Names the exam now uses</h2><p>The certification page notes that the exam “was updated to reflect recent branding changes.” If a question uses an unfamiliar name, it is probably one of these.</p></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>You may know it as</th><th>The exam and console call it</th><th>Since</th></tr></thead>
+        <tbody>
+          <tr><td>Vertex AI</td><td class="plain">Gemini Enterprise Agent Platform (“Agent Platform”)</td><td class="plain mono">2026</td></tr>
+          <tr><td>Vertex AI Pipelines</td><td class="plain">Agent Platform Pipelines</td><td class="plain mono">2026</td></tr>
+          <tr><td>Vertex AI Agent Engine (Reasoning Engine)</td><td class="plain">Agent Runtime</td><td class="plain mono">2026</td></tr>
+          <tr><td>Vertex AI Agent Builder</td><td class="plain">Agent Platform agents: ADK (code), Agent Studio (low-code), Agent Garden (templates)</td><td class="plain mono">2026</td></tr>
+          <tr><td>Vertex AI Search</td><td class="plain">Search, in Agent Platform and Gemini Enterprise</td><td class="plain mono">2026</td></tr>
+          <tr><td>Google Agentspace</td><td class="plain">Gemini Enterprise, which includes NotebookLM Enterprise and prebuilt agents</td><td class="plain mono">2025</td></tr>
+          <tr><td>Cloud Functions</td><td class="plain">Cloud Run functions</td><td class="plain mono">2024</td></tr>
+          <tr><td>Anthos, then GKE Enterprise</td><td class="plain">GKE with fleets. Config Sync, Policy Controller and Connect gateway are now part of GKE</td><td class="plain mono">2025</td></tr>
+          <tr><td>BeyondCorp Enterprise</td><td class="plain">Chrome Enterprise Premium</td><td class="plain mono">2024</td></tr>
+          <tr><td>Cloud DLP</td><td class="plain">Sensitive Data Protection</td><td class="plain mono">2023</td></tr>
+          <tr><td>Operations suite (Stackdriver)</td><td class="plain">Google Cloud Observability</td><td class="plain mono">2024</td></tr>
+          <tr><td>Chronicle</td><td class="plain">Google Security Operations (SecOps)</td><td class="plain mono">2024</td></tr>
+          <tr><td>Migrate for Compute Engine / Migrate for Anthos</td><td class="plain">Migrate to Virtual Machines / Migrate to Containers</td><td class="plain mono">2022</td></tr>
+          <tr><td>StratoZone, mFit</td><td class="plain">Migration Center</td><td class="plain mono">2023</td></tr>
+          <tr><td>Analytics Hub</td><td class="plain">BigQuery sharing (with data clean rooms)</td><td class="plain mono">2025</td></tr>
+          <tr><td>Data Catalog, Dataplex Catalog</td><td class="plain">Dataplex Universal Catalog</td><td class="plain mono">2025</td></tr>
+          <tr><td>Contact Center AI, Dialogflow CX</td><td class="plain">Customer Engagement Suite, Conversational Agents</td><td class="plain mono">2024</td></tr>
+          <tr><td>Retail API, Discovery AI for retail</td><td class="plain">Vertex AI Search for commerce</td><td class="plain mono">2024</td></tr>
+          <tr><td>Workload Identity (GKE)</td><td class="plain">Workload Identity Federation for GKE</td><td class="plain mono">2024</td></tr>
+          <tr><td>Google Cloud Skills Boost</td><td class="plain">Google Skills (skills.google)</td><td class="plain mono">2025</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted" style="font-size:.9rem">Retired or closed to new customers, so never the right answer for a new design:</p>
+    <div class="retired">
+      <span><s>Deployment Manager</s> → Terraform / Infrastructure Manager</span>
+      <span><s>Container Registry</s> → Artifact Registry</span>
+      <span><s>Cloud Source Repositories</s> → GitHub, GitLab, Secure Source Manager</span>
+      <span><s>Cloud IoT Core</s> → Pub/Sub + partner IoT platforms</span>
+      <span><s>Pub/Sub Lite</s> → Pub/Sub, or Managed Service for Apache Kafka</span>
+      <span><s>Cloud Debugger</s> → Snapshot Debugger (open source) and logging</span>
+      <span><s>Data Studio</s> → Looker Studio</span>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="sec-head"><h2>How to use this guide</h2></div>
+    <div class="cols">
+      <div class="panel"><h4>1 · Read the case studies first</h4><p class="muted">They are public, and two of them will be on your exam. Learn them well enough that you don’t need to read them during the test.</p><a class="chip" href="#cases">Case studies</a></div>
+      <div class="panel"><h4>2 · Work the syllabus</h4><p class="muted">Tick off each v6.1 objective once you can explain it and pick the right service under pressure.</p><a class="chip" href="#syllabus">Syllabus tracker</a></div>
+      <div class="panel"><h4>3 · Drill, then take full mocks</h4><p class="muted">Use domain drills with instant feedback while learning, then timed 50-question mocks. Aim for 80% or more before you book.</p><a class="chip" href="#mock">Mock exams</a></div>
+    </div>
+  </div>

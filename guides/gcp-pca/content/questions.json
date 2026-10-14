@@ -1,0 +1,2286 @@
+[
+ {
+  "id": "d1-01",
+  "d": 1,
+  "q": "A retailer is consolidating regional inventory databases into one system. Orders placed in North America, Europe and Asia must decrement the same stock counts with strong consistency, and the business requires a 99.999% availability target. Peak load is about 40,000 writes per second. What should you recommend?",
+  "o": [
+   "Cloud SQL for PostgreSQL Enterprise Plus with cross-region read replicas",
+   "Spanner with a multi-region instance configuration",
+   "Bigtable with multi-cluster routing across three regions",
+   "AlloyDB for PostgreSQL with a cross-region secondary cluster"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Spanner multi-region configurations give externally consistent reads and writes across continents, scale writes horizontally, and carry a 99.999% SLA. Cloud SQL read replicas are read-only and asynchronous, so writes still go to one region. An AlloyDB secondary cluster is an asynchronous DR copy with a single primary. Bigtable replication is eventually consistent and has no multi-row transactions."
+ },
+ {
+  "id": "d1-02",
+  "d": 1,
+  "q": "A utility company ingests about 1.5 million smart-meter readings per second. A customer app must show each meter’s latest readings with single-digit-millisecond latency, and three years of history must stay queryable by meter. Which design should you choose?",
+  "o": [
+   "Bigtable, with a row key that starts with the meter ID followed by a reversed timestamp",
+   "Bigtable, with a row key that starts with the reading timestamp followed by the meter ID",
+   "BigQuery, with the table partitioned by reading date and clustered by meter ID",
+   "Cloud SQL for PostgreSQL Enterprise Plus, with a composite index on meter ID and timestamp"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Bigtable is built for very high write throughput and low-latency key lookups. Leading the row key with the meter ID spreads writes across nodes, and a reversed timestamp makes each meter’s newest readings sort first. A timestamp-first key sends every new write to the same key range and creates a hotspot. BigQuery is excellent for analytics but isn’t a millisecond serving store. Cloud SQL can’t absorb 1.5 million writes per second on one primary."
+ },
+ {
+  "id": "d1-03",
+  "d": 1,
+  "q": "A company runs a custom-built expense-reporting application on aging on-premises servers. Two engineers spend most of their time maintaining it, and three SaaS products already meet almost all of its requirements. Leadership wants to cut operational effort as the data center closes. Which workload disposition should you recommend?",
+  "o": [
+   "Rehost the application on Compute Engine with Migrate to Virtual Machines",
+   "Refactor the application into microservices on GKE Autopilot",
+   "Replace it with a SaaS product, migrate the historical data, and retire the custom application",
+   "Retain it on-premises until the next hardware refresh"
+  ],
+  "a": [
+   2
+  ],
+  "x": "When commodity SaaS meets the requirements and the custom app carries ongoing staff cost, buying (replace) and retiring is the disposition that removes operational effort. Rehosting moves the same maintenance burden to the cloud. Refactoring spends engineering time on a non-differentiating app. Retaining conflicts with the data-center closure."
+ },
+ {
+  "id": "d1-04",
+  "d": 1,
+  "q": "After migrating its customer-facing web store, an organization wants to prove the migration met its stated goal of “a faster, more reliable experience for shoppers.” Which success measure best supports that claim?",
+  "o": [
+   "The number of on-premises virtual machines decommissioned",
+   "Monthly Google Cloud spend compared with the previous data-center cost",
+   "The share of requests meeting a 300 ms latency target and the request success rate, compared with the pre-migration baseline",
+   "The number of production deployments per week"
+  ],
+  "a": [
+   2
+  ],
+  "x": "A KPI should measure the goal it reports on. Latency and success-rate SLIs, compared with a baseline, measure the shopper experience directly. VM counts and spend measure migration effort and cost. Deployment frequency is a delivery (DORA) metric and says nothing direct about what shoppers experience."
+ },
+ {
+  "id": "d1-05",
+  "d": 1,
+  "q": "An internal team serves an open-weight 8B-parameter model for document summarization. Traffic is a few hundred requests a day in irregular bursts, and nights and weekends are idle. They want minimal infrastructure management and no charges for idle accelerators. What should you recommend?",
+  "o": [
+   "A GKE Standard cluster with an L4 GPU node pool, minimum one node",
+   "A Cloud Run service with an NVIDIA L4 GPU attached, allowed to scale to zero",
+   "A Compute Engine VM with an attached GPU, stopped by a cron job outside business hours",
+   "An Agent Platform endpoint with one dedicated GPU replica always running"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Cloud Run supports GPUs and scales to zero, so there’s no accelerator charge while idle and no cluster or VM to manage. A node pool with a minimum node and an always-on endpoint replica both bill for idle GPUs. A scheduled VM still idles between bursts during the day and adds scripting to maintain."
+ },
+ {
+  "id": "d1-06",
+  "d": 1,
+  "q": "A visual-effects studio renders frames overnight. Each frame is independent, jobs checkpoint every few minutes, and the deadline is the next morning. The studio wants the lowest compute cost without running its own scheduler. What should you recommend?",
+  "o": [
+   "Batch jobs that use the Spot provisioning model, with automatic task retries on preemption",
+   "A three-year committed use discount sized for the peak number of render VMs",
+   "Sole-tenant nodes sized for the peak render load",
+   "A regional managed instance group of standard VMs with CPU-based autoscaling"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Independent, checkpointed work tolerates preemption, so Spot VMs (60–91% cheaper than on-demand) are the cost answer, and Batch provides queuing and retries without a self-managed scheduler. A three-year commitment sized for the peak pays for idle daytime capacity. Sole-tenant nodes add cost for isolation the studio doesn’t need. Standard VMs cost several times more than Spot."
+ },
+ {
+  "id": "d1-07",
+  "d": 1,
+  "q": "A licensed analytics engine is billed per vCPU. It needs 4 vCPUs and 60 GB of memory. The closest predefined machine type has 8 vCPUs and 64 GB. How do you minimize licensing and compute cost?",
+  "o": [
+   "Use the 8-vCPU predefined machine type and limit the engine to 4 threads in its configuration",
+   "Create an N2 custom machine type with 4 vCPUs and extended memory to reach 60 GB",
+   "Use a memory-optimized M-series machine type",
+   "Split the engine across two 2-vCPU VMs with 30 GB each behind an internal load balancer"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Custom machine types let you choose vCPUs and memory independently, and extended memory goes beyond the normal per-vCPU ratio, so 4 vCPUs with 60 GB is possible and the license counts 4 vCPUs. Limiting threads usually doesn’t change how per-vCPU licenses are counted. M-series machines are far larger than needed. Splitting the engine changes the architecture and may not be supported."
+ },
+ {
+  "id": "d1-08",
+  "d": 1,
+  "q": "A bank must keep call recordings for seven years. They are read only if a regulator or court asks for them, which happens a few times a decade, and they must not be deleted or changed before the period ends. What is the most cost-effective design?",
+  "o": [
+   "Standard class with object versioning enabled",
+   "Archive class, with a seven-year retention policy that is then locked",
+   "Coldline class, with a lifecycle rule that deletes objects after seven years",
+   "Nearline class, with an IAM deny policy that blocks storage.objects.delete"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Archive is the cheapest class for data read less than once a year, and a locked retention policy (Bucket Lock) prevents deleting or replacing any object until it is seven years old, which is what regulators expect. Versioning doesn’t stop deletion. A lifecycle rule handles deletion afterwards but doesn’t enforce immutability before that. IAM deny policies can be changed by administrators, so they aren’t a compliance-grade lock."
+ },
+ {
+  "id": "d1-09",
+  "d": 1,
+  "q": "A research institute is moving a 450 TB archive to Cloud Storage as a one-time migration. Its only internet link is 1 Gbps and is shared with daily operations, and there are no plans for dedicated connectivity. The data must be in Cloud Storage within five weeks. What should you use?",
+  "o": [
+   "Storage Transfer Service with on-premises agents over the existing link",
+   "Transfer Appliance",
+   "gcloud storage cp running in parallel from several servers",
+   "A new 10 Gbps Partner Interconnect connection ordered for the migration"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Even at a full 1 Gbps, 450 TB takes about six weeks, and this link is shared, so any online method misses the deadline. Transfer Appliance moves large one-time datasets offline. Storage Transfer Service and gcloud storage are both limited by the same link. Provisioning Interconnect for a one-time job adds lead time and recurring cost the institute doesn’t need."
+ },
+ {
+  "id": "d1-10",
+  "d": 1,
+  "q": "A stateless web tier runs on a zonal managed instance group in us-east1-b. The business now requires it to survive a full zone outage automatically, with minimal operational effort. What should you do?",
+  "o": [
+   "Take hourly snapshots of the boot disks and restore them in another zone after an outage",
+   "Replace it with a regional managed instance group spread across three zones, with autohealing, behind the external Application Load Balancer",
+   "Create a second zonal managed instance group in us-east1-c and switch DNS to it during an outage",
+   "Enable live migration on the VMs"
+  ],
+  "a": [
+   1
+  ],
+  "x": "A regional MIG spreads instances across zones, autohealing replaces unhealthy VMs, and the load balancer routes around a failed zone with no manual step. Snapshots and DNS switching are manual recovery, not automatic failover. Live migration handles host maintenance, not zone outages."
+ },
+ {
+  "id": "d1-11",
+  "d": 1,
+  "q": "An order-management app uses Cloud SQL for MySQL with high availability in europe-west1. A new requirement says that after a regional outage the database must be running in another region within one hour, losing no more than a few minutes of data, while keeping cost moderate. What should you add?",
+  "o": [
+   "Daily exports of the database to a multi-region Cloud Storage bucket",
+   "A cross-region read replica in europe-west4 that can be promoted during a regional outage",
+   "A second high-availability configuration in the same region using a different pair of zones",
+   "A migration to Spanner with a multi-region configuration"
+  ],
+  "a": [
+   1
+  ],
+  "x": "A cross-region replica receives changes continuously, so data loss is seconds to minutes, and promoting it takes minutes, well within the one-hour RTO. Daily exports risk up to 24 hours of data loss. HA protects against a zone failure only. Spanner would meet the target but needs a re-platform and costs far more than the requirement justifies."
+ },
+ {
+  "id": "d1-12",
+  "d": 1,
+  "q": "Workloads in a VPC must resolve names in the on-premises zone corp.example.com, and on-premises servers must resolve names in a Cloud DNS private zone. Connectivity is through Cloud Interconnect. How should you configure DNS?",
+  "o": [
+   "Create a Cloud DNS forwarding zone for corp.example.com that targets the on-premises DNS servers, and an inbound server policy so on-premises resolvers can forward queries into Cloud DNS",
+   "Copy all on-premises DNS records into a Cloud DNS public zone",
+   "Run BIND on Compute Engine VMs in each region and point every client at them",
+   "Configure DNS peering between the VPC and the on-premises network"
+  ],
+  "a": [
+   0
+  ],
+  "x": "An outbound forwarding zone sends queries for the on-premises domain to on-premises resolvers, and an inbound server policy gives on-premises resolvers an entry point into Cloud DNS private zones. A public zone would expose internal names. Self-managed BIND adds operations work. DNS peering works only between VPC networks, not with on-premises."
+ },
+ {
+  "id": "d1-13",
+  "d": 1,
+  "q": "Employees spend hours searching for answers across Google Drive, SharePoint, Jira and Confluence. Leadership wants an assistant that answers with citations, respects each user’s existing document permissions, and can be rolled out within weeks with minimal custom development. What should you recommend?",
+  "o": [
+   "Build a RAG application on GKE with a custom embeddings pipeline for each source",
+   "Fine-tune a Gemini model on an export of all company documents",
+   "Deploy Gemini Enterprise with connectors to the existing sources",
+   "Load all documents into BigQuery and give employees Looker dashboards"
+  ],
+  "a": [
+   2
+  ],
+  "x": "Gemini Enterprise (formerly Agentspace) provides search and agents over connected sources, respects source permissions and cites its answers, without building infrastructure. A custom RAG stack can work but contradicts the timeline and the minimal-development requirement. Fine-tuning bakes in a stale snapshot and loses per-document permissions. Dashboards don’t answer natural-language questions."
+ },
+ {
+  "id": "d1-14",
+  "d": 1,
+  "q": "A support assistant must answer questions about product documentation that changes several times a day. Answers must reflect the latest content and cite the source page. Which approach best reduces hallucinations?",
+  "o": [
+   "Fine-tune Gemini every night on the full documentation set",
+   "Ground the model in the documentation through retrieval (for example Search or RAG Engine) and return the retrieved citations",
+   "Raise the model temperature so answers vary more",
+   "Switch to a larger model and raise the maximum output tokens"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Retrieval-augmented generation (grounding) supplies the current documents at query time and lets the application cite them. Tuning shapes style and behavior but doesn’t keep fast-changing facts current, and a nightly run would lag intraday updates. A higher temperature adds randomness. A larger model still doesn’t know about content it never saw."
+ },
+ {
+  "id": "d1-15",
+  "d": 1,
+  "q": "A team needs 64 GPUs for about four days to fine-tune a model. The job can start any time in the next week but must not be interrupted once it starts, and the budget is tight. Which consumption option fits best?",
+  "o": [
+   "Spot VMs",
+   "Dynamic Workload Scheduler flex-start",
+   "A one-year committed use discount",
+   "On-demand VMs requested immediately"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Flex-start queues the request, starts the job once all the capacity is available, charges a discounted rate, and then runs uninterrupted for up to seven days. Spot is cheaper but can be preempted mid-run. A one-year commitment is wasted on a four-day job. On-demand costs more, and 64 GPUs may not be available at the moment you ask."
+ },
+ {
+  "id": "d1-16",
+  "d": 1,
+  "q": "You are asked to plan the migration of about 1,200 on-premises VMs. Documentation is poor, and the CFO wants a cost comparison before approving the project. What should you do first?",
+  "o": [
+   "Start migrating the largest applications with Migrate to Virtual Machines to show quick progress",
+   "Run Migration Center discovery to inventory servers, measure utilization and dependencies, and generate TCO and right-sized pricing reports",
+   "Ask each application team to fill in a spreadsheet of server specifications",
+   "Buy committed use discounts sized to the current on-premises core count"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Assessment comes first. Migration Center discovers assets and their performance data, maps dependencies for wave planning, and produces TCO and pricing reports based on right-sized targets. Migrating first skips planning. Manual spreadsheets are slow and inaccurate. Buying commitments before right-sizing locks in over-provisioning."
+ },
+ {
+  "id": "d1-17",
+  "d": 1,
+  "q": "A company wants to reuse its existing Windows Server Datacenter licenses on Google Cloud. The licenses aren’t eligible for License Mobility. What do you need to use?",
+  "o": [
+   "Premium Windows Server images from the public image catalog",
+   "Sole-tenant nodes, running Windows images the company imports itself",
+   "Shielded VMs with vTPM enabled",
+   "Standard multi-tenant VMs with the existing license key entered after boot"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Bring-your-own-license for Windows Server without License Mobility requires dedicated physical hardware, which on Compute Engine means sole-tenant nodes with imported images. Premium images already include a pay-as-you-go license, so you’d pay twice. Shielded VM is a security feature unrelated to licensing. Multi-tenant hosts don’t satisfy the license terms."
+ },
+ {
+  "id": "d1-18",
+  "d": 1,
+  "q": "A logistics firm runs Oracle Database with Real Application Clusters (RAC) and wants to move it to Google Cloud without changing the application or the database engine. What should you recommend?",
+  "o": [
+   "Migrate to Cloud SQL for PostgreSQL with Database Migration Service",
+   "Run Oracle RAC on Compute Engine VMs with shared persistent disks",
+   "Bare Metal Solution, connected to the application tier in a nearby Google Cloud region",
+   "Migrate the database to Spanner using its PostgreSQL interface"
+  ],
+  "a": [
+   2
+  ],
+  "x": "Bare Metal Solution provides certified hardware for Oracle workloads such as RAC, with low-latency connectivity to Google Cloud. Oracle Database@Google Cloud (Exadata and Autonomous Database in Google data centers) is the other no-change option. Cloud SQL and Spanner both mean changing the database. RAC isn’t supported on Compute Engine VMs."
+ },
+ {
+  "id": "d1-19",
+  "d": 1,
+  "q": "A payroll platform runs on 300 vCPUs of Compute Engine, 24 hours a day, and its size hasn’t changed in two years. It will run for at least three more years on the same machine series in one region. How do you cut compute cost the most?",
+  "o": [
+   "Rely on sustained use discounts",
+   "Buy a three-year resource-based committed use discount for the vCPUs and memory",
+   "Move the platform to Spot VMs",
+   "Buy a one-year flexible (spend-based) commitment and renew it every year"
+  ],
+  "a": [
+   1
+  ],
+  "x": "A stable 24×7 workload on a fixed machine series in one region is the textbook case for a three-year resource-based commitment, the deepest commitment discount. Sustained use discounts are automatic but smaller. Spot VMs can be reclaimed at any time, which payroll can’t tolerate. Flexible commitments trade discount for flexibility this platform doesn’t need."
+ },
+ {
+  "id": "d1-20",
+  "d": 1,
+  "q": "An e-commerce site needs rolling five-minute conversion rates from clickstream events. Events can arrive several minutes late, results must be correct despite duplicates, and the team doesn’t want to manage clusters. Which architecture should you choose?",
+  "o": [
+   "Pub/Sub, then a Dataflow streaming pipeline with event-time windows and allowed lateness, then BigQuery",
+   "Pub/Sub, then Cloud Run functions that update counters in Cloud SQL",
+   "Files in Cloud Storage, processed by an hourly Dataproc Spark job, loaded into BigQuery",
+   "Events written straight to BigQuery, with a scheduled query every five minutes"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Dataflow (Apache Beam) handles event-time windows, watermarks, late data and deduplication, and it autoscales without clusters. Functions that update SQL counters can’t handle late or duplicate events and create write contention. An hourly Spark job misses the five-minute requirement and needs clusters. Scheduled queries mishandle late data and recompute the same windows over and over."
+ },
+ {
+  "id": "d1-21",
+  "d": 1,
+  "q": "A manufacturer will expose parts-ordering APIs to 300 dealers and third-party partners. It needs per-partner API keys and quotas, usage analytics, a developer portal for onboarding and, eventually, monetization. Which product should you choose?",
+  "o": [
+   "API Gateway",
+   "Apigee",
+   "Cloud Endpoints",
+   "An external Application Load Balancer with Cloud Armor rate limiting"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Apigee is Google Cloud’s full-lifecycle API management platform, with API products and keys, quotas, analytics, developer portals and monetization. API Gateway is a lightweight managed gateway without portal or monetization features. Cloud Endpoints is the older option with limited management. A load balancer with Cloud Armor protects traffic but doesn’t manage APIs."
+ },
+ {
+  "id": "d1-22",
+  "d": 1,
+  "q": "During flash sales the order service calls the inventory service synchronously. When inventory slows down, orders time out and are lost. Inventory updates can safely be applied a few seconds later. Which change best improves resilience?",
+  "o": [
+   "Scale the inventory service vertically onto larger machines",
+   "Have the order service publish order events to Pub/Sub, and have the inventory service consume them asynchronously",
+   "Add immediate retries without backoff in the order service",
+   "Merge both services into a single deployment"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Asynchronous messaging decouples the services. Pub/Sub absorbs bursts, redelivers on failure, and lets inventory work at its own pace, so orders are still accepted while inventory is slow. Vertical scaling has limits and keeps the tight coupling. Retries without backoff amplify load during an incident. Merging the services removes independent scaling and deployment."
+ },
+ {
+  "id": "d1-23",
+  "d": 1,
+  "q": "Twenty product teams each own their own projects and budgets. A central network team must control subnets, firewall policies and the single Cloud Interconnect to on-premises, while the teams deploy their own VMs and GKE clusters. Which design should you use?",
+  "o": [
+   "A separate VPC per team, connected with VPC Network Peering",
+   "Shared VPC, with a host project run by the network team and the teams’ projects attached as service projects",
+   "One project for all teams, separated with IAM conditions",
+   "A separate VPC per team, each with its own Cloud VPN to on-premises"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Shared VPC centralizes network administration (subnets, firewalls, hybrid connectivity) in a host project while teams keep their own projects, IAM and billing. Peering decentralizes control, isn’t transitive, and runs into peering limits. One shared project breaks budget and blast-radius isolation. Per-team VPNs duplicate connectivity and remove central control."
+ },
+ {
+  "id": "d1-24",
+  "d": 1,
+  "q": "A news site hosted in us-central1 has readers worldwide. Most traffic is article pages and images that change a few times an hour, and readers in Asia report slow page loads. What should you do first to cut their latency at the lowest cost?",
+  "o": [
+   "Deploy full copies of the application in three more regions",
+   "Enable Cloud CDN on the external Application Load Balancer, with appropriate cache lifetimes",
+   "Move the site to a larger machine type",
+   "Replace the load balancer with a regional external passthrough Network Load Balancer"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Serving cacheable content from Google’s edge cuts latency for distant readers and also reduces backend load and egress, with no application change. Multi-region deployment helps dynamic content but costs far more as a first step. A bigger machine doesn’t shorten network distance. A regional passthrough load balancer gives up the global front end and can’t use Cloud CDN."
+ },
+ {
+  "id": "d1-25",
+  "d": 1,
+  "q": "A company’s nightly genomics batch jobs can run in any US region and have no latency requirements. As part of its sustainability goals, it wants to reduce the carbon footprint of this work without raising cost much. What should you do?",
+  "o": [
+   "Run the jobs in a US region with a high carbon-free energy percentage, using Google Cloud’s published region carbon data",
+   "Run the jobs in the region closest to headquarters",
+   "Use larger machines so the jobs finish sooner",
+   "Run the jobs on-premises at night when electricity is cheaper"
+  ],
+  "a": [
+   0
+  ],
+  "x": "The Well-Architected Framework’s sustainability pillar recommends running location-flexible workloads in low-carbon regions. Google publishes carbon-free energy (CFE%) figures per region and marks low-CO2 regions in the console. Distance to headquarters doesn’t matter for batch work. Bigger machines don’t cut total energy by themselves. Moving the work on-premises usually raises both emissions and cost."
+ },
+ {
+  "id": "d1-26",
+  "d": 1,
+  "q": "A legacy content-management system needs a shared POSIX file system, with file locking, mounted by both GKE pods and Compute Engine VMs. It must stay available if a zone fails. What should you use?",
+  "o": [
+   "Cloud Storage FUSE mounted on every node",
+   "Filestore Regional tier",
+   "A persistent disk attached in multi-writer mode",
+   "Local SSDs kept in sync with rsync"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Filestore is managed NFS, the Regional tier replicates across zones, and GKE mounts it through the Filestore CSI driver. Cloud Storage FUSE isn’t fully POSIX-compliant (no file locking). Multi-writer persistent disks are zonal and need a cluster-aware file system. Local SSDs are ephemeral."
+ },
+ {
+  "id": "d1-27",
+  "d": 1,
+  "q": "An architect wants to describe an application in plain language (a web front end, an API, a PostgreSQL database and a cache), get a proposed Google Cloud architecture on a visual canvas, refine it, and export deployable Terraform. Which capability fits?",
+  "o": [
+   "Gemini Cloud Assist with Application Design Center",
+   "Cloud Shell Editor with Cloud Code templates",
+   "Migration Center",
+   "Infrastructure Manager"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Gemini Cloud Assist can generate architectures from natural language in Application Design Center, where you refine components on a canvas and produce Terraform. Cloud Shell Editor and Cloud Code are coding tools. Migration Center assesses existing estates. Infrastructure Manager deploys Terraform but doesn’t design the architecture."
+ },
+ {
+  "id": "d2-01",
+  "d": 2,
+  "q": "A Cloud Run service must reach a Cloud SQL instance and a Memorystore instance on private IP addresses. The team wants the lowest latency and doesn’t want to manage extra connector instances. How should you configure networking?",
+  "o": [
+   "Give Cloud SQL a public IP and allow 0.0.0.0/0 as an authorized network",
+   "Configure Direct VPC egress on the Cloud Run service so its traffic goes straight into the VPC",
+   "Create a Serverless VPC Access connector sized for peak traffic",
+   "Put a Cloud NAT gateway in front of the VPC"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Direct VPC egress sends Cloud Run traffic straight into a VPC subnet, with no connector VMs to size or pay for, and lower latency. A Serverless VPC Access connector works but adds managed instances, which the team wants to avoid. Opening a public IP to the world is insecure. Cloud NAT handles outbound internet traffic and doesn’t provide private reachability."
+ },
+ {
+  "id": "d2-02",
+  "d": 2,
+  "q": "Compute Engine VMs in a subnet have no external IP addresses, and an organization policy forbids adding any. Batch jobs on these VMs must read from Cloud Storage and write to BigQuery. What is the simplest Google-recommended approach?",
+  "o": [
+   "Enable Private Google Access on the subnet",
+   "Create a Cloud VPN tunnel to Google’s public API ranges",
+   "Add a Cloud NAT gateway and send API traffic through it",
+   "Peer the VPC with a Google-managed services network"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Private Google Access, a per-subnet setting, lets VMs with only internal IPs reach Google APIs and services. Cloud NAT would also work, but it routes API traffic through NAT unnecessarily and isn’t the targeted answer. VPN isn’t how you reach Google APIs. Peering with a services network (Private Services Access) is for managed services such as Cloud SQL private IP, not for Google APIs."
+ },
+ {
+  "id": "d2-03",
+  "d": 2,
+  "q": "Your company uses a database service that a SaaS vendor runs in the vendor’s own Google Cloud organization. Your VPC’s IP ranges overlap with the vendor’s, and you must reach the service privately without exposing anything else. What should you use?",
+  "o": [
+   "VPC Network Peering between the two VPCs",
+   "Private Service Connect: the vendor publishes a service attachment and you create an endpoint in your VPC",
+   "Shared VPC, with the vendor’s project attached as a service project",
+   "An HA VPN tunnel between the two VPCs"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Private Service Connect exposes one service through an endpoint IP in the consumer VPC. It works across organizations and with overlapping address ranges, and nothing else is exposed. Peering needs non-overlapping ranges and connects whole networks. Shared VPC works only inside one organization. VPN also needs non-overlapping routes and exposes more than one service."
+ },
+ {
+  "id": "d2-04",
+  "d": 2,
+  "q": "An enterprise has 15 VPC networks owned by different business units. They must stay separate networks, but each VPC must reach every other VPC and the on-premises data center through the existing Interconnect. Peering limits and non-transitive routing have become a problem. What should you implement?",
+  "o": [
+   "A full mesh of VPC Network Peering connections",
+   "Network Connectivity Center, with the VPCs as VPC spokes and the Interconnect VLAN attachments as hybrid spokes",
+   "One Shared VPC that replaces all 15 networks",
+   "Cloud VPN tunnels between every pair of VPCs"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Network Connectivity Center is a hub-and-spoke model. VPC spokes get transitive any-to-any reachability and hybrid spokes bring in on-premises routes, while each VPC stays separate. A full peering mesh is non-transitive and hits limits. Collapsing everything into one Shared VPC breaks the requirement to keep separate networks. Pairwise VPNs don’t scale and add cost."
+ },
+ {
+  "id": "d2-05",
+  "d": 2,
+  "q": "A bank needs private connectivity to Google Cloud with a 99.99% availability SLA. It has equipment in two colocation facilities, in different metropolitan areas, that both support Dedicated Interconnect. Which topology meets the SLA?",
+  "o": [
+   "Two connections in one metro, in different edge availability domains, with one Cloud Router",
+   "Four connections, two in each metro, each pair split across edge availability domains, with Cloud Routers in two regions and global dynamic routing",
+   "One 100 Gbps connection in each metro",
+   "Two connections in one metro plus HA VPN as a backup path"
+  ],
+  "a": [
+   1
+  ],
+  "x": "The 99.99% Dedicated Interconnect topology needs at least four connections, two in each of two metros, with each pair in separate edge availability domains, plus Cloud Routers in two regions and global dynamic routing. Two connections in one metro qualify for 99.9%. One connection per metro has no redundancy inside each metro. A VPN backup is good practice but doesn’t turn a 99.9% topology into 99.99%."
+ },
+ {
+  "id": "d2-06",
+  "d": 2,
+  "q": "A regulator requires all traffic between your data center and Google Cloud to be encrypted. You already use Dedicated Interconnect and need to keep its bandwidth and low latency. What should you do?",
+  "o": [
+   "Replace Dedicated Interconnect with HA VPN over the internet",
+   "Enable MACsec for Cloud Interconnect, or run HA VPN over Cloud Interconnect",
+   "Rely on Google’s default encryption at rest",
+   "Add TLS to the web tier’s public endpoints only"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Interconnect traffic isn’t encrypted by default. MACsec encrypts at layer 2 between your router and Google’s edge, and HA VPN over Cloud Interconnect adds IPsec on top of the private link. Both keep the Interconnect path. Plain VPN over the internet gives up bandwidth and latency. Encryption at rest doesn’t cover data in transit. TLS on public endpoints leaves the rest of the traffic exposed."
+ },
+ {
+  "id": "d2-07",
+  "d": 2,
+  "q": "A faulty script deleted thousands of objects from a Cloud Storage bucket two days ago. The bucket was created last year with default settings, and object versioning is off. What is the fastest way to recover the objects?",
+  "o": [
+   "Restore the soft-deleted objects, because soft delete keeps deleted objects for 7 days by default",
+   "Open a support case asking Google to restore the bucket from its own backups",
+   "Re-run the upstream pipeline to regenerate the data",
+   "Accept the loss, because the objects can’t be recovered without versioning"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Cloud Storage soft delete is on by default with a 7-day retention period, so deleted objects can be listed and restored within that window even without versioning. Google doesn’t restore individual customer buckets from internal backups. Regenerating the data may be slow or impossible. Saying the data can’t be recovered ignores soft delete."
+ },
+ {
+  "id": "d2-08",
+  "d": 2,
+  "q": "A self-managed PostgreSQL VM uses a Hyperdisk Balanced volume and has hit its provisioned IOPS during month-end processing. The team can’t accept downtime this week. What should you do?",
+  "o": [
+   "Increase the provisioned IOPS (and throughput if needed) on the existing Hyperdisk volume",
+   "Stop the VM and change it to a larger machine type",
+   "Add a Local SSD and move the database files onto it",
+   "Take a snapshot and restore it to a pd-standard disk"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Hyperdisk lets you change provisioned IOPS and throughput on a live volume, independent of capacity and without downtime, within the machine type’s limits. Changing the machine type needs a stop. Local SSD is ephemeral and risky for a primary database. pd-standard is slower, HDD-backed storage."
+ },
+ {
+  "id": "d2-09",
+  "d": 2,
+  "q": "A GKE Standard cluster runs a latency-sensitive payments API and large nightly batch workers that tolerate interruption. You want to cut cost without putting the API at risk. What should you do?",
+  "o": [
+   "Convert every node pool to Spot VMs",
+   "Create a Spot node pool for the batch workers, steer them there with a node selector and toleration, and keep the API on a standard node pool",
+   "Run the batch workers inside the API pods to share resources",
+   "Scale the API to zero replicas overnight"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Separate node pools let interruption-tolerant work use cheap Spot capacity while critical services stay on standard nodes. A taint on the Spot pool, with a matching toleration and selector on the batch pods, keeps placement clean. Making everything Spot risks preempting the payments API. Sharing pods hurts API latency. Scaling the API to zero takes payments offline."
+ },
+ {
+  "id": "d2-10",
+  "d": 2,
+  "q": "A startup with no Kubernetes operations experience wants to run 25 containerized microservices that rely on the Kubernetes API, sidecars and persistent volumes. It wants Google to manage nodes, upgrades and security hardening, and to pay only for what its pods request. What should you choose?",
+  "o": [
+   "GKE Standard with node auto-provisioning",
+   "GKE Autopilot",
+   "Cloud Run",
+   "Compute Engine with Docker installed on each VM"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Autopilot manages nodes, scaling, upgrades and hardened defaults, and bills per pod resource request, while keeping the full Kubernetes API. GKE Standard leaves node management to the team. Cloud Run supports sidecars but doesn’t expose the Kubernetes API the services rely on. Docker on VMs means managing everything yourself."
+ },
+ {
+  "id": "d2-11",
+  "d": 2,
+  "q": "You operate 3,000 Linux and Windows VMs across 40 projects. Auditors want evidence of patch compliance, and operations wants scheduled patch rollouts within maintenance windows. What should you use?",
+  "o": [
+   "VM Manager patch management, with patch deployments and compliance reporting",
+   "A startup script that runs the OS package manager at every boot",
+   "Recreating every VM monthly from fresh public images",
+   "Cloud Scheduler triggering SSH sessions to each VM"
+  ],
+  "a": [
+   0
+  ],
+  "x": "VM Manager’s patch management schedules patch jobs and recurring deployments across fleets, supports rollout controls and reports compliance. Startup scripts patch only at boot and give no reporting. Rebuilding VMs monthly is disruptive for stateful machines and still gives no compliance view. Scripted SSH is fragile and hard to audit."
+ },
+ {
+  "id": "d2-12",
+  "d": 2,
+  "q": "A company must vacate its data center in 10 weeks. It runs 600 VMs on vSphere, and operations wants to keep using vCenter, NSX and its existing runbooks during the first phase. What should you recommend?",
+  "o": [
+   "Google Cloud VMware Engine, migrating with VMware HCX",
+   "Migrate to Virtual Machines to rehost every VM onto Compute Engine",
+   "Refactor the applications onto GKE before the deadline",
+   "Transfer Appliance to ship the VM disks"
+  ],
+  "a": [
+   0
+  ],
+  "x": "VMware Engine runs a native VMware stack on Google Cloud, so teams keep vCenter, NSX and their tools, and HCX supports bulk and live migration on a tight timeline. Converting 600 VMs to Compute Engine in 10 weeks is risky and changes operations. Refactoring takes far too long. Transfer Appliance moves data, not running VMs."
+ },
+ {
+  "id": "d2-13",
+  "d": 2,
+  "q": "Data scientists retrain a churn model every week by running notebooks by hand. Results are hard to reproduce, and no one can tell which data and code produced the deployed model. What should you implement?",
+  "o": [
+   "Cloud Scheduler triggering the notebooks on a Workbench instance",
+   "Agent Platform Pipelines that orchestrate data preparation, training, evaluation and deployment, tracking artifacts and lineage, with models versioned in Model Registry",
+   "A Cloud Composer DAG that copies the notebooks to Cloud Storage",
+   "BigQuery scheduled queries that export the training data weekly"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Pipelines (built with the Kubeflow Pipelines SDK) make each step a reproducible, parameterized component, record metadata and lineage, and can deploy through Model Registry behind evaluation gates. Scheduling the notebooks automates the run but not reproducibility or lineage. Copying notebooks or exporting data each solves only a slice of the problem."
+ },
+ {
+  "id": "d2-14",
+  "d": 2,
+  "q": "An ML team fine-tunes a model for about three hours every night. The training code saves checkpoints to Cloud Storage every 10 minutes and can resume from the latest one. They want to minimize accelerator cost. What should you recommend?",
+  "o": [
+   "Train on Spot VMs (or Spot TPUs) and resume from the latest checkpoint after any preemption",
+   "Reserve on-demand accelerators 24 hours a day",
+   "Buy a three-year committed use discount on the accelerators",
+   "Train on CPUs to avoid accelerator charges"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Checkpointed, restartable training is what Spot capacity is for. It has the deepest discount, and a preemption costs at most a few minutes of work. Round-the-clock reservations and long commitments pay for 21 idle hours a day. CPUs take far longer and usually cost more overall for deep-learning training."
+ },
+ {
+  "id": "d2-15",
+  "d": 2,
+  "q": "A bank wants to transcribe recorded customer calls and score the overall sentiment of each conversation. It prefers pretrained APIs and doesn’t want to train models. Which two services should you use? (Choose two.)",
+  "o": [
+   "Speech-to-Text",
+   "Natural Language API sentiment analysis",
+   "Video Intelligence API",
+   "Vision API",
+   "Translation API"
+  ],
+  "a": [
+   0,
+   1
+  ],
+  "x": "Speech-to-Text (Chirp models) turns audio into text, and the Natural Language API returns document- and sentence-level sentiment. Video Intelligence and Vision analyze video and images. Translation is needed only if calls must be translated."
+ },
+ {
+  "id": "d2-16",
+  "d": 2,
+  "q": "Legal counsel has approved one specific open-weight model for contract review. It must run in your own project, traffic must stay off the public internet, and data must not leave the organization’s VPC Service Controls perimeter. What should you do?",
+  "o": [
+   "Call the model through a third-party hosted API",
+   "Deploy the model from Model Garden to an Agent Platform endpoint with private connectivity, inside the VPC Service Controls perimeter",
+   "Download the model to developers’ laptops",
+   "Fine-tune Gemini to imitate the approved model"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Model Garden can deploy open models into your own project on Agent Platform endpoints (or on GKE). Private endpoints through Private Service Connect keep traffic off the internet, and Agent Platform is supported by VPC Service Controls. A third-party API sends data outside the organization. Laptops break governance. A model that imitates the approved one isn’t the approved model."
+ },
+ {
+  "id": "d2-17",
+  "d": 2,
+  "q": "A strategy team wants to upload 40 analyst reports and internal memos, ask questions answered only from those sources with citations, and generate audio overviews for executives. The data must stay under the company’s Google Cloud identity, IAM and data-governance controls. What should you recommend?",
+  "o": [
+   "The consumer NotebookLM app with personal Google accounts",
+   "NotebookLM Enterprise, as part of Gemini Enterprise",
+   "A custom RAG pipeline built on GKE",
+   "Fine-tuning a model on the 40 documents"
+  ],
+  "a": [
+   1
+  ],
+  "x": "NotebookLM Enterprise gives source-grounded answers, citations and audio overviews under enterprise identity, IAM and compliance controls. The consumer app runs on personal accounts outside corporate governance. A custom pipeline rebuilds an existing product. Fine-tuning doesn’t cite sources."
+ },
+ {
+  "id": "d2-18",
+  "d": 2,
+  "q": "A multiplayer game server uses UDP, must see each player’s real source IP address, and runs in a single region. Which load balancer should you use?",
+  "o": [
+   "Global external Application Load Balancer",
+   "External proxy Network Load Balancer",
+   "External passthrough Network Load Balancer",
+   "Internal Application Load Balancer"
+  ],
+  "a": [
+   2
+  ],
+  "x": "The external passthrough Network Load Balancer is regional, supports UDP, and passes packets through with the client’s original IP. Application Load Balancers handle HTTP(S) only. Proxy Network Load Balancers terminate TCP connections, don’t carry UDP, and replace the source IP unless you use the PROXY protocol."
+ },
+ {
+  "id": "d2-19",
+  "d": 2,
+  "q": "Internal clients in us-east4 and us-central1 call an internal HTTP API that runs in both regions. If the API fails in one region, clients must automatically be served by the other, without exposing anything publicly. What should you configure?",
+  "o": [
+   "A cross-region internal Application Load Balancer with backends in both regions",
+   "Two regional internal passthrough Network Load Balancers, with client DNS changed during failures",
+   "A global external Application Load Balancer locked down with Cloud Armor",
+   "VPC Network Peering between the two regions"
+  ],
+  "a": [
+   0
+  ],
+  "x": "The cross-region internal Application Load Balancer has a global internal front end and backends in several regions, with automatic failover between them. Manual DNS changes aren’t automatic. An external load balancer exposes the API to the internet even with Cloud Armor in front. Regions inside one VPC are already connected, and peering doesn’t provide load balancing."
+ },
+ {
+  "id": "d2-20",
+  "d": 2,
+  "q": "Raw clickstream data in BigQuery is needed for 13 months of analysis and must then be deleted to satisfy the privacy policy. The table is partitioned by event date. What is the simplest way to enforce this?",
+  "o": [
+   "Set a partition expiration of about 400 days on the table",
+   "Run a monthly scheduled query that deletes old rows",
+   "Export old partitions to Archive-class Cloud Storage each month",
+   "Use row-level security to hide old rows from analysts"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Partition expiration deletes each partition automatically once it reaches the set age, with no jobs to maintain. Scheduled DELETE queries cost compute and need upkeep. Exporting keeps the data, which breaks the deletion policy. Row-level security hides rows but doesn’t delete them."
+ },
+ {
+  "id": "d3-01",
+  "d": 3,
+  "q": "A BigQuery dataset holding patient data sits inside a VPC Service Controls perimeter. A partner’s analytics project, outside your organization, must run queries against that one dataset using one specific service account, while everything else stays blocked. What should you do?",
+  "o": [
+   "Add the partner’s project to your service perimeter",
+   "Create an ingress rule that allows only that service account, from the partner project, to call the needed BigQuery methods on the dataset’s project",
+   "Turn off the perimeter and rely on IAM",
+   "Create a perimeter bridge between your perimeter and the partner’s project"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Ingress and egress rules allow narrowly scoped access across a perimeter, limited to specific identities, projects, services and methods, without weakening it. Adding the partner’s project would make it fully trusted. Turning off the perimeter removes exfiltration protection. Perimeter bridges join perimeters within the same organization, so they can’t include an outside project."
+ },
+ {
+  "id": "d3-02",
+  "d": 3,
+  "q": "Security wants to make sure no one can grant IAM roles to Gmail accounts or identities from other companies, in any current or future project. What should you configure?",
+  "o": [
+   "The iam.allowedPolicyMemberDomains organization policy, set at the organization node to the company’s Cloud Identity customer ID",
+   "A custom IAM role without setIamPolicy permissions",
+   "A weekly script that removes outside members from IAM policies",
+   "VPC Service Controls around every project"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Domain restricted sharing (iam.allowedPolicyMemberDomains) blocks IAM grants to principals outside the allowed Cloud Identity or Workspace customers. Set on the organization node, it’s inherited by every project, including future ones. A custom role doesn’t control who can be a member. Scripts are reactive. VPC Service Controls protect API data access, not IAM membership."
+ },
+ {
+  "id": "d3-03",
+  "d": 3,
+  "q": "A team’s GitHub Actions workflows deploy to Google Cloud with a service account JSON key stored as a repository secret. Security wants to eliminate long-lived keys. What should you do?",
+  "o": [
+   "Rotate the JSON key every 30 days",
+   "Configure Workload Identity Federation with GitHub’s OIDC provider and let the workflow impersonate a least-privilege service account",
+   "Store the key in Secret Manager and fetch it during the build",
+   "Grant the GitHub organization the Editor role on the project"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Workload Identity Federation exchanges GitHub’s short-lived OIDC token for short-lived Google credentials, so there’s no key to leak, and attribute conditions can restrict which repository and branch may use it. Rotating or relocating the key still leaves a long-lived secret, and fetching it from Secret Manager needs credentials of its own. Editor is excessive and doesn’t remove keys."
+ },
+ {
+  "id": "d3-04",
+  "d": 3,
+  "q": "On a GKE cluster, the orders service needs to publish to one Pub/Sub topic, and the reporting service needs to read one BigQuery dataset. Today both use the node’s Compute Engine default service account. What is the Google-recommended fix?",
+  "o": [
+   "Download a key for each Google service account and mount it as a Kubernetes Secret",
+   "Use Workload Identity Federation for GKE so that each Kubernetes service account gets only its own IAM permissions",
+   "Grant both roles to the node service account",
+   "Create one node pool per service, each with a different node service account"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Workload Identity Federation for GKE gives each workload its own IAM identity without keys, so each service gets least privilege. Mounted keys are long-lived secrets. Granting both roles to the node account gives every pod on the node both permissions. Node pools per service are an expensive workaround and still coarser than per-workload identity."
+ },
+ {
+  "id": "d3-05",
+  "d": 3,
+  "q": "Security policy requires separation of duties for encryption keys. The security team manages key lifecycles, application service accounts may only encrypt and decrypt, and no one may do both. Which design best meets this?",
+  "o": [
+   "Create keys in each application project and give developers the Cloud KMS Admin role",
+   "Keep keys in a dedicated key-management project, grant the security group roles/cloudkms.admin there, and grant application service accounts only roles/cloudkms.cryptoKeyEncrypterDecrypter on specific keys",
+   "Give one platform team Owner on all projects so it can manage both keys and applications",
+   "Use customer-supplied encryption keys kept in a shared spreadsheet"
+  ],
+  "a": [
+   1
+  ],
+  "x": "A separate key project with split roles enforces separation of duties. Key administrators can manage keys but can’t use them on data, and workloads can use specific keys but can’t manage them. Developers with KMS Admin in their own projects hold both duties. Owner everywhere is the opposite of separation of duties. Keys in a spreadsheet are a security incident."
+ },
+ {
+  "id": "d3-06",
+  "d": 3,
+  "q": "A new policy requires CMEK for every Cloud Storage bucket, BigQuery dataset and persistent disk across hundreds of projects. Teams complain that creating key rings, keys and IAM bindings by hand slows them down. What should you recommend?",
+  "o": [
+   "Enable Cloud KMS Autokey on the relevant folders, and pair it with an organization policy that requires CMEK",
+   "Use one shared key for every resource in the organization",
+   "Switch to customer-supplied encryption keys",
+   "Rely on default Google encryption and document an exception"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Autokey creates keys on demand with the right granularity, location and IAM bindings in a dedicated key project, so teams get compliant CMEK without manual setup, and the gcp.restrictNonCmekServices constraint enforces CMEK use. One shared key widens the blast radius. CSEK works with only a few services and puts key handling on every caller. An exception doesn’t meet the policy."
+ },
+ {
+  "id": "d3-07",
+  "d": 3,
+  "q": "A European regulator requires that encryption keys for certain workloads be held outside Google’s infrastructure by a third-party key manager, and that the customer can see and refuse each key-access request along with its justification. What should you use?",
+  "o": [
+   "Cloud HSM keys in a European region",
+   "Cloud External Key Manager (Cloud EKM) with Key Access Justifications",
+   "CMEK software keys rotated automatically every 30 days",
+   "Default Google-managed encryption"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Cloud EKM keeps key material in a supported external key manager outside Google, and Key Access Justifications attach a reason to every access request so the customer’s policy can approve or deny it. Cloud HSM and CMEK software keys still live in Google’s infrastructure. Default encryption gives the customer no key control."
+ },
+ {
+  "id": "d3-08",
+  "d": 3,
+  "q": "Administrators need SSH access to Linux VMs that have no external IP addresses. Security forbids bastion hosts with public IPs and wants access tied to corporate identities, with 2-step verification and a full audit trail. What should you configure?",
+  "o": [
+   "Identity-Aware Proxy TCP forwarding, with a firewall rule allowing 35.235.240.0/20, plus OS Login with 2-step verification",
+   "A bastion host with an external IP and shared SSH keys",
+   "A Cloud VPN connection for every administrator’s laptop",
+   "Port 22 open to 0.0.0.0/0, protected by strong passwords"
+  ],
+  "a": [
+   0
+  ],
+  "x": "IAP TCP forwarding tunnels SSH to internal IPs after checking identity and IAM (roles/iap.tunnelResourceAccessor), and only IAP’s source range needs a firewall rule. OS Login ties Linux accounts to IAM identities, supports 2-step verification and logs access. Bastions with shared keys, per-user VPNs and public SSH all weaken the required controls."
+ },
+ {
+  "id": "d3-09",
+  "d": 3,
+  "q": "Contractors must reach an internal web application on Google Cloud, but only from company-managed devices with disk encryption turned on. You want to avoid a VPN. What should you implement?",
+  "o": [
+   "Identity-Aware Proxy in front of the application, with an Access Context Manager access level that requires a managed, encrypted device (Chrome Enterprise Premium)",
+   "A Cloud Armor policy that allows the contractors’ home IP addresses",
+   "A shared username and password kept in Secret Manager",
+   "VPC Service Controls around the application project"
+  ],
+  "a": [
+   0
+  ],
+  "x": "IAP with context-aware access, part of Chrome Enterprise Premium (formerly BeyondCorp Enterprise), checks both identity and device posture on every request, which is zero-trust access without a VPN. IP allowlists don’t verify device state and break when addresses change. Shared credentials remove accountability. VPC Service Controls protect Google API data, not user access to a web app."
+ },
+ {
+  "id": "d3-10",
+  "d": 3,
+  "q": "Site reliability engineers occasionally need Project IAM Admin on production during incidents. Auditors object to standing access. What should you implement?",
+  "o": [
+   "Privileged Access Manager entitlements that grant the role temporarily after a justification and approval, expire automatically and are audit-logged",
+   "A shared break-glass account with its password in a safe",
+   "Permanent role grants reviewed once a year",
+   "IAM conditions that allow the role only on weekdays"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Privileged Access Manager provides just-in-time, time-bound, approved elevation with a full audit trail, which removes standing privileged access. A shared account breaks accountability (keep at most one, for genuine emergencies). Annual reviews leave access in place all year. A weekday-only condition is still standing access."
+ },
+ {
+  "id": "d3-11",
+  "d": 3,
+  "q": "Only container images that were built by your Cloud Build pipeline and passed vulnerability scanning may run on production GKE clusters. Anything else must be blocked at deploy time. What should you configure?",
+  "o": [
+   "Binary Authorization with a policy that requires attestations from the build pipeline (SLSA provenance) and from the vulnerability-scan check",
+   "A Kubernetes NetworkPolicy that blocks registries other than Artifact Registry",
+   "An IAM policy that gives developers read-only access to Artifact Registry",
+   "A nightly script that deletes pods running unscanned images"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Binary Authorization enforces policy at deploy time, admitting only images whose digests carry the required attestations, such as build provenance and a passed vulnerability check. NetworkPolicy controls pod traffic, not image admission. Registry IAM doesn’t prove how an image was built. A nightly cleanup is reactive and leaves a window of exposure."
+ },
+ {
+  "id": "d3-12",
+  "d": 3,
+  "q": "A customer-facing chatbot built on Gemini has been tricked into ignoring its instructions, and testers got it to repeat credit-card numbers that users had pasted in. Which control addresses both issues most directly?",
+  "o": [
+   "Model Armor, screening prompts and responses for prompt injection and jailbreaks, and using its Sensitive Data Protection integration to detect and block or de-identify card numbers",
+   "Cloud Armor WAF rules on the load balancer",
+   "Lowering the model temperature to 0",
+   "VPC Service Controls around the Agent Platform project"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Model Armor screens LLM prompts and responses. It detects prompt injection and jailbreak attempts, harmful content and malicious URLs, and uses Sensitive Data Protection to find data such as card numbers. Cloud Armor inspects HTTP traffic for web attacks, not the meaning of prompts. Temperature affects randomness, not safety. VPC Service Controls stop exfiltration through Google APIs, not misuse through the chat interface."
+ },
+ {
+  "id": "d3-13",
+  "d": 3,
+  "q": "Analysts need to join customer records across BigQuery datasets without seeing real email addresses. A small fraud team must occasionally recover the original values. Which Sensitive Data Protection de-identification method should you use?",
+  "o": [
+   "Redaction",
+   "Character masking with an asterisk",
+   "Deterministic encryption (or format-preserving encryption) with a key wrapped by Cloud KMS",
+   "Bucketing"
+  ],
+  "a": [
+   2
+  ],
+  "x": "Deterministic encryption always produces the same token for the same input, so joins still work, and authorized users with access to the KMS-wrapped key can reverse it. Redaction and masking destroy the value and can’t be reversed, and masking can break joins. Bucketing generalizes numbers or dates and doesn’t suit email addresses."
+ },
+ {
+  "id": "d3-14",
+  "d": 3,
+  "q": "A company must make sure no Google Cloud resources are ever created outside the EU, in any project, including projects created next year. What should you do?",
+  "o": [
+   "Set the gcp.resourceLocations organization policy at the organization node to allow only EU locations (for example in:eu-locations)",
+   "Ask teams to choose EU regions in their Terraform modules",
+   "Create budget alerts for spending outside the EU",
+   "Use VPC Service Controls to block non-EU regions"
+  ],
+  "a": [
+   0
+  ],
+  "x": "The resource locations constraint stops location-bound resources from being created outside the allowed value groups, and it’s inherited by all current and future projects under the node. Terraform conventions aren’t enforced. Budget alerts arrive after the fact. VPC Service Controls don’t govern where resources are created. For stronger sovereignty commitments, add Assured Workloads."
+ },
+ {
+  "id": "d3-15",
+  "d": 3,
+  "q": "A hospital must be able to show who read each patient file stored in Cloud Storage over the past year. What must you configure?",
+  "o": [
+   "Nothing, because Admin Activity audit logs record object reads",
+   "Enable Data Access audit logs (DATA_READ) for Cloud Storage and route them with an aggregated sink to a log bucket with one-year retention",
+   "Enable object versioning on the bucket",
+   "Turn on Cloud Storage usage logs and keep them for 30 days"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Object reads are data access, and Data Access audit logs for Cloud Storage are off by default, so DATA_READ must be enabled. Routing the logs centrally to a bucket with one-year retention meets the requirement. Admin Activity logs cover configuration changes, not reads. Versioning tracks object changes, not readers. Usage logs lack identity detail, and 30 days is too short."
+ },
+ {
+  "id": "d3-16",
+  "d": 3,
+  "q": "The security team must block inbound traffic from a list of known-malicious IP ranges to every VM in the organization, and project owners must not be able to override the rule. What should you use?",
+  "o": [
+   "VPC firewall rules at priority 0 in each project",
+   "A hierarchical firewall policy at the organization node with a deny rule for those ranges",
+   "Cloud Armor security policies on every load balancer",
+   "An organization policy constraint listing the IP ranges"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Hierarchical firewall policies attached at the organization or folder are evaluated before VPC firewall rules, and a deny there can’t be overridden by project-level rules. Per-project rules can be edited by project owners. Cloud Armor only sees traffic through supported load balancers. Organization policy constraints don’t filter network traffic."
+ },
+ {
+  "id": "d3-17",
+  "d": 3,
+  "q": "An online retailer is moving checkout to Google Cloud and wants to keep its PCI DSS scope as small as possible. What should you recommend first?",
+  "o": [
+   "Store card numbers in BigQuery with column-level encryption",
+   "Use a payment processor’s tokenization so raw card numbers never touch your systems, and isolate any remaining cardholder-data components in dedicated projects with tight network and IAM controls",
+   "Put all workloads in one project protected by VPC Service Controls",
+   "Enable Data Access audit logs on every service"
+  ],
+  "a": [
+   1
+  ],
+  "x": "The most effective way to reduce scope is to never handle card numbers. Tokenization at the processor keeps them out of your environment, and anything still in scope is segmented. Storing card numbers, even encrypted, brings those systems into scope. A single project mixes in-scope and out-of-scope systems. Audit logging is required but doesn’t reduce scope."
+ },
+ {
+  "id": "d3-18",
+  "d": 3,
+  "q": "An education app for children under 13 is launching in the US. Product asks how the architecture should support children’s privacy rules such as COPPA. Which approach fits best?",
+  "o": [
+   "Collect as much behavioral data as possible now, in case it’s useful later",
+   "Collect only the data the service needs, gate collection on verifiable parental consent, keep identifiers separate from usage data, and enforce short retention with automatic deletion (for example lifecycle rules or TTLs)",
+   "Store all data in a multi-region bucket for durability",
+   "Rely on Google’s compliance certifications to cover the app"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Children’s privacy rules center on data minimization, parental consent, limited retention and protecting identifiers, and the architecture should enforce these with consent checks, separation and automatic deletion. Collecting extra data breaks minimization. Durability isn’t privacy. Google’s certifications cover its infrastructure, while the app’s data practices remain the customer’s responsibility."
+ },
+ {
+  "id": "d3-19",
+  "d": 3,
+  "q": "External auditors need to read Data Access audit logs across all projects, but must not see any application data or change configurations. Which role should you grant, and where?",
+  "o": [
+   "roles/logging.privateLogViewer at the organization level",
+   "roles/viewer at the organization level",
+   "roles/owner on the logging project",
+   "roles/logging.logWriter on each project"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Data Access audit logs are private logs, so reading them needs roles/logging.privateLogViewer (which also includes regular log-viewing permissions), and granting it at the organization covers every project through inheritance. Basic Viewer can’t read private logs and exposes resource metadata broadly. Owner is far too broad. Log Writer can write logs but not read them."
+ },
+ {
+  "id": "d3-20",
+  "d": 3,
+  "q": "The organization enforces compute.vmExternalIpAccess so no VM can have an external IP. A vendor network appliance in one project needs one. What is the correct way to allow it?",
+  "o": [
+   "Grant the project team roles/compute.admin, which bypasses organization policies",
+   "Have an Organization Policy Administrator set a project-level policy for that constraint that allows only the appliance instance",
+   "Move the project out of the organization",
+   "Create a custom IAM role that includes compute.instances.addAccessConfig"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Organization policies can be customized lower in the hierarchy by principals with the Organization Policy Administrator role. Here, a project-level policy for the list constraint allows only the named instance. IAM roles never bypass an organization policy. Moving the project out of the organization removes all governance. A custom role still can’t override the constraint."
+ },
+ {
+  "id": "d4-01",
+  "d": 4,
+  "q": "A team ships one large release a month, and about a third of releases cause incidents. Leadership wants faster delivery with fewer failures. Which change best addresses both?",
+  "o": [
+   "Add a longer manual QA phase before each monthly release",
+   "Move to small, frequent changes on a trunk-based workflow, with automated tests in Cloud Build and progressive (canary) rollouts through Cloud Deploy",
+   "Freeze all releases for a quarter",
+   "Require director approval for every merge"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Small batches, test automation and progressive delivery lower the risk of each change and speed up delivery, which DORA research associates with high-performing teams. A longer QA phase and extra approvals slow delivery without reducing batch size. A freeze stops delivery altogether."
+ },
+ {
+  "id": "d4-02",
+  "d": 4,
+  "q": "An engineering director wants two metrics that show the stability of software delivery rather than its speed. Which two DORA metrics should you track? (Choose two.)",
+  "o": [
+   "Deployment frequency",
+   "Lead time for changes",
+   "Change failure rate",
+   "Time to restore service (failed deployment recovery time)",
+   "Story points completed per sprint"
+  ],
+  "a": [
+   2,
+   3
+  ],
+  "x": "In DORA’s model, change failure rate and time to restore service (now called failed deployment recovery time) measure stability. Deployment frequency and lead time measure throughput. Story points aren’t a DORA metric."
+ },
+ {
+  "id": "d4-03",
+  "d": 4,
+  "q": "After a two-hour outage caused by a misconfigured firewall change, management asks how to prevent a repeat. Which practice matches Google’s SRE guidance?",
+  "o": [
+   "Find the engineer responsible and remove their production access",
+   "Hold a blameless postmortem that records the timeline and contributing causes, and track action items such as automated config validation and staged rollout of network changes",
+   "Allow network changes only on weekends",
+   "Close the incident as soon as service is restored"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Blameless postmortems focus on systemic causes and on concrete, tracked fixes such as pre-deployment validation and progressive rollout. Blame discourages people from reporting problems. Weekend-only changes move the risk without reducing it. Closing an incident without follow-up invites a repeat."
+ },
+ {
+  "id": "d4-04",
+  "d": 4,
+  "q": "Platform engineers change shared Terraform modules that build networks and IAM for 200 projects, and a recent change broke production firewall rules. How should infrastructure changes be validated before they reach production?",
+  "o": [
+   "Apply changes directly to production during low-traffic hours",
+   "In CI, run terraform plan and policy checks (for example gcloud terraform vet against your constraints) on every pull request, apply to staging first, and promote the same version to production",
+   "Have a senior engineer review the code by eye",
+   "Turn off Terraform state locking so pipelines run faster"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Treat infrastructure like application code. Automated plans, policy-as-code checks and staged promotion catch mistakes before production. Applying straight to production is how the incident happened. Visual review alone misses things. Turning off state locking risks corrupting the state."
+ },
+ {
+  "id": "d4-05",
+  "d": 4,
+  "q": "Application teams wait weeks for the platform team to build standard three-tier environments. The platform team wants teams to self-serve while staying inside security guardrails. What should you do?",
+  "o": [
+   "Give every team Owner on a shared project",
+   "Publish approved, versioned Terraform templates with compliant defaults (for example through Application Design Center or a project factory) and let teams deploy them through a pipeline, backed by organization policies",
+   "Email teams a PDF of best practices",
+   "Keep building every environment by hand in the platform team"
+  ],
+  "a": [
+   1
+  ],
+  "x": "A curated self-service catalog of approved infrastructure templates, deployed by automation and backed by organization policies, gives both speed and guardrails. Owner on a shared project removes the guardrails. A document isn’t enforceable. Manual provisioning is the bottleneck you’re trying to remove."
+ },
+ {
+  "id": "d4-06",
+  "d": 4,
+  "q": "An annual disaster-recovery test failed because the runbooks were out of date and nobody had practiced the failover. What should you recommend?",
+  "o": [
+   "Stop testing, because tests themselves create risk",
+   "Automate the failover steps, keep runbooks alongside the infrastructure code, and run regular DR drills that measure the actual RTO and RPO against their targets",
+   "Buy a second support contract",
+   "Test only the backups, not the failover"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Reliable recovery comes from practice and automation. Regular drills show whether the real RTO and RPO meet their targets and keep runbooks current. Skipping tests hides problems. A support contract doesn’t practice your failover. Backups without a tested restore and failover process won’t meet the RTO."
+ },
+ {
+  "id": "d4-07",
+  "d": 4,
+  "q": "The finance team is blocking a migration because it fears unpredictable cloud bills. As the architect, how do you best address the concern?",
+  "o": [
+   "Assure finance that cloud is always cheaper",
+   "Present a Migration Center TCO analysis, a labeling and billing-export plan for cost showback by team, budgets with alerts, and a commitment plan for the steady baseline",
+   "Postpone the conversation until after the migration",
+   "Promise a fixed monthly bill"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Good stakeholder management answers the specific concern with evidence and controls: a TCO model, cost visibility and attribution, alerting, and commitments that make baseline spend predictable. Blanket claims, delays and promises you can’t keep all erode trust."
+ },
+ {
+  "id": "d4-08",
+  "d": 4,
+  "q": "An operations team with deep VM experience but no container experience must run a new GKE-based platform in six months. What should you recommend?",
+  "o": [
+   "Hire an outside team and keep current staff off the project",
+   "Assess the skill gaps, then run a structured plan: Google Skills learning paths and labs, pairing with experienced engineers, and starting on GKE Autopilot to reduce the operational surface",
+   "Postpone GKE until every engineer is certified",
+   "Give the team production access on day one and let them learn by doing"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Change management for a new technology combines a skills assessment, structured training, mentoring and a lower-risk starting point such as Autopilot. Excluding current staff hurts morale and leaves no in-house knowledge of the platform. Waiting for everyone to be certified stalls the project. Unprepared production access invites incidents."
+ },
+ {
+  "id": "d4-09",
+  "d": 4,
+  "q": "An online retailer’s web tier needs about 200 vCPUs year-round and up to 1,000 vCPUs during holiday peaks lasting a few weeks. Which purchasing approach minimizes cost?",
+  "o": [
+   "Buy committed use discounts for 1,000 vCPUs",
+   "Buy committed use discounts for the 200-vCPU baseline and autoscale on-demand capacity for the peaks",
+   "Run everything on Spot VMs",
+   "Buy no commitments and rely on sustained use discounts"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Commit to the steady baseline, which earns the deepest discount with no waste, and pay on-demand only for short peaks through autoscaling. Committing to the peak wastes most of the commitment for most of the year. Spot VMs can be reclaimed, which a customer-facing web tier can’t tolerate. Sustained use discounts alone leave savings on the table."
+ },
+ {
+  "id": "d4-10",
+  "d": 4,
+  "q": "Analysts query a 60 TB events table many times a day, and on-demand BigQuery costs have tripled. Most queries look at the last 7 days and filter by customer_id. Which two changes reduce cost the most? (Choose two.)",
+  "o": [
+   "Partition the table by event date and require a partition filter",
+   "Cluster the table by customer_id",
+   "Export the table to Cloud SQL",
+   "Add LIMIT 1000 to every query",
+   "Lengthen the table’s default expiration"
+  ],
+  "a": [
+   0,
+   1
+  ],
+  "x": "Date partitioning with a required partition filter limits scans to recent partitions, and clustering by customer_id reduces the bytes read within them, so together they shrink bytes billed. Cloud SQL can’t serve 60 TB of analytics. LIMIT doesn’t reduce bytes scanned in BigQuery. Expiration settings don’t lower the cost of querying data you keep."
+ },
+ {
+  "id": "d4-11",
+  "d": 4,
+  "q": "After a migration, the monthly bill is higher than forecast. You suspect over-provisioned VMs and forgotten resources. What is the quickest way to find savings?",
+  "o": [
+   "Review and apply Active Assist recommendations (VM rightsizing, idle VMs, idle disks and unused IP addresses)",
+   "Delete every VM with average CPU below 50%",
+   "Move every VM to Spot",
+   "Open a support case asking Google to lower prices"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Active Assist recommenders analyze real utilization and flag rightsizing opportunities and idle resources with estimated savings. A blanket CPU threshold ignores memory, usage patterns and business needs. Moving everything to Spot puts critical workloads at risk. A support case won’t right-size your estate."
+ },
+ {
+  "id": "d4-12",
+  "d": 4,
+  "q": "Developer sandbox projects must never spend more than $500 a month. What should you implement?",
+  "o": [
+   "A budget with a $500 threshold, which stops spending automatically when reached",
+   "A budget whose alerts publish to Pub/Sub, triggering a Cloud Run function that disables billing on the project (or shuts resources down) when the threshold is reached",
+   "A quota of 500 Compute Engine CPUs",
+   "A weekly manual review of costs"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Budgets only notify; they don’t cap spending. Programmatic budget notifications through Pub/Sub can trigger automation that disables billing or stops resources. CPU quotas don’t map to dollars. Weekly reviews react too late."
+ },
+ {
+  "id": "d4-13",
+  "d": 4,
+  "q": "You are asked to design a business continuity plan for a portfolio of 40 applications. What should you do first?",
+  "o": [
+   "Deploy all 40 applications active-active in two regions",
+   "Run a business impact analysis with stakeholders to rank the applications by criticality and agree an RTO and RPO for each",
+   "Buy the Premium support plan",
+   "Copy all data to an Archive-class bucket"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Continuity planning starts with the business impact of each system’s downtime and data loss. That sets each RTO and RPO, which in turn determine the DR pattern and its cost. Active-active everywhere wastes money on non-critical systems. A support plan or an archive is part of a plan, not where it starts."
+ },
+ {
+  "id": "d4-14",
+  "d": 4,
+  "q": "Two senior engineers disagree about whether a new service should run on Cloud Run or GKE, and the discussion has stalled for weeks. As the architect, how should you resolve it?",
+  "o": [
+   "Choose the option you personally prefer",
+   "Agree decision criteria tied to the requirements (operational effort, scaling, portability, cost, team skills), run a time-boxed proof of concept where evidence is missing, and record the decision and its trade-offs in an architecture decision record",
+   "Let each engineer build their own version in production",
+   "Escalate to the CEO"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Good decisions are explicit and evidence-based: agreed criteria, a short proof of concept where evidence is missing, and a written record of the trade-offs so the decision can be revisited if circumstances change. The other options are arbitrary, wasteful, or avoid the architect’s responsibility."
+ },
+ {
+  "id": "d4-15",
+  "d": 4,
+  "q": "Minutes after a new release, a customer-facing API’s error rate jumps from 0.1% to 8%. What should the on-call engineer do first?",
+  "o": [
+   "Start a detailed root-cause investigation in the logs before changing anything",
+   "Roll back to the previous known-good release to restore service, then investigate",
+   "Add more instances",
+   "Wait to see whether the errors clear on their own"
+  ],
+  "a": [
+   1
+  ],
+  "x": "When a change lines up with an incident, mitigate first. Rolling back restores users quickly, and root-cause analysis follows. Investigating first prolongs the outage. More instances don’t fix a bad release. Waiting burns error budget and customer trust."
+ },
+ {
+  "id": "d5-01",
+  "d": 5,
+  "q": "Developers want to run integration tests for code that uses Pub/Sub, Spanner and Firestore, on laptops and in CI, without creating or paying for cloud resources. What should they use?",
+  "o": [
+   "Shared development projects with real instances",
+   "The Google Cloud emulators for Pub/Sub, Spanner and Firestore, started with gcloud emulators",
+   "Hand-written mocks for every client library call",
+   "Cloud Shell and its 5 GB home directory"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Google provides local emulators for Pub/Sub, Spanner, Firestore, Datastore and Bigtable, which client libraries reach through environment variables, at no cost and with fast feedback. Shared projects cost money and cause tests to interfere with each other. Hand-written mocks miss real API behavior. Cloud Shell is an environment, not an emulator."
+ },
+ {
+  "id": "d5-02",
+  "d": 5,
+  "q": "A batch job calling a Google Cloud API intermittently gets HTTP 429 and 503 responses. What is the recommended client behavior?",
+  "o": [
+   "Retry immediately in a tight loop until the call succeeds",
+   "Retry with truncated exponential backoff and jitter, and if 429s persist, review usage and request a quota increase",
+   "Switch to another region’s endpoint after every error",
+   "Ignore the errors"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Google’s guidance for rate-limit and transient errors is truncated exponential backoff with jitter, which the Cloud Client Libraries apply to many calls. Persistent 429s mean you need to send fewer requests or get more quota. Tight retry loops make throttling worse. Hopping regions isn’t a general fix. Ignoring errors loses data."
+ },
+ {
+  "id": "d5-03",
+  "d": 5,
+  "q": "A developer’s local application must call Cloud Storage with the same permissions as the production service account, without downloading any keys. What should the developer do?",
+  "o": [
+   "Create and download a service account key",
+   "Use Application Default Credentials with service account impersonation (for example gcloud auth application-default login --impersonate-service-account)",
+   "Put their personal password in the code",
+   "Use an API key"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Application Default Credentials with impersonation produce short-lived tokens for the service account, as long as the developer holds roles/iam.serviceAccountTokenCreator on it, so no key ever exists. A downloaded key is a long-lived secret. Passwords in code are a breach waiting to happen. API keys don’t carry an IAM identity for most Cloud APIs."
+ },
+ {
+  "id": "d5-04",
+  "d": 5,
+  "q": "Five engineers run Terraform against the same Google Cloud environment, and their local state files keep drifting apart. What should you configure?",
+  "o": [
+   "Commit terraform.tfstate to Git after every apply",
+   "A remote backend in a Cloud Storage bucket with object versioning (Terraform then uses state locking), with applies run from a CI pipeline",
+   "A separate copy of the state for each engineer",
+   "Deleting the state and re-importing resources every week"
+  ],
+  "a": [
+   1
+  ],
+  "x": "A Cloud Storage backend gives a shared state with locking, and bucket versioning allows recovery. Running applies from CI serializes changes and adds review. State in Git can leak secrets and has no locking. Separate copies guarantee drift. Weekly re-imports are dangerous and wasteful."
+ },
+ {
+  "id": "d5-05",
+  "d": 5,
+  "q": "A partner sometimes floods your public order API with bursts that overload the backend. The API is managed with Apigee. What should you configure?",
+  "o": [
+   "Spike Arrest and Quota policies on the API proxy, applied to that partner’s API product",
+   "A larger backend database",
+   "A Cloud Armor rule that permanently blocks the partner’s IP addresses",
+   "A new API version just for that partner"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Spike Arrest smooths bursts and Quota enforces limits per app or API product, protecting the backend while keeping the partner connected. A bigger database treats the symptom. Blocking a paying partner breaks the relationship. A new version doesn’t limit traffic."
+ },
+ {
+  "id": "d5-06",
+  "d": 5,
+  "q": "Before a holiday sale, you must confirm that the checkout system can handle 10 times normal traffic while meeting its latency SLO. What should you do?",
+  "o": [
+   "Watch production during the sale and react to problems",
+   "Run a distributed load test (for example Locust on GKE) against a production-like staging environment, ramping to 10× while watching SLIs and quotas",
+   "Run the unit test suite with more threads",
+   "Double every instance size the day before"
+  ],
+  "a": [
+   1
+  ],
+  "x": "A realistic, ramped load test against production-like infrastructure exposes bottlenecks and quota limits in advance, while you watch the SLIs that matter. Reacting during the sale is too late. Unit tests don’t exercise the whole system. Blind over-provisioning is expensive and may miss the real bottleneck."
+ },
+ {
+  "id": "d5-07",
+  "d": 5,
+  "q": "You must migrate a 4 TB MySQL 8.0 database from on-premises to Cloud SQL with less than 10 minutes of downtime. What should you use?",
+  "o": [
+   "mysqldump to Cloud Storage, then import into Cloud SQL during a weekend outage",
+   "Database Migration Service with continuous replication, then promote the Cloud SQL instance at cutover",
+   "Datastream into BigQuery",
+   "Transfer Appliance"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Database Migration Service performs an initial load and then replicates changes continuously, so cutover only needs to stop writes and promote the destination, usually within minutes. Dumping and importing 4 TB takes hours of downtime. Datastream feeds analytics targets. Transfer Appliance moves bulk data offline, not live databases."
+ },
+ {
+  "id": "d5-08",
+  "d": 5,
+  "q": "A company wants to move from Oracle to a managed PostgreSQL-compatible database to cut licensing costs, and needs help converting schemas, stored procedures and data. What should you use?",
+  "o": [
+   "Database Migration Service heterogeneous migration, using a conversion workspace (with Gemini-assisted code conversion), into AlloyDB for PostgreSQL or Cloud SQL for PostgreSQL",
+   "Migrate to Virtual Machines",
+   "Storage Transfer Service",
+   "BigQuery Data Transfer Service"
+  ],
+  "a": [
+   0
+  ],
+  "x": "DMS supports Oracle-to-PostgreSQL migrations. Conversion workspaces convert schema and code objects, with AI-assisted conversion, and DMS then moves and replicates the data. Migrate to Virtual Machines would keep Oracle and its licenses. Storage Transfer Service moves objects, not databases. BigQuery Data Transfer Service loads data into BigQuery."
+ },
+ {
+  "id": "d5-09",
+  "d": 5,
+  "q": "An on-call engineer sees pods in a GKE deployment crash-looping after a configuration change, and wants AI help to correlate logs, metrics and recent changes and suggest likely root causes. What should they use?",
+  "o": [
+   "Gemini Cloud Assist investigations",
+   "Gemini Code Assist in their IDE",
+   "Cloud Profiler",
+   "Looker Studio"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Gemini Cloud Assist helps you operate Google Cloud environments, and its investigations analyze logs, metrics, configuration and change history to propose hypotheses and fixes. Gemini Code Assist helps you write code. Profiler analyzes CPU and memory in running code. Looker Studio builds dashboards."
+ },
+ {
+  "id": "d5-10",
+  "d": 5,
+  "q": "An engineer installs a CLI tool in Cloud Shell with sudo apt-get, but it’s gone the next day. How can the tool be available in every session?",
+  "o": [
+   "Install it under $HOME, or add the install command to $HOME/.customize_environment so it runs at each session start",
+   "Ask Google support to keep the Cloud Shell VM running",
+   "Switch Cloud Shell to a larger machine",
+   "Reinstall it in /usr/local/bin by hand every morning"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Only the 5 GB $HOME directory persists in Cloud Shell; the VM itself is temporary. Installing into $HOME, or using .customize_environment, which runs at every startup, keeps tools available. The other options don’t change what Cloud Shell keeps."
+ },
+ {
+  "id": "d5-11",
+  "d": 5,
+  "q": "You want to send 5% of production traffic to a new Cloud Run revision, watch its error rate, and be able to roll back instantly. How should you deploy?",
+  "o": [
+   "Deploy with --no-traffic, then use traffic splitting to send 5% to the new revision, adjusting or reverting the percentages as needed",
+   "Delete the old revision, then deploy the new one",
+   "Create a second Cloud Run service and point 5% of users at it through DNS",
+   "Deploy normally, because Cloud Run always runs canaries automatically"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Cloud Run revisions support gradual rollouts. Deploying with no traffic and then splitting traffic by percentage gives you a canary with instant rollback, and Cloud Deploy can automate the steps. Deleting the old revision removes the rollback path. DNS weighting is coarse and slow to change. By default Cloud Run sends all traffic to the newest revision."
+ },
+ {
+  "id": "d5-12",
+  "d": 5,
+  "q": "You need to copy 50 million small objects between buckets and from servers with a scripted command-line tool. Which tool does Google recommend for the best performance?",
+  "o": [
+   "gcloud storage commands",
+   "gsutil with default settings",
+   "curl against the JSON API",
+   "The Cloud console upload dialog"
+  ],
+  "a": [
+   0
+  ],
+  "x": "gcloud storage is the recommended CLI for Cloud Storage and is faster than gsutil because it parallelizes by default. For very large bucket-to-bucket copies, Storage Transfer Service is also an option. gsutil is the legacy tool. Raw curl calls and console uploads don’t scale to millions of objects."
+ },
+ {
+  "id": "d5-13",
+  "d": 5,
+  "q": "A platform team already manages everything through Kubernetes manifests and GitOps. It wants to create Cloud SQL instances, Pub/Sub topics and IAM bindings the same way. What should it use?",
+  "o": [
+   "Config Connector, with Config Sync applying the manifests from Git",
+   "Deployment Manager templates",
+   "Hand-written gcloud scripts run from cron",
+   "The Cloud console"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Config Connector exposes Google Cloud resources as Kubernetes custom resources, so the same GitOps flow (Config Sync) reconciles them continuously. Deployment Manager reached end of support on 31 March 2026. Scripts and console clicks lose the declarative, reviewed workflow."
+ },
+ {
+  "id": "d6-01",
+  "d": 6,
+  "q": "The on-call team is paged hundreds of times a week by CPU and memory threshold alerts, most of which have no user impact. How should alerting change?",
+  "o": [
+   "Raise every threshold by 20%",
+   "Alert on SLO burn rate, so people are paged only when the error budget is being spent fast enough to threaten the SLO, and send lower-urgency signals to tickets or dashboards",
+   "Turn off alerting and rely on customer reports",
+   "Send every alert to email only"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Symptom-based, SLO burn-rate alerting pages people only when users are affected, or soon will be, which cuts alert fatigue. Shifting thresholds is arbitrary. Customer reports find problems too late. Email-only alerting is how alerts get ignored, as several case studies point out."
+ },
+ {
+  "id": "d6-02",
+  "d": 6,
+  "q": "A company runs self-managed Prometheus servers in its GKE clusters. Retention, high availability and global querying have become painful, and teams want to keep PromQL and their Grafana dashboards. What should you recommend?",
+  "o": [
+   "Google Cloud Managed Service for Prometheus",
+   "Rebuild all dashboards in Looker Studio",
+   "Export metrics to BigQuery and query them with SQL",
+   "Run a larger Prometheus server"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Managed Service for Prometheus is a drop-in, globally scalable backend with long retention that keeps PromQL and works with Grafana, without you managing Prometheus storage. Rebuilding dashboards or moving metrics into SQL wastes effort. A bigger server doesn’t solve availability or global querying."
+ },
+ {
+  "id": "d6-03",
+  "d": 6,
+  "q": "Users say checkout is slow, but no single service shows errors. Each request passes through eight microservices. What should you use to find where the time goes?",
+  "o": [
+   "Cloud Trace, with the services instrumented with OpenTelemetry so trace context propagates between them",
+   "Cloud Profiler on one service",
+   "Uptime checks",
+   "Log-based metrics that count requests"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Distributed tracing shows the latency of every hop for individual requests across services, which is how you find the slow span. Profiler shows CPU and memory hotspots inside a single service. Uptime checks test availability. Request counts don’t show where latency comes from."
+ },
+ {
+  "id": "d6-04",
+  "d": 6,
+  "q": "A Go service’s CPU usage, and its cost, doubled after a release, though latency didn’t change. You want to find the functions responsible, in production, with low overhead. What should you use?",
+  "o": [
+   "Cloud Profiler",
+   "Cloud Trace",
+   "Error Reporting",
+   "Cloud Logging"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Cloud Profiler continuously samples CPU and heap in production with low overhead, shows which functions consume resources, and lets you compare profiles between versions. Trace focuses on request latency. Error Reporting groups exceptions. Logs don’t profile code."
+ },
+ {
+  "id": "d6-05",
+  "d": 6,
+  "q": "The security team needs every audit log from all 300 projects in one place, kept for one year and queryable with SQL, without adding work for project teams. What should you configure?",
+  "o": [
+   "An aggregated sink at the organization node that includes child resources, routing audit logs to a log bucket in a central project with 365-day retention and Log Analytics enabled",
+   "A sink in every project, created by each team",
+   "A weekly export script",
+   "Longer _Default bucket retention in every project"
+  ],
+  "a": [
+   0
+  ],
+  "x": "An aggregated sink on the organization captures logs from every current and future project in one place. A log bucket with custom retention and Log Analytics supports SQL queries (or you can link it to BigQuery). Per-project sinks depend on 300 teams doing the work. Scripts are fragile. Longer retention in each project doesn’t centralize anything."
+ },
+ {
+  "id": "d6-06",
+  "d": 6,
+  "q": "Cloud Logging costs spiked because a service writes verbose DEBUG logs that no one reads. You must cut cost without losing audit logs. What should you do?",
+  "o": [
+   "Add an exclusion filter for that service’s DEBUG entries on the _Default sink",
+   "Delete the _Required log bucket",
+   "Disable Admin Activity audit logs",
+   "Cut _Default retention to 1 day"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Exclusion filters on the _Default sink drop matching entries before they’re stored, which cuts ingestion cost. Audit logs in the _Required bucket can’t be excluded or deleted, and Admin Activity logs can’t be disabled. Shorter retention barely changes cost, because ingestion is the main charge."
+ },
+ {
+  "id": "d6-07",
+  "d": 6,
+  "q": "You want confidence that a multi-zone GKE service really survives losing a zone, as its design claims. What should you do?",
+  "o": [
+   "Trust the architecture diagram",
+   "Run a controlled chaos experiment, for example cordoning and draining one zone’s nodes in staging (and later in production with a small blast radius), while watching SLOs against predefined rollback criteria",
+   "Wait for a real zone outage",
+   "Read the GKE SLA"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Chaos engineering tests resilience assumptions through controlled, observable fault injection with a limited blast radius, and the exam guide names it explicitly in section 6.6. Diagrams and SLAs describe intent, not behavior. Waiting for a real outage is the expensive way to find out."
+ },
+ {
+  "id": "d6-08",
+  "d": 6,
+  "q": "Your team deploys to GKE through Cloud Deploy, promoting from staging to production with manual approval. A production release misbehaves. What is the fastest safe recovery?",
+  "o": [
+   "Use Cloud Deploy to roll back the production target to the previous successful release",
+   "Edit the live Deployment with kubectl to change image tags",
+   "Rebuild the previous version from source and push it through the full pipeline",
+   "Delete the namespace"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Cloud Deploy keeps release history for each target and can roll back to the last successful release in one action, preserving the audit trail. Editing with kubectl drifts from the pipeline. Rebuilding takes too long. Deleting the namespace causes an outage."
+ },
+ {
+  "id": "d6-09",
+  "d": 6,
+  "q": "Your security team wants to run a penetration test against your own applications on Google Cloud. What does Google require?",
+  "o": [
+   "Submit a request and wait for written approval from Google",
+   "Nothing beyond following the Acceptable Use Policy and Terms of Service, and testing only your own resources; no notification is needed",
+   "Nothing is allowed, because penetration testing is forbidden on Google Cloud",
+   "Only Google’s internal team may test your applications"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Google doesn’t require notice before you test your own projects, but you must stay within the Acceptable Use Policy and Terms of Service. For example, no denial-of-service attacks on shared infrastructure and no testing of other customers’ resources. The other options misstate the policy."
+ },
+ {
+  "id": "d6-10",
+  "d": 6,
+  "q": "Across 30 GKE clusters, you must stop anyone from deploying privileged containers or images from unapproved registries, and show auditors continuous compliance. What should you use?",
+  "o": [
+   "Policy Controller, based on OPA Gatekeeper, with constraint templates applied across the fleet",
+   "A wiki page that lists forbidden settings",
+   "Manual review of every manifest",
+   "Cloud Armor"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Policy Controller enforces admission policies across a fleet, audits existing resources and reports compliance, and it ships prebuilt policy bundles for common standards. Documentation and manual review enforce nothing. Cloud Armor protects HTTP traffic, not Kubernetes admission."
+ },
+ {
+  "id": "d6-11",
+  "d": 6,
+  "q": "Your company runs revenue-critical workloads on Google Cloud and needs guaranteed fast responses during severe incidents, plus proactive guidance from a named technical contact. What should you recommend?",
+  "o": [
+   "Standard Support",
+   "Premium Support",
+   "Community forums",
+   "Basic billing support"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Premium Support has the fastest P1 response target (15 minutes) and includes a Technical Account Manager for proactive guidance. Enhanced Support, the middle tier, offers a 1-hour P1 response but no TAM. Standard Support, forums and billing support don’t meet the requirement."
+ },
+ {
+  "id": "d6-12",
+  "d": 6,
+  "q": "You need to know within minutes if your public HTTPS endpoint becomes unreachable from any continent, even when it has no traffic. What should you configure?",
+  "o": [
+   "Cloud Monitoring uptime checks from several regions, with an alerting policy",
+   "A log-based metric on 5xx responses",
+   "Cloud Trace sampling",
+   "A weekly manual test"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Uptime checks probe the endpoint on a schedule from locations around the world and alert on failures, whether or not users are sending traffic. A 5xx metric needs traffic and misses failures where requests never arrive. Trace sampling isn’t an availability probe. A weekly test is far too slow."
+ },
+ {
+  "id": "d6-13",
+  "d": 6,
+  "q": "A service has a 99.9% monthly availability SLO and had used its whole error budget by the 18th of the month. Under a typical error budget policy, what happens next?",
+  "o": [
+   "Keep releasing features at the usual pace",
+   "Pause risky feature releases and prioritize reliability work until the budget recovers",
+   "Lower the SLO to 99%",
+   "Stop monitoring the service"
+  ],
+  "a": [
+   1
+  ],
+  "x": "An error budget policy links release speed to reliability. When the budget is gone, teams slow or freeze risky changes and invest in reliability. Ignoring it makes the SLO meaningless. Lowering the SLO to escape the budget, or turning off monitoring, defeats the purpose."
+ },
+ {
+  "id": "alto-01",
+  "cs": "alto",
+  "d": 2,
+  "q": "Altostrat wants scalable Kubernetes both on-premises and in Google Cloud, with one place to manage configuration, policy and CI/CD for containerized deployments. What should you recommend?",
+  "o": [
+   "Keep separate tooling for on-premises clusters and GKE, and standardize later",
+   "Run GKE in Google Cloud and Google Distributed Cloud (software-only) on-premises, register every cluster to one fleet, and use Config Sync, Policy Controller and Cloud Deploy across them",
+   "Move all on-premises workflows to Cloud Run immediately",
+   "Run Docker on Compute Engine VMs and on-premises servers"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Fleets give centralized management of GKE and on-premises clusters: Config Sync for GitOps configuration, Policy Controller for guardrails, and Cloud Deploy as one modern pipeline to every target. That meets both the hybrid Kubernetes and the centralized CI/CD requirements. Separate tooling contradicts “centralized management.” The on-premises systems are slated for later migration, not an immediate move. Docker on VMs isn’t Kubernetes."
+ },
+ {
+  "id": "alto-02",
+  "cs": "alto",
+  "d": 1,
+  "q": "Altostrat’s media library in Cloud Storage keeps growing. Most files are rarely accessed, but older documentaries sometimes go viral and are streamed heavily for days. Altostrat wants to cut storage cost while keeping content highly available. What should you do?",
+  "o": [
+   "Enable Autoclass on the buckets so objects move between storage classes based on actual access",
+   "Add a lifecycle rule that moves every object older than 30 days to Archive",
+   "Move the library to Filestore",
+   "Keep everything in Standard and add capacity"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Autoclass moves each object to colder classes while it isn’t accessed and back to Standard when it’s read, without retrieval or early-deletion charges, which suits unpredictable “viral” access. A fixed rule to Archive brings retrieval charges for popular old titles. Filestore costs far more per GB. Keeping everything in Standard doesn’t optimize cost."
+ },
+ {
+  "id": "alto-03",
+  "cs": "alto",
+  "d": 2,
+  "q": "Altostrat needs concise summaries of thousands of podcasts, interviews and documentaries, and new content must be summarized as it arrives. What should you recommend?",
+  "o": [
+   "Train a custom summarization model from scratch on GPUs",
+   "Use a Gemini model on Agent Platform with audio and video input: batch inference for the back catalog, and event-driven calls (for example a Cloud Run function triggered by Cloud Storage uploads) for new content",
+   "Use Speech-to-Text alone and store the transcripts",
+   "Use the Vision API to label video frames"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Gemini models are multimodal and can summarize audio and video directly. Batch inference handles the back catalog cost-effectively, and event-driven triggers handle new uploads, which fits Altostrat’s existing use of Cloud Run functions. Training from scratch is costly and unnecessary. A transcript or a set of frame labels isn’t a summary."
+ },
+ {
+  "id": "alto-04",
+  "cs": "alto",
+  "d": 3,
+  "q": "Altostrat must detect and filter inappropriate content, both in uploaded media and in its new LLM-powered chatbot. Which two measures should you include? (Choose two.)",
+  "o": [
+   "Screen uploaded video for explicit content with the Video Intelligence API (or Gemini safety classification), sending flagged items to human review",
+   "Put Model Armor in front of the chatbot to screen prompts and responses for harmful content and prompt injection",
+   "Rely on Cloud Armor WAF rules to filter video content",
+   "Use VPC Service Controls to block inappropriate uploads",
+   "Rely on users to report content"
+  ],
+  "a": [
+   0,
+   1
+  ],
+  "x": "Media moderation needs content analysis, such as Video Intelligence explicit-content detection or Gemini classification, with human review for edge cases. The chatbot needs prompt and response screening, which Model Armor provides. Cloud Armor inspects HTTP requests, not media. VPC Service Controls prevent data exfiltration. User reports alone are reactive."
+ },
+ {
+  "id": "alto-05",
+  "cs": "alto",
+  "d": 3,
+  "q": "Altostrat requires that its AI systems be auditable and that their decisions can be explained, for example why a piece of content was recommended or flagged. Which approach best meets this?",
+  "o": [
+   "Version models in Model Registry, log prompts, responses and model versions (for example request-response logging to BigQuery), enable Data Access audit logs for Agent Platform, and use Explainable AI feature attributions for the predictive models",
+   "Use the largest model available",
+   "Delete logs after 24 hours to protect privacy",
+   "Disable safety filters to avoid false positives"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Auditability needs traceability (which model version produced which output from which input) plus access records. Explainability needs feature attributions or rationales where the model type supports them. Model size explains nothing. Deleting logs destroys the audit trail. Turning off safety filters works against the moderation requirement."
+ },
+ {
+  "id": "alto-06",
+  "cs": "alto",
+  "d": 6,
+  "q": "Altostrat uses Cloud Monitoring alongside self-managed Prometheus, and alerts mostly go to email. The business wants faster, more reliable operations across Google Cloud and on-premises. What should you recommend?",
+  "o": [
+   "Keep email alerts and add more recipients",
+   "Move Prometheus metrics to Google Cloud Managed Service for Prometheus, define SLOs with burn-rate alerting policies, and route pages to an on-call tool such as PagerDuty, or to Slack, through notification channels",
+   "Replace monitoring with weekly reports",
+   "Add a second open-source monitoring stack"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Managed Service for Prometheus brings metrics from GKE and on-premises Prometheus together without running Prometheus storage, and SLO-based alerts sent to on-call channels make alerting actionable. Email-only alerting is the weakness the case describes. Weekly reports and another self-managed stack add work without improving response."
+ },
+ {
+  "id": "alto-07",
+  "cs": "alto",
+  "d": 2,
+  "q": "Altostrat moves large volumes of raw media from its on-premises ingestion systems into Google Cloud and requires secure, high-performance hybrid connectivity. What should you recommend?",
+  "o": [
+   "HA VPN over the public internet only",
+   "Dedicated Interconnect (or Partner Interconnect without a colocation presence), encrypted with MACsec or HA VPN over Interconnect, plus Storage Transfer Service agents for managed, scheduled transfers",
+   "Uploads through the Cloud console",
+   "A Transfer Appliance shipment every week"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Interconnect provides high, predictable bandwidth over a private path, and MACsec or HA VPN over Interconnect adds encryption. Storage Transfer Service agents manage incremental transfers with integrity checks. VPN alone may not carry media volumes. Console uploads don’t scale. A weekly appliance is slow and heavy to operate for a continuous flow."
+ },
+ {
+  "id": "alto-08",
+  "cs": "alto",
+  "d": 1,
+  "q": "Altostrat wants a 24/7 assistant that answers natural-language questions about its catalog and the user’s account, offers personalized suggestions, and hands off to a person when needed. Which design fits best?",
+  "o": [
+   "A Gemini-based agent on Agent Platform (built with ADK or Conversational Agents), grounded on catalog and help content through Search or RAG Engine, calling account APIs as tools, with escalation to humans",
+   "A static FAQ page",
+   "A rules-only IVR menu",
+   "A model fine-tuned on last year’s support transcripts and deployed without grounding"
+  ],
+  "a": [
+   0
+  ],
+  "x": "A grounded agent answers from current catalog and help content, calls tools for account-specific answers, personalizes responses and escalates to people, which covers the natural-language, 24/7 and personalization requirements. Static FAQs and rule-only menus don’t understand natural language. An ungrounded fine-tuned model goes stale and hallucinates."
+ },
+ {
+  "id": "alto-09",
+  "cs": "alto",
+  "d": 1,
+  "q": "Altostrat wants to analyze media content and viewing behavior to spot trends and guide its content strategy. Its viewing data is already in BigQuery. What should you recommend?",
+  "o": [
+   "Export BigQuery data to spreadsheets every week",
+   "Store extracted media metadata and transcripts next to the viewing data in BigQuery, use BigQuery’s Gemini-powered AI functions or BigQuery ML for classification and trend models, and share insights through Looker",
+   "Move the data into Cloud SQL for reporting",
+   "Build a separate Hadoop cluster"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Keeping content metadata next to behavioral data in BigQuery enables joined analysis. AI functions and BigQuery ML bring classification and forecasting to SQL users, and Looker delivers governed insights to decision-makers. Spreadsheets and Cloud SQL don’t scale to this, and a Hadoop cluster adds operations for no benefit."
+ },
+ {
+  "id": "alto-10",
+  "cs": "alto",
+  "d": 4,
+  "q": "Altostrat’s executives say reliability and cost management are their top priorities, and the business wants simpler infrastructure management for rapid deployment. Which approach best reflects this?",
+  "o": [
+   "Standardize on managed services and automation: GKE Autopilot or Cloud Run where possible, infrastructure as code, one shared CI/CD pipeline, and SLOs with cost visibility through labels and billing export",
+   "Build custom tooling for each team",
+   "Overprovision everything to avoid any outage",
+   "Postpone modernization until every on-premises system is retired"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Managed platforms cut operational toil, automation speeds deployment, and SLOs plus cost attribution keep reliability and spend visible, which matches the executive statement. Per-team tooling adds complexity. Overprovisioning conflicts with cost management. Waiting delays the stated goals."
+ },
+ {
+  "id": "cym-01",
+  "cs": "cym",
+  "d": 2,
+  "q": "Cymbal must derive product attributes from supplier titles, descriptions and images, and the attributes must match each category’s existing taxonomy. What is the most effective approach?",
+  "o": [
+   "Use a multimodal Gemini model on Agent Platform, prompted with the category taxonomy and constrained by structured output (a response schema with allowed values), and evaluate accuracy against a human-labeled sample",
+   "Train an image-classification model from scratch for every attribute",
+   "Use Vision API label detection and save the labels as attributes",
+   "Ask suppliers to fill in attributes by hand"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Gemini reasons over text and images together, and constraining output with a response schema or enumerations keeps attributes aligned to the taxonomy. Evaluating against labeled samples measures accuracy before you scale. Per-attribute models trained from scratch are slow and costly. Generic labels don’t map to a retail taxonomy. Manual entry is the problem Cymbal wants to remove."
+ },
+ {
+  "id": "cym-02",
+  "cs": "cym",
+  "d": 2,
+  "q": "Cymbal wants to generate variations of a product photo in different colors, change backgrounds, and add text overlays, all from one supplier image. Which service fits best?",
+  "o": [
+   "Imagen on Agent Platform, using its editing features (such as mask-based editing and background replacement) to create variations from the base image",
+   "The Vision API",
+   "The Video Intelligence API",
+   "Document AI"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Imagen generates and edits images, including inpainting and background changes guided by masks and prompts, which is what the image generation and enhancement requirement describes. Vision and Video Intelligence analyze media rather than create it. Document AI extracts data from documents."
+ },
+ {
+  "id": "cym-03",
+  "cs": "cym",
+  "d": 5,
+  "q": "Cymbal requires human-in-the-loop review: associates must approve, reject or edit AI-generated attributes, descriptions and images before they reach the catalog. How should you implement this?",
+  "o": [
+   "Write generated content straight to the live catalog and fix mistakes when customers complain",
+   "Write generated content to a staging store, give associates a review web app (for example on Cloud Run, protected by Identity-Aware Proxy), publish only approved items, and keep reviewer decisions for measuring quality",
+   "Email all generated content to a shared inbox",
+   "Let suppliers approve the generated content"
+  ],
+  "a": [
+   1
+  ],
+  "x": "A staging-and-approval workflow keeps unreviewed content out of production. IAP limits the review app to associates, and recorded decisions provide data for evaluating and improving prompts. Publishing directly skips the required review. Email doesn’t scale or track decisions. Suppliers aren’t the reviewers the requirement names."
+ },
+ {
+  "id": "cym-04",
+  "cs": "cym",
+  "d": 1,
+  "q": "Cymbal’s web app searches products with SQL queries on names and categories, so shoppers can’t find items with natural phrases like “waterproof hiking boots for wide feet under $150.” What should you recommend?",
+  "o": [
+   "Add more LIKE clauses to the SQL queries",
+   "Vertex AI Search for commerce (Google’s Discovery AI for retail), with conversational commerce, fed by the product catalog and user events",
+   "Build a custom keyword index on Compute Engine",
+   "Move the catalog to Bigtable"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Vertex AI Search for commerce provides semantic, personalized product search and recommendations, plus conversational commerce that understands natural-language intent and attributes. It’s the Discovery AI capability named in the case study. LIKE matching and keyword indexes don’t understand intent. Bigtable is a storage engine, not a search product."
+ },
+ {
+  "id": "cym-05",
+  "cs": "cym",
+  "d": 4,
+  "q": "Cymbal wants to cut call-center staffing costs. Today an IVR routes calls, and agents key in orders when customers can’t complete them online. What should you recommend?",
+  "o": [
+   "Add more IVR menu options",
+   "Use Conversational Agents (Dialogflow CX) as a voice and chat virtual agent that checks order status and completes orders through APIs, with Agent Assist helping human agents on escalated calls",
+   "Hire more agents for peak seasons",
+   "Turn off phone support"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Generative virtual agents in Google’s Customer Engagement Suite handle routine requests end to end, including transactions through API tools, and hand off with context. Agent Assist makes the remaining human calls faster. More menus or more staff don’t reduce cost. Turning off phone support hurts customers."
+ },
+ {
+  "id": "cym-06",
+  "cs": "cym",
+  "d": 1,
+  "q": "Cymbal runs MySQL, Microsoft SQL Server, Redis and MongoDB, and wants to reduce data-center hosting costs and operational effort with minimal application changes. Which target mapping is best?",
+  "o": [
+   "Run all four on self-managed Compute Engine VMs",
+   "MySQL and SQL Server to Cloud SQL, Redis to Memorystore, and MongoDB to Firestore with MongoDB compatibility (or MongoDB Atlas from Google Cloud Marketplace)",
+   "Migrate everything to Spanner",
+   "Migrate everything to BigQuery"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Managed, engine-compatible targets remove database administration with minimal code change. Cloud SQL supports MySQL and SQL Server, Memorystore runs Redis, and Firestore offers MongoDB API compatibility, with MongoDB Atlas as an alternative. Self-managed VMs keep the operational burden. Spanner or BigQuery for everything would mean rewrites and doesn’t suit every workload."
+ },
+ {
+  "id": "cym-07",
+  "cs": "cym",
+  "d": 1,
+  "q": "Cymbal’s legacy integrations rely on SFTP file drops and nightly ETL batches that are slow and error-prone. It wants automated, reliable integration with suppliers and third parties. What should you recommend?",
+  "o": [
+   "Keep SFTP and add more cron jobs",
+   "Land supplier files in Cloud Storage (behind a managed SFTP front end if needed), trigger processing with Eventarc and Cloud Run functions or Dataflow, publish events through Pub/Sub, and use Application Integration or Apigee for API-based partners",
+   "Email files to an operations team",
+   "Move the ETL server to a bigger VM"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Event-driven ingestion processes each file as it arrives, with retries and monitoring, and Pub/Sub decouples downstream systems, while API-based partners get managed connectors or APIs. This removes manual steps and nightly batch delays. More cron jobs, email or a bigger VM keep the fragile pattern."
+ },
+ {
+  "id": "cym-08",
+  "cs": "cym",
+  "d": 3,
+  "q": "Cymbal’s virtual-agent conversations sometimes contain names, addresses and payment details, and transcripts are stored for quality analysis. How should you protect this data?",
+  "o": [
+   "Store raw transcripts in a public bucket for analysts",
+   "De-identify transcripts with Sensitive Data Protection before they land in BigQuery, screen live prompts and responses with Model Armor, restrict access with IAM, and keep payment data out of transcripts through tokenization",
+   "Encrypt transcripts with a password shared in chat",
+   "Delete every transcript immediately"
+  ],
+  "a": [
+   1
+  ],
+  "x": "De-identification keeps transcripts useful for analysis without exposing PII. Model Armor guards the live agent, tokenization keeps card data out of scope, and IAM limits access. Public buckets and shared passwords are breaches. Deleting everything throws away the quality-analysis value Cymbal wants."
+ },
+ {
+  "id": "cym-09",
+  "cs": "cym",
+  "d": 1,
+  "q": "Data silos prevent Cymbal from seeing the whole customer journey. Its operational data lives in MySQL, SQL Server and MongoDB. What should you recommend?",
+  "o": [
+   "Replicate operational data into BigQuery with Datastream change data capture (and other connectors where needed), and model a unified customer view there for analytics and personalization",
+   "Have each team export CSV files weekly",
+   "Merge all operational databases into one SQL Server instance",
+   "Query each database live from the dashboard tool"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Change data capture keeps BigQuery close to real time without loading the operational systems, and BigQuery becomes the central analytics layer for the customer journey. Weekly CSVs are stale and error-prone. Merging operational databases is risky and unnecessary. Live queries across silos are slow and fragile."
+ },
+ {
+  "id": "cym-10",
+  "cs": "cym",
+  "d": 2,
+  "q": "Cymbal needs to enrich 3 million existing products with generated attributes and descriptions, then about 20,000 new products a day. How should you run the generation to control cost and avoid quota problems?",
+  "o": [
+   "Send all 3 million requests to the online API at once from one script",
+   "Use batch inference on Agent Platform for the backlog and the daily new products, reading from and writing to BigQuery or Cloud Storage, and keep online calls for interactive needs",
+   "Run the model on associates’ laptops",
+   "Process products one at a time by hand"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Batch inference is built for large asynchronous jobs. It costs less per request than online inference and avoids online rate limits. A flood of online calls invites throttling and higher cost. Laptops and manual processing don’t scale."
+ },
+ {
+  "id": "ehr-01",
+  "cs": "ehr",
+  "d": 2,
+  "q": "EHR Healthcare needs a secure, high-performance connection between its colocation facilities and Google Cloud, carrying healthcare data and legacy integration traffic. What should you recommend?",
+  "o": [
+   "Carrier Peering",
+   "Dedicated Interconnect from the colocation facilities, with redundant connections, plus MACsec or HA VPN over Interconnect for encryption",
+   "A single Classic VPN tunnel",
+   "Direct Peering"
+  ],
+  "a": [
+   1
+  ],
+  "x": "EHR already operates from colocation facilities, where Dedicated Interconnect is typically available, giving private, high-bandwidth, low-latency links. Redundant connections are needed for an SLA, and MACsec or HA VPN over Interconnect encrypts the traffic. Carrier and Direct Peering reach Google’s public services, not your VPC privately. One Classic VPN tunnel lacks both performance and redundancy."
+ },
+ {
+  "id": "ehr-02",
+  "cs": "ehr",
+  "d": 2,
+  "q": "EHR must provide a consistent way to manage its customer-facing, container-based applications across multiple environments. What should you recommend?",
+  "o": [
+   "GKE clusters registered to a fleet, with Config Sync for consistent configuration, Policy Controller for guardrails, and one CI/CD pipeline deploying to every environment",
+   "Separate, hand-configured Kubernetes clusters per environment",
+   "Running each container on its own Compute Engine VM",
+   "A different container platform in each environment"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Fleet management with GitOps and policy enforcement gives consistent configuration and security across environments, and it reduces the misconfigurations the executive statement blames for outages. Hand-built clusters, one-VM-per-container and mixed platforms all increase inconsistency."
+ },
+ {
+  "id": "ehr-03",
+  "cs": "ehr",
+  "d": 1,
+  "q": "EHR requires at least 99.9% availability for all customer-facing systems and lower latency for customers. Which architecture best meets both?",
+  "o": [
+   "One zonal GKE cluster and a single Cloud SQL instance",
+   "Regional GKE clusters spread across zones behind a global external Application Load Balancer with Cloud CDN for cacheable content, Cloud SQL with high availability, and a secondary region for disaster recovery",
+   "One large Compute Engine VM with live migration",
+   "Cloud Run functions for every workload, deployed in one zone"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Zone redundancy (regional GKE, Cloud SQL HA) protects availability, the global load balancer and CDN cut latency for distributed users, and a second region covers regional disasters. Single-zone designs and single VMs can’t reliably deliver 99.9%."
+ },
+ {
+  "id": "ehr-04",
+  "cs": "ehr",
+  "d": 6,
+  "q": "EHR monitors with various open-source tools, and email alerts are often ignored. The business wants centralized visibility and proactive action on performance and usage. What should you recommend?",
+  "o": [
+   "Centralize metrics and logs in Cloud Monitoring and Cloud Logging, define SLOs for customer-facing services, send SLO burn-rate alerts to an on-call tool such as PagerDuty, and build shared dashboards",
+   "Send alerts to more email addresses",
+   "Keep each tool and compile weekly reports",
+   "Turn off non-critical alerts and rely on users to report problems"
+  ],
+  "a": [
+   0
+  ],
+  "x": "Centralized observability gives one view, and SLO-based alerts to an on-call system create accountable, proactive response, which fixes the ignored-email problem. More recipients, weekly reports or user reports don’t make the response proactive."
+ },
+ {
+  "id": "ehr-05",
+  "cs": "ehr",
+  "d": 3,
+  "q": "EHR manages users in Microsoft Active Directory and wants employees to use their existing credentials for Google Cloud, with users and groups kept in sync. What should you do?",
+  "o": [
+   "Create Google accounts by hand for every employee",
+   "Use Google Cloud Directory Sync to provision users and groups into Cloud Identity, and configure SAML single sign-on with AD FS (or Microsoft Entra ID) so authentication stays with Microsoft’s identity system",
+   "Share one administrator account",
+   "Give every user a service account key"
+  ],
+  "a": [
+   1
+  ],
+  "x": "GCDS keeps Cloud Identity users and groups in step with Active Directory (one way, from AD), and SAML SSO keeps passwords and authentication in the existing identity provider. Workforce Identity Federation is an alternative if you don’t want to sync users at all. Manual accounts drift. Shared accounts and keys break accountability."
+ },
+ {
+  "id": "ehr-06",
+  "cs": "ehr",
+  "d": 1,
+  "q": "EHR wants to onboard new insurance providers as quickly as possible and build interfaces to ingest and process their data. What should you recommend?",
+  "o": [
+   "Build a custom FTP server for each provider",
+   "Expose standard APIs through Apigee (API products, keys and a developer portal), ingest clinical data into Cloud Healthcare API FHIR or HL7v2 stores, and process events with Pub/Sub and Dataflow",
+   "Ask providers to email spreadsheets",
+   "Give each provider a VPN to the production database"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Self-service onboarding through an API portal shortens the time to connect a provider. The Healthcare API speaks healthcare standards natively and emits Pub/Sub notifications for downstream processing. Per-provider FTP servers, email and direct database VPNs are slow, insecure and hard to scale."
+ },
+ {
+  "id": "ehr-07",
+  "cs": "ehr",
+  "d": 2,
+  "q": "EHR wants to provide insights into healthcare trends and make predictions from provider data, while protecting patient privacy. What should you recommend?",
+  "o": [
+   "Stream data from Cloud Healthcare API FHIR stores into BigQuery, de-identify it for analytics datasets with the Healthcare API de-identification feature (or Sensitive Data Protection), and use BigQuery ML or Agent Platform models for predictions, with Looker for reporting",
+   "Copy patient records to analysts’ laptops",
+   "Run reports directly against the production MySQL databases",
+   "Train models on identified patient data in a public project"
+  ],
+  "a": [
+   0
+  ],
+  "x": "BigQuery is the analytics and ML layer, de-identification protects privacy in broadly shared analytics, and BigQuery ML or Agent Platform deliver the predictions. Laptops and public projects break compliance. Reporting against production OLTP databases hurts performance and doesn’t scale."
+ },
+ {
+  "id": "ehr-08",
+  "cs": "ehr",
+  "d": 3,
+  "q": "Before EHR stores any protected health information in Google Cloud, which step is required for regulatory compliance?",
+  "o": [
+   "Enable Cloud CDN",
+   "Accept Google Cloud’s Business Associate Agreement (BAA), keep PHI in services the BAA covers, and then apply controls such as least-privilege IAM, VPC Service Controls, CMEK where required, and audit logging",
+   "Move all data to a multi-region bucket",
+   "Disable audit logs to protect privacy"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Under HIPAA, Google acts as a business associate, so a BAA must be in place and PHI may only go into covered products. The technical controls follow from there. CDN and multi-region storage don’t address the compliance prerequisite. Disabling audit logs violates HIPAA’s audit requirements."
+ },
+ {
+  "id": "ehr-09",
+  "cs": "ehr",
+  "d": 5,
+  "q": "The lease on one of EHR’s colocation facilities is about to expire. Its MySQL and SQL Server databases must move to Google Cloud with minimal downtime and lower administration cost. What should you recommend?",
+  "o": [
+   "Rebuild the databases by hand on Compute Engine VMs",
+   "Use Database Migration Service with continuous replication into Cloud SQL for MySQL and Cloud SQL for SQL Server, then cut over in a short window",
+   "Export to CSV and re-import over a weekend",
+   "Rewrite the applications for Bigtable first"
+  ],
+  "a": [
+   1
+  ],
+  "x": "DMS replicates continuously into managed Cloud SQL instances, so cutover takes minutes, and managed databases reduce administration. That meets both the deadline and the cost goal. VMs keep the administration burden. CSV exports need long downtime. A Bigtable rewrite can’t meet a lease deadline."
+ },
+ {
+  "id": "ehr-10",
+  "cs": "ehr",
+  "d": 1,
+  "q": "EHR’s legacy file- and API-based integrations with insurance providers will be replaced over the next several years, and there is no plan to move or upgrade them now. How should they be handled during the migration?",
+  "o": [
+   "Rewrite them as microservices before migrating",
+   "Retain them on-premises, connect them to workloads in Google Cloud over Interconnect (with hybrid DNS and routing), and keep the insurer connections running until they are replaced",
+   "Shut them down at cutover",
+   "Lift and shift them to Compute Engine immediately"
+  ],
+  "a": [
+   1
+  ],
+  "x": "The case study says to maintain the legacy interfaces with connectivity to both on-premises systems and cloud providers, with no plan to move them now. That is a “retain” disposition backed by solid hybrid connectivity. Rewriting or moving them contradicts the stated plan. Shutting them down breaks the insurer integrations."
+ },
+ {
+  "id": "km-01",
+  "cs": "km",
+  "d": 3,
+  "q": "KnightMotives must comply with EU data protection rules for driver and vehicle data, especially on its autonomous-driving platforms. Which approach best supports this?",
+  "o": [
+   "Store EU data in any region and rely on encryption",
+   "Keep EU workloads in EU regions with the gcp.resourceLocations organization policy (or an Assured Workloads folder with EU data-residency controls), protect data with CMEK or Cloud EKM, de-identify personal data with Sensitive Data Protection where possible, and use EU regional endpoints for AI services",
+   "Copy EU data to a US analytics project for convenience",
+   "Use default encryption and grant partners allUsers access"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Data-residency controls, customer-controlled keys, de-identification and regional AI endpoints together address GDPR-style requirements on location, access and minimization. Encryption alone doesn’t control location. Moving EU data to the US and public access both break the requirement."
+ },
+ {
+  "id": "km-02",
+  "cs": "km",
+  "d": 1,
+  "q": "KnightMotives wants to monetize driving and road-condition data with insurers and city planners without exposing raw personal data. What should you recommend?",
+  "o": [
+   "Email CSV extracts to buyers",
+   "Publish curated, de-identified datasets through BigQuery sharing (formerly Analytics Hub), and use data clean rooms with analysis rules for joint analysis with partners’ data",
+   "Give partners direct access to the production databases",
+   "Sell full raw telemetry under an NDA"
+  ],
+  "a": [
+   1
+  ],
+  "x": "BigQuery sharing publishes governed listings without copying data, and data clean rooms let partners analyze joined data under privacy-preserving rules without seeing raw rows. Emailed extracts, production access and raw telemetry sales all leak personal data and give up control."
+ },
+ {
+  "id": "km-03",
+  "cs": "km",
+  "d": 2,
+  "q": "Vehicles in rural areas lose connectivity for hours, but real-time AI features and data uploads must keep working as well as possible. Which design fits best?",
+  "o": [
+   "Require constant connectivity and disable features while offline",
+   "Run latency-critical AI on the vehicle with an edge model, buffer telemetry locally, upload store-and-forward to Pub/Sub when connected, and make cloud processing idempotent",
+   "Stream raw video continuously over satellite",
+   "Upload data only through dealers’ Wi-Fi"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Edge inference keeps critical features working offline, local buffering prevents data loss, and idempotent processing in the cloud handles retried and late uploads. Requiring constant connectivity or streaming raw video ignores the stated constraint. Dealer-only uploads happen far too rarely."
+ },
+ {
+  "id": "km-04",
+  "cs": "km",
+  "d": 2,
+  "q": "KnightMotives needs better connectivity between its manufacturing plants and headquarters, plus a hybrid cloud strategy that keeps some systems on-premises. What should you recommend?",
+  "o": [
+   "Connect every site over the public internet only",
+   "Use Cloud Interconnect at major sites and Network Connectivity Center as a hub (with SD-WAN router appliances or VPN spokes for plants), and run Google Distributed Cloud at plants that need local processing",
+   "Move every plant system to the cloud this quarter",
+   "Build a separate network for each plant with no central management"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Network Connectivity Center gives managed, transitive hub-and-spoke connectivity across sites and VPCs, and Google Distributed Cloud runs workloads locally where latency or connectivity requires it, which suits a gradual hybrid strategy. The internet alone has no performance guarantees. A big-bang migration conflicts with gradual modernization. Unmanaged per-plant networks deepen the fragmentation."
+ },
+ {
+  "id": "km-05",
+  "cs": "km",
+  "d": 2,
+  "q": "KnightMotives’ AI infrastructure is obsolete. It needs large-scale model training and a robust simulation environment for autonomous driving. What should you recommend?",
+  "o": [
+   "Buy new on-premises GPU servers for each team",
+   "Use AI Hypercomputer: GKE (or Cluster Director) with GPUs or TPUs for training, Batch with Spot VMs for large fault-tolerant simulation runs, Dynamic Workload Scheduler to obtain scarce accelerator capacity, and Agent Platform for MLOps",
+   "Run training on Cloud Run functions",
+   "Use one very large VM"
+  ],
+  "a": [
+   1
+  ],
+  "x": "AI Hypercomputer combines accelerators, orchestration and consumption options (Spot, flex-start, calendar mode) for large-scale training and simulation, and Agent Platform adds pipelines and a model registry. Buying on-premises servers repeats the obsolescence problem. Functions and single VMs can’t run distributed training at scale."
+ },
+ {
+  "id": "km-06",
+  "cs": "km",
+  "d": 1,
+  "q": "KnightMotives’ online build-to-order system is unreliable and doesn’t give dealers accurate data. Orders and inventory must stay consistent across regions. What should you recommend?",
+  "o": [
+   "Keep the monolith and add servers",
+   "Rebuild ordering as services on Cloud Run or GKE, with Spanner for globally consistent orders and inventory, Apigee for dealer and partner APIs, and Pub/Sub events to integrate with ERP and supply-chain systems",
+   "Store orders as files in Cloud Storage",
+   "Let each dealer keep its own order spreadsheet"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Spanner provides strongly consistent, highly available transactions across regions. Managed services add reliability, Apigee standardizes dealer access, and events decouple the legacy ERP. More servers on a monolith don’t fix data accuracy. Files and spreadsheets aren’t transactional systems."
+ },
+ {
+  "id": "km-07",
+  "cs": "km",
+  "d": 3,
+  "q": "After past data breaches, KnightMotives needs a comprehensive security framework, threat detection and an incident response plan. What should you recommend?",
+  "o": [
+   "Security Command Center Enterprise for posture and threat detection, Google Security Operations (SIEM and SOAR) for detection and automated response playbooks, Mandiant services for incident-response readiness, and security awareness training",
+   "Install antivirus on every server and stop there",
+   "Rely on Google’s infrastructure security alone",
+   "Block all internet access permanently"
+  ],
+  "a": [
+   0
+  ],
+  "x": "SCC Enterprise covers posture, misconfigurations and threats, Google SecOps centralizes detection and automates playbooks, and Mandiant helps build and test incident response, while training addresses the human factor the case highlights. Antivirus alone, or relying only on Google’s side of the shared-responsibility model, leaves gaps. Blocking the internet isn’t viable."
+ },
+ {
+  "id": "km-08",
+  "cs": "km",
+  "d": 1,
+  "q": "KnightMotives must give dealers modern tools for sales, service and inventory, but dealers have no budget for new equipment. What should you recommend?",
+  "o": [
+   "Ship new servers to every dealer",
+   "Deliver browser- and mobile-based applications hosted on Cloud Run or GKE, secured with Identity Platform or IAP, that run on dealers’ existing devices",
+   "Require dealers to buy new workstations",
+   "Install thick-client software that needs a database on site"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Cloud-hosted web and mobile apps need no new hardware and update centrally, and Identity Platform or IAP handle secure dealer sign-in. Every other option requires new dealer equipment or on-site infrastructure, which the case rules out."
+ },
+ {
+  "id": "km-09",
+  "cs": "km",
+  "d": 1,
+  "q": "KnightMotives’ supply chain runs on an outdated mainframe, and its ERP makes new promotions hard to implement. The company wants to modernize gradually. Which approach fits best?",
+  "o": [
+   "Rewrite the mainframe in one big-bang project",
+   "Wrap mainframe functions in APIs managed through Apigee, replicate mainframe data to BigQuery (for example with Mainframe Connector), and replace capabilities step by step (the strangler pattern) while evaluating a modern SaaS ERP",
+   "Leave everything as it is",
+   "Lift and shift the mainframe onto one Compute Engine VM"
+  ],
+  "a": [
+   1
+  ],
+  "x": "Exposing legacy functions as APIs and moving data into BigQuery lets new services and analytics grow around the mainframe, and replacing capabilities step by step lowers risk. A SaaS ERP may be the right buy decision. A big-bang rewrite is high-risk. Doing nothing blocks the business goals. A mainframe can’t be lifted and shifted onto a VM."
+ },
+ {
+  "id": "km-10",
+  "cs": "km",
+  "d": 4,
+  "q": "KnightMotives wants a comprehensive CRM to track customer interactions and personalize experiences. Which workload disposition is most appropriate?",
+  "o": [
+   "Build a custom CRM from scratch on GKE",
+   "Buy a SaaS CRM and integrate it with Google Cloud (for example through Application Integration or Integration Connectors, with BigQuery for a customer 360 view)",
+   "Extend the mainframe with a CRM module",
+   "Use spreadsheets"
+  ],
+  "a": [
+   1
+  ],
+  "x": "CRM is a commodity capability, so buying SaaS and integrating it is faster and cheaper than building one, and BigQuery joins CRM data with vehicle and service data for personalization. A custom build spends scarce engineering effort on something that doesn’t differentiate KnightMotives. The mainframe and spreadsheets can’t meet the requirement."
+ },
+ {
+  "id": "km-11",
+  "cs": "km",
+  "d": 4,
+  "q": "KnightMotives wants to upskill employees, attract talent and improve communication between business and technical teams during its transformation. Which approach best supports this?",
+  "o": [
+   "Set up a cloud center of excellence, provide role-based learning paths and labs in Google Skills, and hold regular architecture reviews that include business stakeholders, with decisions and KPIs documented and shared",
+   "Send everyone a reading list once",
+   "Outsource all technical work permanently",
+   "Keep business and IT planning separate"
+  ],
+  "a": [
+   0
+  ],
+  "x": "A center of excellence, structured role-based training and shared decision forums build skills and alignment, which is what the change-management and stakeholder objectives in section 4.2 cover. A one-off reading list doesn’t build skills. Permanent outsourcing works against upskilling. Keeping planning separate makes the communication problem worse."
+ }
+]

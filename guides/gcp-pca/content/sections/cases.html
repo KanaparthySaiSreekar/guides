@@ -1,0 +1,164 @@
+  <div class="sec-head">
+    <p class="eyebrow">2 of these 4 appear on every standard exam · 20–30% of questions</p>
+    <h2 id="h-cases">Case studies</h2>
+    <p>Condensed from Google’s v6.1 case-study PDFs, with a requirement-by-requirement map to the services most likely to be the right answer. Read the originals too (linked under Resources). The exam shows them in a split screen, but knowing them beforehand saves time.</p>
+  </div>
+  <div class="seg" role="group" aria-label="Choose a case study">
+    <button data-case="alto" aria-pressed="true">Altostrat Media</button>
+    <button data-case="cym" aria-pressed="false">Cymbal Retail</button>
+    <button data-case="ehr" aria-pressed="false">EHR Healthcare</button>
+    <button data-case="km" aria-pressed="false">KnightMotives Automotive</button>
+  </div>
+
+  <!-- Altostrat -->
+  <article class="case" data-case-panel="alto">
+    <div class="case-top">
+      <div class="block">
+        <p class="eyebrow">New in v6.1 · also on the renewal exam</p>
+        <h3>Altostrat Media</h3>
+        <p class="prose">A media company with a large library of podcasts, interviews, news broadcasts and documentaries. It wants generative AI for personalized recommendations, natural-language interaction and self-service support, and to grow revenue through dynamic pricing, targeted marketing and personalized suggestions.</p>
+        <p class="quote">Reliability and cost management are the top priorities.</p>
+        <div class="btn-row"><button class="btn primary" data-drill-case="alto">Drill Altostrat questions</button><a class="btn ghost" href="https://services.google.com/fh/files/misc/v6.1_pca_altostrat_media_case_study_english.pdf" target="_blank" rel="noopener">Original PDF ↗</a></div>
+      </div>
+      <div class="panel"><h4>Existing environment</h4><ul>
+        <li>GKE runs content management and delivery.</li>
+        <li>The media library (documents, audio, video) is in Cloud Storage.</li>
+        <li>BigQuery is the main data warehouse for user behavior and audience data.</li>
+        <li>Cloud Run functions handle transcoding, metadata extraction and recommendations.</li>
+        <li>Legacy on-premises systems handle ingestion and archival, slated for migration.</li>
+        <li>Identity: Google Identity plus third-party identity providers.</li>
+        <li>Monitoring: Cloud Monitoring plus Prometheus, with alerts mostly by email.</li>
+      </ul></div>
+    </div>
+    <div class="tbl fluid"><table>
+      <thead><tr><th>Requirement</th><th>Likely Google Cloud answer</th></tr></thead>
+      <tbody>
+        <tr><td>Reliable workflows across Google Cloud and on-premises</td><td class="plain">One fleet of GKE and Google Distributed Cloud clusters, Config Sync, SLOs, Managed Service for Prometheus, alerts routed to on-call channels</td></tr>
+        <tr><td>Simpler infrastructure, rapid deployment; modern CI/CD with centralized management</td><td class="plain">Cloud Build, Artifact Registry, Cloud Deploy to every cluster; Autopilot or Cloud Run where possible; Terraform</td></tr>
+        <tr><td>Kubernetes that scales both on-premises and in the cloud</td><td class="plain">GKE plus Google Distributed Cloud (software-only), managed together as a fleet</td></tr>
+        <tr><td>Secure, high-performance hybrid connectivity for ingestion</td><td class="plain">Dedicated or Partner Interconnect with MACsec or HA VPN over Interconnect; Storage Transfer Service agents</td></tr>
+        <tr><td>Lower storage cost for growing media, still highly available</td><td class="plain">Autoclass (or lifecycle rules for predictable patterns); dual- or multi-region for hot content; Cloud CDN or Media CDN for delivery</td></tr>
+        <tr><td>Natural-language interaction, 24/7 support, advanced chatbots</td><td class="plain">Gemini-based agents on Agent Platform (ADK or Conversational Agents), grounded through Search or RAG Engine, with account APIs as tools and human handoff</td></tr>
+        <tr><td>Automatic summaries of diverse media</td><td class="plain">Gemini multimodal (audio and video input): batch inference for the back catalog, event-driven calls for new uploads</td></tr>
+        <tr><td>Rich metadata with NLP and computer vision</td><td class="plain">Video Intelligence, Vision, Natural Language, Speech-to-Text (Chirp), or Gemini multimodal; results stored in BigQuery</td></tr>
+        <tr><td>Detect and filter inappropriate content; AI-powered harmful-content detection</td><td class="plain">Video Intelligence explicit-content detection or Gemini safety classification with human review; Model Armor on the chatbot</td></tr>
+        <tr><td>Auditable, explainable AI</td><td class="plain">Model Registry versions, prompt and response logging, Data Access audit logs, Explainable AI, evaluation before release</td></tr>
+        <tr><td>Trends, insights, data-driven content strategy</td><td class="plain">BigQuery with BigQuery ML and AI functions; Looker</td></tr>
+        <tr><td>Personalization and virality; targeted marketing</td><td class="plain">Recommendations (Search for media, or BigQuery ML), Gemini for personalized content, audience segments in BigQuery</td></tr>
+        <tr><td>Mixed identity providers</td><td class="plain">Identity Platform for customers; Workforce Identity Federation or SAML SSO for staff</td></tr>
+      </tbody></table></div>
+    <div class="panel"><h4>Likely question angles</h4><ul><li>Managing hybrid Kubernetes and centralized CI/CD</li><li>Choosing storage classes for unpredictable media access</li><li>Multimodal Gemini compared with single-task APIs</li><li>Content safety and Model Armor</li><li>Responsible AI: audit trails and explanations</li><li>Modernizing Prometheus and email alerting</li></ul></div>
+  </article>
+
+  <!-- Cymbal -->
+  <article class="case" data-case-panel="cym" hidden>
+    <div class="case-top">
+      <div class="block">
+        <p class="eyebrow">New in v6.1 · also on the renewal exam</p>
+        <h3>Cymbal Retail</h3>
+        <p class="prose">A fast-growing online retailer with a huge catalog across many sub-verticals. It has three initiatives: enrich the catalog with generative AI (attributes, descriptions, images from supplier data); conversational commerce with AI virtual agents that use Google’s Discovery AI; and a technical-stack modernization to cut manual work and costs.</p>
+        <p class="quote">Reduce call-center staffing costs and data-center hosting costs.</p>
+        <div class="btn-row"><button class="btn primary" data-drill-case="cym">Drill Cymbal questions</button><a class="btn ghost" href="https://services.google.com/fh/files/misc/v6.1_pca_cymbal_retail_case_study_english.pdf" target="_blank" rel="noopener">Original PDF ↗</a></div>
+      </div>
+      <div class="panel"><h4>Existing environment</h4><ul>
+        <li>A mix of on-premises and cloud systems.</li>
+        <li>MySQL, Microsoft SQL Server, Redis and MongoDB hold the catalog and customer data.</li>
+        <li>Kubernetes clusters run the containerized apps.</li>
+        <li>Legacy SFTP file transfers and ETL batch jobs.</li>
+        <li>Customers browse through SQL queries on product names and categories.</li>
+        <li>An IVR routes calls, and agents key in orders by hand.</li>
+        <li>Monitoring with Grafana, Nagios and Elastic.</li>
+        <li>Pain points: manual errors, data silos, hard integrations.</li>
+      </ul></div>
+    </div>
+    <div class="tbl fluid"><table>
+      <thead><tr><th>Requirement</th><th>Likely Google Cloud answer</th></tr></thead>
+      <tbody>
+        <tr><td>Attribute generation that matches the catalog structure</td><td class="plain">Multimodal Gemini prompted with the taxonomy, structured output (response schema with allowed values), evaluation against labeled samples</td></tr>
+        <tr><td>Image generation and enhancement (colors, backgrounds, text overlays)</td><td class="plain">Imagen editing on Agent Platform (mask-based editing, background replacement)</td></tr>
+        <tr><td>Natural-language product discovery</td><td class="plain">Vertex AI Search for commerce with conversational commerce (Discovery AI)</td></tr>
+        <tr><td>Scale with the catalog without hurting performance</td><td class="plain">Batch inference for enrichment, managed search that scales with the catalog, autoscaling GKE or Cloud Run</td></tr>
+        <tr><td>Human-in-the-loop review</td><td class="plain">Staging store plus a review app (Cloud Run behind IAP); publish only approved items; keep decisions for evaluation</td></tr>
+        <tr><td>Secure, compliant handling of customer and agent data</td><td class="plain">SDP de-identification of transcripts, Model Armor, tokenized payments (PCI scope), IAM, VPC Service Controls, CMEK</td></tr>
+        <tr><td>Lower call-center cost, replace the IVR</td><td class="plain">Conversational Agents (voice and chat) connected to order APIs; Agent Assist for human agents</td></tr>
+        <tr><td>Lower data-center hosting cost</td><td class="plain">Cloud SQL (MySQL, SQL Server), Memorystore, Firestore with MongoDB compatibility or Atlas, GKE; then rightsizing and CUDs</td></tr>
+        <tr><td>Fewer manual processes, reliable data transfer and error handling</td><td class="plain">Cloud Storage landing zone, Eventarc, Cloud Run functions or Dataflow, Pub/Sub, Application Integration, Apigee</td></tr>
+        <tr><td>Unified view of the customer journey</td><td class="plain">Datastream CDC into BigQuery; a customer 360 model</td></tr>
+        <tr><td>Proactive monitoring and security</td><td class="plain">Cloud Monitoring and Logging, Managed Service for Prometheus (Grafana can stay), SLO alerts, Security Command Center</td></tr>
+      </tbody></table></div>
+    <div class="panel"><h4>Likely question angles</h4><ul><li>A generative-AI enrichment pipeline with human review</li><li>Discovery AI compared with custom search</li><li>Automating the call center</li><li>Database modernization with minimal change</li><li>Protecting PII in conversational AI</li><li>Batch compared with online inference</li></ul></div>
+  </article>
+
+  <!-- EHR -->
+  <article class="case" data-case-panel="ehr" hidden>
+    <div class="case-top">
+      <div class="block">
+        <p class="eyebrow">Carried over from the previous exam</p>
+        <h3>EHR Healthcare</h3>
+        <p class="prose">A software-as-a-service provider of electronic health records for medical offices, hospitals and insurers, growing exponentially. It needs to scale, adapt its disaster-recovery plan and adopt continuous deployment. Google Cloud will replace its colocation facilities.</p>
+        <p class="quote">Outages came from misconfigured systems, inadequate capacity for traffic spikes, and inconsistent monitoring.</p>
+        <div class="btn-row"><button class="btn primary" data-drill-case="ehr">Drill EHR questions</button><a class="btn ghost" href="https://services.google.com/fh/files/misc/v6.1_pca_ehr_healthcare_case_study_english.pdf" target="_blank" rel="noopener">Original PDF ↗</a></div>
+      </div>
+      <div class="panel"><h4>Existing environment</h4><ul>
+        <li>Several colocation facilities. One lease is about to expire.</li>
+        <li>Web-based customer apps, many now containerized on Kubernetes.</li>
+        <li>MySQL, MS SQL Server, Redis and MongoDB.</li>
+        <li>Legacy file- and API-based insurer integrations stay on-premises for now and will be replaced over several years.</li>
+        <li>Users are in Microsoft Active Directory.</li>
+        <li>Open-source monitoring. Email alerts are often ignored.</li>
+      </ul></div>
+    </div>
+    <div class="tbl fluid"><table>
+      <thead><tr><th>Requirement</th><th>Likely Google Cloud answer</th></tr></thead>
+      <tbody>
+        <tr><td>Onboard insurance providers quickly; ingest data from new providers</td><td class="plain">Apigee (API products, developer portal), Cloud Healthcare API (FHIR, HL7v2), Pub/Sub and Dataflow</td></tr>
+        <tr><td>At least 99.9% availability; lower latency</td><td class="plain">Regional GKE across zones, Cloud SQL HA, global external Application LB with Cloud CDN, a DR region</td></tr>
+        <tr><td>Centralized visibility, proactive action; consistent logging, retention, monitoring and alerting</td><td class="plain">Cloud Monitoring and Logging, aggregated sinks with retention, SLO burn-rate alerts to PagerDuty, shared dashboards</td></tr>
+        <tr><td>Healthcare insights, predictions, reports</td><td class="plain">Healthcare API streaming to BigQuery, de-identification, BigQuery ML or Agent Platform, Looker</td></tr>
+        <tr><td>Regulatory compliance</td><td class="plain">HIPAA BAA, covered services only, VPC Service Controls, CMEK, Data Access audit logs, Access Transparency</td></tr>
+        <tr><td>Lower infrastructure administration cost</td><td class="plain">Cloud SQL (MySQL, SQL Server), Memorystore, Firestore with MongoDB compatibility or Atlas, GKE Autopilot; DMS for the moves</td></tr>
+        <tr><td>Keep legacy insurer interfaces, connected to on-premises and cloud</td><td class="plain">Retain them on-premises, with Interconnect, hybrid DNS and routing</td></tr>
+        <tr><td>Consistent management of container apps across environments</td><td class="plain">GKE fleet, Config Sync, Policy Controller, one CI/CD pipeline (Cloud Build, Cloud Deploy)</td></tr>
+        <tr><td>Secure, high-performance on-premises connection</td><td class="plain">Dedicated Interconnect from the colocation facilities (redundant), MACsec or HA VPN over Interconnect</td></tr>
+        <tr><td>Scale and provision new environments dynamically</td><td class="plain">Terraform or Infrastructure Manager, a project factory, autoscaling</td></tr>
+        <tr><td>Active Directory users</td><td class="plain">GCDS to Cloud Identity plus SAML SSO (AD FS or Entra ID); Managed Microsoft AD for Windows workloads that need domain join</td></tr>
+      </tbody></table></div>
+    <div class="panel"><h4>Likely question angles</h4><ul><li>Choosing between Interconnect and VPN</li><li>HIPAA prerequisites</li><li>Federating AD identity</li><li>Database migration before the lease ends</li><li>Fleet management for consistency</li><li>Alerting that people act on</li><li>DR plan design</li></ul></div>
+  </article>
+
+  <!-- KnightMotives -->
+  <article class="case" data-case-panel="km" hidden>
+    <div class="case-top">
+      <div class="block">
+        <p class="eyebrow">New in v6.1</p>
+        <h3>KnightMotives Automotive</h3>
+        <p class="prose">A car maker of autonomous, battery-electric, hybrid and combustion vehicles. Only its electric models have a modern in-vehicle experience, and sales of the others are falling. Within five years it wants a consistent, AI-powered “automotive experience” across all models, a reliable build-to-order system, better dealer tools, and new revenue from data monetization.</p>
+        <p class="quote">Security is a paramount concern after past breaches, and EU data protection compliance is critical.</p>
+        <div class="btn-row"><button class="btn primary" data-drill-case="km">Drill KnightMotives questions</button><a class="btn ghost" href="https://services.google.com/fh/files/misc/v6.1_pca_knightmotives_automotive_case_study_english.pdf" target="_blank" rel="noopener">Original PDF ↗</a></div>
+      </div>
+      <div class="panel"><h4>Existing environment</h4><ul>
+        <li>Mostly on-premises, with some apps on major public clouds.</li>
+        <li>The supply chain runs on an outdated mainframe, and the ERP is outdated.</li>
+        <li>Dealers have no budget for new equipment.</li>
+        <li>Fragmented vehicle code bases and heavy technical debt.</li>
+        <li>Weak connectivity to plants and to vehicles in rural areas.</li>
+        <li>Obsolete AI infrastructure and siloed corporate data.</li>
+      </ul></div>
+    </div>
+    <div class="tbl fluid"><table>
+      <thead><tr><th>Requirement</th><th>Likely Google Cloud answer</th></tr></thead>
+      <tbody>
+        <tr><td>Consistent AI-powered in-vehicle experience, reliable connectivity including rural areas</td><td class="plain">Edge models in the vehicle, store-and-forward uploads to Pub/Sub, idempotent cloud processing, cloud agents grounded on vehicle data</td></tr>
+        <tr><td>Network upgrades between plants and headquarters</td><td class="plain">Cloud Interconnect at major sites, Network Connectivity Center hub, SD-WAN router appliances, Google Distributed Cloud at plants</td></tr>
+        <tr><td>Hybrid cloud, gradual legacy modernization</td><td class="plain">Mainframe APIs through Apigee, Mainframe Connector to BigQuery, strangler-pattern replacement, SaaS ERP evaluation, fleets across environments</td></tr>
+        <tr><td>Autonomous development: AI/ML, simulation, regulatory compliance</td><td class="plain">AI Hypercomputer (GKE or Cluster Director with GPUs or TPUs, DWS), Batch with Spot for simulation, Agent Platform Pipelines and Model Registry for traceability</td></tr>
+        <tr><td>Data monetization: data platform, security and privacy, scalable AI</td><td class="plain">BigQuery as the platform, Dataplex governance, SDP de-identification, BigQuery sharing and data clean rooms</td></tr>
+        <tr><td>EU data protection</td><td class="plain"><code>gcp.resourceLocations</code> or Assured Workloads for EU, CMEK or EKM, regional AI endpoints, pseudonymization</td></tr>
+        <tr><td>Security framework, incident response, awareness training</td><td class="plain">SCC Enterprise, Google SecOps (SIEM and SOAR playbooks), Mandiant, VPC Service Controls, Chrome Enterprise Premium, training through Google Skills</td></tr>
+        <tr><td>Better online build-to-order</td><td class="plain">Cloud Run or GKE services, Spanner for consistent orders and inventory, Pub/Sub integration with ERP, Apigee for dealers</td></tr>
+        <tr><td>Modern dealer tools with no new hardware</td><td class="plain">Browser and mobile apps on Cloud Run, Identity Platform or IAP for dealer sign-in</td></tr>
+        <tr><td>Comprehensive CRM</td><td class="plain">Buy a SaaS CRM; integrate it with Application Integration or Integration Connectors and BigQuery</td></tr>
+        <tr><td>Upskilling, talent, business-tech communication</td><td class="plain">A cloud center of excellence, Google Skills paths, architecture reviews with business stakeholders, Gemini Enterprise for shared knowledge</td></tr>
+      </tbody></table></div>
+    <div class="panel"><h4>Likely question angles</h4><ul><li>EU residency and sovereignty</li><li>Data monetization without exposing personal data</li><li>Designing for disconnected edges</li><li>Hybrid networking with NCC</li><li>Choosing accelerators and consumption models</li><li>Buy vs build (CRM, ERP)</li><li>Modernizing the mainframe gradually</li><li>Security operations after breaches</li></ul></div>
+  </article>
