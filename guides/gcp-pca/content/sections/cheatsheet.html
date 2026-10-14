@@ -18,7 +18,7 @@
       <tbody>
         <tr><td>Compute Engine</td><td class="plain">You need OS control, a lift-and-shift, specific kernels or licenses, or GPUs/TPUs on VMs.</td><td class="plain">You own patching (use VM Manager), sizing and the HA design.</td></tr>
         <tr><td>Managed instance groups</td><td class="plain">Stateless VM fleets that need autoscaling, autohealing and rolling updates. A regional MIG spreads instances across zones.</td><td class="plain">Health-check probes come from <code>35.191.0.0/16</code> and <code>130.211.0.0/22</code>, so allow them in the firewall.</td></tr>
-        <tr><td>Spot VMs</td><td class="plain">Fault-tolerant batch, CI, rendering and checkpointed training, at 60–91% off.</td><td class="plain">Can be reclaimed at any time (best-effort shutdown of up to 30 s; you can ask for a 120 s preemption notice), and have no SLA. Legacy preemptible VMs also stop after 24 h; Spot has no maximum runtime.</td></tr>
+        <tr><td>Spot VMs</td><td class="plain">Fault-tolerant batch, CI, rendering and checkpointed training, at up to 91% off.</td><td class="plain">Can be reclaimed at any time (best-effort shutdown of up to 30 s; you can ask for a 120 s preemption notice), and have no SLA. Legacy preemptible VMs also stop after 24 h; Spot has no maximum runtime.</td></tr>
         <tr><td>Sole-tenant nodes</td><td class="plain">BYOL that needs dedicated hardware (for example Windows Server without License Mobility), or compliance isolation.</td><td class="plain">You pay for the whole node.</td></tr>
         <tr><td>Custom machine types</td><td class="plain">Unusual vCPU-to-memory ratios, or licenses priced per core.</td><td class="plain">Extended memory goes beyond the normal ratio. You can also set threads per core to 1 to cut licensed vCPUs.</td></tr>
         <tr><td>GKE Standard</td><td class="plain">You need node-level control: node pools, DaemonSets, custom node images, specific GPUs.</td><td class="plain">You manage node pools. Spot node pools suit batch work.</td></tr>
@@ -61,7 +61,7 @@
         <li><b>Local SSD</b>: fastest, but ephemeral. Data is lost when the VM stops or is deleted.</li>
         <li><b>Filestore</b>: managed NFS (Basic, Zonal, Regional, Enterprise tiers). Regional and Enterprise survive a zone failure.</li>
         <li><b>NetApp Volumes</b>: NFS and SMB with enterprise storage features.</li>
-        <li><b>Managed Lustre / Parallelstore</b>: high-throughput parallel file systems for AI and HPC.</li>
+        <li><b>Managed Lustre</b> (Parallelstore’s documentation now redirects to it): a high-throughput parallel file system for AI and HPC.</li>
         <li><b>Cloud Storage FUSE</b>: mounts a bucket as files. Not fully POSIX (no file locking).</li>
       </ul></div>
     </div>
@@ -301,11 +301,11 @@
         <tr><td>Employees need an assistant over company data (Drive, SharePoint, Jira and more), with prebuilt agents</td><td class="plain">Gemini Enterprise, which includes NotebookLM Enterprise (now Gemini Notebook Enterprise) and Deep Research</td></tr>
         <tr><td>Source-grounded Q&amp;A and audio overviews over a fixed set of documents</td><td class="plain">NotebookLM Enterprise (now Gemini Notebook Enterprise)</td></tr>
         <tr><td>Custom, tool-using agents in code</td><td class="plain">Agent Development Kit (ADK), deployed on Agent Runtime (formerly Agent Engine) with sessions and Memory Bank. Agent Studio for low-code, Agent Garden for templates. Supports the A2A protocol and MCP tools.</td></tr>
-        <tr><td>Contact-center virtual agent or IVR replacement</td><td class="plain">Conversational Agents (Dialogflow CX) in Gemini Enterprise for Customer Experience (formerly Customer Engagement Suite), with Agent Assist for human agents</td></tr>
+        <tr><td>Contact-center virtual agent or IVR replacement</td><td class="plain">CX Agent Studio (the evolution of Dialogflow CX and Conversational Agents) in Gemini Enterprise for Customer Experience (formerly Customer Engagement Suite), with Agent Assist for human agents</td></tr>
         <tr><td>Answers grounded in your own documents or sites</td><td class="plain">Agent Search (formerly Vertex AI Search) or RAG Engine. Grounding with Google Search for public facts.</td></tr>
         <tr><td>Retail product search, recommendations, conversational commerce</td><td class="plain">AI Commerce Search (formerly Vertex AI Search for commerce)</td></tr>
         <tr><td>Choose or compare models, including open and third-party ones (Gemma, Llama, Claude and others)</td><td class="plain">Model Garden. Deploy open models to endpoints or GKE.</td></tr>
-        <tr><td>Generate or edit images, video, speech, music</td><td class="plain">Imagen; Veo; Chirp (Speech-to-Text) and Text-to-Speech; Lyria</td></tr>
+        <tr><td>Generate or edit images, video, speech, music</td><td class="plain">Gemini image models (Nano Banana; Google retired Imagen in August 2026); Veo; Chirp (Speech-to-Text) and Text-to-Speech; Lyria</td></tr>
         <tr><td>Single-task pretrained analysis</td><td class="plain">Vision (labels, OCR, SafeSearch), Video Intelligence (shots, labels, explicit content), Natural Language (entities, sentiment), Translation, Speech-to-Text, Document AI (forms, invoices)</td></tr>
         <tr><td>ML in SQL on warehouse data</td><td class="plain">BigQuery ML, including remote Gemini models and AI functions</td></tr>
         <tr><td>Custom model with little ML expertise / full control</td><td class="plain">AutoML / custom training on GPUs or TPUs</td></tr>
@@ -320,7 +320,7 @@
         <li><b>Custom training</b>: unique tasks or data with no suitable foundation model.</li>
       </ol><p class="muted" style="font-size:.88rem">Use batch inference for large offline jobs (cheaper, avoids online quotas) and online inference for interactive use.</p></div>
       <div class="panel"><h4>AI Hypercomputer</h4><ul>
-        <li><b>Accelerators</b>: TPUs (v5e for cost efficiency, v5p and Trillium for large training, Ironwood for inference) and GPUs (G2 with L4 for inference, A3 with H100 or H200, A4 with B200, A4X with GB200).</li>
+        <li><b>Accelerators</b>: TPUs (v5e for cost efficiency, v5p and Trillium for large training, Ironwood for inference; the eighth generation, TPU 8t for training and TPU 8i for inference, was announced at Next ’26 for later in 2026) and GPUs (G2 with L4 for inference, A3 with H100 or H200, A4 with B200, A4X with GB200).</li>
         <li><b>Orchestration</b>: GKE (the most common for large training and serving, with GKE Inference Gateway), Cluster Director (Slurm), Batch, and Agent Platform training.</li>
         <li><b>Serverless inference</b>: Cloud Run with GPUs, scaling to zero.</li>
         <li><b>Storage</b>: Cloud Storage with FUSE and Anywhere Cache, Managed Lustre, Hyperdisk ML.</li>
@@ -457,7 +457,7 @@
         <tr><td>Sustained use discounts</td><td class="plain">Up to 30% (N1), about 20% (N2); none on E2</td><td class="plain">None, automatic</td><td class="plain">Long-running VMs without commitments</td></tr>
         <tr><td>Resource-based CUD</td><td class="plain">Up to 55% (70% memory-optimized)</td><td class="plain">1 or 3 years, machine series and region</td><td class="plain">Steady, predictable baseline</td></tr>
         <tr><td>Flexible (spend-based) CUD</td><td class="plain">28% (1 year), 46% (3 years); memory-optimized series only on 3-year terms (63%)</td><td class="plain">Hourly spend</td><td class="plain">Steady spend across series and regions</td></tr>
-        <tr><td>Spot VMs</td><td class="plain">60–91%</td><td class="plain">None</td><td class="plain">Interruptible work</td></tr>
+        <tr><td>Spot VMs</td><td class="plain">Up to 91%</td><td class="plain">None</td><td class="plain">Interruptible work</td></tr>
       </tbody></table></div>
     <div class="cols">
       <div class="panel"><h4>Levers</h4><ul>
@@ -541,7 +541,7 @@
         <tr><td>Spanner SLA (regional / multi-region)</td><td class="plain mono">99.99% / 99.999%</td></tr>
         <tr><td>HA VPN SLA, Classic VPN SLA, per-tunnel bandwidth</td><td class="plain mono">99.99%, 99.9%, ~3 Gbps</td></tr>
         <tr><td>Dedicated Interconnect circuits; Partner Interconnect range</td><td class="plain mono">10 / 100 Gbps; 50 Mbps–50 Gbps</td></tr>
-        <tr><td>Spot discount; preemption notice</td><td class="plain mono">60–91%; ~30 s</td></tr>
+        <tr><td>Spot discount; preemption notice</td><td class="plain mono">Up to 91%; ~30 s</td></tr>
         <tr><td>Cloud Run request timeout; job task timeout</td><td class="plain mono">60 min; 7 days</td></tr>
         <tr><td>DWS flex-start maximum run</td><td class="plain mono">7 days</td></tr>
         <tr><td>Log retention: _Required / _Default / custom range</td><td class="plain mono">400 d / 30 d / 1–3,650 d</td></tr>
@@ -602,9 +602,9 @@
         <tr><td>Employees ask questions across company content</td><td class="plain ans">Gemini Enterprise</td></tr>
         <tr><td>Answers must reflect content that changes daily</td><td class="plain ans">RAG / grounding, not fine-tuning</td></tr>
         <tr><td>Custom agent with tools, written in code</td><td class="plain ans">ADK on Agent Runtime</td></tr>
-        <tr><td>Replace the IVR, cut call-center cost</td><td class="plain ans">Conversational Agents + Agent Assist</td></tr>
+        <tr><td>Replace the IVR, cut call-center cost</td><td class="plain ans">CX Agent Studio + Agent Assist</td></tr>
         <tr><td>Natural-language product discovery</td><td class="plain ans">AI Commerce Search (formerly Vertex AI Search for commerce)</td></tr>
-        <tr><td>Generate or edit product images</td><td class="plain ans">Imagen</td></tr>
+        <tr><td>Generate or edit product images</td><td class="plain ans">Gemini image models (Nano Banana)</td></tr>
         <tr><td>Use an open or third-party model in your project</td><td class="plain ans">Model Garden</td></tr>
         <tr><td>Reproducible ML lifecycle with lineage</td><td class="plain ans">Agent Platform Pipelines + Model Registry</td></tr>
         <tr><td>Accelerators, start can wait, no interruptions</td><td class="plain ans">DWS flex-start</td></tr>
@@ -650,7 +650,7 @@
       <li>Cloud Armor doesn’t protect internal traffic.</li>
       <li>Fine-tuning doesn’t keep facts current. Grounding (RAG) does.</li>
       <li>Consumer AI apps on personal accounts aren’t the enterprise answer. Use Gemini Enterprise or Gemini Notebook Enterprise (formerly NotebookLM Enterprise).</li>
-      <li>Retired services (Deployment Manager, Container Registry, IoT Core, Pub/Sub Lite) are never right for a new design.</li>
+      <li>Retired or retiring services (Deployment Manager, Container Registry, IoT Core, Pub/Sub Lite) are never right for a new design.</li>
       <li>Mitigate first (roll back), then find the root cause.</li>
       <li>Choose-two questions need exactly two answers, and each must be correct on its own.</li>
     </ol>

@@ -38,7 +38,7 @@
         <tr><td>Kubernetes that scales both on-premises and in the cloud</td><td class="plain">GKE plus Google Distributed Cloud (software-only), managed together as a fleet</td></tr>
         <tr><td>Secure, high-performance hybrid connectivity for ingestion</td><td class="plain">Dedicated or Partner Interconnect with MACsec or HA VPN over Interconnect; Storage Transfer Service agents</td></tr>
         <tr><td>Lower storage cost for growing media, still highly available</td><td class="plain">Autoclass (or lifecycle rules for predictable patterns); dual- or multi-region for hot content; Cloud CDN or Media CDN for delivery</td></tr>
-        <tr><td>Natural-language interaction, 24/7 support, advanced chatbots</td><td class="plain">Gemini-based agents on Agent Platform (ADK or Conversational Agents), grounded through Search or RAG Engine, with account APIs as tools and human handoff</td></tr>
+        <tr><td>Natural-language interaction, 24/7 support, advanced chatbots</td><td class="plain">Gemini-based agents on Agent Platform (ADK or CX Agent Studio), grounded through Search or RAG Engine, with account APIs as tools and human handoff</td></tr>
         <tr><td>Automatic summaries of diverse media</td><td class="plain">Gemini multimodal (audio and video input): batch inference for the back catalog, event-driven calls for new uploads</td></tr>
         <tr><td>Rich metadata with NLP and computer vision</td><td class="plain">Video Intelligence, Vision, Natural Language, Speech-to-Text (Chirp), or Gemini multimodal; results stored in BigQuery</td></tr>
         <tr><td>Detect and filter inappropriate content; AI-powered harmful-content detection</td><td class="plain">Video Intelligence explicit-content detection or Gemini safety classification with human review; Model Armor on the chatbot</td></tr>
@@ -75,12 +75,12 @@
       <thead><tr><th>Requirement</th><th>Likely Google Cloud answer</th></tr></thead>
       <tbody>
         <tr><td>Attribute generation that matches the catalog structure</td><td class="plain">Multimodal Gemini prompted with the taxonomy, structured output (response schema with allowed values), evaluation against labeled samples</td></tr>
-        <tr><td>Image generation and enhancement (colors, backgrounds, text overlays)</td><td class="plain">Imagen editing on Agent Platform (mask-based editing, background replacement)</td></tr>
+        <tr><td>Image generation and enhancement (colors, backgrounds, text overlays)</td><td class="plain">Gemini image models (Nano Banana) on Agent Platform: prompt with the base image for color variations, new backgrounds and text overlays</td></tr>
         <tr><td>Natural-language product discovery</td><td class="plain">AI Commerce Search (formerly Vertex AI Search for commerce) with conversational commerce (Discovery AI)</td></tr>
         <tr><td>Scale with the catalog without hurting performance</td><td class="plain">Batch inference for enrichment, managed search that scales with the catalog, autoscaling GKE or Cloud Run</td></tr>
         <tr><td>Human-in-the-loop review</td><td class="plain">Staging store plus a review app (Cloud Run behind IAP); publish only approved items; keep decisions for evaluation</td></tr>
         <tr><td>Secure, compliant handling of customer and agent data</td><td class="plain">SDP de-identification of transcripts, Model Armor, tokenized payments (PCI scope), IAM, VPC Service Controls, CMEK</td></tr>
-        <tr><td>Lower call-center cost, replace the IVR</td><td class="plain">Conversational Agents (voice and chat) connected to order APIs; Agent Assist for human agents</td></tr>
+        <tr><td>Lower call-center cost, replace the IVR</td><td class="plain">CX Agent Studio (voice and chat) connected to order APIs; Agent Assist for human agents</td></tr>
         <tr><td>Lower data-center hosting cost</td><td class="plain">Cloud SQL (MySQL, SQL Server), Memorystore, Firestore with MongoDB compatibility or Atlas, GKE; then rightsizing and CUDs</td></tr>
         <tr><td>Fewer manual processes, reliable data transfer and error handling</td><td class="plain">Cloud Storage landing zone, Eventarc, Cloud Run functions or Dataflow, Pub/Sub, Application Integration, Apigee</td></tr>
         <tr><td>Unified view of the customer journey</td><td class="plain">Datastream CDC into BigQuery; a customer 360 model</td></tr>

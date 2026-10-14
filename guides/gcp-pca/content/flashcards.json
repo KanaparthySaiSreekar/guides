@@ -82,7 +82,7 @@
   {"k": "trap", "src": ["cs-traps|trap|22", "cs-lb|Common gotchas|2"], "front": "Does Cloud Armor protect internal-only traffic?", "back": "**No.** Cloud Armor doesn't protect internal traffic."},
   {"k": "trap", "src": ["cs-traps|trap|23"], "front": "Does fine-tuning keep a model's facts current?", "back": "**No.** **Grounding (RAG)** does."},
   {"k": "trap", "src": ["cs-traps|trap|24"], "front": "Is a consumer AI app on personal accounts the enterprise answer?", "back": "**No.** Use **Gemini Enterprise** or **Gemini Notebook Enterprise** (formerly NotebookLM Enterprise)."},
-  {"k": "trap", "src": ["cs-traps|trap|25"], "front": "May a retired service be the answer for a new design?", "back": "**Never.** Deployment Manager, Container Registry, IoT Core and Pub/Sub Lite are all retired or closed."},
+  {"k": "trap", "src": ["cs-traps|trap|25"], "front": "May a retired service be the answer for a new design?", "back": "**Never.** Deployment Manager, Container Registry, IoT Core and Pub/Sub Lite are retired, shutting down or closed to new users."},
   {"k": "trap", "src": ["cs-traps|trap|26"], "front": "A release breaks production. What do you do first?", "back": "**Mitigate first (roll back)**, then find the root cause."},
   {"k": "trap", "src": ["cs-traps|trap|27"], "front": "How do “choose two” questions work?", "back": "They need **exactly two answers**, and **each must be correct on its own**."},
 

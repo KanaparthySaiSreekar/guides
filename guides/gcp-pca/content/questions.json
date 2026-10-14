@@ -87,7 +87,7 @@
   "a": [
    0
   ],
-  "x": "Independent, checkpointed work tolerates preemption, so Spot VMs (60–91% cheaper than on-demand) are the cost answer, and Batch provides queuing and retries without a self-managed scheduler. A three-year commitment sized for the peak pays for idle daytime capacity. Sole-tenant nodes add cost for isolation the studio doesn’t need. Standard VMs cost several times more than Spot."
+  "x": "Independent, checkpointed work tolerates preemption, so Spot VMs (up to 91% cheaper than on-demand) are the cost answer, and Batch provides queuing and retries without a self-managed scheduler. A three-year commitment sized for the peak pays for idle daytime capacity. Sole-tenant nodes add cost for isolation the studio doesn’t need. Standard VMs cost several times more than Spot."
  },
  {
   "id": "d1-07",
@@ -1745,7 +1745,7 @@
   "d": 1,
   "q": "Altostrat wants a 24/7 assistant that answers natural-language questions about its catalog and the user’s account, offers personalized suggestions, and hands off to a person when needed. Which design fits best?",
   "o": [
-   "A Gemini-based agent on Agent Platform (built with ADK or Conversational Agents), grounded on catalog and help content through Search or RAG Engine, calling account APIs as tools, with escalation to humans",
+   "A Gemini-based agent on Agent Platform (built with ADK or CX Agent Studio), grounded on catalog and help content through Search or RAG Engine, calling account APIs as tools, with escalation to humans",
    "A static FAQ page",
    "A rules-only IVR menu",
    "A model fine-tuned on last year’s support transcripts and deployed without grounding"
@@ -1809,7 +1809,7 @@
   "d": 2,
   "q": "Cymbal wants to generate variations of a product photo in different colors, change backgrounds, and add text overlays, all from one supplier image. Which service fits best?",
   "o": [
-   "Imagen on Agent Platform, using its editing features (such as mask-based editing and background replacement) to create variations from the base image",
+   "Gemini image models (“Nano Banana”) on Agent Platform, prompted with the base image to create color variations, change backgrounds and add text overlays",
    "The Vision API",
    "The Video Intelligence API",
    "Document AI"
@@ -1817,7 +1817,7 @@
   "a": [
    0
   ],
-  "x": "Imagen generates and edits images, including inpainting and background changes guided by masks and prompts, which is what the image generation and enhancement requirement describes. Vision and Video Intelligence analyze media rather than create it. Document AI extracts data from documents."
+  "x": "Gemini image models (“Nano Banana”) generate and edit images from a reference image and a text prompt, including color variations, background changes and text overlays, which is what the image generation and enhancement requirement describes. Google retired the older Imagen models in August 2026. Vision and Video Intelligence analyze media rather than create it. Document AI extracts data from documents."
  },
  {
   "id": "cym-03",
@@ -1858,7 +1858,7 @@
   "q": "Cymbal wants to cut call-center staffing costs. Today an IVR routes calls, and agents key in orders when customers can’t complete them online. What should you recommend?",
   "o": [
    "Add more IVR menu options",
-   "Use Conversational Agents (Dialogflow CX) as a voice and chat virtual agent that checks order status and completes orders through APIs, with Agent Assist helping human agents on escalated calls",
+   "Use CX Agent Studio (the evolution of Dialogflow CX) as a voice and chat virtual agent that checks order status and completes orders through APIs, with Agent Assist helping human agents on escalated calls",
    "Hire more agents for peak seasons",
    "Turn off phone support"
   ],
