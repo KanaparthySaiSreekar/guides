@@ -1,5 +1,5 @@
 // PCA Study Portal: cache-first, so it opens offline. Each deploy has a new cache name and refreshes in the background.
-const PREFIX = "guides/gcp-pca/portal@", CACHE = PREFIX + "1dpcfhs";
+const PREFIX = "guides/gcp-pca/portal@", CACHE = PREFIX + "e6ehjn";
 const LEGACY = [];
 const ASSETS = ["./","./index.html","./manifest.webmanifest","./icon-180.png","./icon-192.png","./icon-512.png","./fonts/bricolage-grotesque-latin-ext-normal-500-800.woff2","./fonts/bricolage-grotesque-latin-normal-500-800.woff2","./fonts/fonts.css","./fonts/ibm-plex-mono-latin-ext-normal-400.woff2","./fonts/ibm-plex-mono-latin-ext-normal-500.woff2","./fonts/ibm-plex-mono-latin-ext-normal-600.woff2","./fonts/ibm-plex-mono-latin-normal-400.woff2","./fonts/ibm-plex-mono-latin-normal-500.woff2","./fonts/ibm-plex-mono-latin-normal-600.woff2","./fonts/ibm-plex-sans-latin-ext-italic-400.woff2","./fonts/ibm-plex-sans-latin-ext-normal-400.woff2","./fonts/ibm-plex-sans-latin-italic-400.woff2","./fonts/ibm-plex-sans-latin-normal-400.woff2","./fonts/OFL.txt"];
 // Handle only this app's own files, so the site's other pages and apps are never intercepted.

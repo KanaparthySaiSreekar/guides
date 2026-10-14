@@ -1,5 +1,5 @@
 // PCA Flashcards: cache-first, so it opens offline. Each deploy has a new cache name and refreshes in the background.
-const PREFIX = "guides/gcp-pca/flashcards@", CACHE = PREFIX + "1h9p21b";
+const PREFIX = "guides/gcp-pca/flashcards@", CACHE = PREFIX + "m54ig6";
 const LEGACY = [];
 const ASSETS = ["./","./index.html","./manifest.webmanifest","./icon-180.png","./icon-192.png","./icon-512.png"];
 // Handle only this app's own files, so the site's other pages and apps are never intercepted.
