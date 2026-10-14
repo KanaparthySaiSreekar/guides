@@ -44,7 +44,7 @@ confirmed. The study content lives in [`content/`](content/); this file is the a
   Customer Engagement Suite → Gemini Enterprise for Customer Experience; Vertex AI Search for commerce → AI Commerce Search (29 Jun 2026);
   NotebookLM Enterprise → Gemini Notebook Enterprise (Jul 2026; the exam guide still says "NotebookLM").
   Questions d2-17, cym-04 and cym-05 and the cheat sheet use the new names with the old ones in brackets.
-- **Sample questions**: the claim that they still use retired case studies could not be confirmed, so it now says they "may" refer to earlier ones.
+- **Sample questions**: the claim that they still use retired case studies could not be confirmed, so it said they "may" refer to earlier ones. The second pass confirmed it (below).
 - **Intrusion protection** is described as a Cloud NGFW Enterprise feature rather than as what the guide "means".
 
 ## Not independently confirmed
@@ -83,6 +83,8 @@ An independent re-check, done after the first pass, from the primary sources rat
   (Essentials, Standard, Enterprise), Autopilot privileged containers (verified partners only), Pub/Sub exactly-once (pull, one region),
   Migrate to Virtual Machines sources (vSphere, VMware Engine, AWS, Azure), `_Required` 400 days, `_Default` 30 days, custom
   buckets 1–3,650 days, Container Registry shut down on 18 Mar 2025, GKE is now one offering with the Enterprise features folded in.
+- **Official sample questions.** The Google Form has about 19 questions. Four name retired case studies (Mountkirk Games three times,
+  TerramEarth once) and one more is about HRL; three name EHR Healthcare, which is still current. The guide now says so.
 - **All 149 answer keys** were read again. None is wrong.
 
 **Changed**
