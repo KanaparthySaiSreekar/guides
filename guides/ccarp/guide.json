@@ -14,6 +14,7 @@
    "shortName": "CCAR-P Portal",
    "description": "Domain guides, the cheat sheet, trap patterns and timed mock exams, with a plan that counts down to your exam date.",
    "fit": "Best on a laptop",
+   "device": "laptop",
    "head": [
     "<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">",
     "<meta name=\"mobile-web-app-capable\" content=\"yes\">",
@@ -31,6 +32,7 @@
    "shortName": "CCAR-P Cards",
    "description": "Concept cards and the exam questions with every option explained. Tap to reveal, swipe to move on.",
    "fit": "Made for phones",
+   "device": "phone",
    "head": [
     "<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">"
    ]

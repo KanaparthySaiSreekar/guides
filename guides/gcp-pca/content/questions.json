@@ -462,7 +462,7 @@
   "a": [
    1
   ],
-  "x": "Network Connectivity Center is a hub-and-spoke model. VPC spokes get transitive any-to-any reachability and hybrid spokes bring in on-premises routes, while each VPC stays separate. A full peering mesh is non-transitive and hits limits. Collapsing everything into one Shared VPC breaks the requirement to keep separate networks. Pairwise VPNs don’t scale and add cost."
+  "x": "Network Connectivity Center is a hub-and-spoke model. In its default mesh topology every VPC spoke reaches every other, and hybrid spokes bring in on-premises routes, while each VPC stays separate. A full peering mesh is non-transitive and hits limits. Collapsing everything into one Shared VPC breaks the requirement to keep separate networks. Pairwise VPNs don’t scale and add cost."
  },
  {
   "id": "d2-05",
@@ -651,15 +651,15 @@
   "d": 2,
   "q": "A strategy team wants to upload 40 analyst reports and internal memos, ask questions answered only from those sources with citations, and generate audio overviews for executives. The data must stay under the company’s Google Cloud identity, IAM and data-governance controls. What should you recommend?",
   "o": [
-   "The consumer NotebookLM app with personal Google accounts",
-   "NotebookLM Enterprise, as part of Gemini Enterprise",
+   "The consumer NotebookLM app (now Gemini Notebook) with personal Google accounts",
+   "Gemini Notebook Enterprise (formerly NotebookLM Enterprise), as part of Gemini Enterprise",
    "A custom RAG pipeline built on GKE",
    "Fine-tuning a model on the 40 documents"
   ],
   "a": [
    1
   ],
-  "x": "NotebookLM Enterprise gives source-grounded answers, citations and audio overviews under enterprise identity, IAM and compliance controls. The consumer app runs on personal accounts outside corporate governance. A custom pipeline rebuilds an existing product. Fine-tuning doesn’t cite sources."
+  "x": "Gemini Notebook Enterprise (formerly NotebookLM Enterprise) gives source-grounded answers, citations and audio overviews under enterprise identity, IAM and compliance controls. The consumer app runs on personal accounts outside corporate governance. A custom pipeline rebuilds an existing product. Fine-tuning doesn’t cite sources."
  },
  {
   "id": "d2-18",
@@ -1842,14 +1842,14 @@
   "q": "Cymbal’s web app searches products with SQL queries on names and categories, so shoppers can’t find items with natural phrases like “waterproof hiking boots for wide feet under $150.” What should you recommend?",
   "o": [
    "Add more LIKE clauses to the SQL queries",
-   "Vertex AI Search for commerce (Google’s Discovery AI for retail), with conversational commerce, fed by the product catalog and user events",
+   "AI Commerce Search (formerly Vertex AI Search for commerce, Google’s Discovery AI for retail), with conversational commerce, fed by the product catalog and user events",
    "Build a custom keyword index on Compute Engine",
    "Move the catalog to Bigtable"
   ],
   "a": [
    1
   ],
-  "x": "Vertex AI Search for commerce provides semantic, personalized product search and recommendations, plus conversational commerce that understands natural-language intent and attributes. It’s the Discovery AI capability named in the case study. LIKE matching and keyword indexes don’t understand intent. Bigtable is a storage engine, not a search product."
+  "x": "AI Commerce Search provides semantic, personalized product search and recommendations, plus conversational commerce that understands natural-language intent and attributes. It’s the Discovery AI capability named in the case study. LIKE matching and keyword indexes don’t understand intent. Bigtable is a storage engine, not a search product."
  },
  {
   "id": "cym-05",
@@ -1865,7 +1865,7 @@
   "a": [
    1
   ],
-  "x": "Generative virtual agents in Google’s Customer Engagement Suite handle routine requests end to end, including transactions through API tools, and hand off with context. Agent Assist makes the remaining human calls faster. More menus or more staff don’t reduce cost. Turning off phone support hurts customers."
+  "x": "Generative virtual agents in Gemini Enterprise for Customer Experience (formerly the Customer Engagement Suite) handle routine requests end to end, including transactions through API tools, and hand off with context. Agent Assist makes the remaining human calls faster. More menus or more staff don’t reduce cost. Turning off phone support hurts customers."
  },
  {
   "id": "cym-06",
@@ -2169,7 +2169,7 @@
   "a": [
    1
   ],
-  "x": "Network Connectivity Center gives managed, transitive hub-and-spoke connectivity across sites and VPCs, and Google Distributed Cloud runs workloads locally where latency or connectivity requires it, which suits a gradual hybrid strategy. The internet alone has no performance guarantees. A big-bang migration conflicts with gradual modernization. Unmanaged per-plant networks deepen the fragmentation."
+  "x": "Network Connectivity Center gives managed hub-and-spoke connectivity (any-to-any in mesh mode) across sites and VPCs, and Google Distributed Cloud runs workloads locally where latency or connectivity requires it, which suits a gradual hybrid strategy. The internet alone has no performance guarantees. A big-bang migration conflicts with gradual modernization. Unmanaged per-plant networks deepen the fragmentation."
  },
  {
   "id": "km-05",

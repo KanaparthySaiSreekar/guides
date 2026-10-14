@@ -212,7 +212,7 @@ export function writeHub(repo, site = SITE) {
   if (!guides.length) throw new Error(`no guides found in ${repo}`);
   const tiles = guides.map(g => `<li><a class="tile" href="${g.slug}/">
 <span class="code" aria-hidden="true">${esc(g.code)}</span>
-<span class="tile-body"><h2>${esc(g.name)}</h2><p>${esc(g.summary)}</p><p class="meta">${g.apps.map(a => esc(a.name)).join(' · ')}</p></span>
+<span class="tile-body"><h2>${esc(g.name)}</h2><p>${esc(g.summary)}</p><p class="meta">${g.apps.map(a => esc(a.name) + (a.device ? ` (${esc(a.device)})` : '')).join(' · ')}</p></span>
 ${CHEVRON}</a></li>`).join('\n');
   fs.writeFileSync(path.join(repo, 'index.html'), page({ title: site.title, description: site.summary, assets: 'assets/', track: trackFor(site, 'hub'), body: `<header class="head">
 <h1>${esc(site.title)}</h1>

@@ -1,8 +1,10 @@
-/* CCAR-P Flashcards: one offline file, two modes (concept cards and exam MCQs), progress kept in this browser. */
+/* Flashcards: one offline file, two modes (concept cards and exam MCQs), progress kept in this browser.
+   The guide supplies the cards, questions and DATA.ui (names, deck and set lists, storage key); see tools/build-flashcards.mjs. */
 (() => {
 'use strict';
 const DATA = JSON.parse(document.getElementById('fc-data').textContent);
-const KEY = 'ccarp-flashcards-v1';
+const UI = DATA.ui;
+const KEY = UI.key;
 const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 // **bold** and `code` only; bold never reaches inside a code span (e.g. `Read(**/.env)`), and paths may break after an inner /
@@ -35,23 +37,9 @@ const ICONS = {
 };
 const icon = (n, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
 
-const DECKS = {
-  concept: 'Concepts', signal: 'Signal → move', decider: 'Deciders', explain: 'Explain why',
-  trap: 'Traps', ladder: 'Ladders', trigger: 'Trigger words', method: 'Method & laws', tip: 'Exam tips',
-  domain: 'Domain briefs', bridge: 'From Foundations', fact: 'Exam facts', platform: 'Platform facts', case: 'Meridian case',
-};
-const DECK_GROUPS = [
-  ['Core', ['concept', 'signal', 'decider', 'explain'], 'Concepts are Q&A written from the domain guides. Signal → move is every cheat-sheet row. Deciders pit two good options against each other. Explain why asks you to explain, then check.'],
-  ['Exam craft', ['trap', 'ladder', 'trigger', 'method', 'tip'], 'The trap patterns, the ladders that resolve them, the stem words that point to them, the six-step item method and the eight laws.'],
-  ['Reference', ['domain', 'bridge', 'fact', 'platform', 'case'], 'Domain summaries, what changed from Foundations, exam and platform facts (dated), and the Meridian case the guides use.'],
-];
-const SETS = { A: 'Form A', B: 'Form B', C: 'Form C', pool: 'Practice pool', official: 'Official samples', bridge: 'Foundations bridge', guide: 'Guide walkthroughs' };
-const SET_GROUPS = [
-  ['Exam forms', ['A', 'B', 'C'], 'Three sealed 63-item mock exams, each built to the official blueprint and kept in delivery order.'],
-  ['More practice', ['official', 'pool', 'bridge', 'guide'], 'The 3 official samples from the exam guide, the rest of the verified bank, Foundations items rewritten for CCAR-P, and the guide’s worked examples.'],
-];
+const { decks: DECKS, deckGroups: DECK_GROUPS, sets: SETS, setGroups: SET_GROUPS } = UI;
 const SIZES = { cards: [[10, '10'], [20, '20'], [50, '50'], [0, 'All']], mcq: [[10, '10'], [20, '20'], [0, 'All']] };
-const DEFAULT_SEL = { mode: 'cards', decks: ['concept', 'signal', 'decider', 'explain', 'trap', 'ladder'], sets: ['A', 'B', 'C', 'pool', 'official'], doms: [], show: 'all', order: 'seq', size: { cards: 20, mcq: 0 } };
+const DEFAULT_SEL = UI.defaultSel;
 
 const cards = DATA.cards, mcqs = DATA.mcqs;
 const byId = new Map();
@@ -174,7 +162,7 @@ function buildList(sel = S.sel) {
 }
 function sessionLabel(sel) {
   // Name the sets in the order their items appear (official samples first, then the forms).
-  const SET_ORDER = ['official', 'A', 'B', 'C', 'pool', 'bridge', 'guide'], DECK_ORDER = DECK_GROUPS.flatMap(g => g[1]);
+  const SET_ORDER = UI.setOrder, DECK_ORDER = DECK_GROUPS.flatMap(g => g[1]);
   const names = sel.mode === 'cards' ? DECK_ORDER.filter(k => sel.decks.includes(k)).map(k => DECKS[k]) : SET_ORDER.filter(k => sel.sets.includes(k)).map(k => SETS[k]);
   let l = names.length > 2 ? `${names[0]} + ${names.length - 1} more` : names.join(' + ');
   const doms = effDoms(sel);
@@ -234,7 +222,7 @@ let query = '', srchT = 0, pendingOpen = null;
 function renderHome() {
   const mode = S.sel.mode;
   $('#app').innerHTML = `<main id="main" class="home wrap" tabindex="-1">
-    <header class="top"><div class="grow"><h1>CCAR-P Flashcards</h1><p class="sub">${cards.length} cards · ${mcqs.length} questions · offline</p></div>
+    <header class="top"><div class="grow"><h1>${esc(UI.title)}</h1><p class="sub">${cards.length} cards · ${mcqs.length} questions · offline</p></div>
       <button class="iconbtn" data-act="settings" aria-label="Settings" aria-haspopup="dialog">${icon('sliders')}</button></header>
     <div class="mode seg big" role="group" aria-label="Mode">
       <button aria-pressed="${mode === 'cards'}" data-act="mode" data-m="cards">Flashcards<span class="n">${cards.length}</span></button>
@@ -244,7 +232,7 @@ function renderHome() {
       <button aria-pressed="${!S.cfg.readMode}" data-act="style" data-k="quiz">${icon('quiz')}Quiz me</button>
       <button aria-pressed="${S.cfg.readMode}" data-act="style" data-k="read">${icon('eye')}Just read</button>
     </div>
-    <div class="search" role="search">${icon('search')}<label class="sr-only" for="q">Search ${mode === 'cards' ? 'cards' : 'questions'}</label><input id="q" type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" placeholder="${mode === 'cards' ? 'Search: a term or trap code' : 'Search: a word, tool or trap'}" value="${esc(query)}"><button class="clear" data-act="clearq" aria-label="Clear search"${query ? '' : ' hidden'}>${icon('x')}</button></div>
+    <div class="search" role="search">${icon('search')}<label class="sr-only" for="q">Search ${mode === 'cards' ? 'cards' : 'questions'}</label><input id="q" type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" placeholder="${esc(mode === 'cards' ? UI.text.searchCards : UI.text.searchMcq)}" value="${esc(query)}"><button class="clear" data-act="clearq" aria-label="Clear search"${query ? '' : ' hidden'}>${icon('x')}</button></div>
     <div id="hb"></div>
   </main><div id="ctaw"></div>`;
   const q = $('#q');
@@ -317,8 +305,8 @@ function paintHomeBody() {
     </section>
     <section class="sec" aria-labelledby="h-bars"><div class="sech"><h2 id="h-bars">${mode === 'cards' ? 'Known by domain' : 'Correct by domain'}</h2><span class="faint small">all ${mode === 'cards' ? 'cards' : 'questions'}</span></div><div class="bars">${bars}</div></section>
     <p class="foot-note">${mode === 'cards'
-      ? 'Concept cards are written from the seven domain guides, fact-checked against them and checked against the exam items. The other decks are the cheat sheet, traps, ladders and exam facts, word for word. A capped session starts with cards you have not marked as known.'
-      : 'Forms A, B and C are the three sealed 63-item mock exams built to the official blueprint; the pool holds the remaining verified items. Every option carries its explanation. A capped session starts with unanswered, then missed, questions.'}
+      ? esc(UI.text.noteCards)
+      : esc(UI.text.noteMcq)}
       Tap a card to reveal it, swipe to move. Progress stays in this browser.</p>`;
   paintCta();
 }
@@ -374,11 +362,11 @@ function searchResults(qs) {
     return `<button class="res" data-act="open" data-i="${i}" style="--dc:var(--d${it.d || 7})"><span class="k">${it.d ? '<span class="dot"></span>D' + it.d + ' · ' : ''}${esc(lab)}</span><span class="t">${hl(txt.slice(0, 260), toks)}</span></button>`;
   }).join('');
   return `<section class="sec" aria-labelledby="h-res"><div class="sech"><h2 id="h-res">${lastResults.length} result${lastResults.length === 1 ? '' : 's'}</h2>${lastResults.length ? '<button class="act" data-act="openall">Study all</button>' : ''}</div>
-    <div class="results">${rows || '<p class="muted">No matches. Try a trap code like T-REMOVE, or a single word.</p>'}</div>${lastResults.length > 80 ? `<p class="foot-note">Showing 80 of ${lastResults.length}. Tap “Study all” to go through every match.</p>` : ''}</section>`;
+    <div class="results">${rows || `<p class="muted">${esc(UI.text.noMatch)}</p>`}</div>${lastResults.length > 80 ? `<p class="foot-note">Showing 80 of ${lastResults.length}. Tap “Study all” to go through every match.</p>` : ''}</section>`;
 }
 
 // ---------- study ----------
-const setLabel = q => (q.s === 'A' || q.s === 'B' || q.s === 'C') ? `Form ${q.s} · Q${q.p}` : q.s === 'guide' ? `Guide · ${q.g}` : SETS[q.s].replace(/s$/, '');
+const setLabel = q => (q.s === 'A' || q.s === 'B' || q.s === 'C') ? `Form ${q.s} · Q${q.p}` : q.s === 'guide' ? `Guide · ${q.g}` : (UI.setShort || {})[q.s] || SETS[q.s].replace(/s$/, '');
 const domTag = (d, o) => (d ? `<span class="tag" style="--dc:var(--d${d})"><span class="dot"></span>D${d}${o ? ' · ' + esc(o) : ''}</span>` : '');
 const trapTag = code => `<span class="tag trap">${esc(code)} · ${esc(trapName(code))}</span>`;
 const WARN_G = /not official|conflict|may change|derived/i;
@@ -982,7 +970,7 @@ function sheetBody() {
     <div class="row"><div class="l"><b>MCQ results</b><span>${nM} ${nM === 1 ? 'question' : 'questions'} answered</span></div><button class="btn danger${resetArmed === 'mcq' ? ' armed' : ''}" data-act="reset" data-k="mcq" ${nM ? '' : 'disabled'}>${resetArmed === 'mcq' ? 'Tap again to reset' : 'Reset'}</button></div>
     <div class="row"><div class="l"><b>Stars</b><span>${nS} starred</span></div><button class="btn danger${resetArmed === 'star' ? ' armed' : ''}" data-act="reset" data-k="star" ${nS ? '' : 'disabled'}>${resetArmed === 'star' ? 'Tap again to clear' : 'Clear'}</button></div>
     <p class="foot-note">Keys: ← → move · Space or Enter reveals, then moves on · Enter checks an answer · Esc goes back${S.cfg.keys ? ' · 1 again · 2 got it · A–F pick · S star' : ''}.<br>
-    Built ${esc(DATA.meta.built)} from the CCAR-P Study Portal content (${esc(DATA.meta.exam)}). Everything runs offline; progress stays in this browser.</p>`;
+    Built ${esc(DATA.meta.built)} from ${esc(UI.source)} (${esc(DATA.meta.exam)}). Everything runs offline; progress stays in this browser.</p>`;
 }
 function openSettings(refresh) {
   if (refresh && sheetOpen) { keepFocus(() => { $('#dlg .sb').innerHTML = sheetBody(); }, '#dlg [data-act="closesheet"].iconbtn'); return; }

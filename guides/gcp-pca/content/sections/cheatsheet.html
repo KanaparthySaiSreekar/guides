@@ -18,13 +18,13 @@
       <tbody>
         <tr><td>Compute Engine</td><td class="plain">You need OS control, a lift-and-shift, specific kernels or licenses, or GPUs/TPUs on VMs.</td><td class="plain">You own patching (use VM Manager), sizing and the HA design.</td></tr>
         <tr><td>Managed instance groups</td><td class="plain">Stateless VM fleets that need autoscaling, autohealing and rolling updates. A regional MIG spreads instances across zones.</td><td class="plain">Health-check probes come from <code>35.191.0.0/16</code> and <code>130.211.0.0/22</code>, so allow them in the firewall.</td></tr>
-        <tr><td>Spot VMs</td><td class="plain">Fault-tolerant batch, CI, rendering and checkpointed training, at 60–91% off.</td><td class="plain">Can be reclaimed at any time with about 30 s notice, and have no SLA. Legacy preemptible VMs also stop after 24 h; Spot has no maximum runtime.</td></tr>
+        <tr><td>Spot VMs</td><td class="plain">Fault-tolerant batch, CI, rendering and checkpointed training, at 60–91% off.</td><td class="plain">Can be reclaimed at any time (best-effort shutdown of up to 30 s; you can ask for a 120 s preemption notice), and have no SLA. Legacy preemptible VMs also stop after 24 h; Spot has no maximum runtime.</td></tr>
         <tr><td>Sole-tenant nodes</td><td class="plain">BYOL that needs dedicated hardware (for example Windows Server without License Mobility), or compliance isolation.</td><td class="plain">You pay for the whole node.</td></tr>
         <tr><td>Custom machine types</td><td class="plain">Unusual vCPU-to-memory ratios, or licenses priced per core.</td><td class="plain">Extended memory goes beyond the normal ratio. You can also set threads per core to 1 to cut licensed vCPUs.</td></tr>
         <tr><td>GKE Standard</td><td class="plain">You need node-level control: node pools, DaemonSets, custom node images, specific GPUs.</td><td class="plain">You manage node pools. Spot node pools suit batch work.</td></tr>
-        <tr><td>GKE Autopilot</td><td class="plain">Kubernetes with the least operations: Google runs the nodes, you pay per pod request, hardened by default.</td><td class="plain">No privileged pods or node SSH. GPUs and TPUs are available through compute classes.</td></tr>
+        <tr><td>GKE Autopilot</td><td class="plain">Kubernetes with the least operations: Google runs the nodes, you pay per pod request, hardened by default.</td><td class="plain">No privileged containers (except allowlisted partner workloads) and no node SSH. GPUs and TPUs are available through compute classes.</td></tr>
         <tr><td>Cloud Run services</td><td class="plain">Stateless HTTP, gRPC or WebSocket containers that scale to zero. L4 GPUs for serverless inference.</td><td class="plain">Requests time out after up to 60 min. Set min instances to avoid cold starts. Reach VPC resources with Direct VPC egress.</td></tr>
-        <tr><td>Cloud Run jobs</td><td class="plain">Run-to-completion containers with parallel tasks.</td><td class="plain">Each task can run for up to 7 days.</td></tr>
+        <tr><td>Cloud Run jobs</td><td class="plain">Run-to-completion containers with parallel tasks.</td><td class="plain">Each task can run for up to 7 days (1 hour with GPUs).</td></tr>
         <tr><td>Cloud Run functions</td><td class="plain">Event-driven glue code triggered by Cloud Storage, Pub/Sub or Eventarc. Formerly Cloud Functions.</td><td class="plain">Keep each function single-purpose. Move to Cloud Run services as logic grows.</td></tr>
         <tr><td>App Engine</td><td class="plain">Existing App Engine apps.</td><td class="plain">Rarely the right new answer in 2026. Cloud Run is the default serverless choice.</td></tr>
         <tr><td>Batch</td><td class="plain">Queued batch and HPC jobs on VMs, including Spot and GPUs, without running your own scheduler.</td><td class="plain">Retries and checkpointing are your design.</td></tr>
@@ -106,13 +106,13 @@
     <div class="tbl"><table>
       <thead><tr><th>Service</th><th>Pick it when</th><th>Note</th></tr></thead>
       <tbody>
-        <tr><td>Pub/Sub</td><td class="plain">Decoupling services, absorbing bursts, fan-out, streaming ingestion.</td><td class="plain">At-least-once delivery, so consumers must be idempotent. Exactly-once delivery is available for pull subscriptions. Ordering keys preserve order per key.</td></tr>
+        <tr><td>Pub/Sub</td><td class="plain">Decoupling services, absorbing bursts, fan-out, streaming ingestion.</td><td class="plain">At-least-once delivery, so consumers must be idempotent. Exactly-once delivery is available for pull subscriptions, within one region. Ordering keys preserve order per key.</td></tr>
         <tr><td>Dataflow</td><td class="plain">New batch or streaming pipelines (Apache Beam): windows, late data, autoscaling, no clusters.</td><td class="plain">The default answer for new ETL and streaming.</td></tr>
         <tr><td>Dataproc / Serverless for Apache Spark</td><td class="plain">Existing Spark or Hadoop jobs with minimal change.</td><td class="plain">Use ephemeral clusters, with data in Cloud Storage rather than HDFS.</td></tr>
         <tr><td>Cloud Composer</td><td class="plain">Orchestrating multi-step pipelines as Airflow DAGs.</td><td class="plain">It orchestrates and doesn’t process data. Workflows suits lightweight service orchestration.</td></tr>
         <tr><td>Datastream</td><td class="plain">Change data capture from MySQL, PostgreSQL, Oracle or SQL Server into BigQuery or Cloud Storage.</td><td class="plain">Serverless, low latency.</td></tr>
         <tr><td>Data Fusion</td><td class="plain">Visual, code-free ETL with many connectors.</td><td class="plain">Runs on Dataproc underneath.</td></tr>
-        <tr><td>Dataplex Universal Catalog</td><td class="plain">Discovery, metadata, lineage, data quality and governance across lakes and warehouses.</td><td class="plain">Pairs with Sensitive Data Protection discovery.</td></tr>
+        <tr><td>Knowledge Catalog (formerly Dataplex Universal Catalog)</td><td class="plain">Discovery, metadata, lineage, data quality and governance across lakes and warehouses.</td><td class="plain">Pairs with Sensitive Data Protection discovery.</td></tr>
         <tr><td>BigQuery features</td><td class="plain">Partitioning and clustering, materialized views, BI Engine, BigLake and Omni (query S3 or Azure data), sharing and clean rooms, BigQuery ML, Gemini-powered AI functions.</td><td class="plain">Require partition filters. LIMIT doesn’t reduce bytes scanned.</td></tr>
         <tr><td>Looker / Looker Studio</td><td class="plain">Governed semantic-layer BI (Looker) or quick free dashboards (Looker Studio).</td><td class="plain">Looker Studio was formerly Data Studio.</td></tr>
       </tbody></table></div>
@@ -127,12 +127,12 @@
         <li>Plan RFC 1918 ranges that don’t overlap with on-premises or other clouds. Include GKE pod and service secondary ranges.</li>
         <li>VPC firewall rules are stateful. Priorities run 0–65535, and the lower number wins. There’s an implied deny for ingress and allow for egress.</li>
         <li>Firewall policies: hierarchical (organization or folder, evaluated first, with <code>goto_next</code>), global network and regional network policies. Target with secure tags or service accounts.</li>
-        <li>Cloud NGFW tiers: Essentials, Standard (FQDN, geolocation and threat-intelligence objects) and Enterprise (intrusion prevention). The guide’s “intrusion protection” means NGFW Enterprise.</li>
+        <li>Cloud NGFW tiers: Essentials, Standard (FQDN, geolocation and threat-intelligence objects) and Enterprise (intrusion prevention). Intrusion prevention (the exam guide’s “intrusion protection”) is an NGFW Enterprise feature.</li>
       </ul></div>
       <div class="panel"><h4>Connecting VPCs and services</h4><ul>
         <li><b>Shared VPC</b>: one organization, a central network team, a host project plus service projects.</li>
         <li><b>VPC Network Peering</b>: point to point, non-transitive, no overlapping ranges.</li>
-        <li><b>Network Connectivity Center</b>: hub and spoke. VPC spokes are transitive, hybrid spokes bring in Interconnect or VPN, and router appliances handle SD-WAN.</li>
+        <li><b>Network Connectivity Center</b>: hub and spoke. In the default mesh topology every VPC spoke reaches every other (a star topology keeps edge spokes apart). Hybrid spokes bring in Interconnect or VPN, and router appliances handle SD-WAN.</li>
         <li><b>Private Service Connect</b>: publish or consume a single service privately, across organizations, even with overlapping IPs. Also provides endpoints for Google APIs.</li>
         <li><b>Private Services Access</b>: peering-based private IPs for Cloud SQL, Memorystore and similar services.</li>
         <li><b>Private Google Access</b>: a per-subnet setting that lets VMs without external IPs reach Google APIs. Use <code>restricted.googleapis.com</code> with VPC Service Controls.</li>
@@ -256,7 +256,7 @@
         <li><b>VPC Service Controls</b> put a perimeter around Google API services to stop exfiltration even with valid credentials. Use access levels, ingress and egress rules for narrow exceptions, bridges inside one organization, and dry-run mode before enforcing.</li>
         <li><b>BigQuery</b> also offers column-level security, dynamic data masking and row-level security.</li>
       </ul></div>
-      <div class="panel"><h4>Securing AI <span class="badge new">new in v6.1</span></h4><ul>
+      <div class="panel"><h4>Securing AI <span class="badge new">new since Oct 2025</span></h4><ul>
         <li><b>Model Armor</b> screens prompts and responses for prompt injection and jailbreaks, harmful content, malicious URLs and sensitive data (through SDP). It works with any model and is configured with templates and floor settings.</li>
         <li>Sensitive Data Protection on training data, prompts and logs.</li>
         <li>VPC Service Controls around Agent Platform. Private endpoints. CMEK for AI resources.</li>
@@ -298,12 +298,12 @@
     <div class="tbl fluid"><table>
       <thead><tr><th>Requirement</th><th>Answer</th></tr></thead>
       <tbody>
-        <tr><td>Employees need an assistant over company data (Drive, SharePoint, Jira and more), with prebuilt agents</td><td class="plain">Gemini Enterprise, which includes NotebookLM Enterprise and Deep Research</td></tr>
-        <tr><td>Source-grounded Q&amp;A and audio overviews over a fixed set of documents</td><td class="plain">NotebookLM Enterprise</td></tr>
+        <tr><td>Employees need an assistant over company data (Drive, SharePoint, Jira and more), with prebuilt agents</td><td class="plain">Gemini Enterprise, which includes NotebookLM Enterprise (now Gemini Notebook Enterprise) and Deep Research</td></tr>
+        <tr><td>Source-grounded Q&amp;A and audio overviews over a fixed set of documents</td><td class="plain">NotebookLM Enterprise (now Gemini Notebook Enterprise)</td></tr>
         <tr><td>Custom, tool-using agents in code</td><td class="plain">Agent Development Kit (ADK), deployed on Agent Runtime (formerly Agent Engine) with sessions and Memory Bank. Agent Studio for low-code, Agent Garden for templates. Supports the A2A protocol and MCP tools.</td></tr>
-        <tr><td>Contact-center virtual agent or IVR replacement</td><td class="plain">Conversational Agents (Dialogflow CX) in the Customer Engagement Suite, with Agent Assist for human agents</td></tr>
-        <tr><td>Answers grounded in your own documents or sites</td><td class="plain">Search (formerly Vertex AI Search) or RAG Engine. Grounding with Google Search for public facts.</td></tr>
-        <tr><td>Retail product search, recommendations, conversational commerce</td><td class="plain">Vertex AI Search for commerce</td></tr>
+        <tr><td>Contact-center virtual agent or IVR replacement</td><td class="plain">Conversational Agents (Dialogflow CX) in Gemini Enterprise for Customer Experience (formerly Customer Engagement Suite), with Agent Assist for human agents</td></tr>
+        <tr><td>Answers grounded in your own documents or sites</td><td class="plain">Agent Search (formerly Vertex AI Search) or RAG Engine. Grounding with Google Search for public facts.</td></tr>
+        <tr><td>Retail product search, recommendations, conversational commerce</td><td class="plain">AI Commerce Search (formerly Vertex AI Search for commerce)</td></tr>
         <tr><td>Choose or compare models, including open and third-party ones (Gemma, Llama, Claude and others)</td><td class="plain">Model Garden. Deploy open models to endpoints or GKE.</td></tr>
         <tr><td>Generate or edit images, video, speech, music</td><td class="plain">Imagen; Veo; Chirp (Speech-to-Text) and Text-to-Speech; Lyria</td></tr>
         <tr><td>Single-task pretrained analysis</td><td class="plain">Vision (labels, OCR, SafeSearch), Video Intelligence (shots, labels, explicit content), Natural Language (entities, sentiment), Translation, Speech-to-Text, Document AI (forms, invoices)</td></tr>
@@ -353,7 +353,7 @@
       <thead><tr><th>Tool</th><th>Use for</th></tr></thead>
       <tbody>
         <tr><td>Migration Center</td><td class="plain">Inventory, utilization, dependencies, TCO and right-sized pricing</td></tr>
-        <tr><td>Migrate to Virtual Machines</td><td class="plain">VMware, AWS, Azure or physical machines to Compute Engine, with test clones and a short cutover</td></tr>
+        <tr><td>Migrate to Virtual Machines</td><td class="plain">VMware (vSphere or VMware Engine), AWS or Azure virtual machines to Compute Engine, with test clones and a short cutover</td></tr>
         <tr><td>Migrate to Containers</td><td class="plain">Turning suitable VMs into containers for GKE or Cloud Run</td></tr>
         <tr><td>Database Migration Service</td><td class="plain">Continuous MySQL, PostgreSQL and SQL Server migration into Cloud SQL or AlloyDB. Oracle to PostgreSQL with conversion workspaces (Gemini-assisted).</td></tr>
         <tr><td>BigQuery Migration Service</td><td class="plain">Warehouse migrations (Teradata, Redshift, Snowflake and others) with SQL translation</td></tr>
@@ -455,8 +455,8 @@
       <thead><tr><th>Compute pricing</th><th>Discount</th><th>Commitment</th><th>Fits</th></tr></thead>
       <tbody>
         <tr><td>Sustained use discounts</td><td class="plain">Up to 30% (N1), about 20% (N2); none on E2</td><td class="plain">None, automatic</td><td class="plain">Long-running VMs without commitments</td></tr>
-        <tr><td>Resource-based CUD</td><td class="plain">Up to 57% (70% memory-optimized)</td><td class="plain">1 or 3 years, machine series and region</td><td class="plain">Steady, predictable baseline</td></tr>
-        <tr><td>Flexible (spend-based) CUD</td><td class="plain">28% (1 year), 46% (3 years)</td><td class="plain">Hourly spend</td><td class="plain">Steady spend across series and regions</td></tr>
+        <tr><td>Resource-based CUD</td><td class="plain">Up to 55% (70% memory-optimized)</td><td class="plain">1 or 3 years, machine series and region</td><td class="plain">Steady, predictable baseline</td></tr>
+        <tr><td>Flexible (spend-based) CUD</td><td class="plain">28% (1 year), 46% (3 years); memory-optimized series only on 3-year terms (63%)</td><td class="plain">Hourly spend</td><td class="plain">Steady spend across series and regions</td></tr>
         <tr><td>Spot VMs</td><td class="plain">60–91%</td><td class="plain">None</td><td class="plain">Interruptible work</td></tr>
       </tbody></table></div>
     <div class="cols">
@@ -513,7 +513,7 @@
 
   <!-- WAF -->
   <div class="cs-block block" id="cs-waf">
-    <h3>Google Cloud Well-Architected Framework <span class="eyebrow">required in v6.1</span></h3>
+    <h3>Google Cloud Well-Architected Framework <span class="eyebrow">required since Oct 2025</span></h3>
     <div class="tbl fluid"><table>
       <thead><tr><th>Pillar</th><th>Principles to recognize in answers</th></tr></thead>
       <tbody>
@@ -603,7 +603,7 @@
         <tr><td>Answers must reflect content that changes daily</td><td class="plain ans">RAG / grounding, not fine-tuning</td></tr>
         <tr><td>Custom agent with tools, written in code</td><td class="plain ans">ADK on Agent Runtime</td></tr>
         <tr><td>Replace the IVR, cut call-center cost</td><td class="plain ans">Conversational Agents + Agent Assist</td></tr>
-        <tr><td>Natural-language product discovery</td><td class="plain ans">Vertex AI Search for commerce</td></tr>
+        <tr><td>Natural-language product discovery</td><td class="plain ans">AI Commerce Search (formerly Vertex AI Search for commerce)</td></tr>
         <tr><td>Generate or edit product images</td><td class="plain ans">Imagen</td></tr>
         <tr><td>Use an open or third-party model in your project</td><td class="plain ans">Model Garden</td></tr>
         <tr><td>Reproducible ML lifecycle with lineage</td><td class="plain ans">Agent Platform Pipelines + Model Registry</td></tr>
@@ -646,10 +646,10 @@
       <li>Bigtable with a timestamp-first row key creates hotspots. Spanner with sequential keys does too.</li>
       <li>BigQuery LIMIT doesn’t cut bytes scanned. Partition filters do.</li>
       <li>Spot VMs have no SLA and ~30 s notice, so never use them for stateful critical services.</li>
-      <li>Autopilot doesn’t allow privileged pods or node SSH.</li>
+      <li>Autopilot blocks privileged containers (except allowlisted partner workloads) and node SSH.</li>
       <li>Cloud Armor doesn’t protect internal traffic.</li>
       <li>Fine-tuning doesn’t keep facts current. Grounding (RAG) does.</li>
-      <li>Consumer AI apps on personal accounts aren’t the enterprise answer. Use Gemini Enterprise or NotebookLM Enterprise.</li>
+      <li>Consumer AI apps on personal accounts aren’t the enterprise answer. Use Gemini Enterprise or Gemini Notebook Enterprise (formerly NotebookLM Enterprise).</li>
       <li>Retired services (Deployment Manager, Container Registry, IoT Core, Pub/Sub Lite) are never right for a new design.</li>
       <li>Mitigate first (roll back), then find the root cause.</li>
       <li>Choose-two questions need exactly two answers, and each must be correct on its own.</li>

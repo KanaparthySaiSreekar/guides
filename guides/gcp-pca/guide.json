@@ -2,7 +2,7 @@
  "slug": "gcp-pca",
  "code": "GCP-PCA",
  "name": "Google Cloud Professional Cloud Architect",
- "summary": "Unofficial prep for Google Cloud’s Professional Cloud Architect exam, current to October 2026.",
+ "summary": "Unofficial prep for Google Cloud’s Professional Cloud Architect exam, checked against Google’s exam guide and documentation (October 2026).",
  "order": 20,
  "apps": [
   {
@@ -12,7 +12,8 @@
    "title": "PCA Study Portal",
    "shortName": "PCA Portal",
    "description": "Study plan, syllabus tracker, cheat sheet, the four case studies, and timed mock exams with an explanation for every question.",
-   "fit": "Laptop or phone",
+   "fit": "Best on a laptop",
+   "device": "laptop",
    "background": "#EEF1F5",
    "files": "guides/gcp-pca/fonts",
    "head": [
@@ -23,6 +24,19 @@
     "<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\">",
     "<meta name=\"theme-color\" content=\"#EEF1F5\" media=\"(prefers-color-scheme: light)\">",
     "<meta name=\"theme-color\" content=\"#0C111A\" media=\"(prefers-color-scheme: dark)\">"
+   ]
+  },
+  {
+   "slug": "flashcards",
+   "engine": "flashcards",
+   "name": "Flashcards",
+   "title": "PCA Flashcards",
+   "shortName": "PCA Cards",
+   "description": "Cheat-sheet cards, case-study requirements and the practice questions with every answer explained. Tap to reveal, swipe to move on.",
+   "fit": "Made for phones",
+   "device": "phone",
+   "head": [
+    "<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">"
    ]
   }
  ],

@@ -1,7 +1,7 @@
   <div class="sec-head">
     <p class="eyebrow">2 of these 4 appear on every standard exam · 20–30% of questions</p>
     <h2 id="h-cases">Case studies</h2>
-    <p>Condensed from Google’s v6.1 case-study PDFs, with a requirement-by-requirement map to the services most likely to be the right answer. Read the originals too (linked under Resources). The exam shows them in a split screen, but knowing them beforehand saves time.</p>
+    <p>Condensed from Google’s official case-study PDFs, with a requirement-by-requirement map to the services most likely to be the right answer. Read the originals too (linked under Resources). The exam shows them in a split screen, but knowing them beforehand saves time.</p>
   </div>
   <div class="seg" role="group" aria-label="Choose a case study">
     <button data-case="alto" aria-pressed="true">Altostrat Media</button>
@@ -14,7 +14,7 @@
   <article class="case" data-case-panel="alto">
     <div class="case-top">
       <div class="block">
-        <p class="eyebrow">New in v6.1 · also on the renewal exam</p>
+        <p class="eyebrow">New in Oct 2025 · also on the renewal exam</p>
         <h3>Altostrat Media</h3>
         <p class="prose">A media company with a large library of podcasts, interviews, news broadcasts and documentaries. It wants generative AI for personalized recommendations, natural-language interaction and self-service support, and to grow revenue through dynamic pricing, targeted marketing and personalized suggestions.</p>
         <p class="quote">Reliability and cost management are the top priorities.</p>
@@ -54,7 +54,7 @@
   <article class="case" data-case-panel="cym" hidden>
     <div class="case-top">
       <div class="block">
-        <p class="eyebrow">New in v6.1 · also on the renewal exam</p>
+        <p class="eyebrow">New in Oct 2025 · also on the renewal exam</p>
         <h3>Cymbal Retail</h3>
         <p class="prose">A fast-growing online retailer with a huge catalog across many sub-verticals. It has three initiatives: enrich the catalog with generative AI (attributes, descriptions, images from supplier data); conversational commerce with AI virtual agents that use Google’s Discovery AI; and a technical-stack modernization to cut manual work and costs.</p>
         <p class="quote">Reduce call-center staffing costs and data-center hosting costs.</p>
@@ -76,7 +76,7 @@
       <tbody>
         <tr><td>Attribute generation that matches the catalog structure</td><td class="plain">Multimodal Gemini prompted with the taxonomy, structured output (response schema with allowed values), evaluation against labeled samples</td></tr>
         <tr><td>Image generation and enhancement (colors, backgrounds, text overlays)</td><td class="plain">Imagen editing on Agent Platform (mask-based editing, background replacement)</td></tr>
-        <tr><td>Natural-language product discovery</td><td class="plain">Vertex AI Search for commerce with conversational commerce (Discovery AI)</td></tr>
+        <tr><td>Natural-language product discovery</td><td class="plain">AI Commerce Search (formerly Vertex AI Search for commerce) with conversational commerce (Discovery AI)</td></tr>
         <tr><td>Scale with the catalog without hurting performance</td><td class="plain">Batch inference for enrichment, managed search that scales with the catalog, autoscaling GKE or Cloud Run</td></tr>
         <tr><td>Human-in-the-loop review</td><td class="plain">Staging store plus a review app (Cloud Run behind IAP); publish only approved items; keep decisions for evaluation</td></tr>
         <tr><td>Secure, compliant handling of customer and agent data</td><td class="plain">SDP de-identification of transcripts, Model Armor, tokenized payments (PCI scope), IAM, VPC Service Controls, CMEK</td></tr>
@@ -130,7 +130,7 @@
   <article class="case" data-case-panel="km" hidden>
     <div class="case-top">
       <div class="block">
-        <p class="eyebrow">New in v6.1</p>
+        <p class="eyebrow">New in Oct 2025</p>
         <h3>KnightMotives Automotive</h3>
         <p class="prose">A car maker of autonomous, battery-electric, hybrid and combustion vehicles. Only its electric models have a modern in-vehicle experience, and sales of the others are falling. Within five years it wants a consistent, AI-powered “automotive experience” across all models, a reliable build-to-order system, better dealer tools, and new revenue from data monetization.</p>
         <p class="quote">Security is a paramount concern after past breaches, and EU data protection compliance is critical.</p>
@@ -152,7 +152,7 @@
         <tr><td>Network upgrades between plants and headquarters</td><td class="plain">Cloud Interconnect at major sites, Network Connectivity Center hub, SD-WAN router appliances, Google Distributed Cloud at plants</td></tr>
         <tr><td>Hybrid cloud, gradual legacy modernization</td><td class="plain">Mainframe APIs through Apigee, Mainframe Connector to BigQuery, strangler-pattern replacement, SaaS ERP evaluation, fleets across environments</td></tr>
         <tr><td>Autonomous development: AI/ML, simulation, regulatory compliance</td><td class="plain">AI Hypercomputer (GKE or Cluster Director with GPUs or TPUs, DWS), Batch with Spot for simulation, Agent Platform Pipelines and Model Registry for traceability</td></tr>
-        <tr><td>Data monetization: data platform, security and privacy, scalable AI</td><td class="plain">BigQuery as the platform, Dataplex governance, SDP de-identification, BigQuery sharing and data clean rooms</td></tr>
+        <tr><td>Data monetization: data platform, security and privacy, scalable AI</td><td class="plain">BigQuery as the platform, Knowledge Catalog (formerly Dataplex) governance, SDP de-identification, BigQuery sharing and data clean rooms</td></tr>
         <tr><td>EU data protection</td><td class="plain"><code>gcp.resourceLocations</code> or Assured Workloads for EU, CMEK or EKM, regional AI endpoints, pseudonymization</td></tr>
         <tr><td>Security framework, incident response, awareness training</td><td class="plain">SCC Enterprise, Google SecOps (SIEM and SOAR playbooks), Mandiant, VPC Service Controls, Chrome Enterprise Premium, training through Google Skills</td></tr>
         <tr><td>Better online build-to-order</td><td class="plain">Cloud Run or GKE services, Spanner for consistent orders and inventory, Pub/Sub integration with ERP, Apigee for dealers</td></tr>

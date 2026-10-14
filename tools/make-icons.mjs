@@ -1,4 +1,4 @@
-// Renders the apps' home-screen / manifest icons to PNGs with headless Chrome.  node tools/make-icons.mjs [icon portal pca]
+// Renders the apps' home-screen / manifest icons to PNGs with headless Chrome.  node tools/make-icons.mjs [icon portal pca pcacards]
 import fs from 'node:fs';
 import { P } from './lib.mjs';
 import { launch } from './cdp.mjs';
@@ -38,7 +38,20 @@ const pca = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width
   <rect x="230" y="286" width="60" height="60" rx="12" fill="#FBEEDB" stroke="#B86A10" stroke-width="8"/>
   <rect x="322" y="286" width="60" height="60" rx="12" fill="#E2EAFA" stroke="#1D4FBF" stroke-width="8"/>
 </svg>`;
-const ICONS = { icon: [svg, 'guides/ccarp/icons/flashcards'], portal: [portal, 'guides/ccarp/icons/portal'], pca: [pca, 'guides/gcp-pca/icons/portal'] };
+// GCP-PCA Flashcards: the flashcards motif (a blue card behind a vellum card, an amber highlighter stroke, a green check) with the
+// guide's cloud on the front card, so the two apps are told apart on a home screen.
+const pcaCards = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <rect width="512" height="512" fill="#15233A"/>
+  <g stroke="rgba(127,176,255,.10)" stroke-width="2">${Array.from({ length: 15 }, (_, i) => `<path d="M${32 + i * 32} 0V512M0 ${32 + i * 32}H512"/>`).join('')}</g>
+  <rect x="118" y="112" width="260" height="310" rx="30" fill="#2F5FD0" transform="rotate(-9 248 267)"/>
+  <rect x="140" y="104" width="260" height="310" rx="30" fill="#F3F6FB"/>
+  <g fill="#1D4FBF"><circle cx="232" cy="184" r="26"/><circle cx="268" cy="166" r="36"/><circle cx="302" cy="188" r="24"/><rect x="206" y="184" width="122" height="28" rx="14"/></g>
+  <rect x="176" y="248" width="188" height="14" rx="7" fill="#9AA8BF"/>
+  <rect x="176" y="280" width="150" height="14" rx="7" fill="#9AA8BF"/>
+  <rect x="168" y="312" width="150" height="26" rx="6" fill="#FFE9A8"/><rect x="176" y="318" width="134" height="14" rx="7" fill="#E3A92E"/>
+  <path d="M300 358l24 24 44-52" fill="none" stroke="#15704A" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+const ICONS = { icon: [svg, 'guides/ccarp/icons/flashcards'], portal: [portal, 'guides/ccarp/icons/portal'], pca: [pca, 'guides/gcp-pca/icons/portal'], pcacards: [pcaCards, 'guides/gcp-pca/icons/flashcards'] };
 const pick = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(ICONS);
 for (const name of pick) { if (!ICONS[name]) throw new Error(`unknown icon ${name}`); fs.mkdirSync(P(ICONS[name][1], '..'), { recursive: true }); fs.writeFileSync(P(`${ICONS[name][1]}.svg`), ICONS[name][0]); }
 const b = await launch({ port: 9360 });

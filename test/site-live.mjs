@@ -135,6 +135,7 @@ if (checkLegacy) {
 const APPS = {
   'ccarp/flashcards': `!!document.querySelector('.home h1') && document.title === 'CCAR-P Flashcards'`,
   'ccarp/portal': `document.title.includes('CCAR-P Study Portal') && document.querySelector('#app').children.length > 0 && !!document.querySelector('#app h1, #app h2')`,
+  'gcp-pca/flashcards': `!!document.querySelector('.home h1') && document.title === 'PCA Flashcards'`,
   'gcp-pca/portal': `document.title === 'PCA Study Portal 2026' && !document.getElementById('v-overview').hidden && !!document.querySelector('#domainBars .bar-row')`,
 };
 // Apps that bring their own font files must render with them, not a fallback, online and offline.
@@ -151,6 +152,13 @@ for (const { key, url } of ALL) {
   ok(await until(APPS[key]), `${key}: renders after reload`);
   const ctl = await q(`navigator.serviceWorker.controller ? new URL(navigator.serviceWorker.controller.scriptURL).pathname : null`);
   ok(ctl === `${BASE}${key}/sw.js`, `${key}: controlled by its own worker (${ctl})`);
+}
+// A guide's retired app address (guide.moved) forwards to the app that replaced it, keeping the #section.
+for (const g of GUIDES) for (const m of g.moved || []) {
+  await go(`${ORIGIN}${BASE}${g.slug}/${m.from}/#cheatsheet`, 2500);
+  ok(await until(`location.pathname === ${JSON.stringify(`${BASE}${g.slug}/${m.to}/`)} && location.hash === '#cheatsheet'`, 8000), `${g.slug}/${m.from} forwards to ${m.to}, keeping the section`);
+  const sw = await fetch(`${ORIGIN}${BASE}${g.slug}/${m.from}/sw.js`).then(r => r.text()).catch(() => '');
+  ok(sw.includes('registration.unregister()') && sw.includes(m.cachePrefix), `${g.slug}/${m.from}/sw.js retires the old offline copy`);
 }
 const keys = await q(`caches.keys()`);
 ok(ALL.every(({ key }) => keys.some(k => k.startsWith(`${BASE.slice(1)}${key}@`))), `each app has its own cache (${keys.join(', ')})`);
