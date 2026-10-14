@@ -1,0 +1,28 @@
+{
+ "slug": "gcp-pca",
+ "code": "GCP-PCA",
+ "name": "Google Cloud Professional Cloud Architect",
+ "summary": "Unofficial prep for Google Cloud’s Professional Cloud Architect exam, checked against Google’s exam guide and documentation (October 2026).",
+ "order": 20,
+ "apps": [
+  {
+   "slug": "portal",
+   "name": "Study Portal",
+   "title": "PCA Study Portal",
+   "shortName": "PCA Portal",
+   "description": "Study plan, syllabus tracker, cheat sheet, the four case studies, and timed mock exams with an explanation for every question.",
+   "fit": "Best on a laptop",
+   "device": "laptop",
+   "background": "#EEF1F5"
+  },
+  {
+   "slug": "flashcards",
+   "name": "Flashcards",
+   "title": "PCA Flashcards",
+   "shortName": "PCA Cards",
+   "description": "Cheat-sheet cards, case-study requirements and the practice questions with every answer explained. Tap to reveal, swipe to move on.",
+   "fit": "Made for phones",
+   "device": "phone"
+  }
+ ]
+}

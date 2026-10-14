@@ -1,0 +1,130 @@
+@font-face{font-family:"Plex Sans";src:url(fonts/ibm-plex-sans-latin-wght-normal.woff2) format("woff2");font-weight:100 700;font-style:normal;font-display:swap}
+@font-face{font-family:"Plex Mono";src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
+/* Design tokens: "drafting table".
+   Light: cool vellum with a faint drafting grid, navy ink, cyanotype blue, amber highlighter.
+   Dark: blueprint navy with light grid lines. Seven equal-weight domain hues. */
+:root{
+  color-scheme: light;
+  --bg:#F3F6FB; --grid:rgba(47,95,208,.055); --surface:#FFFFFF; --surface-2:#F1F4FA; --surface-3:#E4EAF3;
+  --plate:linear-gradient(180deg,#FFFFFF, #F7F9FD);
+  --text:#15233A; --text-2:#46546A; --text-3:#5B6980;
+  --border:#DCE3EE; --border-strong:#C3CEDF;
+  --accent:#2F5FD0; --accent-hover:#244EB2; --accent-soft:#E8EFFD; --accent-line:rgba(47,95,208,.35); --on-accent:#FFFFFF; --focus:#2F5FD0;
+  --mark:#FFE9A8; --mark-line:#E3A92E;
+  --good:#15704A; --good-soft:#E3F3EB; --bad:#B3362F; --bad-soft:#FBE9E7; --warn:#8F6205; --warn-soft:#FBF1D6;
+  --trap:#7449C4; --trap-soft:#F1EBFB; --flag:#A34F07; --flag-soft:#FCEBDD;
+  --d1:#2F6BD6; --d2:#0E958A; --d3:#7852D2; --d4:#C98410; --d5:#CF4858; --d6:#3D944A; --d7:#687790;
+  --shadow-sm:0 1px 2px rgba(21,35,58,.06);
+  --shadow:0 1px 2px rgba(21,35,58,.05), 0 10px 28px -14px rgba(21,35,58,.20);
+  --shadow-lg:0 2px 6px rgba(21,35,58,.06), 0 24px 48px -20px rgba(21,35,58,.28);
+  --r-sm:9px; --r:14px; --r-lg:20px;
+  --on-status:#FFFFFF; --input-line:#8595AC; --btn-glow:rgba(47,95,208,.35); --seg-on:var(--surface);
+  --font-ui:"Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-read:"Plex Serif", "Iowan Old Style", Charter, Cambria, Georgia, serif;
+  --font-mono:"Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --scale:1;
+  --fs-cap:calc(12.5px*var(--scale)); --fs-meta:calc(14px*var(--scale)); --fs-ui:calc(15.5px*var(--scale));
+  --fs-read:calc(17.5px*var(--scale)); --fs-h3:calc(19px*var(--scale)); --fs-h2:calc(24px*var(--scale)); --fs-h1:calc(34px*var(--scale));
+  --measure:68ch;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0B1628; --grid:rgba(127,176,255,.065); --surface:#111F35; --surface-2:#16263F; --surface-3:#1D304D;
+    --plate:linear-gradient(180deg,#132440,#0F1D33);
+    --text:#E6EEF9; --text-2:#AAB9CF; --text-3:#8FA0B9;
+    --border:#213659; --border-strong:#304A72;
+    --accent:#7FAEFF; --accent-hover:#A2C4FF; --accent-soft:#18305A; --accent-line:rgba(127,174,255,.45); --on-accent:#0A1830; --focus:#9CC0FF;
+    --mark:rgba(242,181,68,.22); --mark-line:#F2B544; --mark-ink:#FFE2A0; --on-status:#0A1830; --input-line:#5A77A3; --btn-glow:rgba(0,0,0,.5); --seg-on:var(--accent-soft);
+    --good:#58C68E; --good-soft:#12302A; --bad:#F08A80; --bad-soft:#3A1E24; --warn:#E8BE5C; --warn-soft:#322914;
+    --trap:#B99BF0; --trap-soft:#2A2244; --flag:#F4A35C; --flag-soft:#3A2618;
+    --d1:#6FA2FF; --d2:#3FC5B8; --d3:#A98BF2; --d4:#EDB14A; --d5:#F2808E; --d6:#6DC47A; --d7:#9AA8BF;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -14px rgba(0,0,0,.6);
+    --shadow-lg:0 2px 6px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0B1628; --grid:rgba(127,176,255,.065); --surface:#111F35; --surface-2:#16263F; --surface-3:#1D304D;
+  --plate:linear-gradient(180deg,#132440,#0F1D33);
+  --text:#E6EEF9; --text-2:#AAB9CF; --text-3:#8FA0B9;
+  --border:#213659; --border-strong:#304A72;
+  --accent:#7FAEFF; --accent-hover:#A2C4FF; --accent-soft:#18305A; --accent-line:rgba(127,174,255,.45); --on-accent:#0A1830; --focus:#9CC0FF;
+  --mark:rgba(242,181,68,.22); --mark-line:#F2B544; --mark-ink:#FFE2A0; --on-status:#0A1830; --input-line:#5A77A3; --btn-glow:rgba(0,0,0,.5); --seg-on:var(--accent-soft);
+  --good:#58C68E; --good-soft:#12302A; --bad:#F08A80; --bad-soft:#3A1E24; --warn:#E8BE5C; --warn-soft:#322914;
+  --trap:#B99BF0; --trap-soft:#2A2244; --flag:#F4A35C; --flag-soft:#3A2618;
+  --d1:#6FA2FF; --d2:#3FC5B8; --d3:#A98BF2; --d4:#EDB14A; --d5:#F2808E; --d6:#6DC47A; --d7:#9AA8BF;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -14px rgba(0,0,0,.6);
+  --shadow-lg:0 2px 6px rgba(0,0,0,.35), 0 26px 50px -20px rgba(0,0,0,.7);
+}
+
+@media (max-width:640px){:root{--fs-h1:calc(29px*var(--scale))}}
+
+/* Site pages (hub, guide homes, 404). The build prepends the fonts and src/css/tokens.css, so these pages share the
+   apps' "drafting table" palette, type scale and dark mode. No scripts: every page here is plain HTML and CSS. */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;color:var(--text);font:400 var(--fs-ui)/1.55 var(--font-ui);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;min-height:100dvh;
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;background-attachment:fixed}
+h1,h2,p{margin:0}
+h1{font-size:var(--fs-h1);font-weight:600;letter-spacing:-.025em;line-height:1.12;text-wrap:balance}
+h2{font-size:var(--fs-h3);font-weight:600;letter-spacing:-.015em;line-height:1.25}
+a{color:var(--accent);text-decoration-color:var(--accent-line);text-underline-offset:.2em;text-decoration-thickness:1px}
+a:hover{color:var(--accent-hover);text-decoration-color:currentColor}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:6px}
+::selection{background:var(--accent-soft)}
+.skip{position:absolute;left:8px;top:-60px;z-index:10;background:var(--surface);color:var(--text);padding:10px 14px;border:1px solid var(--border-strong);border-radius:var(--r-sm)}
+.skip:focus{top:8px}
+
+.page{max-width:44rem;margin:0 auto;padding:max(28px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(40px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+.crumbs{font-size:var(--fs-meta);margin-bottom:28px}
+.crumbs a{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-weight:500;text-decoration:none;color:var(--text-2)}
+.crumbs a:hover{color:var(--accent)}
+.crumbs svg{width:16px;height:16px;flex:none}
+
+.head{margin-bottom:32px}
+.eyebrow{font:500 var(--fs-cap)/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.lede{margin-top:14px;font-size:var(--fs-read);line-height:1.5;color:var(--text-2);max-width:36em;text-wrap:pretty}
+
+/* One list for guides on the hub and apps on a guide home: a whole-card link, icon or code tile, then the text. */
+.list{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.tile{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:20px;
+  background:var(--plate);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);
+  color:inherit;text-decoration:none;transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease}
+.tile:focus-visible{outline-offset:3px;border-radius:var(--r-lg)}
+@media (hover:hover){.tile:hover{color:inherit;border-color:var(--accent-line);box-shadow:var(--shadow-lg);transform:translateY(-1px)}}
+.tile:active{transform:none}
+.tile img,.tile .code{width:60px;height:60px;border-radius:15px;flex:none}
+.tile img{box-shadow:var(--shadow-sm)}
+.tile .code{display:grid;place-items:center;background:#15233A;color:#F3F6FB;font:500 13px/1 var(--font-mono);white-space:nowrap;
+  background-image:linear-gradient(rgba(127,176,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(127,176,255,.12) 1px,transparent 1px);background-size:6px 6px;box-shadow:inset 0 0 0 1px rgba(127,176,255,.28)}
+.tile-body{min-width:0}
+.tile-body p{margin-top:4px;color:var(--text-2)}
+.tile .meta{margin-top:10px;font-size:var(--fs-meta);color:var(--text-3)}
+.tile .go{width:22px;height:22px;color:var(--text-3);transition:color .16s ease,transform .16s ease}
+@media (hover:hover){.tile:hover .go{color:var(--accent);transform:translateX(2px)}}
+
+.note{margin-top:36px;padding-top:24px;border-top:1px solid var(--border);color:var(--text-2);font-size:var(--fs-meta);line-height:1.6;max-width:40em}
+.note h2{font-size:var(--fs-ui);color:var(--text);margin-bottom:6px}
+.note p+p{margin-top:.6em}
+
+/* Shown only when an old link lands here with #moved. */
+.moved{display:none;scroll-margin-top:50vh;margin-bottom:28px;padding:16px 18px;border-radius:var(--r);background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--text)}
+.moved:target{display:block}
+.moved strong{font-weight:600}
+.moved p+p{margin-top:.4em;color:var(--text-2);font-size:var(--fs-meta)}
+
+.foot{margin-top:48px;font-size:var(--fs-cap);color:var(--text-3)}
+
+@media (max-width:480px){
+  .page{padding-top:max(20px,env(safe-area-inset-top))}
+  .tile{grid-template-columns:auto 1fr;gap:14px;padding:16px}
+  .tile img,.tile .code{width:48px;height:48px;border-radius:12px;align-self:start}
+  .tile .code{font-size:10.5px}
+  .tile .go{display:none}
+}
+@media (prefers-reduced-motion:reduce){.tile,.tile .go{transition:none}.tile:hover{transform:none}}
