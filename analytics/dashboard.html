@@ -158,7 +158,7 @@ const auto = r => !(r.label || r.usr) && (AUTO_UA.test(r.ua || '') || AUTO_NET.t
 const whoCell = (label, usr, row) => (label || usr) ? h('span', { class: 'who' }, label || usr)
   : h('span', null, h('span', { class: 'unnamed' }, 'Unnamed'), row && auto(row) ? [' ', h('span', { class: 'pill', title: 'Headless or scripted browser, or a cloud-hosting network' }, 'likely automated')] : null);
 // Every page that sends events: <guide>/<app>, a guide home (<guide>), or the hub. New guides add a line here.
-const APPS = { 'ccarp/portal': 'CCAR-P Study Portal', 'ccarp/flashcards': 'CCAR-P Flashcards', 'ccarp': 'CCAR-P home', 'gcp-pca/field-guide': 'PCA Field Guide', 'gcp-pca': 'GCP-PCA home', 'hub': 'Hub' };
+const APPS = { 'ccarp/portal': 'CCAR-P Study Portal', 'ccarp/flashcards': 'CCAR-P Flashcards', 'ccarp': 'CCAR-P home', 'gcp-pca/portal': 'PCA Study Portal', 'gcp-pca/flashcards': 'PCA Flashcards', 'gcp-pca/field-guide': 'PCA Field Guide (old address)', 'gcp-pca': 'GCP-PCA home', 'hub': 'Hub' };
 const APP = a => APPS[a] || a || '–';
 function what(e) {
   const d = parse(e.data);
