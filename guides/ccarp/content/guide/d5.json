@@ -1,0 +1,244 @@
+{
+ "domain": 5,
+ "intro": "Domain 5 tests whether you can pick the control that actually stops a harm, place it correctly and hand the residual risk to the right person. A typical item has one exposure: a tool the role never needs, outside text the model might obey, a queue that approves everything, personal or health data crossing a boundary, or a group the aggregate hides. Every option is sound practice somewhere, so the binding constraint decides: never, guarantee, irreversible, PHI, EU residents, regulator. The reassuring answers usually lose: a firmer prompt, more logging, 100% review, zero retention, the overall score. Select-two items often pair a preventive with a detective control, or a control with its evidence artefact. Keep asking what physically stops the outcome if the model does the wrong thing.",
+ "delta": "Carried over from CCAR-F: enforce critical rules in code rather than in prompts, never escalate on self-reported confidence or sentiment, and distrust aggregate accuracy. Low-yield here: hook exit codes, settings syntax and platform-specific residency parameters. New at Professional level: mapping GDPR, HIPAA and FedRAMP obligations to a control, an owner and an evidence artefact; bounding prompt injection; spotting rubber-stamp review; per-group fairness and in-context disclosure; and leaving risk acceptance to the business owner.",
+ "sections": [
+  {
+   "obj": "5.1",
+   "core": [
+    "The **control-strength ladder** runs instruction, screening and validation, human approval, deterministic enforcement, then removal. Stop at the lowest rung that survives the stem's constraint. For an action the role never needs, remove it: instructions, screening and a human gate are all weaker than absence. For an action the role needs but whose bad outcome must never reach anyone, instructions alone are too weak; layer preventive controls such as a guardrail plus a mandatory approval the workflow enforces before the external send.",
+    "**Remove, don't guard.** If the role never needs a tool, scope or credential, take it away; nothing can misuse or be injected into what is absent. Confirmations, limits and allowlists belong only on capabilities the role genuinely needs.",
+    "**Fail closed**: when a guardrail errors, times out or cannot decide, the action is blocked. Hooks, screens and authorization checks do this only if their author makes errors block; many defaults let the action proceed. Failing open with alerting suits only a low-risk, reversible action when the stem puts availability first.",
+    "**Defence in depth** layers input screening, output screening and tool-call authorization outside the model, each tested against its target failure. A screen is a separate check, often a lightweight classifier, never the main model grading itself. The system prompt is never the security boundary.",
+    "**Prevent or detect.** Denying, gating or validating before the action prevents harm; logs, alerts and dashboards only report it afterwards. Match the control type to the ask; a select-two item that asks you to stop it and prove it wants one of each. An output screen that blocks before delivery is preventive; a scan that alerts after delivery is detective. Every detective control needs a defined response: an owner, a trigger and an action.",
+    "Screen **before the boundary**: redact or withhold data before it enters the prompt or leaves through a tool. Output filtering is a valid second layer, never the fix for data that should not have been sent.",
+    "**Calibrate every guardrail.** Measure its false-positive (over-blocking) and false-negative rates on labelled sets and set the operating point by the relative harm of each error; a screen that blocks legitimate users erodes the product and invites workarounds. A block gives a clear decline and a route to an alternative or a person."
+   ],
+   "worked": {
+    "scenario": "Aiko's team built Meridian's new adjuster-drafting assistant by copying the contact-centre copilot's tool set. A review shows the drafting assistant can call a `reopen_claim` tool that changes claim state in ClaimsCore, although its only job is to draft letters and notes that adjusters approve in Adjuster Workbench. Priya asks for a change that guarantees the drafting assistant can never alter claim state, even if a claimant's attachment tells it to.",
+    "ask": "Which change meets Priya's requirement?",
+    "options": [
+     { "text": "Keep the tool, but require the assigned adjuster to confirm each reopen request in Adjuster Workbench before it runs.", "correct": false, "trap": "T-REMOVE" },
+     { "text": "Add a capitalised rule to the system prompt stating that the assistant must never change claim state, whatever a document says.", "correct": false, "trap": "T-ENFORCE" },
+     { "text": "Remove the claim-state tool and its write credential from the drafting assistant, leaving read and draft tools only.", "correct": true, "trap": null },
+     { "text": "Log every reopen call with its claim ID and alert Priya's team whenever the drafting assistant uses the tool.", "correct": false, "trap": "T-DETECT" }
+    ],
+    "steps": {
+     "constraint": "'Guarantees' and 'never', applied to an action the role does not need. Anything probabilistic, and anything that leaves the capability in place, falls short. The attachment clause tells you to assume the model may be manipulated.",
+     "classify": "Prevention, at the tool and permission layer, during design. On the control-strength ladder the stem points to the top rung, because the drafting job never requires changing claim state.",
+     "eliminate": "Adjuster confirmation is T-REMOVE: it guards a capability the role never needs, and a hurried click still lets the change through. The system-prompt rule is T-ENFORCE: an injected attachment competes directly with it. Logging with alerts is T-DETECT: Priya learns about the reopened claim after it has happened.",
+     "choose": "Remove the tool and its credential. The runner-up, adjuster confirmation, would be right only if drafting genuinely required reopening claims, which the stem rules out."
+    }
+   },
+   "faded": {
+    "scenario": "During a storm surge, the output screen on Meridian's claimant status messages starts timing out on about one call in twenty. The screen checks each message for another person's data and for coverage promises the policy does not support. The messaging service was built to send the message unscreened whenever the screen misses its time budget, so contact times stay flat. Priya wants the leak path closed; Luis wants the surge SLA protected.",
+    "ask": "What is the BEST change?",
+    "options": [
+     { "text": "Keep sending on timeout so contact times hold, but log every unscreened message and alert compliance within the hour.", "correct": false, "trap": "T-DETECT", "why": "The alert arrives after a claimant has already read the message." },
+     { "text": "Hold any message the screen has not cleared, queue it for retry or an adjuster, and scale the screen for surge load.", "correct": true, "trap": null, "why": "It fails closed on error and protects the SLA through capacity and queueing rather than by skipping the check." },
+     { "text": "Tell the drafting model never to include other people's details or coverage promises the policy does not support.", "correct": false, "trap": "T-ENFORCE", "why": "Shaping the draft helps, but an instruction is not a control point that can refuse the send." },
+     { "text": "Rerun the screen overnight over each day's sent messages and correct any errors with a follow-up email to the claimant.", "correct": false, "trap": "T-BOUNDARY", "why": "Screening after the message has reached the claimant is a control after crossing, and a follow-up cannot unsend it." }
+    ],
+    "constraint": "Claimant-facing messages leave the company and cannot be recalled once read, and a guardrail layer is erroring under load. Luis's surge SLA and Priya's leak path pull in opposite directions.",
+    "classify": "Prevention at the output layer, in operation under load. The real question is fail open versus fail closed.",
+    "reasoning": "Strike the alerting option (T-DETECT), the prompt rule (T-ENFORCE) and the overnight rescan (T-BOUNDARY). Holding uncleared messages wins because the messages are external and irreversible, so the exception that allows failing open (a low-risk, reversible action with availability explicitly first) does not apply. Capacity and a retry queue answer Luis's SLA concern without reopening the leak. The alerting option would need the stem to say these messages are low-risk and reversible and that availability outranks privacy."
+   },
+   "traps": ["T-REMOVE", "T-ENFORCE", "T-DETECT", "T-BOUNDARY"],
+   "contrast": {
+    "a": { "title": "Remove the capability", "text": "The role never needs the action, or the tool was added 'just in case'. Nothing can misuse or be injected into what is absent." },
+    "b": { "title": "Guard the capability", "text": "The role genuinely needs the action, such as sending a claimant a status message. Scope it narrowly, gate it by risk and log it." },
+    "decider": "Does the role's job ever require this action? No means remove it; yes means scope and gate it."
+   },
+   "explain": {
+    "prompt": "Why does a guardrail that fails open on timeout give no guarantee, even if it catches every violation it evaluates?",
+    "model": "A guarantee covers every action, including those the layer never evaluated. If an error or timeout lets the action through, load spikes and attackers will find that path, so protection is only as good as the layer's error rate. A control bounds the outcome only if it refuses whenever it cannot decide, and that failure path must be tested."
+   },
+   "bridge": "Foundations taught you to enforce critical rules in hooks and permission rules rather than prompts, and that carries over. Foundations prep overweights hook syntax and exit codes; here the question is which rung the risk needs and whether it fails closed."
+  },
+  {
+   "obj": "5.2",
+   "core": [
+    "**Indirect prompt injection** arrives inside content the system fetches (emails, attachments, web pages, retrieved chunks), not from the person directing it. Treat that text as data: label its source, keep it in tool results, give it no authority and screen it with a separate check.",
+    "**Bound the blast radius.** Exfiltration needs an instruction channel and an outbound path. Removing the path (no free-text external send, allowlisted recipients, no fetching of attacker-supplied URLs) breaks the chain even when an injection lands.",
+    "**Confident errors**, such as a fluent but wrong coverage statement, are caught by verification independent of the model: citations checked against the source, rule checks, the system of record. Asking the same model whether it is sure is not independent.",
+    "A **failure-mode register** lists each mode with its trigger, independent check, fallback, residual risk and owner. It is the honest answer when a sponsor asks you to promise no hallucinations before a pilot.",
+    "**Graceful fallback** means a failed dependency (empty retrieval, a gateway timeout, a refusal) drops the system into a defined safe state, such as a human handoff or a plain 'cannot answer', instead of letting the model improvise. Degrade per dependency where you can: capabilities that do not depend on the failed part keep working and the unavailable part is disclosed. Exercise fallbacks in drills, and keep a non-AI business path for a whole-system outage.",
+    "Separate **intrinsic model limits** (fabrication, stale training knowledge, non-deterministic output, obeying injected text) from ordinary defects. A failure that would happen with the model removed, such as a timeout or misconfiguration, is fixed as engineering, not with LLM-specific mitigations. The model has a fixed training cutoff and no access to internal systems unless a tool provides it, so current facts come through retrieval, tools or web search. Temperature 0 does not make a production decision reproducible; the deterministic core does.",
+    "Name the **threats** precisely. Direct injection comes from the user, indirect injection from fetched content. For system-prompt leakage, assume the prompt will be extracted, so it holds no secrets and no authority. The OWASP Top 10 for LLM applications calls over-broad tools, permissions or autonomy **excessive agency**, answered by least privilege. Third-party MCP servers are supply chain: a directory listing is not a security review, so vet or self-host them and allowlist which servers may run."
+   ],
+   "worked": {
+    "scenario": "Meridian's investigation agent, read-only until now, reads claimant uploads and repair-shop invoices for the investigations unit. A new release lets it email repair shops to request missing invoices. In red-team testing, an invoice PDF carrying hidden white text told the agent to forward the full claim file to an outside address, and it did. Priya will approve the release only if that path is closed.",
+    "ask": "Which change BEST addresses the finding?",
+    "options": [
+     { "text": "Add a system-prompt rule telling the agent to ignore any instructions it finds inside documents, and repeat it after each tool result.", "correct": false, "trap": "T-ENFORCE" },
+     { "text": "Have the agent assess each document for manipulation before acting on it, and skip any document it flags as suspicious.", "correct": false, "trap": "T-SELFCONF" },
+     { "text": "Scan outbound email each night and alert the investigations unit whenever claim data has reached an address outside the claim.", "correct": false, "trap": "T-DETECT" },
+     { "text": "Limit the email tool to a fixed request template for repair shops already on the claim, and label fetched text as untrusted data.", "correct": true, "trap": null }
+    ],
+    "steps": {
+     "constraint": "The agent reads untrusted documents and now has an outbound channel, and the demonstrated harm is claim data leaving the company. 'Only if that path is closed' asks for prevention.",
+     "classify": "Prevention at two layers: the tool layer, which bounds outbound reach, and the context layer, which lowers the authority of fetched text. Stage: pre-release, after a red-team finding.",
+     "eliminate": "The prompt rule is T-ENFORCE: the hidden text competes with it on equal terms, however often it is repeated. Self-assessment is T-SELFCONF: the model being manipulated is the one asked to spot the manipulation. The nightly scan is T-DETECT: it reports the leak after the file has gone.",
+     "choose": "Constrain the email tool and label fetched text. With no free-text body, attachment or open recipient, a landed injection has no way to send the file out. The nightly scan would be right only if the stem asked how the unit would find out about a leak rather than how to stop one."
+    }
+   },
+   "faded": null,
+   "traps": ["T-ENFORCE", "T-SELFCONF", "T-OVERPROMISE", "T-ASSUME"],
+   "contrast": {
+    "a": { "title": "LLM-specific mitigation", "text": "The failure comes from model behaviour: an injection obeyed, a confident wrong answer, a refusal. Bound authority and reach, verify independently and define a fallback." },
+    "b": { "title": "Ordinary engineering fix", "text": "The failure would happen with the model removed: a timeout, a misconfigured endpoint, stale data. Fix the component as you would in any system." },
+    "decider": "Take the model out of the picture: if the failure still happens, it is an ordinary defect."
+   },
+   "explain": {
+    "prompt": "Why does constraining the outbound path defeat an exfiltration attack even if the injected instruction is still obeyed?",
+    "model": "Exfiltration is a chain: hostile text has to reach the instruction channel, and the stolen data has to leave through a path the attacker can use. Breaking either link breaks the attack, and the outbound link is the one you can close deterministically. Discouraging or detecting the injection only lowers its odds; removing the path stops the leak whatever the model obeys."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "5.3",
+   "core": [
+    "**Route by consequence.** Reversibility, blast radius (who sees or absorbs the error), cost of error and regulatory exposure decide where a human sits. A small irreversible external action outranks a large reversible internal one.",
+    "**Calibrated system signals** trigger review: validation failures, missing retrieval support, policy-rule hits, a novel case, or a separate score validated against labelled outcomes, such as a fraud engine's. The model's self-rated confidence is never a trigger.",
+    "The **HITL ladder** runs from automation with monitoring, through risk-stratified sampling and risk-routed review, to mandatory pre-action approval and finally a human who decides while AI assists. Climb only as far as the stakes and the law require.",
+    "**Rubber-stamp review** is automation bias made visible: near-total unedited approval in seconds means the gate exists only on paper. Redesign it; do not staff it up or add a second approver. A queue that auto-releases items on timeout is a fail-open gate: size reviewer capacity for peak and hold, not release, on timeout.",
+    "A **real review** gives the reviewer the evidence behind the recommendation, a rubric, enough time and the authority to reject. Override rates and time per item prove it bites. The reviewer must also be competent in the domain and named, so accountability rests with a person.",
+    "**Sampling** of high-volume, low-risk work is stratified by risk and slice, not a random fixed share. It feeds quality evidence and the eval set, and it never replaces the gate on irreversible actions.",
+    "Some oversight is **mandated, not chosen**. GDPR restricts solely automated decisions with legal or similarly significant effects; the EU AI Act classes systems such as recruitment screening and creditworthiness scoring as high-risk, with human-oversight duties; Anthropic's Usage Policy requires a qualified professional to review advice, recommendations or subjective decisions that directly affect individuals before they are disseminated or finalised in high-risk domains such as legal, healthcare, insurance, finance, employment and housing. There the gate is a requirement, whatever the measured accuracy or reversibility."
+   ],
+   "worked": {
+    "scenario": "Meridian's triage assistant produces two outputs. About 150 claimant emails a week explain what a policy covers before the adjuster calls. About 2,500 internal reclassifications a week move claims between adjuster queues, and an adjuster can move one back in a click. Luis can staff roughly 300 reviews a week. A developer proposes reviewing whatever Claude rates below 80% confident, which would flag about 280 items a week.",
+    "ask": "How should Luis's review capacity be allocated?",
+    "options": [
+     { "text": "Review every coverage email before sending, then use the remaining capacity on a risk-based sample of reclassifications.", "correct": true, "trap": null },
+     { "text": "Adopt the developer's proposal, since about 280 flagged items a week fits the available review staffing almost exactly.", "correct": false, "trap": "T-SELFCONF" },
+     { "text": "Review a random 10% of all outputs each week, drawn from both streams in proportion to their weekly volume.", "correct": false, "trap": "T-RUBBERSTAMP" },
+     { "text": "Launch both streams unreviewed, then set review routing rules once a full month of production error data is in.", "correct": false, "trap": "T-LATER" }
+    ],
+    "steps": {
+     "constraint": "The coverage emails are external and cannot be recalled once read; the reclassifications are internal and undone in a click. Capacity is fixed at about 300 reviews a week.",
+     "classify": "HITL ladder, design stage. The emails sit at mandatory pre-send review: irreversible, external and few. The reclassifications sit at targeted sampling: reversible, internal and numerous.",
+     "eliminate": "The confidence threshold is T-SELFCONF: self-rating is uncalibrated, so the 280 flags need not include the risky emails, and a neat fit with staffing proves nothing. The random 10% is T-RUBBERSTAMP: it spends about 265 reviews mostly on reversible moves and leaves roughly 135 of the 150 coverage emails unchecked. Waiting for production data is T-LATER: the routing design is due now, and meanwhile unreviewed coverage statements reach claimants.",
+     "choose": "Gate the emails and sample the reclassifications by risk. The random sample would be right only if an error in either stream cost about the same, which the stem contradicts."
+    }
+   },
+   "faded": {
+    "scenario": "Six months into the pilot, Adjuster Workbench data shows that Meridian adjusters approve 99% of Claude-drafted denial rationales without edits, with a median review time of five seconds. Denial letters go to claimants and can be challenged only through a formal appeal. Dana asks whether the human review is working, and Luis wants to fix any problem without adding headcount.",
+    "ask": "What is the BEST response?",
+    "options": [
+     { "text": "Add a team-lead approval after the adjuster's approval on every denial, so that two named people sign off each letter.", "correct": false, "trap": "T-RUBBERSTAMP", "why": "A second click on the same evidence-free queue doubles the stamp rather than restoring judgement." },
+     { "text": "Auto-send denials that Claude rates as high confidence, since adjusters already approve 99% of drafts unedited.", "correct": false, "trap": "T-SELFCONF", "why": "Self-rated confidence is not a calibrated signal, and every denial needs a named human decision." },
+     { "text": "Show cited clauses and evidence beside each draft, require a stated reason, and track edit rates and review times.", "correct": true, "trap": null, "why": "It turns the approval back into a decision and measures whether the gate changes outcomes, with no new headcount." },
+     { "text": "Tell Dana the review is working, since a 99% approval rate shows the drafts are accurate and that adjusters trust them.", "correct": false, "trap": "T-ASSUME", "why": "It assumes agreement means accuracy; nobody has checked the drafts independently, and five-second approvals point to automation bias." }
+    ],
+    "constraint": "Denials are high-impact and hard to reverse, and a named human must make each one. The approval pattern shows that decision is not really being made, and there is no new headcount.",
+    "classify": "HITL ladder at the mandatory pre-action approval rung; the question is whether that rung is doing its job. Operate stage, with six months of review data in hand.",
+    "reasoning": "Strike the team-lead approval (T-RUBBERSTAMP), auto-send on confidence (T-SELFCONF, which also breaks the rule that a named human makes every denial) and the reassurance to Dana (T-ASSUME). The evidence-and-reason redesign wins because it restores what a real review needs (evidence, a stated reason, time and the authority to reject) and adds measurement that shows whether the gate bites. The team-lead option would be right only if these denials exceeded the adjusters' authority limits, and even then the second reviewer would need the same evidence."
+   },
+   "traps": ["T-SELFCONF", "T-RUBBERSTAMP", "T-LATER"],
+   "contrast": {
+    "a": { "title": "Mandatory pre-action review", "text": "Every instance is consequential or the law expects a person to decide: denials, above-limit payments, coverage statements to claimants. Give the reviewer evidence, time and authority." },
+    "b": { "title": "Risk-stratified sampling", "text": "Volume is high, each item is reversible and internal, and you need ongoing quality evidence for the eval set. Stratify by risk and slice." },
+    "decider": "Could one wrong item cause harm that cannot be undone, or does the law expect a person to decide it? Yes: gate every item. No: sample by risk."
+   },
+   "explain": {
+    "prompt": "Why is the model's self-reported confidence unfit as a review trigger?",
+    "model": "It comes from the same process that made the error, so it is least reliable exactly where it matters: fluent, confident mistakes. It is not calibrated against labelled outcomes, can shift with any prompt or model change, and says nothing about what an error would cost. Routing needs signals the system controls and can validate, weighted by consequence."
+   },
+   "bridge": "Foundations already ruled out escalating on self-reported confidence or sentiment, and that carries over unchanged. What is new is routing by reversibility and blast radius and proving the gate changes outcomes; escalation-trigger mechanics are low-yield here."
+  },
+  {
+   "obj": "5.4",
+   "core": [
+    "**Compliance is a gate, not a weight.** An option that breaches a stated obligation is eliminated before cost, latency or quality are compared; 'weigh the risk against the savings' and 'proceed and seek a waiver' both fail. Stricter internal policy binds the design just as law does, and where policy is silent the owning function (privacy, security or legal) decides.",
+    "**HIPAA** requires PHI to reach only BAA-covered services in eligible configuration, with audit logging and the minimum necessary data. **ZDR is a retention arrangement, not HIPAA compliance.** On Bedrock or Google Cloud, coverage comes from the cloud provider's BAA and eligible services, not from Anthropic's API arrangement. Anthropic's HIPAA readiness covers only the first-party Claude API; it is not available on Claude Platform on AWS or Microsoft Foundry.",
+    "**GDPR minimisation** means less personal data arrives: send only the fields each call needs. Encryption protects what you still send, consent legitimises a purpose, and pseudonymised data is still personal data; none of them shrinks the payload. Its siblings are **purpose limitation** (reusing production traffic for eval sets or training is a new purpose that must be compatible or have its own basis) and **storage limitation** (a retention period for every store, logs and traces included). Classify the data first, because minimisation, redaction, residency and retention decisions all depend on it; internal use earns no exemption.",
+    "**Residency and authorisation** come from where the workload runs. Residency needs a regional or geography-bound endpoint, since global cross-Region routing does not guarantee location, and every store on the data path in-region too: vector stores, prompt and response logs, traces, error trackers, backups and subprocessors. FedRAMP needs a platform boundary already authorised at the required impact level; the model holds no authorisation of its own, and a DPA or encryption moves nothing. The operator matters as well: on Claude Platform on AWS, Anthropic rather than AWS processes inference data (3.7). A transfer outside the EEA also needs a legal mechanism, such as an adequacy decision or standard contractual clauses, plus a processor agreement; no endpoint setting provides one.",
+    "**Least privilege** is enforced by the system that owns the data, using the end user's identity. A model told to check roles, or a shared privileged service account, is not an access control an auditor will accept.",
+    "The **compliance map** ties every obligation to a named control, an owner and an evidence artefact, such as a tamper-evident record of each interaction. A vendor's SOC 2 report or BAA is evidence about the vendor, not about your data flows. Evidence must show that the control operated, not just that it was designed, and records are kept for the regulator's look-back window in enough detail to reconstruct an individual decision.",
+    "GDPR also restricts **solely automated significant decisions**, such as a claim denial, without meaningful human involvement. A rubber-stamped review does not count as involvement, which links this objective to 5.3.",
+    "**Data-subject rights** reach every derived copy. An access or erasure request must find the person's data in prompts, logs, traces, caches, vector indexes, memory stores and eval sets, so design lineage in from the start (for example, separating identity from content so one key can be deleted). An exemption such as a legal retention duty (GDPR Art. 17(3)) justifies keeping only the record that duty covers. GDPR also reaches organisations outside the EU that offer services to, or monitor, people in it (Art. 3(2)), and high-risk processing needs a data protection impact assessment first (Art. 35)."
+   ],
+   "worked": {
+    "scenario": "Meridian's EU subsidiary wants the contact-centre copilot to answer 'where is my claim?' calls. The current build places the caller's full customer profile in every prompt: claims history, health rider details, bank account, household members and marketing preferences. A status answer needs only the claim reference, its live state and the next step. Inference already runs on an EU geography-bound endpoint, and the logs, traces and backups on that path are EU-resident. Priya blocks the pilot under GDPR.",
+    "ask": "Which change resolves Priya's objection?",
+    "options": [
+     { "text": "Encrypt the full profile in transit and at rest with EU-held keys, so the extra fields stay protected on every call.", "correct": false, "trap": "T-COMPLY" },
+     { "text": "Build each prompt from the claim reference, live claim state and next step, and send no other profile fields.", "correct": true, "trap": null },
+     { "text": "Keep the full profile in the prompt, but screen the copilot's replies so that no health or bank details are read out.", "correct": false, "trap": "T-BOUNDARY" },
+     { "text": "Instruct the copilot in its system prompt to ignore the health, bank and household fields a status answer does not need.", "correct": false, "trap": "T-ENFORCE" }
+    ],
+    "steps": {
+     "constraint": "GDPR minimisation, raised by the compliance owner as a blocker. The stem confirms the whole data path is EU-resident, so residency cannot be the issue; the payload is.",
+     "classify": "Prevention at the data layer, before the boundary, in design. Regime match: minimisation, which is about what arrives rather than how it is protected.",
+     "eliminate": "Encryption is T-COMPLY: it protects data you still send, and the payload is unchanged. Reply screening is T-BOUNDARY: the fields have already crossed into the prompt. The prompt instruction is T-ENFORCE: the data still arrives and the rule is advisory.",
+     "choose": "Send only the three fields. Reply screening would be right only if the objection concerned what callers hear rather than what the model receives."
+    }
+   },
+   "faded": {
+    "scenario": "Meridian's US health line wants the claims assistant to summarise itemised hospital invoices for hospital-cash claims. The invoices carry diagnoses and procedure codes. The US build calls Claude on Bedrock in a US region. A developer who used zero data retention on an earlier direct-API project says, 'Switch retention off and we are HIPAA-covered.' Priya must sign off before any invoice is processed.",
+    "ask": "What must be in place before Priya signs off?",
+    "options": [
+     { "text": "No data retention on the Bedrock account, so that nothing from the invoices or summaries is stored after each call.", "correct": false, "trap": "T-COMPLY", "why": "Retention is not the HIPAA mechanism; it supplies no BAA, no eligible configuration and no audit trail." },
+     { "text": "A signed BAA with Anthropic, because Anthropic is the model provider and its first-party API offers HIPAA readiness.", "correct": false, "trap": "T-ASSUME", "why": "It assumes the model vendor's API arrangement covers a cloud service. On Bedrock, AWS is the business associate that signs the BAA, and Anthropic's API HIPAA readiness does not extend to it." },
+     { "text": "A system-prompt rule telling Claude to leave diagnoses and procedure codes out of each summary for adjusters.", "correct": false, "trap": "T-BOUNDARY", "why": "The PHI has already crossed into the prompt; the rule only shapes the output." },
+     { "text": "AWS's BAA with HIPAA-eligible services and configuration, audit logging, and invoices cut to the fields the summary needs.", "correct": true, "trap": null, "why": "It is the mechanism the regime requires, agreed with the right party for Bedrock, with minimum necessary applied before the boundary." }
+    ],
+    "constraint": "PHI is in scope, a named owner must sign off before any invoice is processed, and the workload runs on Bedrock rather than on Anthropic's own API.",
+    "classify": "A regulatory gate, prevention before the boundary, design stage. Regime match: HIPAA; work out which mechanism it requires and which party supplies it on this platform.",
+    "reasoning": "Strike no retention (T-COMPLY), Anthropic's BAA (T-ASSUME) and the prompt rule (T-BOUNDARY). The AWS BAA option wins because it names what HIPAA requires (covered services, eligible configuration, audit), puts the agreement with the party that handles the data on Bedrock, and gives Priya evidence she can check, while minimum necessary trims PHI before it crosses. The Anthropic BAA option would need the workload to run on the first-party Claude API under a signed BAA and a HIPAA-enabled organisation, which the stem rules out."
+   },
+   "traps": ["T-COMPLY", "T-BOUNDARY", "T-AUTHZ", "T-ASSUME"],
+   "contrast": {
+    "a": { "title": "BAA-covered configuration", "text": "Health data such as diagnoses is in scope. You need the covered service, eligible configuration, audit logging and minimum necessary, whatever the retention setting." },
+    "b": { "title": "Zero data retention", "text": "The requirement really is about how long prompts and outputs are kept, and no regime-specific mechanism is named." },
+    "decider": "Does the stem put PHI in scope, or only a retention period?"
+   },
+   "explain": {
+    "prompt": "Why does a vendor's SOC 2 report or BAA not make your deployment compliant?",
+    "model": "Attestations describe the vendor's controls within its own boundary. Your obligations attach to your data flows: which fields you send, which service and configuration you use, who can see results and what evidence you keep. Your own map from obligation to control, owner and evidence proves compliance; it may cite the vendor's attestation but cannot be replaced by it."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "5.5",
+   "core": [
+    "**Slice evaluation** measures error and outcome rates per group (language, region, product line, protected characteristic where it is lawful to test) against disparity thresholds agreed before results come in. A strong aggregate can hide one failing group.",
+    "**Fairness through unawareness** fails: dropping a protected attribute leaves proxies such as language, postcode, name or channel. Evidence of fairness is outcomes, never the input schema or training data.",
+    "**Transparency** depends on the audience. Users need in-context disclosure that AI is involved and a route to a human; regulators and auditors need documented intended use, limits and versions; engineers need traces. A terms-of-service line is not disclosure, and a raw reasoning trace explains nothing to a claimant or regulator. Two sources make disclosure mandatory: Anthropic's Usage Policy requires consumer-facing chatbots to disclose AI at least at the start of each session, and the EU AI Act (Art. 50) requires people to be told when they interact with an AI system. Where law requires reasons for a decision, such as adverse-action notices in credit, each decision needs a specific explanation (the contributing findings and cited sources), not a general description of the model.",
+    "**Accountability** sits with the deploying organisation and a named business owner who accepts residual risk. The AI cannot bear responsibility, and the architect supplies evidence and options rather than the decision. A vendor's model card or contract does not move it: the deployer answers for automated decisions, so it keeps audit and information rights over its providers.",
+    "A **fairness trade-off**, such as extra review for one group raising cost per claim, is framed as options with measured consequences, decided by the owner and documented with a review date.",
+    "**Diagnose, then monitor.** When a slice fails, find where the gap enters (translation, prompt examples, retrieval or a downstream rule) before proposing fixes, then keep per-group metrics in production monitoring, alerting at the agreed threshold. A check passed at launch proves nothing next quarter."
+   ],
+   "worked": {
+    "scenario": "Tomasz's quarterly review shows Meridian's routing sends 4% of home claims to the investigations unit, inside target, and overall routing accuracy has improved. Split by claim language, home claims filed in Portuguese through the EU subsidiary go to investigators at three times the rate of other languages, well past the disparity threshold agreed at launch, with no higher confirmed-fraud rate. Neither the assistant nor Sentinel receives nationality. Dana decides next month whether to expand the pilot.",
+    "ask": "What should you do before the expansion decision?",
+    "options": [
+     { "text": "Recommend expanding as planned, since the overall 4% escalation rate is inside target and routing accuracy has improved.", "correct": false, "trap": "T-AGGREGATE" },
+     { "text": "Raise the escalation threshold for Portuguese-language claims until the rates match, then report parity at the next review.", "correct": false, "trap": "T-OWNER" },
+     { "text": "Bring Dana per-language escalation and confirmed-fraud rates against the agreed threshold, the cause and costed fixes.", "correct": true, "trap": null },
+     { "text": "Assure Dana the routing is unbiased because nationality is never an input, and commit to zero disparity after tuning.", "correct": false, "trap": "T-OVERPROMISE" }
+    ],
+    "steps": {
+     "constraint": "A per-group disparity past the agreed threshold with no matching difference in confirmed fraud, and a lifecycle gate that Dana owns next month.",
+     "classify": "Evidence and decision ownership at the measurement layer, before a pilot-to-expansion gate. Detection has already happened; the next move is putting the evidence in front of the owner.",
+     "eliminate": "Expanding on the overall rate is T-AGGREGATE: the aggregate is exactly what hides the failing slice. Quietly moving one group's threshold is T-OWNER: it makes a fairness trade-off on Dana's behalf and hides it. The unawareness argument with a zero-disparity pledge is T-OVERPROMISE: language is a proxy, and no probabilistic system can promise zero.",
+     "choose": "Bring the per-group evidence, where the gap enters, and costed options to Dana. Adjusting the threshold would be right only if Dana had delegated that decision and the change were documented, and the stem grants neither."
+    }
+   },
+   "faded": null,
+   "traps": ["T-AGGREGATE", "T-OWNER", "T-OVERPROMISE", "T-AUDIENCE"],
+   "contrast": {
+    "a": { "title": "In-context disclosure with a human route", "text": "End users talk to the AI or are affected by its output. Tell them at the point of interaction and give them a way to reach a person." },
+    "b": { "title": "Documentation for reviewers", "text": "The audience is a regulator, auditor or internal reviewer. Record intended use, limitations, model and prompt versions, and the decision rationale." },
+    "decider": "Who needs the explanation: the person in the conversation, or the person checking the system later?"
+   },
+   "explain": {
+    "prompt": "Why is 'no protected attribute in the inputs' not evidence of fairness?",
+    "model": "Other inputs carry the same information: language, postcode, name, channel and claim history can all act as proxies. Fairness is a property of outcomes, so the only evidence is outcome rates measured per group against a threshold agreed in advance. The input schema tells you what the model was given, not how it treated people."
+   },
+   "bridge": "Foundations taught that aggregate accuracy hides per-type failures, and the same move applies here to groups of people. What Foundations prep underweights is the next step: a pre-agreed disparity threshold and a documented decision by the named owner."
+  }
+ ],
+ "case": "At Meridian, people own the irreversible. The drafting assistant holds read and draft tools only, no model-facing tool reaches the payments gateway, and every denial and above-limit payment needs a named human with the authority recorded in the identity provider. Claimant emails and uploads are data, never instructions: fetched text carries no authority and has no outbound path, because the investigation agent is read-only. Input screening, output screening and tool-call authorization sit outside the model and fail closed. Review is routed by reversibility, blast radius and calibrated signals such as the Sentinel score, never by Claude's stated confidence, and Luis tracks review time and unedited approvals. Priya's compliance map ties every obligation to a control, an owner and evidence: minimised fields, EU and US geography-bound endpoints, and AWS's BAA with eligible configuration and audit logging, not ZDR. Claimants are told when AI is involved and can reach a person. Tomasz reports outcomes per language and region, and Dana accepts the residual risk."
+}

@@ -1,0 +1,505 @@
+[
+ {
+  "id": "P3-3.2-001",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "healthcare",
+  "family": "shared-integration-identity-bypass",
+  "counterTrap": false,
+  "signals": [
+   "stopped asking nurses to sign in to the EHR a second time",
+   "Her own EHR login cannot open that chart"
+  ],
+  "stem": "Kestrel Valley Health runs a clinical assistant in its nurse workstation app, and the system prompt tells Claude to discuss only patients on the requesting nurse's care team. Last month's release stopped asking nurses to sign in to the EHR a second time: the assistant's chart tool now connects through the hospital's interface engine instead. This week, for the first time since launch, a cardiology nurse asked about 'the patient in bed 12' and received psychiatric notes for a patient on another ward. Her own EHR login cannot open that chart, and the system prompt, workstation sign-on and EHR role rules are unchanged.",
+  "ask": "Which security gap MOST likely allowed the exposure?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The care-team rule exists only as a prompt instruction, so Claude misapplied it when the bed reference was ambiguous",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "A prompt rule is a weak control, but the same rule was in place before the release, when the EHR still refused cross-ward charts. The read succeeded because the EHR was no longer asked as her."
+   },
+   {
+    "id": "b",
+    "text": "A colleague's EHR session was still open on the shared workstation, so the tool fetched the chart with that colleague's access",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Lingering workstation sessions are a real identity gap, but workstation sign-on is unchanged and no exposure occurred before the release. The change touched how the chart tool signs in, so that is the layer to suspect."
+   },
+   {
+    "id": "c",
+    "text": "The privacy office's cross-ward alert watches only direct EHR logins, so the assistant's chart read raised no flag",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "This explains why nobody was warned, not why the EHR released the notes. The chart reached the nurse before any alert could fire, so fixing the alert leaves the exposure path open."
+   },
+   {
+    "id": "d",
+    "text": "The chart tool now opens records under the interface engine's account, so the EHR checks that account, not the nurse",
+    "correct": true,
+    "trap": null,
+    "why": "Her own login is refused and the EHR's rules are unchanged, so the EHR was not asked as her. Dropping the second sign-in moved chart reads onto a broader identity, which bypasses her per-user permissions."
+   }
+  ],
+  "explain": "Binding constraint: what changed. Only the chart tool's sign-in changed, and the EHR's unchanged rules already deny this nurse the chart, so the gap is the identity the tool now uses. Authorization must run at the data owner with the calling user's own permissions; a shared integration identity removes that per-user check.",
+  "rule": "CS-D3-04",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.2-002",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "security-boundary",
+  "industry": "insurance",
+  "family": "external-rollout-server-side-authz",
+  "counterTrap": false,
+  "signals": [
+   "to policyholders through the customer portal",
+   "accepts whatever claim number the conversation supplies",
+   "even with a correctly guessed claim number"
+  ],
+  "stem": "Harrow & Lune Mutual is opening its claims assistant, used until now by adjusters who can see every claim in their region, to policyholders through the customer portal. Policyholders sign in with the portal's identity service and then chat about claim status, documents and payments. The assistant looks claims up through a claims-service tool that accepts whatever claim number the conversation supplies. The product owner's launch requirement is that no policyholder can view another customer's claim, even with a correctly guessed claim number.",
+  "ask": "Which design BEST meets the launch requirement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have the claims service identify the policyholder from the portal session and refuse other customers' claims",
+    "correct": true,
+    "trap": null,
+    "why": "The claims service enforces ownership using the authenticated caller, so a correctly guessed claim number is refused. The rule holds however the conversation is phrased or manipulated, because the model never supplies the identity."
+   },
+   {
+    "id": "b",
+    "text": "Require policyholders to confirm their policy number and date of birth in chat before the assistant looks up a claim",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Typed policy details are guessable, and the check lives in the conversation, so the tool still returns any claim once the model is satisfied. The portal already knows who is signed in, and the claims service should use that."
+   },
+   {
+    "id": "c",
+    "text": "Move the claims tool onto a dedicated read-only service account limited to status, document and payment fields",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "Read-only access and field limits shrink what a leak contains, but one identity still reads every customer's claims, so a guessed number is answered. A shared read-only identity suits data that is the same for every user."
+   },
+   {
+    "id": "d",
+    "text": "Rate-limit claim lookups per session and lock the chat after repeated requests for claim numbers not on file",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Throttling slows enumeration, but a single correct guess still returns the other customer's claim, and the lockout reacts only after misses. The requirement is to stop any cross-customer view, not to catch guessing."
+   }
+  ],
+  "explain": "Binding constraint: external policyholders must be isolated from each other's claims even when a claim number is guessed. Authorization is enforced by the claims service at the first point where the caller is known, using the portal identity, rather than by chat checks, a shared identity or throttling.",
+  "rule": "CS-D3-04",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.2-003",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "least-privilege",
+  "industry": "healthcare",
+  "family": "mcp-token-passthrough",
+  "counterTrap": false,
+  "signals": [
+   "forwards it unchanged to whichever API a tool needs",
+   "Both downstream APIs apply per-clinician permissions correctly"
+  ],
+  "stem": "Brightwater Children's Hospital's platform team runs one MCP server that gives three internal Claude clients (discharge summaries, scheduling and a pharmacy chatbot) access to the lab-results and appointments APIs. Clinicians sign in through the hospital's identity provider, and the server takes whatever access token a client presents and forwards it unchanged to whichever API a tool needs. A penetration test replayed a token minted for an unrelated staff-rostering app and read lab results through the server. Both downstream APIs apply per-clinician permissions correctly and have not changed.",
+  "ask": "What should the platform team do NEXT to close the gap?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Reject tokens whose audience is not the MCP server, then exchange each one for per-API tokens tied to the same clinician",
+    "correct": true,
+    "trap": null,
+    "why": "Validating the audience stops the server honouring tokens minted for other apps, and exchange gives each API a token issued for it and tied to the clinician. The APIs' working per-clinician checks keep deciding access, and passthrough ends."
+   },
+   {
+    "id": "b",
+    "text": "Stop forwarding clinician tokens and have the server call both APIs with its own narrowly scoped service credential",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "This ends passthrough but replaces the clinician with one shared identity, so the APIs' working per-clinician permissions no longer apply and every client inherits the server's full access."
+   },
+   {
+    "id": "c",
+    "text": "Reject tokens whose audience is not the MCP server, and keep forwarding each accepted token unchanged to the APIs",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "The audience check stops the rostering token, but each API still receives a token issued for the MCP server rather than for itself. That is still passthrough, so the APIs cannot scope the server's calls to what each one should allow."
+   },
+   {
+    "id": "d",
+    "text": "Record each presented token's issuing app and subject, and alert security when one issued to another app is used",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "The alert fires after lab results have already been returned. The replay exposed a preventive gap in which tokens the server accepts, and recording it leaves the server acting as a confused deputy."
+   }
+  ],
+  "explain": "Binding constraint: least privilege per clinician and per API, which token passthrough breaks. An MCP server accepts only tokens issued for it and obtains separately scoped downstream tokens tied to the user, instead of forwarding the caller's token or swapping in a shared service identity.",
+  "rule": "CS-D3-06",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.2-004",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "banking",
+  "family": "information-barrier-retrieval-filter",
+  "counterTrap": false,
+  "signals": [
+   "must not be processed on behalf of anyone outside the deal team",
+   "only that deal's named team may read them"
+  ],
+  "stem": "Calder Rowe Bank gives its corporate advisory bankers and wealth relationship managers one research assistant over a shared document index. Each advisory deal's files sit behind an information barrier: only that deal's named team may read them, so most advisory bankers are outsiders to most deals. Today the assistant retrieves top passages from the whole index, and a post-processing step deletes barrier-restricted passages from each answer before display. Compliance has ruled that restricted material must not be processed on behalf of anyone outside the deal team. The directory already records deal-team membership.",
+  "ask": "Which change BEST closes the gap Compliance identified?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Filter retrieval by the user's deal-team memberships in the directory, so other deals' files are not candidates",
+    "correct": true,
+    "trap": null,
+    "why": "With membership applied inside the query, an outsider's search cannot fetch barrier material, so nothing restricted is processed on their behalf, which is what the ruling requires. The directory already holds the membership the filter needs."
+   },
+   {
+    "id": "b",
+    "text": "Replace the deletion step with a classifier that also catches paraphrased restricted content before any answer is shown",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "A better output filter still runs after restricted passages were retrieved and processed for an outsider. The ruling is breached once they enter the context, whatever the filter later removes."
+   },
+   {
+    "id": "c",
+    "text": "Split the shared index into separate advisory and wealth indexes, and route each user to their own division's index",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Separating divisions keeps wealth managers out, but the barrier is drawn per deal, not per division. Advisory bankers outside a deal would still retrieve its files from the advisory index, so the ruling is still breached."
+   },
+   {
+    "id": "d",
+    "text": "Log each restricted passage retrieved for a non-member and send Compliance a daily exception report to review",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Surveillance shows Compliance where the barrier was crossed, but only after restricted passages were processed for an outsider. The ruling forbids the processing itself, so a report cannot satisfy it."
+   }
+  ],
+  "explain": "Binding constraint: the information-barrier ruling forbids processing restricted material for anyone outside the deal team, not merely displaying it. Filter by per-deal entitlement before retrieval so the data never crosses into the model; output filters and surveillance act too late, and a division-level split is too coarse.",
+  "rule": "CS-D3-05",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-04",
+   "TIP-EL-12"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.2-005",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "security-boundary",
+  "industry": "e-commerce",
+  "family": "guest-authentication-and-prompt-secret",
+  "counterTrap": false,
+  "signals": [
+   "identified only by the order number and email address they type into the chat",
+   "platform-wide service key",
+   "sits in the system prompt"
+  ],
+  "stem": "Tessellate Market is launching a returns assistant for guest shoppers before peak season. Guests are identified only by the order number and email address they type into the chat, and the orders tool fetches any matching order with a platform-wide service key. The carrier's label API key sits in the system prompt so Claude can pass it as a tool argument. In testing, a tester who knew a colleague's email and tried nearby order numbers opened her order, and an injected message got Claude to print the carrier key. The product lead wants to keep chat verification and the platform key, because a one-time email link and per-shopper token exchange add a step and latency.",
+  "ask": "Which TWO changes BEST close both gaps before launch? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Send a one-time link to the order's email, then call the orders API with a token bound to that verified shopper",
+    "correct": true,
+    "trap": null,
+    "why": "Proving control of the order's email authenticates the shopper, and a token bound to that shopper lets the orders API refuse anyone else's order. The added step and latency are the cost that gives way, because a cross-customer exposure cannot."
+   },
+   {
+    "id": "b",
+    "text": "Replace the platform-wide key with a narrower service key scoped to the read-only order, return and refund endpoints",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "This keeps the lead's fast path and cuts blast radius, yet one shared key still reads every shopper's orders, and the guessable chat check still decides whose order is shown. Latency has to give here, not the boundary."
+   },
+   {
+    "id": "c",
+    "text": "Have the label tool attach the carrier key in its own server-side code, so the key stays out of Claude's context",
+    "correct": true,
+    "trap": null,
+    "why": "A secret that never enters the prompt cannot be printed by any injection. The carrier key is a legitimate service credential; the gap is where it lives, not that it exists."
+   },
+   {
+    "id": "d",
+    "text": "Require the delivery postcode as a third detail the orders tool must match before it returns any order",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "It keeps the lead's single step, but a third typed detail still proves only knowledge others can have, since the postcode is printed on every parcel label. The tool still fetches with a key that reads every order."
+   },
+   {
+    "id": "e",
+    "text": "Rotate the exposed carrier key now and shorten its expiry to a few days in the carrier's partner console",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Rotation is sensible hygiene after the exposure, but the new key would sit in the same system prompt and leak the same way. It changes neither gap."
+   }
+  ],
+  "explain": "Binding constraint: the security boundary between shoppers and around secrets, which outranks the latency preference. Authenticate the guest by proving control of the order's email rather than by typed details, act at the orders API with a token bound to that shopper, and keep credentials in the tool layer rather than the prompt.",
+  "rule": "CS-D3-04",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-MR-02",
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.2-006",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.2",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "auditability",
+  "industry": "logistics",
+  "family": "delegated-identity-plus-audit-trace",
+  "counterTrap": false,
+  "signals": [
+   "one integration key shared across all 14 depots",
+   "what instruction the assistant acted on",
+   "The TMS already enforces depot scopes for users who sign in directly"
+  ],
+  "stem": "Portage Line Freight is rolling out a dispatcher assistant that rebooks shipments in its transport management system (TMS), calling it with one integration key shared across all 14 depots. Security review set two conditions: dispatchers may rebook only their own depot's shipments, and, because the largest shipper can dispute any rebooking, the company must show who requested each change and what instruction the assistant acted on. The TMS already enforces depot scopes for users who sign in directly. Delegated TMS sign-in adds a consent prompt at every shift start, and depot managers want to keep the shared key so night shifts are not slowed.",
+  "ask": "Which TWO controls BEST satisfy both conditions? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Give the assistant each dispatcher's depot code and have it decline rebookings for shipments at other depots",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "This makes the model the gatekeeper while the shared key still reaches every depot, so isolation holds only while Claude declines correctly. Authorization belongs to the TMS, using the dispatcher's own identity and scopes."
+   },
+   {
+    "id": "b",
+    "text": "Have the assistant call the TMS with each dispatcher's delegated token, so the TMS applies that depot's scope",
+    "correct": true,
+    "trap": null,
+    "why": "The TMS already enforces depot scopes for signed-in users, so acting as the dispatcher blocks cross-depot rebookings and names the dispatcher on every change. The shift-start prompt is the cost that gives way, because isolation must hold on every rebooking."
+   },
+   {
+    "id": "c",
+    "text": "Record one trace per request linking the dispatcher, their message, the tool call and the TMS change ID",
+    "correct": true,
+    "trap": null,
+    "why": "The TMS log shows who changed a booking but not what the assistant was told. A correlated trace supplies the instruction and joins it to the TMS record, which is what a shipper dispute needs."
+   },
+   {
+    "id": "d",
+    "text": "Alert the depot manager within minutes whenever any rebooking touches a shipment that belongs to another depot",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Fast alerts would let the managers keep the shared key, but they report a rebooking the first condition says must not happen, often after the freight has moved. They also cannot show which instruction the assistant acted on."
+   },
+   {
+    "id": "e",
+    "text": "Add the own-depot rebooking rule to the dispatcher onboarding guide and to each depot's operating runbook",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Documenting the rule tells dispatchers what is allowed, but the shared key still lets any rebooking through and the record still lacks the instruction. Neither condition changes."
+   }
+  ],
+  "explain": "Binding constraint: the dispute-driven audit requirement together with depot isolation on every rebooking, which outrank shift-start friction. Act with the dispatcher's delegated identity so the TMS enforces scope and names the requester, and add a correlated trace that captures the instruction behind each change.",
+  "rule": "CS-D3-04",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.2-007",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "lifecycle-stage",
+  "industry": "manufacturing",
+  "family": "leak-investigation-before-redesign",
+  "counterTrap": true,
+  "signals": [
+   "paused for suppliers within the hour",
+   "has asked how the sheet reached the answer"
+  ],
+  "stem": "Brennmoor Castings runs a supplier portal where an assistant answers questions about drawings, specifications and purchase orders. Retrieval queries the document store with the signed-in supplier user's delegated token, so the store's own permissions decide what can be retrieved. Yesterday a supplier engineer reported that an answer quoted a rival supplier's pricing sheet, and the assistant was paused for suppliers within the hour. Neither the retrieval code nor the store's permission model has changed since launch. The security lead has asked how the sheet reached the answer.",
+  "ask": "What should the solutions architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add an output check that blocks any answer citing a document owned by a different supplier before it is shown",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "This filters after the sheet has already entered context, and it is chosen before the cause is known. It would also mask a wrong permission on the sheet that the portal itself still honours."
+   },
+   {
+    "id": "b",
+    "text": "Switch retrieval to one read-only service account per supplier company so entitlements are managed in one place",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "Per-company accounts remove the individual user from the access decision and weaken attribution, and changing the identity model now alters the conditions the security lead needs to examine."
+   },
+   {
+    "id": "c",
+    "text": "Pull the answer's request trace and the document store's access log to see which identity and permission released the sheet",
+    "correct": true,
+    "trap": null,
+    "why": "The assistant is contained and the design is sound on paper, so the gap is specific: a mis-set document permission, a wrong token, or another path. Reading the evidence answers the security lead's question and shows which control needs fixing."
+   },
+   {
+    "id": "d",
+    "text": "Add a supplier-ownership filter to every retrieval query, on top of the store's permissions, so rival files stay out",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Filtering inside the query is a sound control, but the assistant is already paused, so it protects nothing today. If the sheet's permission is mis-set, suppliers can still open it in the portal, and an assistant-side filter would hide that path from the investigation."
+   }
+  ],
+  "explain": "Binding constraint: the lifecycle stage. The assistant is contained, the cause is unknown and the security lead asks how the sheet leaked, which is when a detective step comes first. Filtering by entitlement before retrieval is right in general, but read the trace and the store's access log before changing any control.",
+  "rule": "CS-D3-05",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-02",
+   "TIP-EL-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

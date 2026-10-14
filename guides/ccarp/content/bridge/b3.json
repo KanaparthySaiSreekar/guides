@@ -1,0 +1,662 @@
+[
+ {
+  "id": "FB-71",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "determinism",
+  "industry": "telecom",
+  "family": "explicit-handoff-request",
+  "counterTrap": false,
+  "signals": [
+   "Transfer me to a human agent now",
+   "should not have had to ask twice"
+  ],
+  "stem": "Harlow Broadband's support agent can resolve routine billing adjustments end to end with its own tools. A customer's first message reads: \"Transfer me to a human agent now. I have been fighting this billing error for three weeks.\" The agent classifies the case as a two-step adjustment, replies that it can fix this right away, and starts pulling the account. The customer repeats the transfer request, then leaves a one-star survey saying they should not have had to ask twice. The support lead is now rewriting the rule that decides when the agent hands a chat to a person.",
+  "ask": "Which handoff rule BEST fixes this failure?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Let the agent judge from the customer's tone each turn whether a person is really needed",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "Judging tone is the model deciding when a human is needed, a signal that is never validated. Here the customer has already stated the need outright, so nothing needs inferring, and a misread tone would override a clear request."
+   },
+   {
+    "id": "b",
+    "text": "Hand off on any explicit request for a person, before investigating or offering a fix",
+    "correct": true,
+    "trap": null,
+    "why": "A stated request for a person is an explicit, policy-defined trigger that needs no interpretation. Honouring it on first ask, with the case context passed to the human, is predictable and auditable, and it respects the customer's choice even when the agent could have solved the issue."
+   },
+   {
+    "id": "c",
+    "text": "Offer the fix once, then hand off right away if the customer repeats the request",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Offering once suits a frustrated customer who has not asked for anyone. This customer's first message asked for a person outright, so even one fix attempt overrides the request and makes them ask twice, the exact complaint behind the one-star survey."
+   },
+   {
+    "id": "d",
+    "text": "Keep automated handling for any case within the agent's tested capability, with an apology",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Capability decides what the agent may do, not whether the customer must accept it. Choosing automation on the customer's behalf after an explicit request takes the decision away from its owner, and an apology does not change that."
+   }
+  ],
+  "explain": "Binding constraint: an explicit request for a person must trigger a handoff the first time it is made. Escalation triggers should be explicit, policy-defined signals such as a stated request, a policy rule or a failed check, never sentiment scores or the model's own confidence. Offering a fix first, then escalating on repetition, is for frustrated customers who have not asked for a person.",
+  "rule": "CS-D5-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 71
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-72",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "auditability",
+  "industry": "banking",
+  "family": "structured-subagent-errors",
+  "counterTrap": false,
+  "signals": [
+   "returned status \"success\" with an empty results list",
+   "no sign that anything had failed"
+  ],
+  "stem": "Harrowgate Bank's strategy team uses a coordinator agent that hands research subtopics to worker subagents and passes their results to a synthesis step. During a competitor analysis, the web search subagent hit a timeout. Its handler caught the error and returned status \"success\" with an empty results list. The final report went out with no competitor section and no sign that anything had failed. The team lead wants the coordinator to be able to react when a worker fails.",
+  "ask": "Which change BEST lets the coordinator recover from failures like this?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have the synthesis agent spot missing sections and call the search subagent again directly",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "This detects the gap downstream instead of stopping the misreport at its source. The synthesis agent lacks the coordinator's plan and budget, and a direct call bypasses the orchestrator that owns retries, so failures stay hidden from the component meant to handle them."
+   },
+   {
+    "id": "b",
+    "text": "Raise the search timeout so that the subagent rarely fails before real results arrive",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "A longer timeout makes this particular failure rarer but leaves the contract unchanged. The next timeout, rate limit or outage would again arrive as an empty success, so a report could still ship silently incomplete."
+   },
+   {
+    "id": "c",
+    "text": "Make the coordinator treat every empty result as a failure and rerun that worker automatically",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes an empty list always means failure. A legitimate search can find nothing, so reruns would waste cost and can loop, and the coordinator still could not tell a timeout from a genuine absence of results or explain the gap."
+   },
+   {
+    "id": "d",
+    "text": "Return a typed error with the failure type, a retryable flag and any partial results gathered",
+    "correct": true,
+    "trap": null,
+    "why": "A structured error, giving the failure type, whether a retry is safe and what was gathered, lets the coordinator retry, route to another source, or proceed and annotate the coverage gap. Failure stays visible instead of passing as finished work."
+   }
+  ],
+  "explain": "Binding constraint: the coordinator can only recover from failures it can see. A subagent's return contract must separate failure from an empty result, carrying the error type, retryability and partial results, so the coordinator can retry, reroute or annotate the coverage gap instead of passing incomplete work as complete. Transient faults can be retried inside the subagent first; only unresolved failures need to reach the coordinator.",
+  "rule": "CS-D1-10",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 72
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-74",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "healthcare",
+  "family": "persistent-notes-across-phases",
+  "counterTrap": false,
+  "signals": [
+   "using standard JWT patterns",
+   "will depend on the same findings"
+  ],
+  "stem": "Orrin Health's security team runs a multi-phase audit of its patient portal code with an Agent SDK agent. In phase one, over about 45 minutes, the agent read files, traced call chains and noted that the login service signs tokens with a custom routine rather than a standard JWT library. Early in phase two, a vulnerability review of the authentication module, the agent describes that module as \"using standard JWT patterns.\" Phase three, a remediation plan, will depend on the same findings.",
+  "ask": "Which technique BEST keeps key findings intact across the phase boundaries?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have the agent record its findings in a notes file each phase and load it when the next one starts",
+    "correct": true,
+    "trap": null,
+    "why": "Structured note-taking keeps findings outside the context window, so they survive compaction or a new session exactly as written. The custom signing detail is recorded once and reloaded at each phase start, which costs little context."
+   },
+   {
+    "id": "b",
+    "text": "Start each phase in a fresh session and rely on the agent to re-derive the earlier findings",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A clean context avoids the drift, but this depends on the agent rediscovering every finding unaided. That repeats 45 minutes of exploration per phase, and nothing guarantees it notices the custom signing routine a second time."
+   },
+   {
+    "id": "c",
+    "text": "Raise the output token limit so that more of the session history can stay in context without compression",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "The output token limit caps the length of each response, not the size of the context window, so this changes nothing about what the agent remembers. Even a larger window would leave the finding buried mid-history, where recall is weakest."
+   },
+   {
+    "id": "d",
+    "text": "Run a default compaction before each phase and let the agent re-read files whenever it needs detail",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Compaction is a valid long-session technique, but a default summary does not know which detail matters and can flatten the custom routine into a generic label. Re-reading files then spends tokens recovering what a note would have kept."
+   }
+  ],
+  "explain": "Binding constraint: specific findings must survive intact across several phases. Anthropic names three long-horizon context techniques, compaction, structured note-taking and sub-agent architectures; note-taking wins here because findings persist verbatim outside the window, while compaction without explicit keep instructions is lossy and a higher output token limit does not enlarge the context.",
+  "rule": "CS-D2-09",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 74
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-76",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "insurance",
+  "family": "self-scored-confidence-gate",
+  "counterTrap": false,
+  "signals": [
+   "having the model score each extraction",
+   "feed straight into payments"
+  ],
+  "stem": "Pellham Assurance extracts fields from claim documents with Claude and wants high-confidence extractions to post automatically while the rest go to adjusters. Average field accuracy on last month's sample was high. A developer proposes adding a confidence field to the output schema, having the model score each extraction from 0 to 1, and auto-posting anything above 0.9. Two of the fields, payout amount and policy number, feed straight into payments.",
+  "ask": "Which response to the developer's proposal is BEST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Raise the cut-off to 0.95 so that only the most certain self-scored extractions post automatically",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A higher number feels safer, but nobody has checked what any self-score means against real outcomes. Without labelled data, 0.95 is as arbitrary as 0.9, and payment fields could still post wrongly behind a high self-score."
+   },
+   {
+    "id": "b",
+    "text": "Have the model re-check every field it scored below 0.9 before any of them reach an adjuster",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "The same model re-grading its own work shares its blind spots, so confident errors stay confident and are never re-checked. The gate still rests on the model's self-assessment rather than on any validated signal."
+   },
+   {
+    "id": "c",
+    "text": "Gate on per-field signals checked against labelled outcomes, and send payment fields to review",
+    "correct": true,
+    "trap": null,
+    "why": "A model's stated confidence is not evidence until it is calibrated per field against labelled outcomes. Route on signals checked that way, such as validation failures or a calibrated score. Payment fields go to review whatever the score until their calibrated error rate is shown to be acceptable, since an error there moves money."
+   },
+   {
+    "id": "d",
+    "text": "Move extraction to a larger model whose stated confidence tracks its real accuracy more closely",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "A bigger tier may extract more accurately, but its self-reported confidence is still unvalidated. The defect is the routing signal, not the model size, and payment fields would still auto-post on the model's word."
+   }
+  ],
+  "explain": "Binding constraint: an auto-post gate needs evidence that its signal predicts correctness. An uncalibrated self-score provides no such evidence; a per-field score becomes usable only once its thresholds are calibrated against labelled outcomes. High-impact fields such as payout amount go to review on the cost of error, whatever any score says, so payments do not auto-post yet.",
+  "rule": "CS-D5-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 76
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-77",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "auditability",
+  "industry": "public-sector",
+  "family": "claim-source-provenance",
+  "counterTrap": false,
+  "signals": [
+   "no citation",
+   "traceable to its original source before release"
+  ],
+  "stem": "Linfield Policy Office runs five research subagents over different source sets, and a synthesis agent merges their summaries into briefings for ministers. A published briefing stated that \"telehealth use in rural clinics reached 38% in 2024\" with no citation. A reviewer could not trace the figure because the subagents' outputs were discarded after synthesis. The office now requires every figure in a briefing to be traceable to its original source before release.",
+  "ask": "Which pipeline change BEST meets the new requirement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a Sources consulted section listing every document the subagents accessed during research",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "A bibliography shows what was read, not which source backs which figure. A reviewer checking the 38% claim would still have to hunt through every listed document, so the briefing is no more traceable claim by claim."
+   },
+   {
+    "id": "b",
+    "text": "Have subagents return claim-to-source mappings and make synthesis carry each into the report",
+    "correct": true,
+    "trap": null,
+    "why": "Provenance is lost where summaries compress findings. Having each subagent return claim, source and excerpt together, and requiring synthesis to keep that mapping, prevents the loss at its source so every figure arrives traceable. Citations make claims checkable, not automatically correct."
+   },
+   {
+    "id": "c",
+    "text": "Before release, have the synthesis agent search the web for a source that supports each claim",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Finding support after the fact is detection, not prevention, and it can attach a source that agrees with the figure but is not where it came from. A mismatched citation looks traceable while hiding the real origin."
+   },
+   {
+    "id": "d",
+    "text": "Store all raw subagent outputs in a log so that reviewers can search them when a claim is queried",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Keeping raw outputs helps an investigation, but it assumes a reviewer can match each figure to the right output by searching. The briefing itself still carries no provenance, and every query becomes manual archaeology."
+   }
+  ],
+  "explain": "Binding constraint: each figure must be traceable to its origin before release. Prevention beats detection: provenance belongs in the inter-agent data contract, carried from subagent to report, because sources attached after synthesis can mismatch the real origin and a raw-output archive leaves the briefing itself untraced.",
+  "rule": "CS-D1-10",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 77
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-80",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "cost",
+  "industry": "legal",
+  "family": "scoped-subagent-brief",
+  "counterTrap": false,
+  "signals": [
+   "passes its entire conversation history",
+   "drift into subtopics"
+  ],
+  "stem": "Corliss & Vane, a litigation firm, runs a research coordinator that spawns subagents for case-law subtopics. To give them \"full context,\" the coordinator passes its entire conversation history, including every earlier subagent report, into each new subagent. On long matters, subagents now run slower, cost more per call, and drift into subtopics that other subagents already covered. The practice manager wants a fix before the system is rolled out to more matters.",
+  "ask": "Which change BEST addresses the slowdown, cost and drift together?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move the subagents to a 1M-token context model so the full history fits without truncation",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "A larger window removes truncation but not the waste. Every subagent still processes and is billed for the repeated history, at cache rates at best, longer inputs add latency, and a longer mix of irrelevant reports dilutes focus further rather than restoring it."
+   },
+   {
+    "id": "b",
+    "text": "Keep sending the full history, and tell each subagent to ignore sections outside its subtopic",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "An instruction to ignore text does not remove it. The tokens are still processed and billed on every call, at cache rates at best, and the model can still be pulled toward other subtopics, so cost, latency and drift all persist."
+   },
+   {
+    "id": "c",
+    "text": "Use fewer subagents per matter so that the shared history is passed along fewer times",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Fewer subagents cuts the repetition count but leaves each one with the same bloated input, and it gives up the parallel coverage that justified subagents. It trades breadth for a partial cost win without fixing focus."
+   },
+   {
+    "id": "d",
+    "text": "Give each subagent a brief with the goal, facts, constraints and boundaries of its subtopic",
+    "correct": true,
+    "trap": null,
+    "why": "A fresh subagent sees only what the coordinator puts in its prompt. A scoped brief spends each subagent's context on its own task, which cuts input tokens, latency and cost per call, and stating the subtopic's boundaries keeps it off ground other subagents already cover."
+   }
+  ],
+  "explain": "Binding constraint: cost and latency scale with what every subagent is sent. The coordinator should pass each subagent only the goal, constraints, facts, scope boundaries and return format its subtask needs, because repeated history is processed and billed on every call, even at cache rates, slows each run, and dilutes focus whatever the window size.",
+  "rule": "CS-D1-10",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 80
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-82",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "irreversibility",
+  "industry": "energy",
+  "family": "structured-handoff-payload",
+  "counterTrap": false,
+  "signals": [
+   "a single prose message",
+   "refunds the wrong one"
+  ],
+  "stem": "Talbrook Energy handles billing disputes with two agents. The investigation agent reads account history and holds no payment tools; for least-privilege reasons, only the resolution agent can issue refunds. Today the handoff is a single prose message such as \"Customer verified, charge looks wrong, please refund.\" On accounts with several recent charges, the resolution agent sometimes refunds the wrong one, and on others it repeats the whole identity check from scratch.",
+  "ask": "Which change BEST makes this handoff reliable?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Send a structured payload with customer ID, order ID, completed steps and the requested action",
+    "correct": true,
+    "trap": null,
+    "why": "Explicit identifiers remove the guesswork that picks the wrong charge, and the completed-steps field stops needless re-verification. The refund tool should still confirm in code, against the system-of-record verification record the payload references, that the order belongs to that customer before any money moves."
+   },
+   {
+    "id": "b",
+    "text": "Ask the investigation agent to write fuller handoff messages that restate each finding in detail",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "More prose adds words without adding structure. The order ID can still be missing or ambiguous among several charges, and the resolution agent still has to infer which verification steps were completed."
+   },
+   {
+    "id": "c",
+    "text": "Merge the two agents into one so that no handoff is needed anywhere in the dispute workflow",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "Merging removes the handoff but also the least-privilege split that justifies two agents. The component reading account history would then hold refund power, one over-privileged identity that widens the blast radius of any mistake."
+   },
+   {
+    "id": "d",
+    "text": "Have the resolution agent re-verify the customer and re-derive the disputed order on every case",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the resolution agent can reliably work out which charge is disputed from account data alone, which is exactly what fails on multi-charge accounts. It also discards completed work. An in-code ownership check inside the refund tool is different and worth keeping."
+   }
+  ],
+  "explain": "Binding constraint: refunds move money and are hard to reverse, so the receiving agent must not guess. A handoff between agents should carry explicit identifiers and completed-step state in a structured payload, and whatever the payload says, the refund tool should confirm in code, against the system-of-record verification record, that the order belongs to that customer before it acts.",
+  "rule": "CS-D1-10",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 82
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-86",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "scale",
+  "industry": "retail",
+  "family": "duplicate-tool-consolidation",
+  "counterTrap": false,
+  "signals": [
+   "Both call the same orders API",
+   "wrong-tool calls are rising"
+  ],
+  "stem": "Fenwick Outfitters' support agent has grown to 38 tools as teams added features over the past year, and wrong-tool calls are rising. The worst pair is `find_order`, described as \"look up an order,\" and `search_orders`, described as \"search for orders.\" Both call the same orders API. The agent uses them interchangeably, often calling `search_orders` with a known order ID and then mishandling the list that comes back.",
+  "ask": "Which change BEST fixes the selection errors for this pair?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a routing paragraph to the system prompt telling the agent which of the two tools to use and when",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "Routing prose patches the ambiguity from outside the tools and grows with every new overlap. The two near-identical tools stay in a 38-tool catalogue, so selection remains fragile and the prompt gets longer each time."
+   },
+   {
+    "id": "b",
+    "text": "Shorten both tool descriptions so that the large catalogue uses fewer tokens on every request",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Token cost is not the defect here. The descriptions are already too vague to choose between, so cutting them further removes the little selection information they carry and makes wrong picks more likely."
+   },
+   {
+    "id": "c",
+    "text": "Replace both with one `get_orders` tool that always returns a list and documents its ID and filter inputs",
+    "correct": true,
+    "trap": null,
+    "why": "Both tools hit the same API, so one is a duplicate that adds choice without adding capability. One tool with documented ID and filter inputs removes the ambiguous choice, and one list shape, holding one order or many, removes the mishandled return. It does one job, so it is not a mode-switch mega-tool."
+   },
+   {
+    "id": "d",
+    "text": "Make `search_orders` return only its first match so that both tools give back the same shape",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Matching the return shapes hides the symptom by throwing away real results. Filtered searches that legitimately match several orders would silently lose data, and the agent still has two indistinguishable tools to choose between."
+   }
+  ],
+  "explain": "Binding constraint: selection gets harder with every overlapping tool in a growing catalogue. Capability bloat is fixed by reducing and separating what the agent sees: delete duplicate tools, give the survivor one consistent return shape, and sharpen real boundaries, rather than adding routing prose, trimming descriptions or truncating results.",
+  "rule": "CS-D3-02",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 86
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-89",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "reuse",
+  "industry": "education",
+  "family": "shared-mcp-config-secrets",
+  "counterTrap": false,
+  "signals": [
+   "every engineer who clones",
+   "must not be committed"
+  ],
+  "stem": "Kestrel Learning's platform team wants every engineer who clones the course-platform repository to get the same MCP server for the internal issue tracker, without configuring it by hand. The server needs an API token, which must not be committed to the repository. The secrets manager already sets the token as an environment variable on each engineer's machine, and the team reviews all shared tooling changes through pull requests.",
+  "ask": "Which way of distributing the server configuration is BEST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have each engineer add the server to their user-level config by following steps in the README",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "User-level config lives on one machine and never reaches teammates, so every new hire repeats the setup and versions drift. It also skips the pull-request review the team uses for shared tooling."
+   },
+   {
+    "id": "b",
+    "text": "Commit a project `.mcp.json` that pulls the token in through `${TRACKER_TOKEN}` expansion",
+    "correct": true,
+    "trap": null,
+    "why": "A committed project .mcp.json travels with every clone and changes through review, while ${VAR} expansion keeps the secret in each machine's environment. Interactive sessions ask each engineer to approve the project server on first use; -p runs, and SDK runs that load project settings, connect it without asking."
+   },
+   {
+    "id": "c",
+    "text": "Commit the project config with the token written inline, since the repository itself is private",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "Private is not secret: the token lands in git history, every clone and fork, and any log that prints config. Rotating it means rewriting history, and the stem rules out committing it at all."
+   },
+   {
+    "id": "d",
+    "text": "Describe the server and its launch command in `CLAUDE.md` so Claude registers it in every session",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "CLAUDE.md is instruction context, not configuration. It registers nothing by itself; at best it asks Claude to run a setup command each session, which is unreviewed, needs permission and may not happen, so the tracker tools are not reliably available."
+   }
+  ],
+  "explain": "Binding constraint: one configuration must reach every clone without exposing the token. Team-wide behaviour belongs in version-controlled project config, with secrets pulled from each machine's environment through ${VAR} expansion; user-level config never propagates, CLAUDE.md registers nothing by itself, and a private repository is not a secret store.",
+  "rule": "CS-D7-02",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 89
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-91",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "security-boundary",
+  "industry": "logistics",
+  "family": "headless-ci-lockdown",
+  "counterTrap": false,
+  "signals": [
+   "including those from outside contributors",
+   "including .mcp.json and the .claude directory"
+  ],
+  "stem": "Dunmore Rail Freight is adding a Claude Code review step to the CI pipeline for pull requests, including those from outside contributors. The job must run unattended, never stop for a confirmation prompt, and never push commits or edit files under .github/workflows. It only needs to read the diff, run the linter and post review comments. A pull request can change any file in the repository, including .mcp.json and the .claude directory.",
+  "ask": "Which configuration BEST meets these requirements?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run headless with --allowedTools \"Bash,Read,Edit\" so that no permission prompt can ever stall the job",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "This meets the no-prompt requirement by pre-approving every shell command and edit, which leaves only the model's judgment between a hostile diff and a git push or workflow edit. Without bare mode, the checkout's hooks and .mcp.json servers also run."
+   },
+   {
+    "id": "b",
+    "text": "Bypass all permission checks, since the runner is a throwaway container rebuilt from scratch for each job",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the only possible damage is inside the container. The job holds repository credentials, so an unchecked run, perhaps steered by a malicious diff, can push commits or change workflows on shared systems that outlive the container."
+   },
+   {
+    "id": "c",
+    "text": "Rely on the deny rules for git push and workflow edits in the repository's committed .claude settings",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "Committed project settings are part of the pull request under review, so an outside contributor can weaken them. Without bare mode, a -p run also executes project hooks and .mcp.json servers from the checkout with no trust dialog."
+   },
+   {
+    "id": "d",
+    "text": "Run in bare -p mode with passed-in rules allowing only read, lint and comment, on a token that cannot push",
+    "correct": true,
+    "trap": null,
+    "why": "Bare mode skips the checkout's hooks, skills, plugins, .mcp.json servers and CLAUDE.md, and dontAsk denies, without prompting, any call that needs approval and is not on the passed-in allowlist. Deny rules govern only Claude's own calls, and the linter runs PR-controlled config, so the token is what makes a push impossible. Excluding project setting sources also blocks their env block."
+   }
+  ],
+  "explain": "Binding constraint: the job processes untrusted pull-request content with credentials that could push. Load only config the job passes in (bare mode, with project setting sources excluded because their env block still applies), use dontAsk with an allowlist of the review's tools, and give the job a token that cannot push, since the linter runs PR-controlled code that permission rules do not govern.",
+  "rule": "CS-D7-05",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 91
+  },
+  "status": "verified",
+  "verify": []
+ }
+]

@@ -1,0 +1,234 @@
+{
+ "domain": 6,
+ "intro": "Domain 6 tests whether you can move a Claude system through its lifecycle with the people who own it. Items rarely ask what works technically. They ask what you do next, who decides, and which artefact fits the reader. Expect a sponsor who arrives with a solution, an executive who wants a guaranteed number, an SLA drafted on averages, a pilot with no exit criteria, or a handoff that is really a chat channel. The binding constraint is usually the lifecycle stage, the audience or the decision owner. The commonest distractors are sound engineering at the wrong time (T-LATER), reassurance dressed as commitment (T-OVERPROMISE), or you quietly deciding for the owner (T-OWNER). The winning answer is honest about uncertainty, fitted to its reader, and leaves the decision with its owner.",
+ "delta": "CCAR-F has no stakeholder or lifecycle domain, so Foundations mechanics such as tool_choice, stop_reason loops and the CLAUDE.md hierarchy are low-yield here. What carries over is the habit of naming the binding constraint before reading the options. New at Professional level: discovery outputs, audience-fitted briefs, SLAs for probabilistic systems, ADRs and handoff packages, and exit gates between POC, pilot and production. Technically strong candidates lose points here by picking the engineering fix when the stem wants a stakeholder action.",
+ "sections": [
+  {
+   "obj": "6.1",
+   "core": [
+    "**Discovery** is elicitation across roles, not one sponsor workshop. The people who do the work hold the baseline and often show that the real job differs from the literal ask. The data owners hold the constraints that eliminate designs.",
+    "The **current-process baseline** is measured on today's workflow (cycle time, error rate, cost per unit) under one agreed definition. Without it, no target, pilot result or ROI claim can be judged.",
+    "A **measurable target** is a number stated against that baseline and signed by the owner. 'A better claims experience' is a goal, not a target: you help turn it into one, but the owner sets it.",
+    "A **constraint inventory** lists latency, cost ceiling, residency, compliance regime, data access and integration limits. You usually find the binding one by asking where the data lives, who may see it and which decisions a regulator expects a person to make.",
+    "A **data and access map** records which system holds each input, who owns it and under whose identity it can be read. A design that relies on access nobody has granted rests on an unstated assumption.",
+    "Each decision (success criteria, risk acceptance, go/no-go) needs exactly one named **decision owner**. Two executives who both expect to approve go-live is an open discovery item, not a detail to settle at launch.",
+    "A constraint that surfaces late means a role or data owner was not asked. Go back to that owner for that constraint instead of patching the design around it. A new scope request after sign-off is different: take it to the decision owner as a scope decision rather than reopening discovery wholesale.",
+    "Map **stakeholders** to the risk in scope: when regulated or sensitive data is involved, legal, security and privacy or compliance join discovery beside users, data owners and engineering. Capture the as-is process, including the tacit checks experts apply that no document records. Ask what an error costs, who bears it and how anyone would notice, since that drives autonomy and review design. Trace every requirement to a stakeholder statement, or log it as an assumption with an owner."
+   ],
+   "worked": {
+    "scenario": "Luis Ferreira wants the Meridian claims assistant extended to travel claims before the summer surge. After one workshop with claims managers he hands you three requirements: classify incoming travel claims, draft first-contact messages and flag suspected fraud. No travel adjusters attended, and neither the EU subsidiary's data team nor Priya Raman's compliance team was invited. Many travel claims carry hospital receipts issued abroad. Aiko Brennan's team has build capacity starting next week.",
+    "ask": "What should you do FIRST?",
+    "options": [
+     {"text": "Meet travel adjusters, the EU data owner and Priya to baseline today's process and confirm residency and health-data rules.", "correct": true, "trap": null},
+     {"text": "Use Aiko's capacity to start building the three requirements next week and refine them with Luis in fortnightly sprint reviews.", "correct": false, "trap": "T-SKIPDISC"},
+     {"text": "Load-test last summer's peak travel volumes now so the latency SLA for travel claims can be sized before the surge.", "correct": false, "trap": "T-LATER"},
+     {"text": "Drop fraud flagging from scope yourself, since the Sentinel fraud system already covers it, and tell Luis afterwards.", "correct": false, "trap": "T-OWNER"}
+    ],
+    "steps": {
+     "constraint": "FIRST, plus two gaps: the people who do the work, own the EU data and own compliance were never asked, and the claims carry health data from abroad. Discovery is unfinished, and a hidden compliance constraint is likely.",
+     "classify": "Stage: discovery, not design. Prevention: surfacing residency and health-data handling now prevents a redesign later. Layer: stakeholder process. Ladder: lifecycle, first rung.",
+     "eliminate": "Strike the build option as T-SKIPDISC: a wish list with no baseline or constraint inventory. Strike the load test as T-LATER: sizing is design work, and there is no target to size against. Strike dropping fraud flagging as T-OWNER: scope is Luis's call, and the overlap with Sentinel is evidence to bring him.",
+     "choose": "Finish discovery with the missing roles. The build option would need the stem to say baseline, target, constraints and owner were already agreed, and it says the opposite."
+    }
+   },
+   "faded": {
+    "scenario": "Gerald Hume will fund a Meridian pilot only if it lowers cost per claim. The discovery notes contain a target of 'faster, cheaper claims handling', a constraint list covering EU residency and the 2-second mainframe gateway, Luis as process owner, and Dana Okafor as the sponsor who owns success criteria. Tomasz Wiśniewski points out that nobody has recorded current cost per claim or FNOL-to-contact time, and that the finance system and the Adjuster Workbench calculate them differently.",
+    "ask": "What must happen before design starts?",
+    "options": [
+     {"text": "Baseline today's cost per claim and contact time under one definition that Gerald and Luis both sign off.", "correct": true, "trap": null, "why": "Gerald's condition is a comparison, and there is no 'before' number to compare against. The baseline also makes the vague target measurable."},
+     {"text": "Choose the model tier and token budget now so you can give Gerald an estimated cost per claim for the pilot.", "correct": false, "trap": "T-SKIPDISC", "why": "A price estimate with no baseline answers a question that comes later and proves nothing about savings."},
+     {"text": "Replace the vague target with your own figure of 30 percent faster contact time so the team has something concrete.", "correct": false, "trap": "T-OWNER", "why": "The target belongs to Dana. You can propose options once a baseline exists, but you cannot set the target for her."},
+     {"text": "Build the eval harness now on a sample of last quarter's claims and treat its first scores as the baseline.", "correct": false, "trap": "T-LATER", "why": "An eval harness measures the new system, not today's process, and it needs agreed success criteria first."}
+    ],
+    "constraint": "Gerald's funding condition is a comparison: cost per claim must go down. Two systems also compute the metric differently.",
+    "classify": "Stage: discovery, still open. Of the four outputs, constraints and an owner are recorded. Test the target and the baseline against Gerald's condition, then decide which one has to come first.",
+    "reasoning": "The target is vague but the baseline is absent, and the baseline comes first because the target is stated relative to it. Strike the model-tier option as T-SKIPDISC, the self-set target as T-OWNER, and the eval harness as T-LATER. The baseline under one signed definition unblocks both the target and Gerald's condition. The self-set target would need Dana to have delegated target-setting to you, which the stem never says."
+   },
+   "traps": ["T-SKIPDISC", "T-LATER", "T-OWNER", "T-ASSUME"],
+   "contrast": {
+    "a": {"title": "Finish discovery", "text": "Right when any of baseline, target, constraints or owner is missing, or when they came only from the sponsor."},
+    "b": {"title": "Build a scoped prototype", "text": "Right when baseline, target, constraints and owner are agreed, or when the prototype is framed as a discovery tool for one agreed feasibility question. It exists to answer that question and nothing else."},
+    "decider": "Can you name the agreed question the prototype answers? If not, you are prototyping instead of discovering."
+   },
+   "explain": {
+    "prompt": "Why is a constraint that surfaces late treated as a discovery defect rather than bad luck?",
+    "model": "Discovery exists to surface constraints while they are still cheap. A late residency or health-data constraint means the people who held it were not asked, or were not asked the right question. Calling it bad luck patches the design and leaves the same gap open for the next constraint."
+   },
+   "bridge": "Foundations trains you to find the binding constraint in a technical stem, and that habit transfers directly. What gets overweighted is Foundations mechanics: no discovery item is answered by a configuration choice."
+  },
+  {
+   "obj": "6.2",
+   "core": [
+    "An **operating point** is one position on the curve that trades accuracy against cost, latency and review load. You show the curve and what each point means; the accountable owner picks the point.",
+    "Turn a percentage into an **error count** per month by case type. An executive cannot weigh '99.7 percent'. At 14,000 claims a month it still means about 42 misroutes, and the executive can weigh which claim types they fall in and what each costs.",
+    "State the **cost of reversal** for each option. A choice that is cheap to undo can be made on thinner evidence than one that locks in a region, a vendor or a contract.",
+    "Fit the artefact to the reader's decision. Executives decide whether, so they get decision, impact, risk and the ask. Security and platform reviewers approve how, so they get the architecture and data flows. Security reviewers also need the privilege model, injection posture and blast radius.",
+    "Report **segmented results with the method stated**. An aggregate that clears the bar can hide a failing slice, and a sceptical finance owner discounts any number whose method is missing.",
+    "When a pilot misses an agreed bar, bring the owner the gap by slice and a few bounded options with their costs, such as human review on the failing slice, a narrower scope or more build time. Lowering the bar or cancelling is the owner's call, and quietly reporting a different metric that passes is nobody's.",
+    "**Recommend; do not abdicate.** Present options with your recommendation and the condition that would reverse it; the owner still decides. When two peer stakeholders disagree, show the measured trade-off and get one accountable owner to decide, escalating to the sponsor if nobody owns it, then record the decision. Run design reviews as decision meetings that put open decisions to their owners, not as walkthroughs."
+   ],
+   "worked": {
+    "scenario": "Gerald Hume must approve expanding Meridian's home-claims assistant from its pilot region to a second region and wants something he can take to the board in ten minutes. Your pilot report runs to twelve pages: retrieval recall by chunking strategy, prompt versions and trace screenshots. Pilot cost per claim beat the baseline overall but was worse than baseline for claims with photo or invoice attachments, which make up a third of volume in the new region.",
+    "ask": "What should you give Gerald?",
+    "options": [
+     {"text": "A one-page brief: the ask, cost per claim against baseline split by attachment claims, the method, and the main risk with its mitigation.", "correct": true, "trap": null},
+     {"text": "The full twelve-page report with an executive summary slide on top, so Gerald can show the board that nothing about the pilot has been hidden.", "correct": false, "trap": "T-AUDIENCE"},
+     {"text": "The overall cost-per-claim improvement across the pilot region, since it beat the baseline and the attachment split is an engineering detail.", "correct": false, "trap": "T-AGGREGATE"},
+     {"text": "A commitment that attachment claims will match the other claims after another round of prompt tuning, so expansion can be approved now.", "correct": false, "trap": "T-OVERPROMISE"}
+    ],
+    "steps": {
+     "constraint": "Audience and purpose: a CFO who dismisses vanity numbers needs a board-ready decision view, and the failing slice is overrepresented in exactly the region being decided.",
+     "classify": "Stage: the gate between pilot and expansion. This is an artefact choice for a decision owner, not a technical fix. Law L8: evidence to the owner, framed for that audience.",
+     "eliminate": "Strike the full report as T-AUDIENCE: complete but unusable in ten minutes, and a slice buried in twelve pages is not transparency. Strike the overall figure as T-AGGREGATE: the mean hides the slice that dominates the new region. Strike the tuning commitment as T-OVERPROMISE: it promises an untested outcome to win approval.",
+     "choose": "The one-page segmented brief. The full report would need Gerald to be a technical reviewer signing off the design, and the stem says he needs a board view."
+    }
+   },
+   "faded": null,
+   "traps": ["T-OVERPROMISE", "T-AUDIENCE", "T-OWNER", "T-AGGREGATE"],
+   "contrast": {
+    "a": {"title": "Executive brief", "text": "Right when the reader decides whether to fund, expand or accept a risk. Lead with the decision and impact in metrics they already track, then risks, mitigations and the ask."},
+    "b": {"title": "Architecture walkthrough", "text": "Right when the reader must approve how it works: security, compliance or platform reviewers who sign off data flows and controls."},
+    "decider": "Is the reader deciding whether, or approving how?"
+   },
+   "explain": {
+    "prompt": "Why does converting an accuracy percentage into an error count change the conversation with an executive?",
+    "model": "A percentage reads like a grade, so executives anchor on the highest one on offer. An error count by case type shows which claims go wrong and what each costs, so the owner can decide where human review is worth paying for. An impossible target becomes a choice between operating points."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "6.3",
+   "core": [
+    "An **error budget** is the amount of failure the SLA tolerates in a period. It turns 'the model will sometimes be wrong' from a concession into a managed quantity with a defined response when it is spent.",
+    "Measure latency as a percentile **at peak** and write down what peak includes. For Meridian that means catastrophe surges, because an average or a surge exclusion hides exactly the hours claimants feel. Also say which wait you mean, time to first token or completion: streaming improves the wait users perceive, not completion time.",
+    "An **accuracy floor** is only meaningful with its method: a named, versioned eval set drawn from production, an agreed grader checked against human labels, and a sample size. A floor without a method cannot be breached, so it cannot be enforced.",
+    "Define **degraded mode** in advance: what happens when the budget is spent or a dependency fails (queue, fallback, human handoff), and which remedy the customer receives. A provider's SLA covers one dependency. What you commit is composed from every serial dependency's availability plus your own behaviour, so it cannot exceed their product without redundancy or a degraded path. Derive each threshold from its source: availability from business criticality and the cost of downtime, latency from the discovery UX requirement, quality from the eval acceptance bar.",
+    "A **closed feedback loop** has a pre-agreed review trigger, a named owner who must act, and a path that turns confirmed failures into eval cases. Ratings on a dashboard nobody owns are an open loop.",
+    "Align expectations early and in writing. If anyone has implied the system never errs, correct it now with the measured rate, the review path and the remedy, before the first visible failure becomes a trust incident.",
+    "Give the SLA an owner, a review cadence and a renegotiation trigger, such as a change in scope, traffic mix or regulation.",
+    "**Change control** protects the baseline. A new requirement mid-build or after launch gets an impact assessment against the agreed scope (cost, date, risk, eval set), the sponsor decides, and an accepted change is formally re-baselined and sent through design and the eval gate. Absorbing it quietly and refusing it outright both decide for the owner."
+   ],
+   "worked": {
+    "scenario": "Meridian's vendor-management team has drafted the SLA for the policy Q&A copilot that contact-centre agents use. It promises 'average response under four seconds' and '98 percent correct answers', excludes 'declared catastrophe events', and names no remedy. Priya Raman and Luis are reviewing it. Luis notes that last winter's storm tripled call volume for a week, and agents relied on policy answers most during those days.",
+    "ask": "Which revision should you recommend?",
+    "options": [
+     {"text": "Require p95 latency at peak including catastrophe surges, an accuracy floor on a named eval set with an error budget, cost per query and a remedy.", "correct": true, "trap": null},
+     {"text": "Keep the average and the catastrophe exclusion, but tighten the average to two seconds and add a monthly uptime report for Priya.", "correct": false, "trap": "T-AVGSLA"},
+     {"text": "Upgrade the accuracy clause to guaranteed correct answers on coverage questions, since those carry the most complaint and legal risk.", "correct": false, "trap": "T-OVERPROMISE"},
+     {"text": "Keep the 98 percent figure, measured by contact-centre agents rating answers each week, with no fixed sample, eval set or grading method.", "correct": false, "trap": "T-VIBES"}
+    ],
+    "steps": {
+     "constraint": "The SLA must hold when agents need it most. The stem flags a surge that tripled volume, and the draft excludes exactly those days. The accuracy clause has no method.",
+     "classify": "Stage: production commitment. Prevention: the wording decides whether breaches become visible and remediable. Ladder: SLA formulation, from percentile at peak through to remedy.",
+     "eliminate": "Strike the tighter average as T-AVGSLA: it still hides the tail, and the exclusion removes the peak. Strike guaranteed correctness as T-OVERPROMISE: a probabilistic system cannot keep it. Strike weekly agent ratings as T-VIBES: a percentage with no set, grader or sample is not a floor anyone can test.",
+     "choose": "The percentile-at-peak revision. The tighter average would need the clause to cover throughput or spend rather than the wait agents feel, and the stem says agents lean on these answers hardest during surges."
+    }
+   },
+   "faded": {
+    "scenario": "Six weeks into production, Meridian adjusters override about one in eight of the assistant's routing suggestions for travel claims, and the Adjuster Workbench captures every override. Tomasz built a dashboard of the overrides, but nobody has opened it since launch, and Luis hears about problems only when team leads complain. Dana asks you to 'tighten up quality management' before the travel surge.",
+    "ask": "Which change should you make before the surge?",
+    "options": [
+     {"text": "Agree with Luis an override-rate trigger per claim type that he must act on, and route confirmed misroutes into the eval set.", "correct": true, "trap": null, "why": "It supplies all three missing parts: a trigger, an owner with a duty to act, and a path from real failures into evals."},
+     {"text": "Add satisfaction charts to Tomasz's dashboard and a thumbs-up control in the Workbench so adjusters rate every routing suggestion.", "correct": false, "trap": "T-VIBES", "why": "It feeds more signal into a loop that still has no trigger and no owner."},
+     {"text": "Ask Claude to report a confidence score from 1 to 10 on each routing suggestion and send those below 7 to Luis for review.", "correct": false, "trap": "T-SELFCONF", "why": "Self-reported confidence is not a calibrated signal, and it leaves the override data unused."},
+     {"text": "Move travel routing to a more capable model before the surge, since a one-in-eight override rate shows the current one cannot cope.", "correct": false, "trap": "T-OBSERVE", "why": "It changes the system before anyone has read the overrides to find out why they happen."}
+    ],
+    "constraint": "The signal already exists: every override is captured. Nobody is obliged to look at it, and problems reach Luis only as complaints.",
+    "classify": "Stage: monitoring in production, so this is feedback-loop design, not a model change. Check each option against what a closed loop needs.",
+    "reasoning": "A closed loop needs a pre-agreed trigger, a named owner who must act, and a path from confirmed failures into the eval set. Strike more ratings as T-VIBES, self-reported confidence as T-SELFCONF, and the model swap as T-OBSERVE. The trigger, owner and eval path close the loop that already has its data. The model swap would need the overrides to have been diagnosed as model capability failures, and nobody has read them yet."
+   },
+   "traps": ["T-AVGSLA", "T-OVERPROMISE", "T-VIBES", "T-SELFCONF"],
+   "contrast": {
+    "a": {"title": "Contractual SLA", "text": "Right for a commitment to a customer about generative output: p95 at peak, an accuracy floor with a method and error budget, cost per transaction, and a remedy."},
+    "b": {"title": "Internal hard timeout", "text": "Right as an engineering guard inside the system, such as a per-request cap that triggers a fallback. It protects the service, but it is not the customer commitment."},
+    "decider": "Is this a promise to a customer, or a guard your engineers enforce inside the system?"
+   },
+   "explain": {
+    "prompt": "Why must an SLA's accuracy floor name its eval set and grading method?",
+    "model": "Without a named, versioned set and grader, the floor cannot be measured the same way twice, so any breach can be argued away. Naming the method makes the clause testable and the error budget countable. It also gives the feedback loop a place to put confirmed failures."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "6.4",
+   "core": [
+    "Documentation has three readers: the executive who needs the decision and its impact, the reviewer who must approve the design, and the engineer who will operate or change it. Each needs a different artefact.",
+    "Write an **ADR** for any decision that is costly to reverse or likely to be questioned. Record the constraint that forced it, such as EU residency forcing in-region or geography-bound Bedrock endpoints and ruling out global cross-Region routing, which does not guarantee location, so a future team can check whether it still holds. Give it a revisit trigger (the condition that reopens it), and for a vendor dependency state the exit cost, so lock-in is an owned decision.",
+    "Keep ADRs in version control beside the code, and supersede rather than edit them. A new ADR that cites the old one preserves the history of why the system changed.",
+    "**Implementation guidance** is written for the team that builds without you: interfaces, the prompt and tool inventory with versions, eval thresholds as acceptance criteria, and known failure modes with their handling. A handoff also lists known limitations (the failure-mode register) and the escalation path for each.",
+    "A **runbook** entry gives symptom, likely cause, diagnostic step and action, grounded in traces the team can actually query. A runbook that says 'contact the architect' transfers nothing.",
+    "A chat channel, a named contact, a recording or a system prompt holds fragments of knowledge. None survives staff turnover, and none records why the alternatives lost. A channel is fine for live coordination; it is never the record."
+   ],
+   "worked": {
+    "scenario": "Eighteen months after launch, a new Meridian platform engineer proposes replacing the shared policy-search MCP server with direct API calls from each of its three consumers, arguing it is simpler. Aiko recalls the original debate but missed several meetings. The only records are a meeting recording, comments in the server code and the claims assistant's system prompt. None of them says why direct integration was rejected.",
+    "ask": "What should the team put in place so the proposal can be judged now and in future?",
+    "options": [
+     {"text": "Reconstruct a version-controlled ADR with Aiko, including why direct calls lost, then assess the proposal as a superseding ADR.", "correct": true, "trap": null},
+     {"text": "Link the meeting recording, the code comments and the system prompt from the repository README so the full history is easy to find.", "correct": false, "trap": "T-AUDIENCE"},
+     {"text": "Reject the proposal, because the original team debated it over several meetings and must have had good reasons for choosing the MCP server.", "correct": false, "trap": "T-ASSUME"},
+     {"text": "Approve the change yourself because three direct integrations are simpler to run, and inform the consuming teams afterwards.", "correct": false, "trap": "T-OWNER"}
+    ],
+    "steps": {
+     "constraint": "A decision is being reopened and its reasoning is missing. Three consumers share the server, so a wrong reversal is expensive. The binding gap is the absent rationale and rejected alternatives.",
+     "classify": "Stage: iteration. This is a documentation choice about preserving reasoning, which makes it an ADR question.",
+     "eliminate": "Strike the README links as T-AUDIENCE: recordings and comments hold fragments without the options or why they lost. Strike the reflexive rejection as T-ASSUME: it assumes the original constraints still hold, and the ADR is how you check. Strike the unilateral approval as T-OWNER: a shared-integration change belongs to the owning team and its consumers, decided on recorded evidence.",
+     "choose": "Reconstruct the ADR from what Aiko and the recording hold, then evaluate the proposal against it. The reflexive rejection would need the stem to confirm the original constraints still apply, and writing the ADR is how you would find out."
+    }
+   },
+   "faded": null,
+   "traps": ["T-AUDIENCE", "T-OWNER", "T-LATER", "T-ASSUME"],
+   "contrast": {
+    "a": {"title": "ADR", "text": "Right when the question is why the system is shaped this way and what was rejected, usually because someone wants to change it."},
+    "b": {"title": "Runbook", "text": "Right when the question is what to do when a symptom appears, and the reader is the operator at the time of an incident."},
+    "decider": "Is the reader deciding whether to change the design, or responding to an incident?"
+   },
+   "explain": {
+    "prompt": "Why does an ADR record the rejected alternatives, not only the decision?",
+    "model": "Future teams reopen decisions by proposing the alternatives that lost. If the record shows why each lost and which constraint drove the choice, they can check whether that constraint still holds instead of relitigating from memory. The decision alone says what, never why not."
+   },
+   "bridge": "Foundations teaches CLAUDE.md and system prompts as the place where instructions live. They tell a model or a developer what to do, not why the architecture has its shape, so they never answer a 'preserve the reasoning' item."
+  },
+  {
+   "obj": "6.5",
+   "core": [
+    "Place the stem on the **lifecycle** (discovery, design, POC, pilot, production and handoff, monitoring, iteration) before you read the options. Most distractors are correct actions for a neighbouring stage.",
+    "**Exit criteria** are written and signed before a stage starts. A POC's criteria test feasibility on representative data; a pilot's test value with real users, plus guardrail metrics that must not get worse. Criteria agreed after the results arrive are a story, not a gate.",
+    "When a pilot ended without criteria, do not rerun or extend it unchanged. Agree criteria with the owner first, then retry with a defined scope and guardrail metrics.",
+    "**Production readiness** adds what a pilot can skip: SLOs, on-call, rollback, runbooks, and a named monitoring owner who accepts the handoff in writing and watches for drift against the pilot baseline.",
+    "**Handoff** transfers capability, not just files. The operating team must be able to diagnose from traces and run the eval suite without you, so coach them through the first incident instead of fixing it for them.",
+    "Decide **iterate or re-architect** on evidence. Traces and per-slice evals that point to a fixable component mean iterate; a changed use case, data source or regulatory regime sends you back to discovery. Change one thing at a time so the next reading can be attributed to it.",
+    "Each lifecycle phase has **outputs**. Discovery gives the baseline, target, constraints and owner; design gives an architecture traced to requirements, ADRs and an eval plan with thresholds; handoff gives runbooks, the eval suite and a named owner; monitoring gives per-slice alerts and review triggers; iteration gives one attributable, eval-gated change. **Retirement** closes the loop: notify users, migrate in-flight work and downstream dependents, dispose of data under the retention rules and record why in an ADR.",
+    "**Scaling a pilot** re-checks its assumptions, because input mix, edge-case frequency, support load and cost at volume rarely match the pilot's. A no-go result against pre-agreed criteria is a success that saved the build, not a reason to rerun unchanged. After launch, review realised benefits against the business case, and when technical targets are met but adoption lags, diagnose with user research and usage measured against the discovery success criteria."
+   ],
+   "worked": {
+    "scenario": "Meridian's home-claims pilot in one EU region met its pre-agreed exit criteria, and Dana approved production. Luis wants it live for all home claims in that region next month. Aiko's team built it, and the claims-platform team will run it. The go-live plan has an SLA draft and dashboards, but no rollback procedure and no on-call rota, and nobody on the claims-platform team has accepted ownership.",
+    "ask": "What is the next step before go-live?",
+    "options": [
+     {"text": "Complete production readiness: rollback, on-call, runbooks and a signed handoff of the eval suite to a named claims-platform owner.", "correct": true, "trap": null},
+     {"text": "Hold go-live and extend the pilot by another month to build more confidence with a larger sample of home claims.", "correct": false, "trap": "T-OWNER"},
+     {"text": "Go live on schedule, with Aiko's team answering the claims-platform team's questions in a shared channel until they feel ready to take over.", "correct": false, "trap": "T-AUDIENCE"},
+     {"text": "Start planning the second-region rollout now so Gerald's expansion case is ready for the board when this region goes live.", "correct": false, "trap": "T-LATER"}
+    ],
+    "steps": {
+     "constraint": "The pilot gate passed and the owner approved, so you are at the production gate. What is missing is exactly what production adds: rollback, on-call, and an owner who has accepted the system.",
+     "classify": "Stage: pilot to production. Prevention: readiness items stop the first incident from landing on nobody. Ladder: lifecycle, the production and handoff rung.",
+     "eliminate": "Strike the extension as T-OWNER: the criteria were met and Dana decided, so extending overrides her with no new evidence. Strike the shared channel as T-AUDIENCE: goodwill in a channel is not a handoff. Strike the second-region plan as T-LATER: expansion follows a live, stable first region, and it closes none of the readiness gaps.",
+     "choose": "Complete production readiness and the signed handoff. The extension would need new evidence that the pilot criteria were wrong or no longer hold, and the stem gives none."
+    }
+   },
+   "faded": null,
+   "traps": ["T-LATER", "T-SKIPDISC", "T-OBSERVE", "T-OWNER"],
+   "contrast": {
+    "a": {"title": "Iterate", "text": "Right when traces and slice evals localise the failure to a component (retrieval, prompt, integration) while the use case, data and regulation are unchanged."},
+    "b": {"title": "Re-architect", "text": "Right when the use case, data source or regulatory regime has changed, so the constraints the design was built on no longer hold. Go back to discovery."},
+    "decider": "Did a component fail under constraints that still hold, or did the constraints change?"
+   },
+   "explain": {
+    "prompt": "Why are exit criteria agreed before a stage starts rather than after the results arrive?",
+    "model": "Criteria written after the results are fitted to whatever happened, so every pilot passes or fails by argument. Agreeing them with the owner beforehand turns the gate into a test and the go/no-go into a decision on evidence. It also tells the team which data the stage must collect."
+   },
+   "bridge": null
+  }
+ ],
+ "case": "Discovery at Meridian produced four outputs before anyone saw a demo: a measured baseline (FNOL-to-contact time, misroute rate, adjuster hours and cost per claim), a target Dana signed, a constraint inventory covering EU residency, health data and the 2-second gateway, and a map of who owns which decision. When Dana asked for 99.9 percent accurate routing, you neither promised it nor redefined it. You converted it into monthly misroutes by claim type and showed a trade-off curve with human review on the high-stakes slice and on claims flagged by calibrated system signals, and she chose the operating point. Gerald receives cost per claim against the baseline, segmented, with the method stated. The SLA commits to p95 latency at peak with catastrophe surges included, an accuracy floor on the agreed eval set with an error budget, cost per transaction and a remedy. Version-controlled ADRs record the Bedrock, MCP and async-facade choices with their rejected options. The home-claims pilot ran in one region against pre-agreed criteria, and production went live only after a named claims-platform owner signed for the eval suite, runbooks and diagnostics."
+}

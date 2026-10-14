@@ -1,0 +1,664 @@
+[
+ {
+  "id": "FB-99",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.2",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "insurance",
+  "family": "close-review-feedback-loop",
+  "counterTrap": false,
+  "signals": [
+   "error rate on the same form types is unchanged",
+   "the fixed record is written to the claims database"
+  ],
+  "stem": "Corvane Mutual uses Claude to extract fields from scanned claim forms. Extractions below a confidence threshold go to a review queue, where adjusters correct them and the fixed record is written to the claims database. Six months later the error rate on the same form types is unchanged. A weekly chart of queue volume is emailed to an operations distribution list. The claims operations lead wants to know why so much review effort has not made the system any better.",
+  "ask": "Which change BEST turns the review effort into improvement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Also send a sample of high-confidence extractions to adjusters so the queue catches confident errors too",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Sampling confident outputs is worthwhile because it exposes confident errors the threshold never routes. On its own, though, it only sharpens the error estimate. Without corrections flowing into measurement and prompt changes, the model behaves exactly as before."
+   },
+   {
+    "id": "b",
+    "text": "Score corrections as labelled data per field and form type, with a named owner who revises prompts and examples",
+    "correct": true,
+    "trap": null,
+    "why": "Corrections are ground-truth labels on the cases the model finds hardest. Scoring them per field and form type shows where it fails, and a named owner turning those results into prompt and few-shot example changes is what closes the loop."
+   },
+   {
+    "id": "c",
+    "text": "Raise the confidence threshold each quarter so a growing share of extractions is corrected before it is stored",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "A higher threshold sends more work to adjusters and raises cost, yet each correction is still only written to the database. The review grows without ever changing what the model does on the next form."
+   },
+   {
+    "id": "d",
+    "text": "Chart per-field correction rates on a live dashboard and post an alert to the team channel whenever a rate rises",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Per-field rates and alerts make the problem visible sooner, but visibility is not a loop. An alert to a shared channel names no owner and gives corrections no path into evals, prompts or examples, so the model keeps making the same errors."
+   }
+  ],
+  "explain": "Binding constraint: the error rate has to fall, yet every correction ends in the claims database. A design is end-to-end only when outcomes flow back as labelled data to a named owner who changes prompts and examples; a dashboard, an alert or a larger queue leaves the loop open.",
+  "rule": "CS-D1-03",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 99
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-2",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "scale",
+  "industry": "e-commerce",
+  "family": "sharpen-small-toolset-descriptions",
+  "counterTrap": false,
+  "signals": [
+   "exactly two tools",
+   "a single sentence written during prototyping"
+  ],
+  "stem": "Tallowbrook Outfitters runs a customer support agent with exactly two tools, `get_customer` and `lookup_order`, and has no plans to add more. Production traces show the agent calling `get_customer` when shoppers ask where their order is. Each tool description is a single sentence written during prototyping, and both tools accept either an email address or an account number as the identifier. The team lead wants the most proportionate step before anyone proposes a larger redesign of the agent.",
+  "ask": "What should the team do FIRST to improve tool selection?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Merge both tools into one `lookup_entity` tool that accepts any identifier and chooses the right backend itself",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "Merging hides the ambiguity inside one broader tool instead of resolving it, and the model still has to express intent through a vaguer interface. With only two tools the catalogue is not the problem; their unclear boundary is."
+   },
+   {
+    "id": "b",
+    "text": "Put a keyword router in front of each turn that reads the message and pre-selects the tool the agent may call",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A router is a new component to build and maintain, and keyword rules misfire on phrasings such as 'my account shows no delivery'. It might earn a place later, but it is not the proportionate first step for two tools."
+   },
+   {
+    "id": "c",
+    "text": "Rewrite both descriptions to state accepted inputs, example queries and when to prefer each over the other",
+    "correct": true,
+    "trap": null,
+    "why": "Descriptions are what the model reads when it chooses a tool. Stating inputs, example queries and the boundary against the sibling tool fixes the real ambiguity at almost no cost, which suits a small, stable set."
+   },
+   {
+    "id": "d",
+    "text": "Add six to eight worked examples of correct tool selection to the system prompt, leaving both definitions as they are",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Examples cover only the phrasings they show. The definitions the model reads when it picks a tool still leave unclear which one owns 'where is my order', so new phrasings keep misrouting. Fix the descriptions first; examples can supplement them later."
+   }
+  ],
+  "explain": "Binding constraint: the catalogue is small and stable, so the defect is an unclear boundary between two tools, and sharpening the descriptions the model reads at selection time comes first. For large catalogues of dozens of tools the fix shifts to per-role scoping or deferred tool loading, because longer descriptions alone do not scale.",
+  "rule": "CS-D3-02",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 2
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-7",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "manufacturing",
+  "family": "diagnose-narrow-decomposition",
+  "counterTrap": false,
+  "signals": [
+   "fully covered by the sources returned for it",
+   "used everything it received"
+  ],
+  "stem": "Pellham Strategy Group runs a research system in which a coordinator breaks a brief into subtasks and delegates them to web-search, document-analysis and synthesis subagents. For a manufacturers' association brief on how higher energy prices are affecting European factories, every subagent reported success. Traces show that every subtask the coordinator created was fully covered by the sources returned for it, and the synthesis draft used everything it received. The client still complains that the report covers steel and chemicals in depth but says nothing about food processing, paper or ceramics.",
+  "ask": "What is the MOST likely root cause?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The synthesis subagent has no instruction to detect coverage gaps across the findings it is handed",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Synthesis used everything it received, so it did its job. A gap check there might flag the hole after the fact, but detecting the missing sectors downstream does not explain why they were never researched in the first place."
+   },
+   {
+    "id": "b",
+    "text": "The web-search subagent writes queries that are too narrow and needs broader terms for the other sectors",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes search was asked to cover food processing, paper and ceramics. Every subtask it received was fully covered by its sources, so nothing in the traces shows those sectors were ever requested."
+   },
+   {
+    "id": "c",
+    "text": "The coordinator split the brief too narrowly, so no subagent was ever assigned the missing sectors",
+    "correct": true,
+    "trap": null,
+    "why": "Every downstream step fully covered what it was given, which rules those layers out. Missing coverage with successful subagents points to the plan itself: the decomposition never included the other sectors."
+   },
+   {
+    "id": "d",
+    "text": "The document-analysis subagent applies a relevance filter strict enough to discard other-sector sources",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Every subtask was fully covered by the sources returned for it, so no filter removed material a subtask needed. It cannot have discarded evidence on sectors that no subtask ever asked the system to find."
+   }
+  ],
+  "explain": "Binding constraint: every subtask was fully covered and synthesis used everything, which eliminates the execution layers. Missed coverage is a decomposition defect, so the fix is in how the coordinator splits the brief, for example checking the plan against the brief's full scope before delegating.",
+  "rule": "CS-D1-11",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 7
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-8",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "pharma",
+  "family": "structured-subagent-error-return",
+  "counterTrap": false,
+  "signals": [
+   "times out partway through",
+   "retry, rephrase, try another source or proceed with a noted gap"
+  ],
+  "stem": "Quillon Therapeutics prepares literature reviews with a coordinator-subagent research system: the coordinator delegates searching, document analysis and synthesis to separate subagents. During a review of a rare-disease pathway, the web-search subagent times out partway through a complex query. You are designing how failures like this are reported back, so that the coordinator can decide whether to retry, rephrase, try another source or proceed with a noted gap.",
+  "ask": "Which failure-reporting design BEST supports recovery by the coordinator?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Return a structured error with the failure type, the query, any partial results and suggested alternative sources",
+    "correct": true,
+    "trap": null,
+    "why": "Structured failure context lets the coordinator pick among the recovery paths it owns: retry, rephrase, switch to a suggested source or accept a documented gap. Partial results are kept rather than wasted, and the failure stays visible in the final review."
+   },
+   {
+    "id": "b",
+    "text": "Retry with backoff inside the subagent, then report a generic 'search unavailable' status once retries run out",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Bounded retries with backoff are reasonable inside the subagent. The flaw is collapsing the outcome into an opaque status, which hides the failure type and partial results the coordinator needs to rephrase, switch source or accept a noted gap."
+   },
+   {
+    "id": "c",
+    "text": "Catch the timeout in the subagent and return an empty result marked as success so the review keeps moving",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Marking an empty result as success is a reassuring claim the system cannot back. The coordinator believes the search simply found nothing, so the review can ship with a silent gap that nobody knows to disclose or fix."
+   },
+   {
+    "id": "d",
+    "text": "Pass the timeout up to a top-level handler that stops the whole review and pages the on-call engineer",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Stopping everything assumes one timeout invalidates the whole review, which the stem does not grant. It throws away whatever the search had gathered and the other subagents' work when a local recovery was available."
+   }
+  ],
+  "explain": "Binding constraint: the coordinator owns recovery, so it needs the failure type, the query and any partial results. Bounded retries inside the subagent are fine, but the outcome must return as structured context rather than an opaque status, a false success or a workflow-wide stop.",
+  "rule": "CS-D1-10",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 8
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-11",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.5",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "saas",
+  "family": "batch-only-non-blocking-work",
+  "counterTrap": false,
+  "signals": [
+   "blocking pre-merge review that developers wait on",
+   "compiled on Friday evening for Monday's planning meeting",
+   "the only commitment is a 24-hour window"
+  ],
+  "stem": "Fernhill Software's platform team runs two Claude workflows: a blocking pre-merge review that developers wait on before they can merge, and a technical-debt digest compiled on Friday evening for Monday's planning meeting. The review's current catch rate is the agreed quality bar. Their engineering manager, who owns the budget, proposes moving both to the Message Batches API to halve the per-token cost. Most batches finish within an hour, but the only commitment is a 24-hour window, after which unfinished requests expire. The manager has asked you for a recommendation she can approve this week.",
+  "ask": "Which recommendation BEST fits both workflows?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move both workflows to batches and poll for completion, since most batches come back well within an hour",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "Typical completion time is not a commitment. A blocking gate needs a latency guarantee, and the batch window only promises up to 24 hours, so any slow batch leaves developers unable to merge for hours."
+   },
+   {
+    "id": "b",
+    "text": "Batch the weekly digest and move the pre-merge review to a smaller, cheaper model tier to save on it as well",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Splitting the workflows is right, but nothing shows a smaller tier holds the agreed catch rate. This trades review quality for savings without evidence, and the manager would be approving a quality drop she never saw measured."
+   },
+   {
+    "id": "c",
+    "text": "Move both workflows to batches with a timeout that falls back to a real-time call when a batch runs long",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Developers still wait out the timeout before the fallback fires, and every fallback pays the full real-time price. The blocking path gets slower and more complex for a saving that shrinks exactly when batches run long."
+   },
+   {
+    "id": "d",
+    "text": "Batch the weekly digest, keep the pre-merge review on real-time calls, and show the manager the trade-off",
+    "correct": true,
+    "trap": null,
+    "why": "The digest is non-interactive and has a whole weekend of slack, well beyond the 24-hour window, so it takes the discount safely. The blocking review keeps real-time latency and its current model, and framing the split as money saved against developer time protected gives the manager a clear decision."
+   }
+  ],
+  "explain": "Binding constraint: the pre-merge check blocks developers, so it needs guaranteed latency that a 24-hour batch window cannot give, and its catch rate must hold. Batch only non-interactive work with slack beyond 24 hours, such as the weekly digest, match results by custom_id, and present the split to the budget owner as cost saved against developer time protected.",
+  "rule": "CS-D4-13",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 11
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-12",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "retail",
+  "family": "per-file-plus-integration-review",
+  "counterTrap": false,
+  "signals": [
+   "consistent depth on every file",
+   "without asking developers to change how they work"
+  ],
+  "stem": "Harrowgate Retail's automated code review runs Claude once over each pull request. A recent change touched 22 files across the checkout and payments services, and the single-pass review was uneven: careful comments on the files near the top of the diff, little more than style notes on the rest, a missing input-validation check on a payment form overlooked, and conflicting naming advice for the same shared type in two files. The engineering lead wants consistent depth on every file without asking developers to change how they work.",
+  "ask": "How should the review be restructured?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Require developers to split large pull requests into groups of three or four files before review runs",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Smaller pull requests would help, but the stem rules out changing how developers work, and the review would still degrade whenever a large change lands. The fix belongs in how the review itself is structured."
+   },
+   {
+    "id": "b",
+    "text": "Switch to a higher-tier model with a larger context window so a single pass covers all 22 files properly",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Uneven depth across many files is a structural defect, not a capacity one. A bigger window still asks one pass to cover 22 files at once, so attention stays diluted on any tier."
+   },
+   {
+    "id": "c",
+    "text": "Review each file in its own focused pass, then run a separate integration pass for cross-file consistency",
+    "correct": true,
+    "trap": null,
+    "why": "Per-file passes give every file the same focused attention, and a separate integration pass catches cross-file issues such as the conflicting naming advice for the shared type. This is sectioning, then a chained integration step."
+   },
+   {
+    "id": "d",
+    "text": "Run three independent passes over the whole pull request and report only issues that at least two runs flag",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Majority voting filters out real bugs that only some runs catch, which is how a single missed validation check slips through. It also triples cost while each run still suffers the same shallow coverage."
+   }
+  ],
+  "explain": "Binding constraint: every file needs consistent depth without changing developer behaviour, which is a structural problem. Decompose the review by sectioning it into independent per-file passes (a parallelisation pattern), then chain a cross-file integration pass, rather than enlarging the model or voting on shallow runs.",
+  "rule": "CS-D1-11",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 12
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-15",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "data-shape",
+  "industry": "energy",
+  "family": "summarise-tool-results-safely",
+  "counterTrap": false,
+  "signals": [
+   "only a short summary",
+   "tariff tables from several regulators"
+  ],
+  "stem": "Northwold Energy's market-research agent appends every tool result to its conversation history before the next request. A teammate proposes storing each full result in a database keyed by ID and giving the model only a short summary at each iteration, to cut tokens and keep the window focused. A typical job gathers tariff tables from several regulators and recommends which region to prioritise.",
+  "ask": "Under which condition would this change MOST likely degrade the agent's decisions?",
+  "options": [
+   {
+    "id": "a",
+    "text": "When long error traces from calls the agent has already retried are each reduced to a single summary line",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Losing detail sounds risky, but traces from calls that were already retried have done their job. Keeping them verbatim only adds tokens and noise, and a one-line note costs nothing because no later step depends on the trace."
+   },
+   {
+    "id": "b",
+    "text": "When the recommendation rests on exact figures from several results that the summaries paraphrase",
+    "correct": true,
+    "trap": null,
+    "why": "Summaries keep the gist and drop exact values. When the recommendation depends on weighing specific tariff figures across results, those dropped values are exactly what the reasoning needs, so decisions degrade unless raw results can be re-fetched."
+   },
+   {
+    "id": "c",
+    "text": "When the raw results reach the model only through an extra tool call that fetches them by ID",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "The extra call sounds like a hurdle, but it assumes summarised means lost. With raw results retrievable by ID, the agent keeps a lean context and pulls exact detail just in time, which is the mitigation that makes external storage safe."
+   },
+   {
+    "id": "d",
+    "text": "When each request drops from tens of thousands of tokens of history to just a few thousand tokens",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "A large cut sounds dangerous, but shrinking the window is the purpose of the change and usually sharpens recall. A structured summary is not blind truncation; the risk lies in which details a later step needs, not in the token count."
+   }
+  ],
+  "explain": "Binding constraint: the recommendation depends on exact values spread across several tariff tables. Storing results externally and passing summaries is a sanctioned context-engineering pattern that degrades decisions only when needed detail is paraphrased away, so keep raw results retrievable by ID for just-in-time re-fetch.",
+  "rule": "CS-D2-08",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 15
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-19",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "auditability",
+  "industry": "public-sector",
+  "family": "structured-claim-provenance-handoff",
+  "counterTrap": false,
+  "signals": [
+   "cannot be traced to a source",
+   "unordered list of URLs"
+  ],
+  "stem": "A policy unit at Ostvale Regional Council runs a research system in which a web-search subagent gathers findings and a synthesis subagent writes cited briefing papers for councillors. Reviewers keep finding briefings whose claims cannot be traced to a source, or cite a page that says something else. Traces show the search subagent returns a prose paragraph of findings followed by an unordered list of URLs, and the synthesis subagent then guesses which URL supports which claim.",
+  "ask": "Which change BEST fixes the problem where it starts?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have the search subagent return claim records, each with its URL, date and passage, passed on intact",
+    "correct": true,
+    "trap": null,
+    "why": "Structured claim records keep each claim bound to its evidence across the handoff, so synthesis cites what it received instead of guessing. Citations then make every claim checkable, though reviewers still verify that each source supports it."
+   },
+   {
+    "id": "b",
+    "text": "Add a line to the synthesis prompt requiring a specific source to be cited for every claim it writes",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "A prompt cannot restore a claim-to-source link that the handoff already destroyed. Told to cite every claim, the synthesis subagent will still guess from the URL list and produce confident but mismatched citations."
+   },
+   {
+    "id": "c",
+    "text": "Let the synthesis subagent rerun the searches itself so it can find a source for each claim before writing",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Searching again duplicates work, costs more, and can surface different sources from the ones behind the original findings. The defect sits in the handoff format, not in whether synthesis is able to search."
+   },
+   {
+    "id": "d",
+    "text": "Have the search subagent return the full page text for every URL so synthesis can match claims to sources",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "More evidence arrives, but claims and sources are still unlinked. Synthesis now has to search whole pages to guess which one backs each finding, so mismatched citations remain and the context fills with text it mostly does not need."
+   }
+  ],
+  "explain": "Binding constraint: every claim in a briefing must trace to a source, so provenance has to survive the handoff between subagents. Define a structured handoff contract of claim, source, date and passage, and remember that citations make claims checkable, not correct.",
+  "rule": "CS-D1-10",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 19
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-22",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "determinism",
+  "industry": "telecom",
+  "family": "parallelise-independent-chain-dependent",
+  "counterTrap": false,
+  "signals": [
+   "do not depend on each other",
+   "has to complete before any confirmation is sent"
+  ],
+  "stem": "Kestrel Mobile's support agent receives one message with three requests: dispute a roaming charge, trace a handset order that never arrived, and change the account's email address. Each takes a few minutes, so handled one after another the reply takes about ten minutes. The billing check, the order trace and the email change use different systems and do not depend on each other. Company policy, however, says every resolution notice must go to the account's current email, so the address change has to complete before any confirmation is sent.",
+  "ask": "Which design cuts response time MOST without breaking the policy?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run all three requests in parallel from the shared account context and confirm each one as soon as it finishes",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This treats the confirmations as independent of the email change, which the policy rules out. A billing or order confirmation could reach the old address before the change lands, breaking the resolution-notice policy."
+   },
+   {
+    "id": "b",
+    "text": "Run the charge check, order trace and email change in parallel, holding all confirmations until the email updates",
+    "correct": true,
+    "trap": null,
+    "why": "All three steps are independent, so they run as parallel sections, while the one real dependency is respected by gating confirmations on the email change. The reply takes about as long as the slowest step and every notice reaches the current address."
+   },
+   {
+    "id": "c",
+    "text": "Run the charge check and order trace in parallel, then make the email change and send every confirmation once it is done",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This keeps the policy but assumes the email change must wait for the investigations, which the stem says it does not. Leaving it until afterwards adds a serial step of a few minutes, so the reply is slower than it needs to be."
+   },
+   {
+    "id": "d",
+    "text": "Resolve the most urgent request in this reply and ask the customer to open separate tickets for the other two",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Splitting the conversation meets the time target by dropping work rather than restructuring it. The customer has to repeat themselves twice, and total time to resolve all three requests goes up."
+   }
+  ],
+  "explain": "Binding constraint: confirmations depend on the email change, while the billing check, order trace and email change are independent of each other. Decompose by dependency: run every independent step as a parallel section and gate only the dependent step, sending notices, behind the one it needs.",
+  "rule": "CS-D1-12",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 22
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-37",
+  "rev": 1,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "security-boundary",
+  "industry": "logistics",
+  "family": "project-mcp-env-token",
+  "counterTrap": false,
+  "signals": [
+   "without anyone hand-configuring the server",
+   "no credential may be committed",
+   "attributable to the engineer who ran them"
+  ],
+  "stem": "Dunmore Freight's platform team wants every engineer who clones the routing-service repository to get the same GitHub MCP server in Claude Code without anyone hand-configuring the server. The server runs locally over stdio and authenticates only with a GitHub personal access token read from its environment. Security policy says no credential may be committed to version control, and actions taken through the server must be attributable to the engineer who ran them. New hires join every month, so the team wants onboarding to stay light.",
+  "ask": "Which configuration BEST meets these requirements?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have each engineer add the server to their own `~/.claude.json` with a personal token pasted into the entry",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "User-scope config never propagates, so every engineer repeats the setup by hand and configurations drift over time. It keeps the token out of Git but fails the requirement that nobody hand-configures the server."
+   },
+   {
+    "id": "b",
+    "text": "Commit `.mcp.json` with one shared team service-account token inside it, so onboarding needs no steps",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "It commits a credential, breaking policy outright, and one shared identity makes every action look like the service account. Attribution is lost, and the token likely carries broader permissions than any single engineer needs."
+   },
+   {
+    "id": "c",
+    "text": "Ship a setup script that writes the server into each engineer's user config the first time they clone",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "A script still writes to user scope, so it is a manual step every hire must remember, and later changes to the server never reach existing machines. Committed project config removes both problems."
+   },
+   {
+    "id": "d",
+    "text": "Commit `.mcp.json` using `${GITHUB_TOKEN}` expansion and have each engineer export a personal token",
+    "correct": true,
+    "trap": null,
+    "why": "Project-scoped `.mcp.json` travels with the repository, and `${GITHUB_TOKEN}` expansion in the server's `env` block keeps the secret out of Git. Each engineer's own token means the server acts with that person's GitHub permissions, so actions stay attributable."
+   }
+  ],
+  "explain": "Binding constraints: no committed credentials and per-engineer attribution. Commit the shared stdio server in project-scoped .mcp.json with ${GITHUB_TOKEN} expansion in its env block, so each engineer supplies a personal token, which keeps secrets out of Git and has the server act with that engineer's own permissions.",
+  "rule": "CS-D7-02",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 37
+  },
+  "status": "verified",
+  "verify": []
+ }
+]

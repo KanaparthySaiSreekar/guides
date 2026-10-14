@@ -1,0 +1,628 @@
+[
+ {
+  "code": "T-REMOVE",
+  "family": "CONTROL",
+  "name": "Guard Instead of Remove",
+  "tell": [
+   "\"Add a confirmation prompt before the agent calls …\"",
+   "\"Log every use of the … tool for audit\"",
+   "\"Allow it only in business hours / with a second approver\""
+  ],
+  "tempts": "Guarding feels safer than breaking a working feature, and every guard listed is good practice somewhere else.",
+  "counter": "If the role never needs the capability, take it out of the tool set or permission scope. Compensating controls belong only on capabilities the role actually needs.",
+  "rightWhen": "The capability is core to the role (a refunds agent has to issue refunds), so limits, confirmations or approval gates on the risky path are right. Logging is also right when the stem asks how misuse would be detected or audited.",
+  "antidote": "Unneeded capability: remove it. Guards are for needed ones.",
+  "domains": [
+   3,
+   5,
+   7
+  ],
+  "example": "A read-only reporting agent was given a `delete_records` tool 'just in case'. Trap: add a confirmation step before deletes. Better: remove `delete_records` from that agent's tool set."
+ },
+ {
+  "code": "T-ENFORCE",
+  "family": "CONTROL",
+  "name": "Instruction as Guarantee",
+  "tell": [
+   "\"Add to the system prompt that Claude must always/never …\"",
+   "\"Document the rule in CLAUDE.md\"",
+   "\"Emphasise the instruction (caps, bold, repetition, more examples)\""
+  ],
+  "tempts": "Prompting usually works and is the cheapest change, so it looks proportionate.",
+  "counter": "When an outcome must hold every time (money, identity, compliance, ordering, safety), enforce it in code: remove the tool, add a permission deny rule, a fail-closed hook, schema or server-side validation, or a workflow gate. Test it by asking what happens if the model ignores the instruction completely.",
+  "rightWhen": "The goal is typical behaviour (tone, style, team conventions, formatting) where an occasional miss is cheap and recoverable, or hard enforcement already exists elsewhere and the prompt only shapes content. Sharing team conventions through CLAUDE.md is correct. A semantic content-scope rule (topics to avoid in open chat) has no deterministic check point, so the system prompt is its primary control, backed by a separate classifier screen; a keyword filter alone is not enforcement.",
+  "antidote": "Must hold every time? Enforce in code, not prompt.",
+  "domains": [
+   3,
+   1,
+   2,
+   5,
+   7,
+   4
+  ],
+  "example": "A claims assistant must never pay out above the policy limit. Trap: add 'never exceed the limit' to the system prompt. Better: the payment tool checks the amount against the limit on the server and rejects anything over it."
+ },
+ {
+  "code": "T-DETECT",
+  "family": "CONTROL",
+  "name": "Detection for Prevention",
+  "tell": [
+   "\"Add audit logging / alerting on …\"",
+   "\"Build a dashboard to monitor for …\"",
+   "Reverse: \"block X\" when the stem asks how anyone would find out"
+  ],
+  "tempts": "Logging is always defensible and shows up in every good architecture.",
+  "counter": "Work out whether the stem asks how damage is avoided (prevent: remove, deny, gate or validate before the action) or how anyone finds out (detect: log, monitor, alert, evidence record). Pick the control type that matches.",
+  "rightWhen": "The stem asks how to know, prove, investigate or measure ('how would the team find out', 'regulator requests evidence'), or prevention is already in place and the question is about the second layer. Multi-response items often want one preventive and one detective control.",
+  "antidote": "Stop it or find out? Match the control type.",
+  "domains": [
+   3,
+   4,
+   5
+  ],
+  "example": "'Ensure the agent cannot email external domains.' Trap: alert security whenever an external email goes out. Better: allowlist recipient domains in the send tool so external sends are rejected."
+ },
+ {
+  "code": "T-AUTHZ",
+  "family": "CONTROL",
+  "name": "Model as Gatekeeper",
+  "tell": [
+   "\"Instruct the model to check the user's role before answering\"",
+   "\"Use one service account with access to all records\"",
+   "\"Pass the user's token straight through to the downstream server\""
+  ],
+  "tempts": "It is fast to build, the model follows role instructions most of the time, and a shared account skips per-user plumbing.",
+  "counter": "The system that owns the data enforces authorization, using the end user's identity and scopes (delegated tokens issued for that specific resource). Never rely on the model's judgement or on a shared over-privileged identity.",
+  "rightWhen": "The data is non-sensitive and the same for every user (public docs), so one low-privilege, read-only service identity is fine. A backend job with no end user can also run under its own narrowly scoped service account.",
+  "antidote": "Enforce authz at the data owner, with the user's identity.",
+  "domains": [
+   3,
+   5
+  ],
+  "example": "An HR assistant answers pay questions, and employees may see only their own record. Trap: the system prompt tells Claude to reveal only the requester's record while it queries with an admin DB account. Better: the tool queries with the employee's own scoped credentials, so other records are never returned."
+ },
+ {
+  "code": "T-BOUNDARY",
+  "family": "CONTROL",
+  "name": "Control After Crossing",
+  "tell": [
+   "\"Redact PII from the response before display\"",
+   "\"Filter out unauthorised documents after retrieval\"",
+   "\"Put the API key in the prompt and tell Claude not to reveal it\""
+  ],
+  "tempts": "Output-side filters are easy to bolt on and seem to catch the problem.",
+  "counter": "Put the control before the data crosses the boundary it must not cross: minimise or redact before the prompt, apply access filters inside the query, and keep secrets in the tool layer, outside the context.",
+  "rightWhen": "The data has to be in context for the task and the only risk is showing it to a different audience further on. Output filtering is then a valid extra layer, especially when an upstream control already exists and the stem asks for defence in depth.",
+  "antidote": "Control before the boundary. Never scrub after crossing.",
+  "domains": [
+   5,
+   1,
+   2,
+   3,
+   4
+  ],
+  "example": "Support transcripts containing card numbers are sent to Claude for summaries. Trap: scrub card numbers from the summary. Better: tokenise or redact card numbers before the transcript enters the prompt."
+ },
+ {
+  "code": "T-REACH",
+  "family": "CONTROL",
+  "name": "Reach Is Not Lock",
+  "tell": [
+   "\"Commit the deny rule / hook to every repository\"",
+   "\"Ask developers to add it to their user settings\"",
+   "Reverse: \"push an org-wide managed policy\" for one team's convenience default"
+  ],
+  "tempts": "Committed project config does reach many developers and is version-controlled, so it looks like fleet coverage.",
+  "counter": "'Cannot be disabled or overridden on any machine' needs managed (organisation-level) settings deployed centrally, which sit above user and project scope. Project config binds only the repos that adopt it.",
+  "rightWhen": "The need is a shared, overridable convention or default for one repo or team. Project settings or project CLAUDE.md is right there, and managed policy would be overreach. Personal preferences belong in user scope.",
+  "antidote": "Non-overridable fleet-wide means managed settings; conventions go project.",
+  "domains": [
+   7,
+   1
+  ],
+  "example": "Security says no developer may let Claude read `.env` files on any laptop. Trap: commit a deny rule to each repo's project settings. Better: deploy the deny rule through managed settings so users and projects cannot override it."
+ },
+ {
+  "code": "T-COMPLY",
+  "family": "CONTROL",
+  "name": "Legality on Scorecard",
+  "tell": [
+   "\"Weigh the compliance risk against the cost savings\"",
+   "\"Enable zero data retention to satisfy HIPAA\"",
+   "\"Encrypt it / get consent\" offered as data minimisation; \"proceed and seek a waiver\""
+  ],
+  "tempts": "Scoring trade-offs is a core architect skill, and ZDR, encryption and consent all sound like strong privacy measures.",
+  "counter": "A legal or regulatory obligation is a gate that removes options before any trade-off. Match the exact regime: PHI needs a BAA (on Bedrock or Vertex, the cloud provider's) plus eligible configuration plus audit; residency needs a geography-bound endpoint with every store on the data path in-region; minimisation means sending only the personal data the task needs, which encryption, consent or pseudonymising one field does not achieve.",
+  "rightWhen": "Once every remaining option clears the legal gate, cost and latency trade-offs are legitimate. ZDR is right when the requirement really is about retention of prompts and outputs. Encryption is right when the stem asks about protecting data in transit or at rest.",
+  "antidote": "Law gates first; match the exact regime's requirement.",
+  "domains": [
+   5,
+   3
+  ],
+  "example": "A clinic wants Claude to summarise patient notes. Trap: turn on zero data retention because it 'covers HIPAA'. Better: sign a BAA, use HIPAA-eligible configuration, and audit access."
+ },
+ {
+  "code": "T-AGENTIC",
+  "family": "COMPLEXITY",
+  "name": "Agentic by Default",
+  "tell": [
+   "\"Build an autonomous agent that decides which steps to take\"",
+   "\"Orchestrate a multi-step workflow\" for a single transform",
+   "\"Future-proof it with agent autonomy\""
+  ],
+  "tempts": "Agents look modern and flexible, and 'future-proof' reads as foresight.",
+  "counter": "Take the lowest rung that works: one augmented call, then a fixed workflow when the steps are known, then an agent only when the path cannot be listed in advance. Ask what actually varies between two requests.",
+  "rightWhen": "The number and order of steps depend on what earlier steps find (open-ended research, debugging, investigation across many sources) and cannot be listed in advance, and the risk of autonomy is contained by guardrails. A fixed workflow is then the under-built answer.",
+  "antidote": "Lowest rung that works: call, workflow, then agent.",
+  "domains": [
+   1,
+   7
+  ],
+  "example": "Classify each incoming invoice into one of 12 cost codes. Trap: an agent that plans, retrieves and classifies on its own. Better: one call with the code list, examples and a structured output schema."
+ },
+ {
+  "code": "T-ORGCHART",
+  "family": "COMPLEXITY",
+  "name": "Agents by Org Chart",
+  "tell": [
+   "\"One agent per department (Finance, Legal, HR)\"",
+   "\"Three teams own the process, so use three agents\"",
+   "\"Mirror the existing team structure\""
+  ],
+  "tempts": "Ownership lines are real and feel like natural seams.",
+  "counter": "Split into several agents only for real technical independence: parallel subtasks, distinct tool sets or context that would confuse one agent, or separate security boundaries. Otherwise use one agent, or a workflow where one component owns the sequencing.",
+  "rightWhen": "The departments really do need different tools, data permissions or isolated contexts (privileged legal documents must not share a context with sales), or their work runs independently in parallel. The org seam then coincides with a technical one.",
+  "antidote": "Split agents on independence, not on team boundaries.",
+  "domains": [
+   1
+  ],
+  "example": "Onboarding runs through IT, HR and Facilities in a fixed order. Trap: three peer agents, one per department. Better: one workflow whose orchestrator owns the order and halts on failure."
+ },
+ {
+  "code": "T-PROTOCOL",
+  "family": "COMPLEXITY",
+  "name": "Wrong Integration Mechanism",
+  "tell": [
+   "\"Wrap the one-off script, or a shared procedure that fetches nothing, in an MCP server\"",
+   "\"Each team integrates the API directly\" for a shared capability",
+   "\"Use agent-to-agent messaging\" when the other side just runs a function"
+  ],
+  "tempts": "Protocols signal standardisation and direct calls signal simplicity, so both sound principled.",
+  "counter": "Match the mechanism to reuse and reasoning: a direct tool or API call for one consumer, a versioned Skill (or shared template) for reusable know-how that fetches no live data, MCP when many clients or teams need the same live connection to an external system, and agent-to-agent only when the other side reasons or negotiates on its own across an ownership boundary.",
+  "rightWhen": "MCP for a single app is right when the host can only take capabilities over MCP (an off-the-shelf client) or when reuse by other hosts is stated. A direct call is right for a single internal consumer.",
+  "antidote": "One consumer: direct; shared know-how: Skill; shared live system: MCP; independent reasoner: A2A.",
+  "domains": [
+   3,
+   1,
+   2
+  ],
+  "example": "Five product teams each want Claude to query the same inventory system. Trap: each team builds its own direct API integration. Better: one inventory MCP server that every team's client connects to."
+ },
+ {
+  "code": "T-MEGATOOL",
+  "family": "COMPLEXITY",
+  "name": "Mega-tool Band-aid",
+  "tell": [
+   "\"Expand every tool description with more detail\"",
+   "\"Add a routing paragraph to the system prompt\"",
+   "\"Merge unrelated tools into one with a `mode` parameter\""
+  ],
+  "tempts": "Better descriptions do help tool selection, and merging tools lowers the count.",
+  "counter": "When tool confusion grows with the size of the catalogue, cut what each agent sees: scope tools by role or task, split along real domain seams, and load the rest on demand through progressive discovery.",
+  "rightWhen": "The catalogue is small and one or two specific descriptions are ambiguous or overlap. A targeted rewrite of those descriptions (purpose, when to use, examples) is the fix. Merging true duplicates that do the same thing is also right. So is folding a chain of low-level calls the agent always makes together into one typed, task-level tool (schedule_event instead of list_users, list_events and create_event), or grouping related operations on one resource behind an `action` parameter (create, review and merge a PR), as Anthropic's tool guidance recommends (CS-D3-19). The trap is a mode switch across unrelated domains.",
+  "antidote": "Too many tools: scope per role, discover on demand.",
+  "domains": [
+   3,
+   1
+  ],
+  "example": "A support agent with 90 tools picks the wrong one more and more often. Trap: add a system-prompt paragraph that maps intents to tools. Better: give each role only its own tools and load the others through on-demand discovery."
+ },
+ {
+  "code": "T-BIGMODEL",
+  "family": "BLUNT",
+  "name": "Bigger Model Reflex",
+  "tell": [
+   "\"Upgrade to the most capable tier\"",
+   "\"Use a model with stronger reasoning\"",
+   "\"Switch to a model with a larger context window\""
+  ],
+  "tempts": "Upgrades often lift quality and are a one-line change.",
+  "counter": "Name the defect class first. Authorization, retrieval, structural, convention and process defects survive on any tier, so fix the system. Choose the cheapest tier that clears a measured bar.",
+  "rightWhen": "Evals show the current tier failing a reasoning-heavy task after retrieval, prompt and structure have been checked, and a larger tier clears the agreed bar at acceptable cost and latency. Capability is then the binding constraint.",
+  "antidote": "Name the defect class before touching the model tier.",
+  "domains": [
+   2,
+   3,
+   4,
+   1,
+   7
+  ],
+  "example": "The agent answers from outdated policy PDFs because new ones were never ingested. Trap: move to the top tier. Better: fix ingestion so the current policies get indexed."
+ },
+ {
+  "code": "T-STUFF",
+  "family": "BLUNT",
+  "name": "Context Stuffing",
+  "tell": [
+   "\"Raise top-k / retrieve more chunks\"",
+   "\"Use bigger chunks or more overlap instead of fixing the boundary\"",
+   "\"Put the whole corpus in the window\""
+  ],
+  "tempts": "More context seems to guarantee the right passage is in there somewhere.",
+  "counter": "When top results are noisy or answers are cut at a chunk edge, fix precision and unit boundaries: structure-aware chunking, hybrid lexical plus semantic retrieval, metadata filters, smaller citation blocks. If the source itself is wrong, fix the content.",
+  "rightWhen": "The measured problem is recall (the right passage is never retrieved because multi-part questions need more than k passages), or the corpus is small and stable enough to fit comfortably with caching, so retrieval only adds error. A measured overlap used alongside structure-aware chunking or parent retrieval, for units longer than a chunk, is also sound.",
+  "antidote": "Noisy or cut results: fix precision and boundaries.",
+  "domains": [
+   3,
+   2,
+   1,
+   4
+  ],
+  "example": "Answers quote half a table because chunks split mid-table. Trap: raise top-k from 5 to 20. Better: chunk on document structure so tables stay whole."
+ },
+ {
+  "code": "T-BLUNTCUT",
+  "family": "BLUNT",
+  "name": "Blunt Cut",
+  "tell": [
+   "\"Truncate to the last N messages or tokens\"",
+   "\"Drop the policy section to save tokens\"",
+   "\"Downsize to the smallest model regardless of task fit\""
+  ],
+  "tempts": "It gives an immediate, measurable cost or latency win.",
+  "counter": "Keep required context and restructure it: put stable content first so it caches, compact with explicit state and next steps, retrieve on demand, and send only suitable tasks to a smaller tier.",
+  "rightWhen": "The cut content has been shown to be unnecessary (evals unchanged without it) or is noise that hurts quality, or a smaller tier has been measured to meet the bar for that task. Trimming or downsizing is then the right lever.",
+  "antidote": "Restructure and cache required context; don't cut it.",
+  "domains": [
+   2,
+   3,
+   4,
+   1
+  ],
+  "example": "Costs rose because every call carries a long, unchanging compliance policy. Trap: truncate the policy. Better: move it into a stable prefix and cache it."
+ },
+ {
+  "code": "T-LEVER",
+  "family": "BLUNT",
+  "name": "Lever Before Measurement",
+  "tell": [
+   "\"Enable streaming to cut response time\"",
+   "\"Move all traffic to batch processing\"",
+   "\"Switch to a cheaper model\" with no cost breakdown"
+  ],
+  "tempts": "Each lever is a known cost or latency tool that often works.",
+  "counter": "Measure first: find the dominant term (input or output tokens, time to first token or total time, the costliest requests), then pull the lever that targets it. Batch only non-interactive work. Streaming improves perceived wait, not completion time. Caching does not cut output cost.",
+  "rightWhen": "The stem already names the dominant term (a large repeated prefix, an overnight backlog, users staring at a blank screen). Caching, batching or streaming, respectively, is then the direct answer.",
+  "antidote": "Measure the dominant term, then pull its lever.",
+  "domains": [
+   2,
+   3,
+   4
+  ],
+  "example": "A nightly report pipeline misses its completion-time target waiting for full reports. Trap: enable streaming. Better: measure where the time goes (output length, sequential calls), then shorten the output or parallelise, because streaming does not finish sooner."
+ },
+ {
+  "code": "T-LAYER",
+  "family": "DIAGNOSIS",
+  "name": "Blame Untouched Layer",
+  "tell": [
+   "\"The model has drifted\"",
+   "\"Lower the temperature\"",
+   "\"The context window is too small\" when only data or config changed"
+  ],
+  "tempts": "The model is the most opaque component, so it soaks up the blame.",
+  "counter": "Start from the triggering change and use the variables the stem calls unchanged to rule options out. Investigate the component the change touched first.",
+  "rightWhen": "The trigger was a model or prompt change (version upgrade, new system prompt) and data and retrieval were not touched. The model or prompt layer is then the right suspect, and 'check retrieval' becomes the untouched-layer trap.",
+  "antidote": "Suspect what the change touched; eliminate the unchanged.",
+  "domains": [
+   4,
+   3,
+   7
+  ],
+  "example": "After the weekly document refresh, answers cite the wrong sections, while model and latency are unchanged. Trap: lower the temperature. Better: inspect chunking and embeddings in the refreshed index."
+ },
+ {
+  "code": "T-LIVESTATE",
+  "family": "DIAGNOSIS",
+  "name": "Indexing Live State",
+  "tell": [
+   "\"Re-index more frequently\"",
+   "\"Add freshness timestamps to chunks\"",
+   "\"The data is stale\" offered for a query-matching failure"
+  ],
+  "tempts": "Staleness is a real RAG problem and re-indexing is a familiar fix.",
+  "counter": "Data that changes with every transaction (balances, stock, order status) comes from the system of record through a tool at query time. The index holds slow-changing knowledge. Confirm staleness is actually the cause before blaming freshness.",
+  "rightWhen": "The content is document-style knowledge that changes on a schedule (policies, catalogues) and the lag between update and index is the measured problem. More frequent or event-driven re-indexing is then right.",
+  "antidote": "Live state: call the system of record, not the index.",
+  "domains": [
+   3,
+   1,
+   4
+  ],
+  "example": "The assistant reports the wrong order status. Trap: re-index the order database every 15 minutes. Better: add a tool that queries the order service at request time."
+ },
+ {
+  "code": "T-OBSERVE",
+  "family": "DIAGNOSIS",
+  "name": "Fix Before Seeing",
+  "tell": [
+   "\"Roll back / fail over / widen permissions\" as the first step",
+   "\"Build a dashboard or runbook\" offered as the instrumentation",
+   "\"Keep only error logs / sample a subset of sessions\""
+  ],
+  "tempts": "Action looks decisive, and dashboards look like observability.",
+  "counter": "Capture and read the evidence first: step-level traces of failing and passing runs (prompts, retrievals, tool calls and results, outputs). Dashboards, alerts and runbooks consume instrumentation; they are not instrumentation. Keep the full records you will need.",
+  "rightWhen": "A regression follows a known change, so a known-good version exists (CS-D4-19), users are being actively harmed, or there is an outage: mitigate first (roll back behind the flag, kill switch), then diagnose from the retained traces. It is also right when instrumentation already exists and the stem supplies the diagnosis. At very high volume, a light correlated record for every request plus full traces for failures and flagged slices is sound (CS-D3-10); what fails is keeping only errors or dropping whole sessions.",
+  "antidote": "Pull traces before fixing, widening access or failing over.",
+  "domains": [
+   3,
+   4,
+   6,
+   7,
+   1
+  ],
+  "example": "An agent's tool call sometimes fails with 'access denied'. Trap: grant it admin scope. Better: pull the failing traces to see which call, identity and resource were denied."
+ },
+ {
+  "code": "T-VIBES",
+  "family": "EVIDENCE",
+  "name": "Number Without Bar",
+  "tell": [
+   "\"Track the average quality score over time\"",
+   "\"Use an LLM judge at temperature 0 for consistency\"",
+   "\"Iterate until the test set passes\" / \"let the system under test write the expected answers or grade itself\""
+  ],
+  "tempts": "Any metric feels more rigorous than none, and LLM judges scale cheaply.",
+  "counter": "An eval needs a pass threshold agreed in advance, a representative held-out set refreshed from production, and a judge calibrated against human labels. Never tune on the test set. Temperature 0 only makes a miscalibrated judge wrong in the same way every time.",
+  "rightWhen": "The team is at the very start and must measure a baseline before a threshold can be set, so establishing the baseline is the step. Scaling an LLM judge is right once it has been validated against human labels.",
+  "antidote": "Agreed threshold, fresh held-out set, calibrated judge.",
+  "domains": [
+   4,
+   1,
+   6,
+   7,
+   5
+  ],
+  "example": "The team wants to show the new prompt is better. Trap: run a temperature-0 LLM judge on the 50 cases they tuned against. Better: agree a pass bar first, then score a held-out set with a judge checked against human labels."
+ },
+ {
+  "code": "T-AGGREGATE",
+  "family": "EVIDENCE",
+  "name": "Average Hides Slice",
+  "tell": [
+   "\"Overall accuracy improved, so ship\"",
+   "\"Report the mean across all users\"",
+   "\"The fairness check passed on the full dataset\""
+  ],
+  "tempts": "Aggregates are easy to communicate and statistically stable.",
+  "counter": "Break results down by the slices the stem hints at (region, language, document type, segment, protected group) and gate the release on the worst critical slice.",
+  "rightWhen": "The slices are too small for meaningful estimates and the decision concerns overall capacity or cost, or the metric is operational (throughput, spend) and the stem gives no subgroup that matters.",
+  "antidote": "Gate on the worst critical slice, not the mean.",
+  "domains": [
+   4,
+   3,
+   5,
+   1
+  ],
+  "example": "Overall extraction accuracy rose, but a new invoice format started arriving from one region. Trap: ship on the aggregate. Better: score that format as its own slice with its own bar."
+ },
+ {
+  "code": "T-PEEK",
+  "family": "EVIDENCE",
+  "name": "Decide After Peeking",
+  "tell": [
+   "\"Stop once the difference looks significant\"",
+   "\"Report the metric that moved most\"",
+   "\"Variant B changes the prompt and the model\""
+  ],
+  "tempts": "Early wins are exciting, and bundling changes saves calendar time.",
+  "counter": "Fix the primary metric, sample size and stopping rule before launch, and change one variable per arm so the result can be attributed.",
+  "rightWhen": "A pre-declared guardrail metric (safety, severe errors) shows harm, so stopping early is correct. Bundling is fine when the stem says the goal is to ship a package and attribution does not matter.",
+  "antidote": "Lock metric, sample and stopping rule; one change per arm.",
+  "domains": [
+   4
+  ],
+  "example": "After 50 sessions, variant B leads on satisfaction. Trap: declare B the winner. Better: run to the planned sample size and decide on the pre-registered metric."
+ },
+ {
+  "code": "T-SELFCONF",
+  "family": "EVIDENCE",
+  "name": "Model Grades Itself",
+  "tell": [
+   "\"Escalate when the model says it is unsure\"",
+   "\"Ask Claude to rate its confidence and route low scores\"",
+   "\"Let the model decide when a human is needed\""
+  ],
+  "tempts": "It is cheap and appears to target uncertainty directly.",
+  "counter": "Route human review by the consequence of an error (reversibility, blast radius, cost, regulatory exposure) plus calibrated system signals such as validation failures, policy rules, retrieval coverage, and classifiers checked against labels.",
+  "rightWhen": "The confidence signal has been calibrated against labelled outcomes (a scored classifier with validated thresholds) and is combined with risk rules. Confidence-based routing is then legitimate. The official prep course lists routing by confidence, reversibility and the cost of a wrong answer without defining 'confidence'; read it as a calibrated, system-derived signal, never the model's own self-rating.",
+  "antidote": "Route by consequence and calibrated signals, not self-rating.",
+  "domains": [
+   5,
+   1,
+   7
+  ],
+  "example": "A loan-summary agent must escalate risky cases. Trap: escalate whenever Claude reports low confidence. Better: escalate by rule on irreversible or high-value decisions and on failed validation checks."
+ },
+ {
+  "code": "T-RUBBERSTAMP",
+  "family": "EVIDENCE",
+  "name": "Paper Gate",
+  "tell": [
+   "\"Have a human review every output\"",
+   "\"Randomly sample a fixed share for review\"",
+   "\"Add a manager approval click / a second approver\""
+  ],
+  "tempts": "Full review sounds maximally safe, and random sampling sounds statistically sound.",
+  "counter": "Put review where the risk concentrates (irreversible, external, high-impact actions), give reviewers the context and time to judge, and check that the gate changes outcomes (override rate, time spent per review).",
+  "rightWhen": "Volume is low and every item is high-stakes or regulated, as in an early pilot, so reviewing everything is right. Random sampling is right as an extra quality or drift estimate alongside risk-based routing, not as a replacement for it.",
+  "antidote": "Review where risk concentrates; prove the gate bites.",
+  "domains": [
+   5
+  ],
+  "example": "Reviewers approve agent-drafted refunds in seconds and almost never reject one. Trap: add a second approver. Better: send only irreversible or high-value refunds to review, show the evidence, and track override rates."
+ },
+ {
+  "code": "T-SKIPDISC",
+  "family": "PEOPLE",
+  "name": "Build Before Agreeing",
+  "tell": [
+   "\"Build a quick prototype to show the sponsor\"",
+   "\"Select the model first\"",
+   "\"Quote a fixed price now\""
+  ],
+  "tempts": "Demos build momentum and feel customer-focused.",
+  "counter": "First agree the underlying job, the current baseline, the target, the constraints (cost, latency, compliance) and the decision owner. A prototype answers a question that comes later.",
+  "rightWhen": "The stem already states the baseline, target, constraints and owner, or it frames the prototype as a discovery tool for testing the feasibility of an agreed question. Building is then the next step.",
+  "antidote": "Baseline, target, constraints, owner before any build.",
+  "domains": [
+   6,
+   1
+  ],
+  "example": "A VP asks for 'a chatbot for sales'. Trap: spin up a prototype this week. Better: define the job to be done, the baseline, the success target and the constraints with the VP."
+ },
+ {
+  "code": "T-OVERPROMISE",
+  "family": "PEOPLE",
+  "name": "Reassuring Guarantee",
+  "tell": [
+   "\"Commit to a guaranteed accuracy figure in the contract\"",
+   "\"Assure the board hallucinations are eliminated\"",
+   "\"Promise deterministic output\""
+  ],
+  "tempts": "Stakeholders want certainty, and a confident number closes the deal.",
+  "counter": "Commit to measured, segmented results with a stated error rate, a handling path for each kind of mistake, and ongoing monitoring. Model output is probabilistic.",
+  "rightWhen": "The promise concerns something deterministic you control: code enforces a limit, configuration means data is not retained, a human approves every payment. Committing to that is honest.",
+  "antidote": "Commit to measured rates plus error handling, never certainty.",
+  "domains": [
+   6,
+   5,
+   1
+  ],
+  "example": "A client demands 'zero errors' in contract review. Trap: promise zero errors after tuning. Better: turn the demand into measurable criteria with an agreed error rate, plus human review for high-impact clauses."
+ },
+ {
+  "code": "T-AVGSLA",
+  "family": "PEOPLE",
+  "name": "SLA on Averages",
+  "tell": [
+   "\"Average response time under X seconds\"",
+   "\"SLA excludes peak or surge days\"",
+   "\"Every request completes within X seconds\""
+  ],
+  "tempts": "Averages are easy to report, and hard caps sound strict.",
+  "counter": "State latency as a percentile (p95) measured at peak load, with an error budget and defined degraded behaviour. Treat the SLA as an elimination gate before other trade-offs.",
+  "rightWhen": "A hard per-request timeout with a fallback is right as an internal engineering guard, not as the contractual SLA for generative output (CS-D6-07). Averages are fine when the stem concerns throughput or cost rather than user-facing latency, and an offline batch job commits to completion within its delivery window (CS-D4-02).",
+  "antidote": "p95 at peak plus an error budget, not averages.",
+  "domains": [
+   6,
+   1,
+   3,
+   4
+  ],
+  "example": "Draft the latency SLA for a claims assistant. Trap: 'average under 3 seconds, excluding month-end'. Better: 'p95 under target during month-end peak, with an error budget and a fallback'."
+ },
+ {
+  "code": "T-OWNER",
+  "family": "PEOPLE",
+  "name": "Deciding for the Owner",
+  "tell": [
+   "\"Quietly switch to a metric the system meets\"",
+   "\"Lower the bar, since it is unrealistic\" / \"cancel, since it cannot hit the target\"",
+   "\"Escalate around the sponsor\""
+  ],
+  "tempts": "The architect often holds the evidence and wants to save everyone time.",
+  "counter": "Take the evidence and the options, with their trade-offs, to the named decision owner and let them decide. Never redefine, accept or abandon the bar on their behalf, in either direction.",
+  "rightWhen": "The choice is within your own authority (an implementation detail with no trade-off stakeholders can see), or the owner has explicitly delegated it. Escalating above the owner is right when they are breaching a legal or safety obligation.",
+  "antidote": "Bring evidence and options to the decision owner.",
+  "domains": [
+   6,
+   5
+  ],
+  "example": "The pilot misses the agreed accuracy bar on one document type. Trap: report success on a different metric where it scores well. Better: show the gap by slice, plus the options, to the sponsor for a decision."
+ },
+ {
+  "code": "T-AUDIENCE",
+  "family": "PEOPLE",
+  "name": "Wrong Artefact",
+  "tell": [
+   "\"Walk executives through the architecture diagram\"",
+   "\"Point new engineers to the chat channel / the person who knows\"",
+   "\"Record the meeting / add code comments\" to preserve a decision"
+  ],
+  "tempts": "Detailed artefacts feel thorough, and chat channels are where the knowledge really lives.",
+  "counter": "Fit the artefact to the audience and purpose: executives get outcomes, risk, cost and the decision being asked for; engineers get durable documentation; decisions get an ADR with rationale and rejected alternatives.",
+  "rightWhen": "The audience is technical reviewers (security, platform) who must sign off the design, so the architecture diagram is right. A channel is right for real-time coordination, not as documentation.",
+  "antidote": "Execs get outcomes, decisions get ADRs, engineers get docs.",
+  "domains": [
+   6,
+   1,
+   5
+  ],
+  "example": "The board must decide whether to fund phase 2. Trap: present the agent orchestration diagram. Better: a one-page brief with measured outcomes, risks, cost and the decision requested."
+ },
+ {
+  "code": "T-LATER",
+  "family": "PEOPLE",
+  "name": "Right Answer, Wrong Time",
+  "tell": [
+   "Stem says \"FIRST\", \"before proceeding\" or \"next step\"",
+   "\"Set up production monitoring / load testing / regional rollout\" while earlier stages are open",
+   "\"Build the eval harness\" before success criteria exist"
+  ],
+  "tempts": "The option is genuinely good practice, so it passes the 'is this correct?' check.",
+  "counter": "Find the lifecycle stage the stem is in and choose the action that unblocks that stage. Defer actions that are correct but belong downstream.",
+  "rightWhen": "The stem already puts you at the later stage (pilot complete, bar agreed, go-live next), so the 'later' action is exactly what is due now.",
+  "antidote": "Place the lifecycle stage; choose what unblocks it now.",
+  "domains": [
+   6,
+   4,
+   5,
+   1,
+   7
+  ],
+  "example": "Stakeholders disagree on what 'good' means for the summariser. What comes FIRST? Trap: launch an A/B test. Better: agree success criteria and a threshold with the owner."
+ },
+ {
+  "code": "T-FILLER",
+  "family": "MECHANICS",
+  "name": "Filler Pick",
+  "tell": [
+   "\"Also document the process / train staff\" as a generic add-on",
+   "\"Add monitoring\" when the stem asks what stops the failure",
+   "The third plausible option in a 'select 2' item"
+  ],
+  "tempts": "It is true and harmless, so it seems a safe way to fill the last selection.",
+  "counter": "Read the select-N count and take only the options that change the outcome the stem describes. In governance and stakeholder items the correct pair is often one preventive plus one detective control, or one technical plus one stakeholder action.",
+  "rightWhen": "The stem's binding problem is a people or process gap (untrained reviewers, missing documentation). 'Train' or 'document' is then the option that changes the outcome, not filler.",
+  "antidote": "Select N: only options that change the outcome.",
+  "domains": [
+   5,
+   6,
+   4
+  ],
+  "example": "Select 2 to stop an agent leaking customer data. Trap pair: restrict tool scope plus 'run a security awareness session'. Better pair: restrict tool scope plus redact before the prompt."
+ },
+ {
+  "code": "T-ASSUME",
+  "family": "MECHANICS",
+  "name": "Unstated Assumption",
+  "tell": [
+   "Option works only if \"labelled data exists\" or \"the vendor supports X\"",
+   "\"Users will accept the delay\" / \"budget is available\"",
+   "An option that is complete only if you add a fact"
+  ],
+  "tempts": "The assumption is plausible in real life, so the option looks complete.",
+  "counter": "For each surviving option, name the assumption it depends on and check whether the stem grants it. The option that works using only the given facts wins.",
+  "rightWhen": "The stem states or clearly implies the fact, or it is a stable, general property of the platform. Do not rule out an option for an assumption the stem actually grants.",
+  "antidote": "Name each option's assumption; check the stem grants it.",
+  "domains": [
+   1,
+   2,
+   5,
+   4,
+   6
+  ],
+  "example": "'Improve ticket classification quickly.' Trap: fine-tune on historical labelled tickets, though the stem never says labels exist. Better: add few-shot examples and structured output over the defined categories."
+ }
+]

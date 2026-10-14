@@ -1,0 +1,508 @@
+[
+ {
+  "id": "P6-6.2-001",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "accuracy-floor",
+  "industry": "energy",
+  "family": "missed-bar-segmented-options",
+  "counterTrap": false,
+  "signals": [
+   "owns the go/no-go decision",
+   "agreed a bar of 95% agreement",
+   "71% on scanned reports with handwritten notes"
+  ],
+  "stem": "Cairnmoor Gas Networks' asset-integrity team piloted a Claude-based triage of pipeline inspection reports, sorting defects into repair-priority bands. The Head of Asset Integrity owns the go/no-go decision and agreed a bar of 95% agreement with senior engineers' labels. The pilot scored 91% overall: 96% on typed reports and 71% on scanned reports with handwritten notes, which make up a fifth of volume. Today's manual triage by junior engineers agrees with the senior labels 89% of the time. The steering review is next week.",
+  "ask": "Which TWO actions should the architect take for the steering review? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Report agreement by report type against the 95% bar, with sample sizes and how the senior engineers' labels were collected",
+    "correct": true,
+    "trap": null,
+    "why": "The owner needs to see where the pilot misses her agreed bar and how the figures were produced; the 91% overall hides that typed reports pass while the handwritten fifth falls 24 points short."
+   },
+   {
+    "id": "b",
+    "text": "Compare the pilot's 91% with the 89% agreement of today's manual triage, showing the steering group it already beats current practice",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Beating the manual baseline is useful context, but the owner agreed 95% as the bar; leading with a yardstick the pilot passes quietly swaps her criterion for one the architect prefers."
+   },
+   {
+    "id": "c",
+    "text": "Present a plan to lift handwritten-report agreement to 95% by go-live, through scan clean-up and more worked examples in the prompt",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Scan clean-up and examples may help, but nothing in the pilot shows a 24-point gap closing by go-live; tabling it as the plan commits the owner to a result the evidence does not support."
+   },
+   {
+    "id": "d",
+    "text": "Cost the options for handwritten reports at go-live, such as engineer review of each one or keeping them on manual triage",
+    "correct": true,
+    "trap": null,
+    "why": "Costed options for the failing slice let the Head of Asset Integrity make the go/no-go call herself, instead of the architect accepting or abandoning the 95% bar on her behalf."
+   },
+   {
+    "id": "e",
+    "text": "Set up a weekly agreement dashboard by report type so the steering group can track accuracy once the service is live",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A dashboard by report type is sound monitoring after launch, but it gives the owner neither the evidence nor the options she needs to decide at next week's review."
+   }
+  ],
+  "explain": "Binding constraint: an agreed 95% accuracy floor that the pilot misses on the handwritten slice. Take segmented results with the method, plus costed options for that slice, to the named owner; do not swap her bar for a baseline the pilot beats or promise a fix by go-live.",
+  "rule": "CS-D6-06",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-13",
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.2-002",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "ownership",
+  "industry": "healthcare",
+  "family": "exec-bar-error-counts-by-slice",
+  "counterTrap": false,
+  "signals": [
+   "owns clinical risk for the service",
+   "caught most of those misses",
+   "wants approval this quarter"
+  ],
+  "stem": "Wrenfield Health's radiology service is piloting a Claude-based assistant that reads finalised reports and flags incidental findings, such as lung nodules, that need follow-up. The Chief Medical Officer owns clinical risk for the service and will approve rollout only at 99.9% accuracy. On 6,000 pilot reports accuracy was 97.6%; nearly every error was a missed finding in a report with hedged wording such as 'cannot exclude', and other reports met the bar. A nurse re-reading a sample of hedged reports caught most of those misses. The finance director wants approval this quarter, when the manual tracking team's contract ends.",
+  "ask": "What should the architect BEST bring to the Chief Medical Officer?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Nurse review of hedged reports from go-live this quarter, presented to her as bringing the whole service up to the 99.9% bar",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Nurse review targets the right slice and meets the deadline, but the sample showed it catching most misses, not enough to claim 99.9%; presenting it as reaching her bar asserts a figure nobody has shown."
+   },
+   {
+    "id": "b",
+    "text": "Go-live this quarter for reports without hedged wording, which already meet her bar, with hedged reports passed back to the radiologists",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Carving out hedged reports may be a sound option, but quoting the bar only on reports the assistant handles well redefines it, and handing the rest to radiologists settles a clinical-risk trade-off that is hers."
+   },
+   {
+    "id": "c",
+    "text": "Missed findings per 1,000 reports by wording type under no added review, nurse review or manual tracking of hedged reports, with their costs",
+    "correct": true,
+    "trap": null,
+    "why": "Counts by wording type show how many patients would lose follow-up under each option, and pricing each one gives the CMO a bounded choice of operating point, so the finance deadline does not decide clinical risk for her."
+   },
+   {
+    "id": "d",
+    "text": "Overall accuracy under no added review, nurse review or manual tracking of hedged reports, with each option's cost and go-live date",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The options are the right ones, but overall percentages make the options look a fraction of a point apart; they hide where the misses fall and how many patients each option leaves without follow-up."
+   }
+  ],
+  "explain": "Binding constraint: the CMO owns clinical risk, and that gate outranks the finance deadline. Give her missed findings per 1,000 by wording type under each bounded option, with its cost, so she chooses the operating point; do not claim her bar is met by unmeasured review or by quoting only the reports the assistant handles well.",
+  "rule": "CS-D6-04",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-13",
+   "TIP-EL-12"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.2-003",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "ownership",
+  "industry": "healthcare",
+  "family": "delegated-implementation-choice",
+  "counterTrap": true,
+  "signals": [
+   "makes implementation choices inside those limits the architect's call",
+   "identical eval scores",
+   "five weeks away"
+  ],
+  "stem": "Saltmarsh Children's Hospital is building a Claude assistant that summarises GP referral letters for its outpatient triage clinicians. The clinical director who owns the service agreed an accuracy floor, a turnaround target and a monthly cost cap, and the project charter makes implementation choices inside those limits the architect's call. Two ways of splitting long letters both clear each limit, with identical eval scores and costs within 1% of each other. A project manager suggests taking both to the monthly steering board, five weeks away.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Prepare a steering paper comparing both approaches, with eval scores and costs, for the clinical director to decide at the board",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Taking a trade-off to its owner is the usual rule, but the charter delegates choices inside the agreed limits and the two options differ on nothing the clinical director tracks, so a steering paper spends her board time on an implementation detail and stalls the build for five weeks."
+   },
+   {
+    "id": "b",
+    "text": "Choose one approach and report to the clinical director that it has secured her accuracy floor for live referrals",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Choosing is right, but an eval pass is evidence about the test set, not a promise about live referrals; reporting the floor as secured commits her to a certainty the eval cannot give."
+   },
+   {
+    "id": "c",
+    "text": "Describe both approaches in the operations handoff pack so the future support team knows why one was chosen",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Handoff documentation matters, but it follows the build; writing it now leaves the choice itself unmade and the build still waiting on it."
+   },
+   {
+    "id": "d",
+    "text": "Choose one splitting approach, record the reasoning and the rejected option in the design log, and carry on with the build",
+    "correct": true,
+    "trap": null,
+    "why": "The charter delegates implementation choices inside the agreed limits to the architect, and the two approaches differ in nothing the owner can see, so deciding and recording the reason keeps the build moving."
+   }
+  ],
+  "explain": "Binding constraint: decision ownership, which the charter has delegated for choices inside the agreed limits. Taking trade-offs to the owner is the usual rule, but this is the case where it does not apply (the choice is delegated and the options differ on nothing she tracks), so the architect decides, records the reasoning and keeps the build moving.",
+  "rule": "CS-D6-06",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-13",
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.2-004",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "audience",
+  "industry": "banking",
+  "family": "board-brief-decision-impact-risk-ask",
+  "counterTrap": false,
+  "signals": [
+   "ten-minute slot at the board risk committee",
+   "track fraud losses, investigator backlog and open regulatory findings"
+  ],
+  "stem": "Greyhaven Savings Bank's architect has a ten-minute slot at the board risk committee to win approval for a Claude assistant that summarises fraud cases for investigators. Committee members are non-executive directors who track fraud losses, investigator backlog and open regulatory findings. The pilot cut average case preparation from 50 minutes to 20, and investigators approve each summary before any action is taken. The committee will approve or reject the design at this meeting.",
+  "ask": "How should the architect BEST use the ten minutes?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Open with the pilot evaluation, covering summary accuracy, the rate of unsupported case details and reviewer agreement, then take questions",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "Accuracy and agreement rates suit model-risk reviewers, but these directors track losses, backlog and regulatory findings; opening with evaluation metrics leaves them to translate the evidence and never states what they are asked to approve."
+   },
+   {
+    "id": "b",
+    "text": "Open with the 60% cut in preparation time, then explain that investigator sign-off on each summary removes the risk of acting on errors",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Investigator sign-off is a real control, but reviewers can miss an unsupported detail; telling a risk committee it removes the risk gives members an assurance the bank cannot keep and skips the residual risk they must weigh."
+   },
+   {
+    "id": "c",
+    "text": "Open with the approval sought and its effect on backlog and fraud losses, then the main risks and how each is controlled",
+    "correct": true,
+    "trap": null,
+    "why": "Non-executive directors deciding in ten minutes need the approval sought in metrics they already track, then the residual risks with their controls; that is what lets them approve or reject at this meeting."
+   },
+   {
+    "id": "d",
+    "text": "Open with the rollout plan, showing which fraud teams go first, how investigators are trained and when adoption will be complete",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A rollout plan follows approval; spending the slot on it presumes a decision the committee has yet to make and leaves out the impact and risks it needs in order to make it."
+   }
+  ],
+  "explain": "Binding constraint: the audience is a board risk committee of non-executive directors deciding in ten minutes. Lead with the decision and its impact in metrics members track, then residual risks and their controls; leave out evaluation internals, rollout detail and assurances the controls cannot back.",
+  "rule": "CS-D6-05",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-15"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.2-005",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "ownership",
+  "industry": "retail",
+  "family": "latency-vs-error-owner-metrics",
+  "counterTrap": false,
+  "signals": [
+   "owns both the conversion and the returns targets",
+   "about four seconds with 2 wrong in 100"
+  ],
+  "stem": "Thistledown Apparel, an online fashion retailer, is adding a size-and-fit assistant to its product pages before peak season. The architect benchmarked two designs on last season's shopper questions. A single fast call answers in about one second but gives wrong size advice in 6 of every 100 answers. A design that also checks the brand's size chart and the shopper's past returns answers in about four seconds with 2 wrong in 100. Site analytics show add-to-basket rates falling as product pages take longer to respond, and several brands' size charts are still incomplete. The VP of Digital Trade owns both the conversion and the returns targets.",
+  "ask": "How should the architect BEST present this choice to the VP?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Recommend the four-second design because it cuts wrong size advice by two-thirds, keeping the fast design as a fallback if she objects",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Two-thirds fewer errors is real, but the slower design also costs conversion, and both targets belong to the VP; recommending on returns alone settles the weighting between her targets before she has seen the sales side."
+   },
+   {
+    "id": "b",
+    "text": "Present both designs, noting that the checked design's error rate will keep falling as brands complete their size charts",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Completing size charts may help, but the benchmark measured 2 wrong in 100 and nothing shows how far that falls; presenting further improvement as certain tilts her choice with a figure nobody has measured."
+   },
+   {
+    "id": "c",
+    "text": "Show both designs' benchmark results side by side, with error rate, median and p95 response time and cost per answer, and ask her to choose",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "The benchmark figures are accurate, but error rates, percentiles and cost per answer leave the VP to work out what they mean for the returns and sales targets she owns, so she cannot weigh them."
+   },
+   {
+    "id": "d",
+    "text": "Show each design as weekly size-related returns, their cost and the sales likely lost to the longer wait, and ask her to choose",
+    "correct": true,
+    "trap": null,
+    "why": "The VP owns both targets the designs trade against each other; turning error rates and seconds into weekly returns, their cost and lost sales gives her a bounded choice in her own figures."
+   }
+  ],
+  "explain": "Binding constraint: the VP owns both the conversion and the returns targets that the two designs trade against each other. Present the trade-off in her metrics as a bounded choice and let her decide; do not weight it for her, overstate either design or leave it in engineering figures.",
+  "rule": "CS-D6-04",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-13",
+   "TIP-EL-15"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.2-006",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.2",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "evidence",
+  "industry": "legal",
+  "family": "evidence-contradicts-sponsor-design",
+  "counterTrap": false,
+  "signals": [
+   "owns the design decision",
+   "overall issue-spotting recall",
+   "appear in only a few dozen"
+  ],
+  "stem": "At Pellow Marsh LLP, a corporate law firm, the innovation partner owns the design decision for a new due-diligence assistant, has told colleagues it will use a multi-agent design, and will seek funding from the management committee in two weeks. The architect's bake-off on 300 past data rooms shows a fixed workflow matching the multi-agent design's overall issue-spotting recall at a third of the cost per data room. The firm's heaviest client exposure is in change-of-control clauses, which appear in only a few dozen of those data rooms.",
+  "ask": "Which TWO actions should the architect take before the committee meeting? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Circulate the bake-off to the management committee, copying the partner, so members can weigh both designs before funding either",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Copying the partner does not leave the response to her; sending evidence against her announced design to the funders first takes the decision on how to respond away from its owner, and no legal or safety duty justifies that."
+   },
+   {
+    "id": "b",
+    "text": "Take the bake-off to the partner privately first, with the sample, the method and recall by issue type for each design",
+    "correct": true,
+    "trap": null,
+    "why": "Overall recall can match while the designs differ on change-of-control clauses; recall by issue type, with the sample and method, shows how much the few dozen critical cases can support, and the partner sees it before anyone else."
+   },
+   {
+    "id": "c",
+    "text": "Give the partner each design's overall recall and cost per data room, keeping the comparison to the two headline figures",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Two headline figures are easy to take in, but an overall recall match says nothing about change-of-control clauses in a few dozen data rooms; without the breakdown and sample she cannot judge whether the cheaper design is safe."
+   },
+   {
+    "id": "d",
+    "text": "Set out both designs for the partner as options, with cost per data room, audit effort and what each might enable later",
+    "correct": true,
+    "trap": null,
+    "why": "Framing both designs as costed options, including what the multi-agent design might add later, gives the partner a fair trade-off to decide rather than a verdict that contradicts her announced choice."
+   },
+   {
+    "id": "e",
+    "text": "Record the bake-off in an architecture decision record with both designs, ready for the team that will build the assistant",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "An ADR is the right record once a design is chosen, but the decision is still open; writing it now changes nothing about what the partner weighs or takes to the committee in two weeks."
+   }
+  ],
+  "explain": "Binding constraint: evidence quality. An overall recall match cannot show that the cheaper design is safe on change-of-control clauses that appear in only a few dozen data rooms, so the owner needs recall by issue type with the sample and method, brought to her first, plus both designs as costed options.",
+  "rule": "CS-D6-06",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-13",
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.2-007",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "least",
+  "constraint": "irreversibility",
+  "industry": "banking",
+  "family": "reversal-cost-staged-option",
+  "counterTrap": false,
+  "signals": [
+   "let its specialist contracts lapse",
+   "rebuilding that team would take about nine months"
+  ],
+  "stem": "Stonebeck Mutual, a regional bank, piloted a Claude pipeline that extracts figures from small-business loan document packs, and it met the agreed accuracy bar on every document type. The COO, who owns the decision, plans to disband the 30-person manual review team at quarter end and let its specialist contracts lapse. The architect estimates that rebuilding that team would take about nine months if production error rates come in higher than the pilot's, and is drafting a briefing for the COO.",
+  "ask": "Which proposed element of the architect's briefing to the COO is LEAST appropriate?",
+  "options": [
+   {
+    "id": "a",
+    "text": "A staged run-down that keeps a smaller review team until live error rates are known, costed against a nine-month rebuild",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "This element fits. It can look like overriding the COO's plan, but it is offered for her to choose, and it keeps a way back while live error rates are still unknown."
+   },
+   {
+    "id": "b",
+    "text": "The pilot's accuracy by document type, with sample sizes and a note on how production packs may differ from the pilot's",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "This element fits. It can look like engineering detail for an executive, but it shows the COO how far the pilot evidence stretches before a step that takes nine months to undo."
+   },
+   {
+    "id": "c",
+    "text": "A statement that the pilot met the agreed bar on each document type, so the run-down can go ahead at quarter end as planned",
+    "correct": true,
+    "trap": null,
+    "why": "This element does not fit. The pilot result is true, but offering it as enough to proceed treats pilot evidence as a forecast and hides the nine-month rebuild behind any live surprise, so the COO decides without the downside."
+   },
+   {
+    "id": "d",
+    "text": "A live error threshold for each document type, agreed with the COO now, above which the run-down would pause before any contracts lapse",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "This element fits. It can look like monitoring that belongs after go-live, but the pause threshold has to be agreed before the specialist contracts lapse, or there is nothing left to pause."
+   }
+  ],
+  "explain": "Binding constraint: the run-down is costly to reverse, because rebuilding the team takes about nine months. Presenting the pilot pass as enough to proceed hides that downside from the owner, while the staged option, the limits of the evidence and a pause threshold agreed now all keep a way back for her to weigh.",
+  "rule": "CS-D6-04",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-13"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

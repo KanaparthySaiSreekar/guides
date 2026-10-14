@@ -1,0 +1,499 @@
+[
+ {
+  "id": "P2-2.1-001",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "next-step",
+  "constraint": "cost",
+  "industry": "manufacturing",
+  "family": "cheapest-passing-tier-adoption",
+  "counterTrap": false,
+  "signals": [
+   "misses spread evenly across codes",
+   "within it on the smallest",
+   "within the same shift"
+  ],
+  "stem": "Tolland Precision Castings is piloting a Claude classifier that assigns one of 38 failure codes to free-text defect reports from its foundry lines, and each code dispatches a repair crew within the same shift. Before testing, the plant manager agreed a 95% accuracy bar. On 1,500 labelled reports sampled from every line, the largest and mid tiers each score 98% and the smallest tier 97%, with misses spread evenly across codes. At the planned 70,000 reports a month, projected spend is three times the finance ceiling on the largest tier, slightly above it on the mid tier and within it on the smallest.",
+  "ask": "What should the solutions architect do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move every report to the mid tier, which keeps a wider margin above the bar than the smallest tier",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The mid tier's extra point sits above a bar the plant manager has already set, and its projected spend is still over the finance ceiling, so it buys margin nobody required at a price nobody approved."
+   },
+   {
+    "id": "b",
+    "text": "Send reports for the rarest failure codes to the largest tier and route the rest to the smallest tier",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Routing a hard slice upward is sound when misses cluster, but this assumes rare codes are harder; misses are spread evenly across codes, so the extra largest-tier spend fixes no measured weakness."
+   },
+   {
+    "id": "c",
+    "text": "Move every report to the smallest tier at the planned volume of 70,000 reports a month",
+    "correct": true,
+    "trap": null,
+    "why": "The smallest tier clears the agreed 95% bar on reports sampled from every line, misses show no cluster worth routing upward, and it is the one tier whose projected spend fits the finance ceiling."
+   },
+   {
+    "id": "d",
+    "text": "Keep the largest tier and submit the reports in overnight batches billed at the discounted rate",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Batch pricing suits work nobody is waiting for, but each code dispatches a crew within the same shift, so overnight results would stall repairs even if spend fell toward the ceiling."
+   }
+  ],
+  "explain": "Binding constraint: cost, since only the smallest tier's projected spend fits the finance ceiling. Pick the cheapest tier that clears a bar agreed in advance on your own traffic, and route a slice upward only when misses are measured to cluster there.",
+  "rule": "CS-D2-01",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-RD-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.1-002",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "saas",
+  "family": "output-dominated-latency",
+  "counterTrap": false,
+  "signals": [
+   "only as complete messages",
+   "outputs averaging 1,400 tokens",
+   "7-second p95"
+  ],
+  "stem": "Brightwater Desk sells a helpdesk platform whose Claude feature drafts replies that a partner integration inserts into tickets only as complete messages. Enterprise contracts commit to a 7-second p95 for a finished draft, and measured p95 is 12 seconds. Traces show prompts near 2,500 tokens and outputs averaging 1,400 tokens, mostly extended reasoning plus a restated ticket summary, while the replies agents send average 150 words. The current tier scores 93% against the agreed 90% quality bar, and the product lead wants deeper reasoning on complex tickets.",
+  "ask": "Which change to the drafting path is BEST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Template the reply without the restated summary and lower the reasoning effort on the current tier",
+    "correct": true,
+    "trap": null,
+    "why": "Output tokens dominate and most are reasoning plus a summary nobody sends, so shortening them attacks the dominant term; re-running the eval then checks that the 3-point margin over the 90% bar survives before the change ships."
+   },
+   {
+    "id": "b",
+    "text": "Stream the draft into the ticket editor so agents see the opening sentence within about a second",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Streaming shortens time to first token, but the integration accepts complete messages and the contract measures the finished draft, so completion time stays near 12 seconds."
+   },
+   {
+    "id": "c",
+    "text": "Switch all drafting to the smallest tier, which generates tokens fastest, while keeping the current prompt",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "No smaller tier has been measured on this traffic, and it would still emit 1,400 tokens of reasoning and summary, so the dominant term stays while the quality bar is put at risk."
+   },
+   {
+    "id": "d",
+    "text": "Route complex tickets to the most capable tier with a larger reasoning budget, as the product lead asked",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "More reasoning adds output tokens to the very tickets that breach 7 seconds; a product preference for depth cannot outrank a contractual latency commitment that is already being missed."
+   }
+  ],
+  "explain": "Binding constraint: the contractual 7-second p95, which outranks the product lead's wish for deeper reasoning. When output tokens dominate latency, shorten the output with a template and lower effort, and confirm the bar still holds before changing tier.",
+  "rule": "CS-D2-03",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-09"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.1-003",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "residency",
+  "industry": "media",
+  "family": "residency-gates-tier-choice",
+  "counterTrap": false,
+  "signals": [
+   "processed only in data centres located in Germany",
+   "offered only through an EU geographic profile or a global cross-region profile"
+  ],
+  "stem": "Rheinwelle Media, a German streaming service, is choosing a tier for a Claude assistant that summarises subscriber support chats containing names, addresses and viewing history. Its data processing agreement requires that this data be processed only in data centres located in Germany. On 800 labelled chats against a 90% bar, the smallest tier scored 91%, the mid tier 94% and the largest 96%. In the company's cloud account, the mid and largest tiers run on a single-Region endpoint in Frankfurt, while the smallest tier is offered only through an EU geographic profile or a global cross-region profile. Finance favours the cheapest tier.",
+  "ask": "Which deployment choice is BEST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Deploy the mid tier on the single-Region endpoint in Frankfurt, scoring 94% but costing more than the smallest tier",
+    "correct": true,
+    "trap": null,
+    "why": "The agreement names Germany, so only the Frankfurt endpoint keeps processing in scope; among the tiers offered there, the mid tier clears the 90% bar at lower cost than the largest tier."
+   },
+   {
+    "id": "b",
+    "text": "Deploy the smallest tier on the EU geographic profile, the cheapest tier that keeps processing inside the EU",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "A geographic profile keeps processing within the EU, which suits an EU-wide rule, but it can route chats to Regions outside Germany, so it fails the agreement this company actually signed."
+   },
+   {
+    "id": "c",
+    "text": "Deploy the largest tier on the single-Region endpoint in Frankfurt, for the widest margin above the 90% bar",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "It satisfies the Germany-only term, but the mid tier clears the agreed bar on the same endpoint, so paying for extra margin that nobody required ignores the cost pressure from finance."
+   },
+   {
+    "id": "d",
+    "text": "Deploy the smallest tier on the global profile after masking subscriber names and addresses in each chat",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Viewing history still identifies subscribers, so masked chats remain personal data; the option assumes masking takes them outside the agreement, and nothing in the scenario says it does."
+   }
+  ],
+  "explain": "Binding constraint: data residency, and the agreement names Germany rather than the EU. A regulatory gate removes non-compliant routing before cost is weighed: a geographic profile spans its whole geography, so only the Frankfurt endpoint complies, and among its tiers you pick the cheapest that clears the bar.",
+  "rule": "CS-D2-01",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-12",
+   "TIP-RD-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.1-004",
+  "rev": 3,
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "accuracy-floor",
+  "industry": "legal",
+  "family": "per-step-tier-assignment",
+  "counterTrap": false,
+  "signals": [
+   "tagging is 85% of it",
+   "both smaller tiers matching the largest on tagging",
+   "clears its bar only on the largest"
+  ],
+  "stem": "Calder Rowe LLP's discovery pipeline tags each produced document for privilege and relevance on the largest model tier, then drafts a mid-tier memo that reasons across related emails to flag documents the trial team must read. Each step has an agreed accuracy bar. Spend is 60% over the litigation budget, and tagging is 85% of it. The mid tier costs about half the largest and the smallest about a fifth. Per-step evals on labelled past matters show both smaller tiers matching the largest on tagging, while the memo misses cross-email inferences on the mid tier and clears its bar only on the largest. A cost review proposes moving tagging to the mid tier.",
+  "ask": "Which TWO decisions BEST bring spend within budget with both steps meeting their agreed bars? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move privilege and relevance tagging from the largest tier to the smallest tier",
+    "correct": true,
+    "trap": null,
+    "why": "Both smaller tiers clear the tagging bar, so the smallest is the cheapest tier that does; tagging falls from about 1.36 to about 0.27 times budget, which pays for the memo upgrade and leaves total spend near three-quarters of budget."
+   },
+   {
+    "id": "b",
+    "text": "Move privilege and relevance tagging from the largest tier to the mid tier, one step down",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The mid tier clears the tagging bar, but at half the largest tier's price tagging still costs about 0.68 times budget; once the memo moves to the largest tier its bar requires, total spend is near 1.16 times budget."
+   },
+   {
+    "id": "c",
+    "text": "Keep the trial-team memo on the mid tier, where it runs today at the lower price",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Leaving the memo on the mid tier fits the budget, but the evals show it missing cross-email inferences and falling below its agreed bar there, so the pipeline would not meet both bars."
+   },
+   {
+    "id": "d",
+    "text": "Have associates spot-check a weekly sample of privilege tags against labelled matters",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Spot-checks are sound monitoring once tagging moves down a tier, but they change no tier and no spend: beside the tagging move they leave the memo below its bar, and beside the memo upgrade they leave spend over budget."
+   },
+   {
+    "id": "e",
+    "text": "Move the cross-email trial-team memo from the mid tier to the largest tier",
+    "correct": true,
+    "trap": null,
+    "why": "The memo clears its bar only on the largest tier, so it has to move up; at twice the mid tier's price it costs about 0.48 times budget, which the tagging saving covers with room to spare."
+   }
+  ],
+  "explain": "Binding constraint: each step's accuracy floor, which puts the memo on the largest tier and leaves tagging as the place to cut. Assign tiers per step from measured evals, choosing the cheapest tier that clears each bar: smallest for tagging, largest for the memo, which lands spend near three-quarters of budget.",
+  "rule": "CS-D2-01",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.1-005",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "healthcare",
+  "family": "reasoning-slice-escalation",
+  "counterTrap": true,
+  "signals": [
+   "retrieval returned the correct policy and chart passages in every failed case",
+   "criteria that interact",
+   "lifts the overall score to 90%"
+  ],
+  "stem": "Fenwick Valley Health's mid-tier Claude assistant drafts prior-authorisation summaries that nurses check before submission. On 400 labelled cases it scores 88% against an agreed 92% bar. Traces show retrieval returned the correct policy and chart passages in every failed case, and worked examples did not move the score. Every failure has three or more criteria that interact, such as a dosage limit that shifts with a comorbidity; the intake form records the criteria count, and cases with fewer all pass. For those cases, raising the mid tier's reasoning effort lifts the overall score to 90%, while switching them to the largest tier, at several times the cost per case, lifts it to 99%.",
+  "ask": "Which change BEST brings the assistant up to the agreed bar?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move each prior-authorisation case to the largest tier so a single model serves the whole workload",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "It clears the bar, but cases with fewer criteria already pass on the mid tier, so paying several times more on them buys no measured gain; the evidence justifies the larger tier for the interacting slice alone."
+   },
+   {
+    "id": "b",
+    "text": "Send cases with three or more criteria to the largest tier and keep the rest on the mid tier",
+    "correct": true,
+    "trap": null,
+    "why": "Retrieval and examples are ruled out, raised effort stops at 90%, and the misses sit in interacting-criteria reasoning; the largest tier on that slice lifts the score to 99% without upgrading cases that already pass."
+   },
+   {
+    "id": "c",
+    "text": "Keep every case on the mid tier and raise its reasoning effort for cases with three or more criteria",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "More effort is the cheaper lever for reasoning gaps, but here it lifts the overall score only to 90%, still under the 92% bar, so holding the mid tier's price leaves the assistant failing its agreed bar."
+   },
+   {
+    "id": "d",
+    "text": "Split cases with three or more criteria into one mid-tier call per criterion and merge the results",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Splitting by criterion suits independent checks, but these failures turn on criteria that interact, such as a dosage limit that shifts with a comorbidity, so separate calls never see the interaction each case depends on."
+   }
+  ],
+  "explain": "Binding constraint: the evidence, which localises failures to interacting-criteria reasoning after retrieval and examples were ruled out and raised effort fell short. A higher tier is then justified, but only for the slice that needs it rather than the whole workload.",
+  "rule": "CS-D2-02",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.1-006",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "media",
+  "family": "router-input-drift",
+  "counterTrap": false,
+  "signals": [
+   "Prompts, pinned model versions and router rules are unchanged",
+   "for the first two months both routes drew similar reader ratings",
+   "many terse comparisons"
+  ],
+  "stem": "Quillmark Publishing's archive assistant uses a router: questions under 15 words go to the smallest tier, longer ones to a larger tier. The split cleared the agreed bar on 1,000 labelled questions at launch four months ago, and for the first two months both routes drew similar reader ratings. Since then, ratings on the smallest tier's traffic have fallen while the larger tier's hold steady. Prompts, pinned model versions and router rules are unchanged, the archive index refreshes nightly as before, and latency is flat. A sample of recent short questions shows many terse comparisons, such as how coverage of two elections differed.",
+  "ask": "What is the MOST likely cause of the drop?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The nightly refresh has stopped indexing recent stories, so short questions about new coverage retrieve older articles",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "The index refreshes nightly as before, and the larger tier reads the same index with steady ratings; a stale index would pull down both routes, not only the short-question path."
+   },
+   {
+    "id": "b",
+    "text": "The provider has changed how the smallest tier behaves behind its version name, weakening answers to the same prompts",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Model versions are pinned and unchanged, so the model on that route is the one validated at launch; blaming it ignores the variable that did move, the questions readers now ask."
+   },
+   {
+    "id": "c",
+    "text": "More short questions now ask for comparisons, which pass the word-count rule but need multi-step reasoning beyond lookups",
+    "correct": true,
+    "trap": null,
+    "why": "Every pipeline setting is unchanged and only the smallest tier's route degraded, so the input moved: terse comparisons fall under 15 words and reach the smallest tier, yet they need multi-step reasoning rather than a lookup."
+   },
+   {
+    "id": "d",
+    "text": "The launch evaluation averaged both routes together, so the short-question route sat below the bar from the start",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "An average can hide a weak slice, but the smallest tier's ratings matched the larger tier's for two months before falling, so the route was not weak at launch; something changed later."
+   }
+  ],
+  "explain": "Binding constraint: what changed. With prompts, versions, router rules and the index refresh unchanged, and a drop confined to one route after a good start, the input mix is what moved, which is why tier routing needs measuring after launch as well as before it.",
+  "rule": "CS-D2-01",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.1-007",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "lifecycle-stage",
+  "industry": "healthcare",
+  "family": "new-generation-own-eval",
+  "counterTrap": false,
+  "signals": [
+   "refreshed from last month's traffic",
+   "vendor's published benchmarks",
+   "99% recall on urgent messages"
+  ],
+  "stem": "Ashgrove Family Clinics' patient-portal assistant sorts incoming messages into urgent, routine and administrative queues on a pinned mid-tier model version. It meets the agreed bars, including 99% recall on urgent messages, on a 2,000-message labelled set that nurses refreshed from last month's traffic. A new model generation has been released, and the vendor's published benchmarks show its smaller tier ahead of the current mid tier at a lower price. The operations director wants the savings this quarter.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Replay the nurses' 2,000-message labelled set through the new smaller tier and score its queues",
+    "correct": true,
+    "trap": null,
+    "why": "The labelled set is current and carries the bars the clinic agreed, so replaying it answers today, with no patient exposed, whether the new tier keeps 99% urgent recall; published benchmarks cannot answer that."
+   },
+   {
+    "id": "b",
+    "text": "Have an LLM judge compare the new smaller tier's queue choices with the current tier's on a week of logged messages",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A judge scoring agreement suits work with no labels, but labels exist here, the judge is uncalibrated, and agreement treats the current tier's own misses as correct, so it cannot show urgent recall."
+   },
+   {
+    "id": "c",
+    "text": "Relabel a fresh sample of this quarter's messages, then score the new smaller tier on that sample",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Fresh labels matter when a set has gone stale, but nurses refreshed this one from last month's traffic, so relabelling delays the decision and adds nothing the current set lacks."
+   },
+   {
+    "id": "d",
+    "text": "Send a small share of live patient messages to the new smaller tier and compare its queue accuracy",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A live canary is a sound later step, but it routes real urgent messages to a tier nobody has scored on this clinic's traffic; it follows once the labelled replay shows the bars hold."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage, since the new tier is unmeasured on this workload and a current labelled set already exists. Validate a candidate tier on your own labelled traffic against the pre-agreed bars first; a judge or relabelling answers other questions, and a canary comes later.",
+  "rule": "CS-D2-01",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

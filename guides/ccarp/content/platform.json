@@ -1,0 +1,272 @@
+[
+ {
+  "id": "PF-CC-01",
+  "topic": "Claude Code settings precedence",
+  "text": "Settings precedence, highest first: (1) managed settings (managed-settings.json, MDM/OS policy, or server-managed settings from the claude.ai admin console); (2) command-line arguments (including `--settings`); (3) project local `.claude/settings.local.json`; (4) shared project `.claude/settings.json`; (5) user `~/.claude/settings.json`. A key set higher overrides the same key lower down. Environment variables are not a level in this stack; which wins is decided per variable/key pair.",
+  "label": "docs",
+  "volatile": false,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/settings#settings-precedence",
+  "principle": "Organisation policy beats session flags, which beat personal-per-project, then team-shared, then personal-global."
+ },
+ {
+  "id": "PF-CC-02",
+  "topic": "Claude Code settings merging",
+  "text": "Array-valued settings such as `permissions.allow` merge across scopes instead of replacing each other, unless the organisation sets `allowManagedPermissionRulesOnly` in managed settings (managed rules become the only source of permission rules). A few ordered keys are taken whole from the highest scope that sets them.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/settings#lists-merge-instead-of-overriding",
+  "principle": "Scalars override by precedence; lists accumulate unless policy locks the source."
+ },
+ {
+  "id": "PF-CC-03",
+  "topic": "Managed settings",
+  "text": "Managed settings apply above every other level; no user, project, local or `--settings` value overrides them. Delivery: a `managed-settings.json` (plus optional `managed-settings.d/*.json` drop-ins) in the system directory (macOS `/Library/Application Support/ClaudeCode/`, Linux/WSL `/etc/claude-code/`, Windows `C:\\Program Files\\ClaudeCode\\`), an MDM/OS policy (macOS configuration profile, Windows HKLM registry), or server-managed settings from the claude.ai console. Documented exception: for a handful of security-restricting keys Claude Code honours a stricter value from a lower scope even over a managed value.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/managed-settings",
+  "principle": "Centrally deployed policy is the enforcement tier; lower scopes can only make things stricter, never looser."
+ },
+ {
+  "id": "PF-CC-04",
+  "topic": "Permissions enforcement",
+  "text": "Permission rules are enforced by Claude Code (the client), not by the model. Rules are evaluated deny, then ask, then allow; the first match in that order decides, and rule specificity does not change the order. Deny rules from any scope are evaluated before allow rules from any scope, so a user-level deny blocks a project-level allow and vice versa.",
+  "label": "docs",
+  "volatile": false,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/permissions",
+  "principle": "Deny-first: a deny anywhere beats an allow anywhere; prompts and CLAUDE.md cannot grant or revoke access."
+ },
+ {
+  "id": "PF-CC-05",
+  "topic": "Permissions limits",
+  "text": "Bash deny rules match the command text Claude writes and are not a security boundary around a program (e.g. a path-invoked binary or `sh -c` wrapper may not match). Read/Edit deny rules do not stop arbitrary subprocesses that open files themselves. For OS-level enforcement, enable the sandbox; to lock out bypass mode, set `permissions.disableBypassPermissionsMode` (most useful in managed settings).",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/permissions",
+  "principle": "Pattern rules shape tool calls; hard isolation needs a sandbox or OS control."
+ },
+ {
+  "id": "PF-CC-06",
+  "topic": "CLAUDE.md memory",
+  "text": "Memory locations: managed policy CLAUDE.md (macOS `/Library/Application Support/ClaudeCode/CLAUDE.md`, Linux/WSL `/etc/claude-code/CLAUDE.md`, Windows `C:\\Program Files\\ClaudeCode\\CLAUDE.md`; cannot be excluded); user `~/.claude/CLAUDE.md`; project `./CLAUDE.md` or `./.claude/CLAUDE.md`; local `./CLAUDE.local.md` (personal, add to .gitignore; supported, not deprecated). Files in the working directory and above load at launch and are concatenated, not overriding; subdirectory CLAUDE.md files load on demand when Claude reads files there. `@path` imports are expanded at launch (max four hops; external imports need one-time approval). `.claude/rules/*.md` without `paths` frontmatter load at launch; with `paths` they load only when Claude works with matching files. Claude treats memory as context, not enforced configuration; use a PreToolUse hook to block an action regardless of what Claude decides.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/memory",
+  "principle": "Instructions are advisory context; enforcement lives in permissions, hooks and managed settings."
+ },
+ {
+  "id": "PF-CC-07",
+  "topic": "Hooks",
+  "text": "Hooks run at lifecycle events (e.g. PreToolUse, PostToolUse, UserPromptSubmit, Stop, SessionStart, SubagentStop, PreCompact). You configure them in settings files (user, project, local, managed), in plugin `hooks/hooks.json`, or in skill/subagent frontmatter. A PreToolUse hook blocks a call by exiting with code 2 (exit 2 blocks even if its JSON says allow) or by returning `hookSpecificOutput.permissionDecision` of `deny`; the other values are `allow`, `ask` and `defer`. Exit code 2 is the only exit code that blocks on its own. Exit 1, a crash, or a missing or non-executable script (e.g. shell exit 127) is a non-blocking error, and for most events the action goes ahead. A policy hook is therefore fail-closed only if it catches its own errors and exits 2. A hook `allow` does not bypass deny or ask rules. Handler types: `command`, `http`, `mcp_tool`, `prompt`, `agent`. Managed `allowManagedHooksOnly` blocks user, project, local and plugin hooks, and `disableAllHooks` set outside managed settings cannot disable managed hooks.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/hooks",
+  "principle": "Hooks are deterministic, harness-executed guardrails; they can tighten but not loosen permission rules."
+ },
+ {
+  "id": "PF-CC-08",
+  "topic": "Project MCP (.mcp.json)",
+  "text": "Project-scoped MCP servers live in `.mcp.json` at the project root and are meant to be checked into version control. `.mcp.json` supports `${VAR}` and `${VAR:-default}` expansion in `command`, `args`, `env`, `url` and `headers`. Interactive sessions prompt for approval before using project-scoped servers; non-interactive `claude -p` and SDK runs load them without prompting. Other scopes: local (default, private, stored in `~/.claude.json`) and user (all projects, `~/.claude.json`). Organisations can deploy `managed-mcp.json` and allow/deny lists (`allowedMcpServers`, `deniedMcpServers`).",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/mcp",
+  "principle": "Commit shared MCP config with env-var placeholders, never literal secrets; policy lists govern which servers may run."
+ },
+ {
+  "id": "PF-CC-09",
+  "topic": "Headless / print mode",
+  "text": "`claude -p \"prompt\"` runs non-interactively. `--output-format` accepts `text`, `json` and `stream-json`. `--json-schema` returns validated output in `structured_output`. `--allowedTools` pre-approves tools using permission-rule syntax. `--disallowedTools` adds deny rules. `--permission-mode` accepts `default` (shown as Manual in the UI; `manual` is an alias), `acceptEdits`, `plan`, `auto`, `dontAsk` and `bypassPermissions`, and `dontAsk` denies anything that would prompt. `--max-turns` caps agentic turns. `--bare` skips auto-discovery of hooks, skills, custom commands, subagents, plugins, MCP servers, auto memory and CLAUDE.md. It never reads OAuth or keychain credentials (it uses `ANTHROPIC_API_KEY` or `apiKeyHelper`; cloud providers use their own credentials), and the docs recommend it for scripted/SDK calls and say it will become the `-p` default. Without `--bare`, a `-p` run executes the project's hooks and connects `.mcp.json` servers with no trust dialog and no per-server approval.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/headless",
+  "principle": "CI runs should be hermetic: load only what you pass explicitly, pre-approve narrowly, and deny rather than prompt."
+ },
+ {
+  "id": "PF-CC-10",
+  "topic": "Cloud providers and gateways",
+  "text": "Claude Code can run through Amazon Bedrock (`CLAUDE_CODE_USE_BEDROCK=1`), Google Cloud (docs now say 'Google Cloud's Agent Platform, formerly Vertex AI'; `CLAUDE_CODE_USE_VERTEX=1` with `CLOUD_ML_REGION` and `ANTHROPIC_VERTEX_PROJECT_ID`), Microsoft Foundry and Claude Platform on AWS, and through LLM gateways via base-URL variables such as `ANTHROPIC_BASE_URL`, `ANTHROPIC_BEDROCK_BASE_URL`, `ANTHROPIC_VERTEX_BASE_URL`. Docs recommend pinning model versions on cloud providers.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/third-party-integrations",
+  "principle": "Route inference through the cloud account that already carries your identity, billing, audit and residency controls; use a gateway for central auth, budgets and usage tracking."
+ },
+ {
+  "id": "PF-CC-11",
+  "topic": "Subagents",
+  "text": "Subagents are Markdown files with YAML frontmatter in `.claude/agents/` (project) or `~/.claude/agents/` (user); managed and plugin locations also exist. Each runs in its own context window with a custom system prompt, its own tool access (`tools` allowlist and/or `disallowedTools` denylist; omitting `tools` inherits all) and independent permissions, and returns a summary to the caller. Current docs: by default a subagent can spawn its own subagents up to three layers below the main conversation (configurable), and omitting `Agent` from `tools` prevents spawning.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/sub-agents",
+  "principle": "Delegate to isolate context and scope tools; the parent sees only the returned summary."
+ },
+ {
+  "id": "PF-CC-12",
+  "topic": "Skills and plugins",
+  "text": "Skills are `<name>/SKILL.md` folders (project `.claude/skills/`, personal `~/.claude/skills/`, enterprise in the managed directory, or inside a plugin). Only skill names and descriptions sit in context; the body loads when the skill is invoked, which is progressive disclosure. Custom commands have been merged into skills (`.claude/commands/*.md` still works). Plugins bundle skills, agents, hooks, MCP servers, LSP servers and monitors; plugin skills are namespaced `/plugin-name:skill`.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://code.claude.com/docs/en/skills",
+  "principle": "Keep long procedures out of always-on context and load them on demand; package and version reusable capability as plugins."
+ },
+ {
+  "id": "PF-MCP-01",
+  "topic": "MCP spec revision and transports",
+  "text": "The current MCP specification revision is 2026-07-28 (previous: 2025-11-25). Standard transports are stdio and Streamable HTTP. The legacy HTTP+SSE transport, deprecated since 2025-03-26, is formally Deprecated under the new feature lifecycle policy (minimum twelve-month deprecation window). The 2026-07-28 revision makes the core stateless: it removes the initialize handshake and protocol-level sessions (`Mcp-Session-Id`) and adds `server/discover`.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://modelcontextprotocol.io/specification/2026-07-28/changelog",
+  "principle": "Local servers use stdio; remote servers use Streamable HTTP; do not design new work on deprecated transports."
+ },
+ {
+  "id": "PF-MCP-02",
+  "topic": "MCP authorization",
+  "text": "Authorization is optional. HTTP transports SHOULD conform to the OAuth 2.1-based spec; stdio SHOULD NOT and takes credentials from the environment. A protected MCP server is an OAuth 2.1 resource server and MUST publish Protected Resource Metadata (RFC 9728). Clients MUST send the RFC 8707 `resource` parameter in authorization and token requests. Servers MUST check that tokens were issued for them as audience and MUST NOT accept or pass on other tokens: token passthrough is explicitly forbidden because it causes confused-deputy risk. Tokens go in the `Authorization: Bearer` header on every request and MUST NOT be in the URI query string. PKCE is part of the flow. In 2026-07-28, Client ID Metadata Documents are preferred, Dynamic Client Registration is deprecated, and clients MUST validate `iss` (RFC 9207) when it is present.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+  "principle": "Audience-bound tokens per server, never forwarded; a proxy gets its own downstream token and applies per-client consent."
+ },
+ {
+  "id": "PF-MCP-03",
+  "topic": "MCP primitives",
+  "text": "Server features: tools (functions the model calls), resources (context/data), prompts (user-selected templated messages). The 2026-07-28 spec lists only elicitation as a client feature. Roots, Sampling and Logging are Deprecated but still work during the deprecation window. Suggested migrations: pass paths via tool parameters or config instead of Roots, call LLM provider APIs directly instead of Sampling, and use stderr or OpenTelemetry instead of Logging. Server-initiated requests are replaced by Multi Round-Trip Requests (`input_required` results). Tasks moved to an opt-in extension.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://modelcontextprotocol.io/specification/latest",
+  "principle": "Tools are model-controlled, resources are application-controlled, prompts are user-controlled; the client/server feature list changes between spec revisions."
+ },
+ {
+  "id": "PF-MCP-04",
+  "topic": "A2A vs MCP",
+  "text": "Agent2Agent (A2A) was created by Google and donated to the Linux Foundation in June 2025 as a vendor-neutral protocol for agents to discover each other and work together. MCP connects AI applications/agents to tools, data and context. Anthropic donated MCP to the Agentic AI Foundation, a Linux Foundation directed fund, in December 2025.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://developers.googleblog.com/en/google-cloud-donates-a2a-to-linux-foundation/ ; https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
+  "principle": "MCP is agent-to-tool/context; A2A is agent-to-agent. They complement each other rather than compete."
+ },
+ {
+  "id": "PF-GOV-01",
+  "topic": "Cloud data residency",
+  "text": "On Amazon Bedrock and Google Cloud, the cloud provider is the data processor. Bedrock keeps model providers out of its model deployment accounts, so they do not see prompts or completions. Bedrock cross-Region inference offers geographic profiles (for example US, EU, APAC), which keep processing within that geography, and global profiles, which route to any commercial Region. AWS recommends geographic profiles for data residency. Retained data, where retention applies, is stored in the destination Region. On Google Cloud, regional and multi-region endpoints keep processing in a location or geography; the global endpoint does not guarantee where processing happens. The Claude API has its own `inference_geo` (global or us) and workspace geo controls.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html ; https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html ; https://cloud.google.com/blog/products/ai-machine-learning/global-endpoint-for-claude-models-generally-available-on-vertex-ai ; https://platform.claude.com/docs/en/manage-claude/data-residency",
+  "principle": "You get residency by choosing a region or geography-bound endpoint. Global routing trades residency for availability and cost."
+ },
+ {
+  "id": "PF-GOV-02",
+  "topic": "Bedrock data retention modes",
+  "text": "Bedrock now exposes per-Region account/project data retention modes (`none` < `default` < `aws_review` < legacy `provider_data_share`). Some newer Claude models require `aws_review`, under which AWS keeps prompts and completions inside the AWS boundary for up to 30 days for human review; content is not shared with the model provider. You can enforce the mode organisation-wide with IAM/SCP condition keys.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html",
+  "principle": "Treat retention as a policy you set and enforce at account level, and check model-specific retention requirements before assuming zero retention."
+ },
+ {
+  "id": "PF-GOV-03",
+  "topic": "HIPAA / BAA vs ZDR",
+  "text": "ZDR and HIPAA readiness are separate arrangements. HIPAA readiness needs a signed BAA and a HIPAA-enabled organisation, and covers only eligible Claude API features. It applies encryption, access controls and audit logging rather than immediate deletion, and a PHI workload does not also need ZDR. Not covered under API HIPAA readiness: consumer plans, Console usage, Bedrock and Google Cloud (use their own compliance), Claude Platform on AWS and Foundry, third-party integrations, Claude Code, and most beta features. Features ineligible for both ZDR and HIPAA include Batch, Files API, code execution, Managed Agents, MCP connector and Agent Skills. A HIPAA-enabled org that sends a request using an ineligible feature gets a 400 error. Do not put PHI in JSON schemas.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention",
+  "principle": "HIPAA means BAA + eligible-feature configuration + safeguards. ZDR is a deletion arrangement, not HIPAA compliance, and stateful features fall outside both."
+ },
+ {
+  "id": "PF-GOV-04",
+  "topic": "HIPAA and Claude Code",
+  "text": "Sources disagree on Claude Code. The API data-retention doc says Claude Code is not covered under API HIPAA readiness. The Help Center says Claude Code is covered under a BAA only with ZDR enabled and only on qualified accounts (Enterprise context).",
+  "label": "conflict",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://platform.claude.com/docs/en/manage-claude/api-and-data-retention ; https://support.claude.com/en/articles/8114513-business-associate-agreements-baa-for-commercial-customers",
+  "principle": "BAA coverage is per product and per configuration. Confirm it in the contract, and never infer it from the vendor having a BAA at all."
+ },
+ {
+  "id": "PF-GOV-05",
+  "topic": "FedRAMP",
+  "text": "Anthropic's Help Center states that Claude for Government (C4G), Claude via Amazon Bedrock in AWS GovCloud, and Claude via Google Vertex with Assured Workloads are all FedRAMP High. Claude is approved for DoD IL4/5 workloads through Amazon Bedrock in AWS GovCloud, and for IL6 through Amazon Bedrock in the AWS Secret region. On Google Cloud's Vertex AI it is authorized at FedRAMP High and IL2 only. Claude Enterprise is not FedRAMP authorized. Customers who need FedRAMP must use C4G or a FedRAMP-authorized cloud provider. Compliance comes from the hosting environment, not from the model.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://support.claude.com/en/articles/13756069-public-sector-faqs ; https://www.anthropic.com/news/claude-in-amazon-bedrock-fedramp-high ; https://claude.com/blog/claude-on-google-cloud-fedramp-high",
+  "principle": "For government workloads, pick an environment already authorized at the required impact level. Authorization belongs to the platform boundary."
+ },
+ {
+  "id": "PF-GOV-06",
+  "topic": "GDPR data minimisation",
+  "text": "Art. 5(1)(c) GDPR: personal data shall be 'adequate, relevant and limited to what is necessary in relation to the purposes for which they are processed'. Security belongs to Art. 5(1)(f) and Art. 32. Art. 25(1) names pseudonymisation as one technical measure designed to implement principles such as data minimisation. Pseudonymised data is still personal data, though, so pseudonymising or encrypting does not by itself reduce what is collected. Art. 25(2) requires that by default only the data necessary for each purpose is processed.",
+  "label": "docs",
+  "volatile": false,
+  "asOf": "2026-09",
+  "source": "https://gdpr-info.eu/art-5-gdpr/ ; https://gdpr-info.eu/art-25-gdpr/",
+  "principle": "Minimisation means sending and keeping less data, such as dropping or redacting fields before they reach the model. Encryption protects data you still hold; it does not minimise it."
+ },
+ {
+  "id": "PF-GOV-07",
+  "topic": "Guardrail guidance",
+  "text": "Anthropic's 'Strengthen guardrails' docs include: Reduce hallucinations, Increase output consistency, Mitigate jailbreaks and prompt injections, Reduce prompt leak, Reduce latency, and Handle streaming refusals. The jailbreak page recommends harmlessness screens with a lightweight model, using structured outputs to force a simple classification. It also recommends input validation, hardened system prompts and throttling repeat offenders. For indirect injection, put untrusted content only in tool results, label its source, state an untrusted-content policy, JSON-encode it, apply least privilege, and screen tool outputs with a small model.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+  "principle": "Layer cheap pre-screens, clear trust boundaries and least privilege; no single prompt is a guardrail."
+ },
+ {
+  "id": "PF-GOV-08",
+  "topic": "API training and retention defaults",
+  "text": "By default Anthropic does not train on inputs or outputs from commercial products, including the API, unless the customer opts in (for example, the Development Partner Program). Sources disagree on default retention. The Privacy Center says API inputs and outputs are deleted within 30 days (updated 2026-07-01). The platform data-retention doc says conversation content is not retained by default except for Covered Models, which require 30-day retention. Both say flagged content may be kept up to 2 years, and the Privacy Center adds trust-and-safety scores up to 7 years.",
+  "label": "conflict",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://privacy.claude.com/en/articles/7996866-how-long-do-you-store-my-organization-s-data ; https://platform.claude.com/docs/en/manage-claude/api-and-data-retention ; https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training",
+  "principle": "Commercial API data is not used for training by default and retention is short and bounded. Check exact periods in the current terms or DPA, and use ZDR only where the features in use qualify."
+ },
+ {
+  "id": "PF-API-01",
+  "topic": "Refusal handling",
+  "text": "Anthropic's refusals doc (checked 2026-09-24) says that on models with built-in safety classifiers (the docs name specific current models, so do not hardcode the list) a declined request comes back as a normal response, not an error: 'A refusal is a successful HTTP 200 response with stop_reason: \"refusal\"', and `stop_details.category` names the policy area. The doc adds that monitoring built on error rates or 5xx never sees a refusal, so instrument refusals as a separate signal. Suggested handling: retry on a fallback model, or reset or rephrase the context. A beta `fallbacks` option can retry automatically. Continuing the same context unchanged invites more refusals.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback ; https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals",
+  "principle": "Branch on stop_reason, not HTTP status. Instrument refusals as their own signal."
+ },
+ {
+  "id": "PF-API-02",
+  "topic": "Prompt caching",
+  "text": "`cache_control` supports up to 4 breakpoints, and top-level automatic caching uses one of those slots. Prefixes are built in the order tools, then system, then messages. A cache write happens only at a breakpoint. Automatic prefix checking looks back a limited number of block positions from each breakpoint for entries earlier requests wrote. A hit needs a 100% identical prefix up to and including the marked block, so the breakpoint goes on the last block that stays stable across requests, not on a varying one. Caches are never shared between organisations, and on the Claude API, Claude Platform on AWS and Microsoft Foundry they are also isolated per workspace; Bedrock and Google Cloud isolate at organisation level.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+  "principle": "Put stable content first and varying content last, and break at the end of the stable prefix. Any change upstream of a breakpoint invalidates it."
+ },
+ {
+  "id": "PF-API-03",
+  "topic": "Message Batches",
+  "text": "A batch holds up to 100,000 requests or 256 MB, whichever comes first. Most batches finish within 1 hour. Results are available once all requests complete or after 24 hours, whichever is first. Requests not processed within 24 hours expire and are not billed. Results stay downloadable for 29 days. Batch usage is billed at 50% of standard prices. Batch is not eligible for ZDR or HIPAA.",
+  "label": "docs",
+  "volatile": true,
+  "asOf": "2026-09",
+  "source": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+  "principle": "Use batch for latency-tolerant bulk work at lower cost, never for user-facing or SLA-bound paths."
+ }
+]

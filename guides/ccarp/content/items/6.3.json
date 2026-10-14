@@ -1,0 +1,562 @@
+[
+ {
+  "id": "P6-6.3-001",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "latency-sla",
+  "industry": "insurance",
+  "family": "sla-mean-excludes-peak",
+  "counterTrap": false,
+  "signals": [
+   "excluding declared catastrophe events",
+   "drafts arriving after many surge calls had already ended"
+  ],
+  "stem": "Harrowgate Mutual's claims call centre uses an assistant that drafts first-notice-of-loss summaries while agents stay on the line with policyholders. The vendor SLA reads: 'mean response time under 4 seconds per calendar month, excluding declared catastrophe events.' Every monthly report since launch has been green. During the surge after a regional hailstorm, which Harrowgate declared a catastrophe, agents stopped using the assistant and went back to manual forms. Call logs show drafts arriving after many surge calls had already ended. Survey scores in normal weeks are stable, the model version and prompts are unchanged, and accuracy on sampled surge-week calls matches the agreed eval set.",
+  "ask": "What is the MOST likely reason the SLA reports stayed green while agents abandoned the assistant?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Agents were promised near-instant answers at launch, so ordinary response variation in the surge read to them as failure",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "No launch promise is stated, and survey scores outside catastrophes are stable, so an expectation gap does not fit the surge-only abandonment. The call logs show late drafts, not agents misjudging normal speed."
+   },
+   {
+    "id": "b",
+    "text": "The SLA reports a monthly mean with declared catastrophe events excluded, so slow surge-period drafts never enter the figure",
+    "correct": true,
+    "trap": null,
+    "why": "The hailstorm was a declared catastrophe, so the SLA's own exclusion removed the surge from measurement, and a monthly mean would dilute a short spike anyway. The report was green by construction while drafts arrived after calls ended."
+   },
+   {
+    "id": "c",
+    "text": "The eval set was never refreshed from production, so surge-period claim types went unmeasured and answer quality slipped",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "A stale eval set is a real risk, but accuracy on sampled surge-week calls matches the agreed eval set, so answer quality is ruled out. The logs point to timing, a layer the accuracy measure does not cover."
+   },
+   {
+    "id": "d",
+    "text": "The provider switched the underlying model during the storm week, and the new model ran slower under the heavy load",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The model version is stated as unchanged, so a silent model swap is ruled out. Even a genuine slowdown would not explain why the monthly reports stayed green through the surge."
+   }
+  ],
+  "explain": "Binding constraint: the wording of the latency SLA. A monthly mean that excludes catastrophe events cannot see the peak when agents need the draft; state latency as a p95 measured at peak, surges included.",
+  "rule": "CS-D6-07",
+  "ladder": "sla-formulation",
+  "tips": [
+   "TIP-EL-14"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.3-002",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "ownership",
+  "industry": "retail",
+  "family": "feedback-loop-named-owner",
+  "counterTrap": false,
+  "signals": [
+   "nobody is assigned to the review",
+   "a mechanism she can hold someone to"
+  ],
+  "stem": "Brackenridge Home & Garden gave store associates a handheld assistant for product and project questions, with a thumbs-down button on every answer. The platform team's runbook says that when thumbs-downs pass 5% of rated answers in a week, flagged conversations are reviewed and confirmed failures join the release eval set. The rate passed 5% in two weeks this quarter, but nobody is assigned to the review, and 2,300 flagged answers sit unread. The store operations director asks whether the assistant is actually improving and wants a mechanism she can hold someone to.",
+  "ask": "Which change BEST meets the director's request?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Make the associate-experience lead own the triggered reviews and report confirmed failures and fixes to the director",
+    "correct": true,
+    "trap": null,
+    "why": "The trigger and the eval path already exist; what is missing is a person obliged to act on them. A named lead who owns the reviews and reports to the director is the mechanism she can hold to account."
+   },
+   {
+    "id": "b",
+    "text": "Have an LLM judge score each flagged conversation weekly and add the failing ones to the eval set automatically",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A judge nobody has calibrated against human labels would push unverified cases into the release gate, and automation gives the director nobody to hold to account for acting on the feedback."
+   },
+   {
+    "id": "c",
+    "text": "Replace the overall rate trigger with per-category triggers so that repeated failures on one project type start a review",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "The trigger already worked: the rate passed 5% twice and nothing happened because nobody was assigned. Finer triggers would fire more often into the same unowned review."
+   },
+   {
+    "id": "d",
+    "text": "Send the director a weekly digest of thumbs-down themes so that she can track whether complaints are falling",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "A digest is a reporting artefact, not the accountability she asked for, and it quietly makes her the reviewer. Nobody is obliged to confirm failures or add them to the eval set, so the loop stays open."
+   }
+  ],
+  "explain": "Binding constraint: no one owns the feedback review. Triggers and an eval path are not a closed loop until a named owner must act on them and answer to the stakeholder.",
+  "rule": "CS-D6-09",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.3-003",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "latency-sla",
+  "industry": "legal",
+  "family": "sla-clauses-peak-slice",
+  "counterTrap": false,
+  "signals": [
+   "roughly 600 of the 20,000 documents reviewed each month",
+   "carry the most bespoke drafting"
+  ],
+  "stem": "Ashcombe Lyle LLP is negotiating a service schedule with a private-equity client for its AI-assisted due-diligence review, which flags change-of-control, assignment and indemnity clauses for associates to confirm. Most documents arrive steadily, but in the 48 hours before each signing the deal team sends late disclosure bundles, roughly 600 of the 20,000 documents reviewed each month, which carry the most bespoke drafting. That is when delays and missed clauses hurt the client most. The general counsel rejected the first draft, saying it would have read as met last quarter, when two signings were badly let down.",
+  "ask": "Which TWO clauses should the revised schedule include so that it would read as breached when a signing is let down? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Turnaround stated as a p95 over the pre-signing bundles, with a service credit when that figure is breached",
+    "correct": true,
+    "trap": null,
+    "why": "Pre-signing bundles are where delay hurts, so turnaround has to be measured on them as a percentile. A p95 over that slice reads as breached when the deal team waits, and the credit gives the breach a consequence."
+   },
+   {
+    "id": "b",
+    "text": "Clause recall on an agreed sample of each month's pre-signing bundles, with a stated tolerated miss rate",
+    "correct": true,
+    "trap": null,
+    "why": "Missed clauses hurt most in the bespoke late bundles. Recall on an agreed sample of those bundles, with a stated tolerance, makes peak misses visible without promising a model that never misses."
+   },
+   {
+    "id": "c",
+    "text": "Turnaround stated as a p95 over each month's full document volume, with a service credit when it is breached",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "The late bundles are about 3% of monthly volume, so every one of them could be late while a p95 over the full month still reads as met. The percentile is right, but the window hides the peak."
+   },
+   {
+    "id": "d",
+    "text": "Clause recall on a versioned test set built from the client's past deal documents, with a tolerated miss rate",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "A test set drawn from all past deal documents is mostly steady-state drafting, so recall there can stay high while the bespoke late bundles are missed. The critical slice needs its own measure."
+   },
+   {
+    "id": "e",
+    "text": "A named service manager for each pre-signing window, plus a monthly performance review with the general counsel's office",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A named manager and a monthly review help the relationship, but they add no measure. The schedule could still read as met while a signing waits on late or incomplete flags."
+   }
+  ],
+  "explain": "Binding constraint: the SLA must hold in the pre-signing window, a small slice of volume. Measure percentile turnaround and clause recall on that slice with a stated tolerance and remedy, because whole-period figures hide it.",
+  "rule": "CS-D6-07",
+  "ladder": "sla-formulation",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.3-004",
+  "rev": 1,
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "energy",
+  "family": "sla-baseline-before-targets",
+  "counterTrap": false,
+  "signals": [
+   "nobody has analysed those logs",
+   "do FIRST"
+  ],
+  "stem": "Carrow Valley Electricity has piloted an outage-information assistant in its contact centre for three months. It logs every request, including two storm days when call volume rose sixfold, but nobody has analysed those logs. The customer operations director wants latency and answer-quality commitments written into the service agreement with the platform team before full rollout, and has proposed the wording 'every answer correct within five seconds'.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Draft the latency commitment as a p95 measured at storm-day volume, with an error budget and a fallback to the IVR",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "This is the right shape for the latency clause, but writing it now means choosing a target before anyone knows what storm-day latency actually was. It follows the baseline."
+   },
+   {
+    "id": "b",
+    "text": "Assemble an eval set of outage questions with a pass threshold and run it before every prompt change goes live",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "An eval gate belongs in the plan, but its pass threshold depends on the baseline and on an agreed definition of an error, and neither exists yet."
+   },
+   {
+    "id": "c",
+    "text": "Adopt the director's five-second limit as a hard contractual ceiling, since it matches the existing IVR standard",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "A hard ceiling on generative answers will be breached by the tail on the first storm day, and it rests on no measured data. Hard timeouts are internal guards, not the commitment."
+   },
+   {
+    "id": "d",
+    "text": "Analyse all pilot logs, storm days included, for a baseline at peak and agree with the director what counts as an error",
+    "correct": true,
+    "trap": null,
+    "why": "No number can be defended yet because the storm-day data exists but has not been read. A baseline at peak and an agreed error definition come before any commitment, and they show what is realistic."
+   }
+  ],
+  "explain": "Binding constraint: there is no evidence yet. SLA formulation starts from a measured baseline at peak and an agreed error definition; percentile targets, error budgets and eval gates follow from it.",
+  "rule": "CS-D6-07",
+  "ladder": "sla-formulation",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.3-005",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "evidence",
+  "industry": "e-commerce",
+  "family": "overpromise-expectation-reset",
+  "counterTrap": false,
+  "signals": [
+   "never gets fees wrong",
+   "no route to dispute an answer"
+  ],
+  "stem": "Tradewell Marketplace's seller-support assistant answers questions on fees, payouts and listing policy. During renewal talks, an account executive told the seller council that the assistant 'never gets fees wrong'. Last week a large seller followed its answer on a fee waiver and was charged £4,000 in listing fees, and the council chair has escalated. Measured accuracy on fee questions is 94% on the agreed eval set, and sellers currently have no route to dispute an answer before acting on it.",
+  "ask": "Which TWO actions BEST restore aligned expectations with the seller council? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Write to the council correcting the claim, with measured accuracy by question type and the remedy for errors",
+    "correct": true,
+    "trap": null,
+    "why": "The council is working from a claim of zero errors on exactly this kind of question. Correcting it in writing with measured accuracy by question type and a remedy replaces the overpromise with something Tradewell can meet."
+   },
+   {
+    "id": "b",
+    "text": "Fix the fee-waiver prompt this week and tell the council that the fault behind the £4,000 charge is resolved",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Fixing the fee-waiver answer and calling the fault resolved leaves the zero-error belief standing. At 94% measured accuracy another fee answer will be wrong, and it will read as a broken promise."
+   },
+   {
+    "id": "c",
+    "text": "Present the eval method and per-category error rates at the council's next meeting to show quality is measured",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "Methodology and error tables suit a technical review, not a seller council waiting on an escalation. They neither withdraw the 'never wrong' claim nor say what happens to a seller who is harmed."
+   },
+   {
+    "id": "d",
+    "text": "Add a route for sellers to contest an answer with a human agent, and feed confirmed errors into the eval set",
+    "correct": true,
+    "trap": null,
+    "why": "Sellers cannot challenge an answer before acting on it, which is how the £4,000 charge happened. A human-reviewed dispute route limits the harm, and confirmed errors sharpen the eval set."
+   },
+   {
+    "id": "e",
+    "text": "Brief account executives on the assistant's measured limits before the next round of renewal talks",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Briefing account executives helps prevent the next overpromise, but the council already holds this one. It changes nothing about what the council expects now or how the next wrong answer is handled."
+   }
+  ],
+  "explain": "Binding constraint: a claim of zero fee errors against 94% measured accuracy. Reset expectations in writing (measured quality, review path, remedy) and give sellers a route that catches failures and feeds them into the eval set.",
+  "rule": "CS-D6-08",
+  "ladder": null,
+  "tips": [
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.3-006",
+  "rev": 3,
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "auditability",
+  "industry": "banking",
+  "family": "sla-reproducible-quality-metric",
+  "counterTrap": false,
+  "signals": [
+   "independently reproducible by its validation team",
+   "average relationship-manager rating"
+  ],
+  "stem": "Kestrel Northern Bank's AI platform team is finalising an internal SLA with the retail division for an assistant that answers relationship managers' questions on product terms and lending policy. The draft commits to p95 latency under six seconds during month-end peak, computed from request logs, and to quality measured as an average relationship-manager rating of at least 4.2 out of 5. The bank's model risk policy requires every SLA metric to be independently reproducible by its validation team before the SLA can be signed.",
+  "ask": "Which revision to the draft BEST satisfies the model risk policy?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Keep the rating and add an LLM judge with a fixed rubric prompt that scores a nightly sample of live answers for consistency",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "An uncalibrated judge can score the same answer differently between runs, and the nightly sample changes, so validators have nothing fixed to rerun. The subjective relationship-manager rating also stays in the SLA as the committed quality metric."
+   },
+   {
+    "id": "b",
+    "text": "Replace the rating with an accuracy floor on a versioned eval set, with a documented scoring method and error budget",
+    "correct": true,
+    "trap": null,
+    "why": "Validators rerun the pinned eval-set version with the documented scoring method and land within a stated run-to-run tolerance, or re-score the archived outputs with the same documented method and reproduce the figure. The error budget then sets how many sub-floor periods the SLA tolerates."
+   },
+   {
+    "id": "c",
+    "text": "Replace the rating with an accuracy score that senior credit officers assign each month to a fresh sample of live answers",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Validators could re-score an archived monthly sample, but the scores rest on each officer's own judgement with no documented method, so a second scorer can reach a different figure. It works only if a scoring standard exists, and the draft sets none."
+   },
+   {
+    "id": "d",
+    "text": "Replace the rating with a commitment that lending-policy answers match the policy manual, with each error remedied",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Generative answers are probabilistic, so committing that every answer matches the manual is a zero-error promise the first miss breaks. It hands validators a promise to test, not a measurement method they can reproduce."
+   }
+  ],
+  "explain": "Binding constraint: model risk requires every SLA metric to be independently reproducible. Commit to an accuracy floor on a pinned, versioned eval set scored by a documented method, so validators can rerun it within a stated run-to-run tolerance or re-score archived outputs; the error budget then sets how many sub-floor periods the SLA tolerates.",
+  "rule": "CS-D6-07",
+  "ladder": "sla-formulation",
+  "tips": [
+   "TIP-EL-14"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.3-007",
+  "rev": 1,
+  "domain": 6,
+  "obj": "6.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "determinism",
+  "industry": "retail",
+  "family": "deterministic-control-commitment",
+  "counterTrap": true,
+  "signals": [
+   "the assistant's credentials cannot create one",
+   "penetration testing confirmed the check holds"
+  ],
+  "stem": "Larkmoor Apparel is launching a web-chat returns assistant that can propose and submit refunds. The payments service rejects any refund above £150 unless the request carries a store manager's approval token, and the assistant's credentials cannot create one; penetration testing confirmed the check holds. Before sign-off, the finance director asks the architect for a written commitment she can give the audit committee that the assistant cannot complete large refunds on its own. The team's standing guidance is never to guarantee model behaviour.",
+  "ask": "What is the BEST response to the finance director?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Commit that the assistant will apply the returns policy correctly on every request once its prompt has been tuned",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "This guarantees probabilistic behaviour. Applying the returns policy depends on the model's judgement on each case, so tuning cannot make it certain, and the first misread return would breach the commitment."
+   },
+   {
+    "id": "b",
+    "text": "Offer the pilot's measured refund-decision accuracy with an error budget, in line with the no-guarantee guidance",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "The director asked about a control, not about decision quality. Substituting an accuracy rate swaps her requirement for a metric the team prefers, and understates a limit that is enforced in code."
+   },
+   {
+    "id": "c",
+    "text": "Commit in writing that every refund over £150 needs manager approval to complete, citing the payments check",
+    "correct": true,
+    "trap": null,
+    "why": "The cap is enforced by the payments service, not by the model, and testing confirmed the assistant cannot mint an approval token. Committing to a verified deterministic control is honest, and it answers the audit committee directly."
+   },
+   {
+    "id": "d",
+    "text": "Give finance a weekly audit report of refunds above £150, so the committee sees every exception rather than a promise",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "An audit report tells finance about large refunds after they happen, yet the server-side check already prevents them. Offering after-the-fact detection instead of the commitment treats a deterministic control as if it were model behaviour."
+   }
+  ],
+  "explain": "Binding constraint: the refund cap is enforced deterministically by the payments service, not by the model. Committing to a control you own is honest; the no-guarantee rule applies to probabilistic model output.",
+  "rule": "CS-D6-08",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.3-008",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "accuracy-floor",
+  "industry": "energy",
+  "family": "error-budget-degraded-mode",
+  "counterTrap": false,
+  "signals": [
+   "the pricing budget is spent",
+   "close to its queue-time target"
+  ],
+  "stem": "Brightpath Charge runs a public EV charging network; its in-app assistant answers billing and session questions under an SLA with the customer service director: p95 latency at evening peak, an eval-set accuracy floor, a monthly error budget per question type, and an agreed degraded mode routing a question type to human agents once its budget is spent. New peak-hour pricing launched this month. By day eleven, pricing answers fail the floor in daily sampling and the pricing budget is spent, while other question types still pass. The cause is a prompt carrying the old tariff table, and a tested fix needs about a week. The contact centre is already close to its queue-time target from pricing-launch calls.",
+  "ask": "What should the architect do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Keep the assistant answering pricing questions to protect the queue, and cover the breach in the month-end review",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "The error budget is spent, which is the point the director agreed the degraded mode for. Carrying on to spare the queue decides on her behalf that a week of wrong pricing answers is acceptable."
+   },
+   {
+    "id": "b",
+    "text": "Route pricing questions to human agents as the agreed degraded mode, and report the breach and queue impact to the director",
+    "correct": true,
+    "trap": null,
+    "why": "The pricing budget is spent, so the agreed degraded mode applies to pricing questions. Keeping passing types in the app limits extra queue load, and the director hears about the breach and the queue risk now."
+   },
+   {
+    "id": "c",
+    "text": "Switch the whole assistant to human agents until the tested fix ships, so that no driver gets a wrong answer meanwhile",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Other question types still pass the floor, so pulling the whole assistant sends their traffic to a contact centre already near its queue-time target. The cut is far wider than the failure."
+   },
+   {
+    "id": "d",
+    "text": "Move pricing questions to a more capable model tier until the prompt fix ships, so that they stay in the app",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The cause is an outdated tariff table in the prompt, a content defect any tier would repeat. Switching tiers is an unmeasured change that nobody has shown clears the floor on pricing questions."
+   }
+  ],
+  "explain": "Binding constraint: the accuracy floor is breached and the error budget is spent while queue capacity is tight. Apply the agreed degraded mode to the failing question type only and tell the owner now, queue impact included.",
+  "rule": "CS-D6-07",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

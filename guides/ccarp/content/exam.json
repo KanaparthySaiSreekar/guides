@@ -1,0 +1,482 @@
+{
+ "facts": [
+  {
+   "id": "EF-01",
+   "key": "Exam code",
+   "value": "CCAR-P (Claude Certified Architect – Professional)",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0, cover",
+   "note": "CCA-P and CCAP-P are unofficial spellings. CCA-F is a legacy label for Foundations."
+  },
+  {
+   "id": "EF-02",
+   "key": "Guide version",
+   "value": "v1.0, effective July 2026, 'subject to change without notice'",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0, cover (S3 file last modified 8 Jul 2026)",
+   "note": "Check for a newer version before you sit."
+  },
+  {
+   "id": "EF-03",
+   "key": "Items",
+   "value": "63 multiple-choice and multiple-response items",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 5; Partner Academy ccap entry ('63 questions in 120 minutes')",
+   "note": "Anthropic does not say whether any items are unscored. The weights describe 'the approximate proportion of scored items'."
+  },
+  {
+   "id": "EF-04",
+   "key": "All items scored?",
+   "value": "Claimed by a vendor that all 63 are scored; no Anthropic source says so",
+   "label": "community",
+   "source": "Preporato ccar-p README",
+   "note": "Do not rely on it. Treat every item as if it counts."
+  },
+  {
+   "id": "EF-05",
+   "key": "Item types",
+   "value": "Multiple choice and multiple response; each item states how many responses to select",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 5; FAQ ('multiple choice and scenario-based multiple response')",
+   "note": ""
+  },
+  {
+   "id": "EF-06",
+   "key": "Multi-response share and credit",
+   "value": "About a quarter of items are multiple-response and there is no partial credit; 'usually select two of five'",
+   "label": "community",
+   "source": "Preporato (share, no partial credit); Purcell, 925/1000 (select two of five)",
+   "note": "Not official. The portal scores multiple-response items all-or-nothing to be conservative."
+  },
+  {
+   "id": "EF-07",
+   "key": "Third item type",
+   "value": "A scenario-matching item type with dropdowns has been reported",
+   "label": "community",
+   "source": "Firsthand report, Purcell (sat 10 Jul 2026)",
+   "note": "One report only; not in the official guide."
+  },
+  {
+   "id": "EF-08",
+   "key": "Duration",
+   "value": "120 minutes of testing",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 5; Partner Academy ccap entry",
+   "note": "That is about 1:54 per item."
+  },
+  {
+   "id": "EF-09",
+   "key": "Seat time",
+   "value": "About 135 minutes including check-in, instructions and survey",
+   "label": "official",
+   "source": "FAQ ('What's the exam format and length?': 'All Claude certification exams ... Plan for about 135 minutes of total seat time'); Partner Academy repeats ~135 min only on the CCAR-F entry",
+   "note": "Plan on about 135 minutes."
+  },
+  {
+   "id": "EF-10",
+   "key": "Scale and cut score",
+   "value": "Scaled 100–1,000; pass at 720",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 5/9",
+   "note": "720 is not 72%. The raw-to-scaled curve is not published. All four Claude certifications use the same cut score."
+  },
+  {
+   "id": "EF-11",
+   "key": "Standard",
+   "value": "Criterion-referenced; the cut score was set by a standard-setting study against a minimally qualified candidate",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 9",
+   "note": "You are measured against a fixed bar, not against other candidates."
+  },
+  {
+   "id": "EF-12",
+   "key": "Score report",
+   "value": "Pass/fail, scaled score and percent-correct by domain",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 9",
+   "note": "Domain percentages are diagnostic only; the pass/fail result comes from the total scaled score."
+  },
+  {
+   "id": "EF-13",
+   "key": "Unanswered / guessing",
+   "value": "'Unanswered questions are scored as incorrect; there is no penalty for guessing.'",
+   "label": "official-ccarf",
+   "source": "CCAR-F launch Exam Guide (12 Mar 2026)",
+   "note": "Not restated in the CCAR-P v1.0 guide. Answer every item."
+  },
+  {
+   "id": "EF-14",
+   "key": "Structure",
+   "value": "No scenario bank is published: the CCAR-P guide has no 'Exam structure' row (CCAR-F's says '4 scenarios drawn from a bank of 6'), and its sample items are standalone and scenario-framed",
+   "label": "derived",
+   "source": "CCAR-P Exam Guide v1.0 (it has no 'Exam structure' or scenario-bank row, unlike CCAR-F)",
+   "note": "CCAR-F's '4 scenarios drawn from a bank of 6' does not apply to CCAR-P."
+  },
+  {
+   "id": "EF-15",
+   "key": "Domains and weights",
+   "value": "7 domains: 17 / 13 / 19 / 16 / 14 / 14 / 7",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 per-domain headings; Partner Academy ccap entry",
+   "note": "D1 Solution Design & Architecture; D2 Claude Models, Prompting & Context Engineering; D3 Integration; D4 Evaluation, Testing & Optimization; D5 Governance, Safety & Risk Management; D6 Stakeholder Communication & Lifecycle Management; D7 Developer Productivity & Operational Enablement."
+  },
+  {
+   "id": "EF-16",
+   "key": "Objectives",
+   "value": "38 objectives (6/5/8/6/5/5/3)",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 6",
+   "note": "The numbers 1.1–7.3 were added for study. The official guide uses unnumbered bullets."
+  },
+  {
+   "id": "EF-17",
+   "key": "Expected items per domain",
+   "value": "About 11 / 8 / 12 / 10 / 9 / 9 / 4 of 63",
+   "label": "derived",
+   "source": "Derived from the official weights × 63",
+   "note": "The weights are approximate, so a real sitting can differ by an item or two."
+  },
+  {
+   "id": "EF-18",
+   "key": "Price",
+   "value": "$175 USD per attempt; every retake is charged the full fee (your partner-tier discount also applies to retakes)",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 5 and Sec. 11 ('The exam fee applies to each attempt'); FAQ ('A retake is the full exam fee. Your partner tier discount applies to retakes.'); Certification policies page",
+   "note": "Price before any partner-tier discount."
+  },
+  {
+   "id": "EF-19",
+   "key": "Partner discount",
+   "value": "50% off for Select, Preferred and Global Premier partners; Registered tier pays full price",
+   "label": "official",
+   "source": "FAQ (live, fetched 2026-09-24)",
+   "note": ""
+  },
+  {
+   "id": "EF-20",
+   "key": "Global Premier 100% off",
+   "value": "Through Dec 31, 2026 (FAQ) vs ended Aug 31, 2026 (one repo's changes log)",
+   "label": "conflict",
+   "source": "FAQ (live, fetched 2026-09-24); Amey-Thakur program-changes.md",
+   "note": "The live FAQ wins; the difference may reflect an extension. Confirm at checkout on the Partner portal."
+  },
+  {
+   "id": "EF-21",
+   "key": "Delivery",
+   "value": "Pearson VUE: online proctored (OnVUE) or at a test centre",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0; FAQ; Pearson VUE Anthropic page",
+   "note": "Registration is through Anthropic Partner Academy, then Pearson VUE. OnVUE is not available to candidates with a government ID from Belarus, Cuba, North Korea, Russia, Syria or restricted regions of Ukraine (test centre only). Pearson suspended all delivery to residents of Iran from 8 Sep 2026. If a managed device blocks OnVUE, use a test centre."
+  },
+  {
+   "id": "EF-22",
+   "key": "Exam rules",
+   "value": "Closed book; English only; no AI tools, notes, phones, second monitors, headphones or browser translation; NDA accepted before the exam",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0; FAQ",
+   "note": "Candidates report that proctoring is enforced strictly."
+  },
+  {
+   "id": "EF-23",
+   "key": "Eligibility",
+   "value": "People at Claude Partner Network organisations only; recognised company-domain email; age 18+",
+   "label": "official",
+   "source": "FAQ",
+   "note": "Personal email addresses are rejected."
+  },
+  {
+   "id": "EF-24",
+   "key": "Prerequisites",
+   "value": "None mandatory. CCAR-F is not required first",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 ('no mandatory prerequisites'); FAQ ('Foundations is the natural place to start')",
+   "note": "The FAQ calls Foundations 'the natural place to start' but says there is 'no formal prerequisite, so you can take Professional without holding Foundations', and that Foundations 'does not convert or upgrade to Professional automatically'. Sitting CCAR-F first is a suggestion, not a requirement."
+  },
+  {
+   "id": "EF-25",
+   "key": "Recommended experience",
+   "value": "3+ years in systems architecture or platform engineering; 6+ months hands-on with production LLM systems; a software engineering foundation; end-to-end delivery from discovery to operation",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 (target candidate)",
+   "note": ""
+  },
+  {
+   "id": "EF-26",
+   "key": "Validity and renewal",
+   "value": "12 months; free open-book, non-proctored renewal if completed on time; a lapse means a full-fee retake",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 14; FAQ; Certification policies page ('renew it for free by passing an open-book online assessment', which extends validity 12 months from the current expiration date)",
+   "note": "Consistent with a Credly assertion for a CCAR-P pass issued 2026-09-01 that expires 2027-09-01."
+  },
+  {
+   "id": "EF-27",
+   "key": "Retakes",
+   "value": "Wait 14, then 30, then 90 days after failed attempts 1–3; at most 4 attempts per rolling 12 months; full fee each time",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 10",
+   "note": ""
+  },
+  {
+   "id": "EF-28",
+   "key": "Reschedule / cancel",
+   "value": "24 hours before (guide) vs 48 hours before (FAQ, policies page, Pearson)",
+   "label": "conflict",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 10 vs FAQ (live 2026-09-24)",
+   "note": "Use 48 hours. Later changes, or not showing up, forfeit the fee."
+  },
+  {
+   "id": "EF-29",
+   "key": "Appeals",
+   "value": "Within 14 days",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 10",
+   "note": ""
+  },
+  {
+   "id": "EF-30",
+   "key": "Registration validity",
+   "value": "A registration is valid for 5 years",
+   "label": "official",
+   "source": "FAQ",
+   "note": ""
+  },
+  {
+   "id": "EF-31",
+   "key": "Official practice material",
+   "value": "Only the 3 sample questions in Guide Sec. 8; the earlier practice exam was retired on Jun 30, 2026",
+   "label": "official",
+   "source": "CCAR-P Exam Guide v1.0 Sec. 8; Partner Academy platform migration notice",
+   "note": "Passers say the real items are harder than the samples."
+  },
+  {
+   "id": "EF-32",
+   "key": "Official prep path",
+   "value": "5 free courses, 733 minutes in total",
+   "label": "official",
+   "source": "Anthropic Partner Academy CCAR-P prep path",
+   "note": "See the Learning path for the course list."
+  },
+  {
+   "id": "EF-33",
+   "key": "Launch date",
+   "value": "About Jul 8, 2026 (S3 upload, Partner Academy config) vs Jul 10 (a passer who sat within about 24h of the announcement) vs Jul 23 (official blog post) vs Jul 24 (a third-party site)",
+   "label": "conflict",
+   "source": "S3 Last-Modified; Partner Academy code comment; Purcell; claude.com blog; claudecertificationguide.com",
+   "note": "The guide says only 'Effective July 2026'."
+  },
+  {
+   "id": "EF-34",
+   "key": "Badge",
+   "value": "Credly badge issued by Anthropic, with its level listed as 'Intermediate'",
+   "label": "official",
+   "source": "Credly badge page",
+   "note": "The listed level is not the credential's name."
+  },
+  {
+   "id": "EF-35",
+   "key": "Partner tier credit",
+   "value": "Counts toward Claude Partner Network tier eligibility",
+   "label": "official",
+   "source": "FAQ; Partner Academy",
+   "note": ""
+  },
+  {
+   "id": "EF-36",
+   "key": "Official positioning",
+   "value": "'Foundations proves an architect can build with Claude. Professional proves they can design and govern Claude solutions at enterprise scale.'",
+   "label": "official",
+   "source": "FAQ",
+   "note": ""
+  },
+  {
+   "id": "EF-37",
+   "key": "CCAR-F for contrast",
+   "value": "60 items; 4 scenarios drawn from a bank of 6; 27/18/20/20/15; $125; 120 minutes; pass at 720",
+   "label": "official",
+   "source": "CCAR-F Exam Guide v1.0 (July 2026); Partner Academy ccarf entry",
+   "note": "A different exam. It is not a prerequisite for CCAR-P."
+  },
+  {
+   "id": "EF-38",
+   "key": "What passers report",
+   "value": "Much more about judgement than API mechanics; governance is treated as a first-class design input; the samples are easier than the real items",
+   "label": "community",
+   "source": "Firsthand reports: Purcell (925), dev.to/bluepanda (820), Karuparti (860)",
+   "note": "One passer finished in about 60 minutes. Do not plan around that."
+  }
+ ],
+ "explainer27": {
+  "headline": "27% is the Foundations number. CCAR-P has no 27% domain.",
+  "paragraphs": [
+   "'Agentic Architecture & Orchestration: 27%' is a real, official figure. It belongs to the Foundations exam (CCAR-F), not to Professional. Anthropic published it in the CCAR-F launch guide on 12 March 2026 ('27% of scored content') and kept it in CCAR-F v1.0 (July 2026): 27/18/20/20/15 across 5 domains, 60 items, and 4 scenarios drawn from a bank of 6.",
+   "CCAR-P did not exist until about 8 July 2026. For roughly four months, 27% was the only official Claude Architect blueprint, so every guide, repo and practice trainer written between March and July used it, legitimately, for Foundations. The most direct source of the phrase 'Agentic Architecture 27%' is probably a Foundations trainer you already have. A practice file titled 'Claude Certified Architect · Foundations — Practice Exam' tags every D1 item 'Agentic Architecture' and says its mix 'matches the published weights exactly (27/18/20/20/15)', and the official CCAR-F naming uses the same words. Many community repos also keep the Foundations blueprint one click from their Professional pages, and the legacy 'CCA-F' label makes the two exams look like one family with one blueprint. If your practice exam is titled 'Foundations', uses Task 1.x labels, or says 'weights match 27/18/20/20/15', it is a CCAR-F trainer.",
+   "The CCAR-P v1.0 guide has 7 domains weighted 17/13/19/16/14/14/7, and none of them is called Agentic Architecture. Agentic and multi-agent design appear as 2 of the 6 objectives inside D1 Solution Design & Architecture (17%). The heaviest domain is D3 Integration at 19%. Evaluation, Governance and Stakeholder work (D4–D6) together make up 44% of CCAR-P, and Foundations material barely covers them.",
+   "There is also an extraction trap. If you run the official CCAR-P PDF through pdftotext -layout, the weight column in the blueprint table shifts down one row: 17% prints on the header line and D1 appears as '13%'. The per-domain headings settle it ('Domain 1: Solution Design & Architecture (17%)'). If you saw some other number, 17% (D1) or 19% (Integration) is the likely candidate, but that is a guess, not a confirmed source.",
+   "Numbering is a separate tell. CCAR-F numbers its task statements officially (for example 'Task Statement 2.1'). The CCAR-P guide lists its 38 objectives as unnumbered bullets, and the IDs 1.1–7.3 used in this portal are a study convention. A source that quotes 'official' CCAR-P task numbers, or builds mocks on named scenarios, is carrying Foundations structure over. Use Foundations material for vocabulary and timing only, never to calibrate your readiness."
+  ],
+  "compare": [
+   {
+    "aspect": "Exam code",
+    "ccarf": "CCAR-F (legacy label: CCA-F)",
+    "ccarp": "CCAR-P"
+   },
+   {
+    "aspect": "Domains",
+    "ccarf": "5",
+    "ccarp": "7"
+   },
+   {
+    "aspect": "Weights",
+    "ccarf": "27 / 18 / 20 / 20 / 15",
+    "ccarp": "17 / 13 / 19 / 16 / 14 / 14 / 7"
+   },
+   {
+    "aspect": "Heaviest domain",
+    "ccarf": "Agentic Architecture & Orchestration, 27%",
+    "ccarp": "Integration, 19%"
+   },
+   {
+    "aspect": "Items",
+    "ccarf": "60",
+    "ccarp": "63 (MC and multiple-response; each item states how many to select)"
+   },
+   {
+    "aspect": "Scenarios",
+    "ccarf": "4 scenarios drawn from a published bank of 6",
+    "ccarp": "No scenario bank; standalone scenario-framed items"
+   },
+   {
+    "aspect": "Time and cut score",
+    "ccarf": "120 min; scaled 720 of 100–1,000",
+    "ccarp": "120 min; scaled 720 of 100–1,000"
+   },
+   {
+    "aspect": "Price",
+    "ccarf": "$125",
+    "ccarp": "$175"
+   },
+   {
+    "aspect": "Focus",
+    "ccarf": "Building with Claude: API, tool and Claude Code mechanics",
+    "ccarp": "Designing and governing enterprise solutions: judgement under trade-offs"
+   },
+   {
+    "aspect": "Claude Code weight",
+    "ccarf": "Its own 20% domain (Claude Code Configuration & Workflows)",
+    "ccarp": "Inside D7 Developer Productivity, 7% (about 4 items)"
+   },
+   {
+    "aspect": "Agentic orchestration",
+    "ccarf": "A whole domain, 27%",
+    "ccarp": "2 of 6 objectives in D1 (17%)"
+   },
+   {
+    "aspect": "New domains",
+    "ccarf": "None of these",
+    "ccarp": "D4 Evaluation 16%, D5 Governance 14%, D6 Stakeholder & Lifecycle 14%"
+   },
+   {
+    "aspect": "RAG",
+    "ccarf": "Embeddings and vector DB internals largely out of scope (per community guides)",
+    "ccarp": "Explicit in D3 (chunking, indexing, retrieval strategy)"
+   },
+   {
+    "aspect": "Objective numbering",
+    "ccarf": "Official task statement numbers",
+    "ccarp": "Unnumbered bullets; 1.1–7.3 is a study convention"
+   },
+   {
+    "aspect": "Launch",
+    "ccarf": "12 Mar 2026 (v1.0 July 2026)",
+    "ccarp": "About 8 Jul 2026 (v1.0 effective July 2026)"
+   }
+  ],
+  "spot_checklist": [
+   "The blueprint reads 27/18/20/20/15, or lists five domains with 'Agentic Architecture & Orchestration' first.",
+   "Mocks are organised around named scenarios (Customer Support Resolution Agent, Code Generation with Claude Code, Multi-Agent Research System, and so on), or it says '4 of 6' or '4 of 8' scenarios.",
+   "Format facts say 60 items, $125 or $99, or 'one correct answer out of four'.",
+   "It cites 'Task Statement 1.x' numbering or the CCA-F/CCAR-F code, and spends most of its time on tool_choice, stop_reason loops, CLAUDE.md hierarchy and CLI flags.",
+   "It has little or nothing on evaluation thresholds, governance controls, compliance mapping, stakeholder communication or RAG design, which make up about half of CCAR-P."
+  ]
+ },
+ "examDay": [
+  {
+   "when": "T-14",
+   "items": [
+    "Confirm the booking, your time zone and the reschedule deadline (use 48 hours).",
+    "Check that your registration name exactly matches your government ID.",
+    "Confirm your partner discount was applied, and keep the receipt.",
+    "Choose OnVUE or a test centre. For OnVUE, run the Pearson system test on the exact machine and network.",
+    "Form A is on the calendar at about 55% of your timeline, and no later than T-7."
+   ]
+  },
+  {
+   "when": "T-7",
+   "items": [
+    "The Form C dress-rehearsal window opens (T-7 to T-3). Sit it under exam conditions.",
+    "Write your final remediation list of no more than 5 objectives, and do nothing else new.",
+    "Plan the room: one monitor, no second screen, a clear desk, no papers or phone within reach, and a closed door.",
+    "Arrange to be undisturbed for about 135 minutes of seat time.",
+    "Decide after Form C (by T-3): if readiness is still Not yet, reschedule before the 48-hour deadline."
+   ]
+  },
+  {
+   "when": "T-3",
+   "items": [
+    "Start the taper: no new material and no sealed form after T-2.",
+    "Daily: cheat-sheet night-before mode, cue flashcards, and clear the spaced-review queue.",
+    "One 10-item pacing drill at 1:45 per item.",
+    "Re-read the trap codes you fall for most and their counter-rules."
+   ]
+  },
+  {
+   "when": "T-1",
+   "items": [
+    "Light review only: the laws, trigger words and your top 3 traps. Stop by early evening.",
+    "Re-run the OnVUE system test. Turn off OS updates, close background apps and silence notifications.",
+    "Charge the laptop and use wired power. Prefer a wired network connection.",
+    "Put your ID next to the machine. Sleep."
+   ]
+  },
+  {
+   "when": "T-0",
+   "items": [
+    "Start check-in early; setup and room scans take time. Allow about 135 minutes in total.",
+    "Once seated, commit to the plan: about 1:45 per item on the first pass, checkpoints at 17/30:00, 34/60:00, 51/90:00 and 63/110:00.",
+    "On every item: count first on multi-response, find the binding constraint, then eliminate options by naming each trap.",
+    "Past 3 minutes: best answer, flag, move on. Leave nothing blank.",
+    "Last 10 minutes: flagged items, then recheck the selection count on every multi-response item. Change an answer only for a specific error you have found."
+   ]
+  },
+  {
+   "when": "After",
+   "items": [
+    "Record your pass/fail result, scaled score and percent-correct by domain. The domain percentages are diagnostic only.",
+    "If you passed: claim the Credly badge and set a renewal reminder for month 10 (validity is 12 months, renewal free if on time).",
+    "If you did not pass: the first retake wait is 14 days (then 30, then 90), with at most 4 attempts per rolling 12 months. Rebuild the plan from the domain percentages, weighted by the domain weights.",
+    "Appeals must be filed within 14 days.",
+    "You accepted an NDA, so do not share or reconstruct live items."
+   ]
+  }
+ ],
+ "pacing": {
+  "perItem": "About 1:45 per item on the first pass (110 minutes ÷ 63), which keeps 10 minutes in reserve; the raw average is 1:54 (120 ÷ 63)",
+  "checkpoints": [
+   "17 items answered by 30:00 elapsed (90:00 left)",
+   "34 items answered by 60:00 elapsed (60:00 left)",
+   "51 items answered by 90:00 elapsed (30:00 left)",
+   "First pass complete through item 63 by 110:00 elapsed (10:00 left for flags and counts)"
+  ],
+  "rules": [
+   "On multi-response items, read the 'select N' count before the stem, and check it again before you move on.",
+   "Read the question line, then find the binding constraint, then eliminate options by naming each one's trap, then choose.",
+   "Past 3 minutes, enter your best answer, flag the item and move on. Never flag an item with no answer.",
+   "If you are more than 5 minutes behind at a checkpoint, eliminate two options, pick, flag and move on until you are back on pace.",
+   "Answer every item. The CCAR-F guide scores blanks as incorrect with no guessing penalty, and no penalty is documented for CCAR-P.",
+   "Use the reserved time for flagged items first, then a pass over every multi-response count.",
+   "Change an answer only when you find a specific error, such as a missed constraint word, a wrong count or an assumption the stem never stated.",
+   "Anthropic does not publish item weights, so treat every item as equal and do not sink time into one hard stem.",
+   "Do not convert 720 into an allowed number of misses mid-exam. It is a scaled score, not 72%."
+  ]
+ }
+}

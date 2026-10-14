@@ -1,0 +1,508 @@
+[
+ {
+  "id": "P4-4.2-001",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formA",
+  "type": "multi",
+  "select": 3,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "evidence",
+  "industry": "banking",
+  "family": "grading-ladder-per-output-part",
+  "counterTrap": false,
+  "signals": [
+   "graded by a method shown to be valid for that part",
+   "must match the applicant's financial statements",
+   "about four hours a week between them"
+  ],
+  "stem": "Ashby Crane Bank is building a Claude pipeline that turns commercial loan applications into draft credit memos. Each memo has three parts: extracted figures (loan amount, debt-service coverage, collateral value) that must match the applicant's financial statements; a narrative risk assessment; and, for declined files, the adverse-action explanation that fair-lending examiners scrutinise. The model-risk committee will accept the test framework only if each part is graded by a method shown to be valid for that part. The 400-file test set (about 40 declines) is re-run before every monthly release, and two senior credit officers can give it about four hours a week between them.",
+  "ask": "Which THREE elements should the test framework include? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Code checks that compare each extracted figure with the value in the source statements",
+    "correct": true,
+    "trap": null,
+    "why": "Each figure has one right value in the statements, so an exact comparison in code is the valid grader here: cheap, repeatable on every monthly run, and it spends none of the officers' four hours."
+   },
+   {
+    "id": "b",
+    "text": "The narrative rubric judge also scoring the figures, averaged over three runs for consistency",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A figure is simply right or wrong against the statements. A judge reading numbers can miss a transposed digit, and averaging runs only makes its misses steadier, not rarer."
+   },
+   {
+    "id": "c",
+    "text": "A rubric judge for the narrative, calibrated against memos the credit officers have labelled",
+    "correct": true,
+    "trap": null,
+    "why": "Narrative quality is open-ended, so a rubric judge gives scale, but the committee needs it shown valid. Agreement with a one-off batch of officer-labelled memos is that evidence, and it leaves most officer hours for the declines."
+   },
+   {
+    "id": "d",
+    "text": "Credit-officer grading of every narrative risk assessment and adverse-action explanation in each run",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Officer grading would be valid for both parts, but it assumes time the stem does not grant: 400 narratives a month far exceed four hours a week. A judge calibrated to officer labels can cover the narrative instead."
+   },
+   {
+    "id": "e",
+    "text": "A versioned archive of each run's memos, scores and grader settings for the committee's audit file",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "An audit archive is sound model-risk practice, but it adds no grader. Every part would be scored exactly as before, so the validity question the committee raised is untouched."
+   },
+   {
+    "id": "f",
+    "text": "Credit-officer review of every adverse-action explanation on the 40 or so declined files in each run",
+    "correct": true,
+    "trap": null,
+    "why": "Adverse-action explanations carry fair-lending exposure, so this is where the grading ladder calls for expert judgement. About 40 declines a run fit comfortably within the officers' four weekly hours."
+   }
+  ],
+  "explain": "Binding constraint: the model-risk committee needs a grader shown valid for each part, with only about four officer hours a week. Apply the grading ladder: code for crisp figures, a judge calibrated to officer labels for the narrative, and officers only on the 40 declines where the stakes are highest.",
+  "rule": "CS-D4-04",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.2-002",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "manufacturing",
+  "family": "stale-suite-new-supplier-slice",
+  "counterTrap": false,
+  "signals": [
+   "assembled when the pipeline launched last year",
+   "each filing reports on its own template",
+   "have not changed since launch"
+  ],
+  "stem": "Veltmark Components uses Claude to extract defect codes, lot numbers and dispositions from supplier nonconformance reports into its quality system. Releases are gated on an offline suite of 1,200 reports assembled when the pipeline launched last year, and the suite still scores 97% every week. Since the spring Veltmark has been buying from three new foundries, each filing reports on its own template, and quality engineers now correct far more extractions, almost all of them on reports from those foundries. The model version, prompt, extraction schema and scoring script have not changed since launch.",
+  "ask": "What is the MOST likely reason the offline suite did not reveal the problem?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The new foundries' reports are in the suite, but their errors are diluted within the overall 97%",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This needs the new foundries' reports to be in the suite, but it was assembled at launch, before they supplied anything, so none can be in it to be diluted. Slicing the suite would find no new-foundry slice at all."
+   },
+   {
+    "id": "b",
+    "text": "The model has drifted since launch, and the suite's older reports are too easy to expose the drift",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The model version is unchanged, and a pinned version does not drift. The errors also cluster on one supplier group, which points at inputs the suite lacks rather than at the model."
+   },
+   {
+    "id": "c",
+    "text": "The prompt was tuned against the suite before launch, so the 97% overstates accuracy on unseen reports",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Tuning on the suite would inflate the score across the board, but it cannot explain errors that concentrate on the new foundries. The stem also never says the suite was used for tuning."
+   },
+   {
+    "id": "d",
+    "text": "The suite was built before the new foundries began supplying, so their templates are absent",
+    "correct": true,
+    "trap": null,
+    "why": "The corrections cluster on the new foundries, which began supplying on their own templates after the suite was frozen. A set that has never seen those templates can keep scoring 97% while that slice fails in production."
+   }
+  ],
+  "explain": "Binding constraint: what changed. The inputs changed (new foundries, each with its own template) while the model, prompt, schema and scorer did not, and the suite predates the change. A frozen set cannot see a new slice, so refresh it from current traffic and score the new foundries separately.",
+  "rule": "CS-D4-06",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.2-003",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "evidence",
+  "industry": "e-commerce",
+  "family": "judge-drift-format-bias",
+  "counterTrap": false,
+  "signals": [
+   "checked against human ratings once, at launch last year",
+   "escalations to human agents climbed by a third",
+   "longer and more heavily formatted"
+  ],
+  "stem": "Farrowdale Market's shopper-help assistant ships a prompt update every two weeks, and each release is gated on a rubric LLM judge that was checked against human ratings once, at launch last year. Over the last four releases the judge's average rose from 3.8 to 4.5 while escalations to human agents climbed by a third. The model version, retrieval index and judge prompt are unchanged throughout; the updates mostly made answers longer and more heavily formatted. A fifth update, scoring 4.6, is queued for release before the holiday peak.",
+  "ask": "What should the evaluation lead do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have human reviewers rate a fresh sample of recent conversations and measure the judge's agreement on it",
+    "correct": true,
+    "trap": null,
+    "why": "The answers mainly changed in length and formatting, yet the judge's scores and escalations moved apart. Fresh human ratings of current output show whether the judge still tracks what shoppers need before any release relies on it."
+   },
+   {
+    "id": "b",
+    "text": "Release the fifth update to a tenth of traffic and compare its escalation rate with the current version",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A capped rollout is the right later stage, but the gate that should justify it is in doubt. Releasing on its score before peak exposes shoppers and leaves the next update gated on the same judge."
+   },
+   {
+    "id": "c",
+    "text": "Tighten the rubric wording and take the median of three judge runs so its scores stop drifting upward",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Firmer wording and repeated runs make the judge steadier, not correct. If it rewards length and formatting, it will keep rewarding them consistently, and only fresh human ratings can expose the gap."
+   },
+   {
+    "id": "d",
+    "text": "Pool fresh human ratings of recent conversations with the launch ratings and re-measure agreement",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Pooling with the launch ratings, where the judge agreed well, dilutes its disagreement on today's longer, formatted answers. The combined figure can clear the bar while the judge still misreads current output."
+   }
+  ],
+  "explain": "Binding constraint: the evidence quality of the release gate. When judge scores rise while a human outcome worsens and mainly output style changed, the judge is the suspect instrument: measure its agreement on fresh human ratings of current output, kept apart from the launch ratings, before trusting its trend or releasing on it.",
+  "rule": "CS-D4-05",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-11"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.2-004",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "irreversibility",
+  "industry": "public-sector",
+  "family": "edge-and-adversarial-slices",
+  "counterTrap": false,
+  "signals": [
+   "a wrong answer does lasting harm",
+   "which the sample barely contains",
+   "one day before the board meets"
+  ],
+  "stem": "Northmere County's housing office plans to launch a Claude assistant that answers residents' questions about social-housing applications. Its eval set is 900 questions sampled from two years of web-form enquiries, graded by a rubric judge calibrated against caseworker labels, and the assistant clears the agreed bar. The review board wants evidence on the cases where a wrong answer does lasting harm: residents facing eviction within days, which the sample barely contains, and messages that press the assistant to confirm a housing priority it has no authority to grant. Caseworkers can give the evaluation one day before the board meets.",
+  "ask": "Which TWO additions to the evaluation BEST give the board that evidence? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Caseworker hand-grading of the answers to all 900 questions plus eviction cases from their files",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Caseworker grading is the gold standard, but re-grading 900 answers assumes far more than the one day they can give. The calibrated judge already covers the ordinary questions, so their day belongs on the eviction cases."
+   },
+   {
+    "id": "b",
+    "text": "Fifty eviction cases from caseworkers' files, graded by caseworkers as a slice with a stricter bar",
+    "correct": true,
+    "trap": null,
+    "why": "Eviction cases are rare in web-form history, so a random sample barely tests them. Fifty drawn from caseworker files fit the caseworkers' single day, and a separate, stricter bar shows the board the highest-harm answers."
+   },
+   {
+    "id": "c",
+    "text": "Eviction and priority-pressure questions generated by the configuration under test, scored as a slice",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Questions written by the configuration under test share its blind spots, so they probe what it already handles. Sparing caseworker time this way leaves the board without independent evidence on the harms it named."
+   },
+   {
+    "id": "d",
+    "text": "A larger random sample of 3,000 web-form enquiries to tighten confidence in the headline score",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A bigger sample tightens the headline figure, but it adds urgent cases only in proportion to their rarity and few manipulation attempts. The board's two concerns stay almost untested."
+   },
+   {
+    "id": "e",
+    "text": "A red-team slice of priority-pressure messages, gated separately on how often a priority is conceded",
+    "correct": true,
+    "trap": null,
+    "why": "Conceding a priority it cannot grant misleads a resident about their housing. A dedicated adversarial slice with its own gate measures that failure directly instead of hoping ordinary enquiries contain it."
+   }
+  ],
+  "explain": "Binding constraint: lasting harm concentrates in rare cases a random sample misses, and caseworkers can give only one day. Add targeted slices from sources outside the system under test, gate each separately, and spend the expert day on the eviction slice rather than re-grading what the calibrated judge already covers.",
+  "rule": "CS-D4-04",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.2-005",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "insurance",
+  "family": "held-out-after-prompt-tuning",
+  "counterTrap": false,
+  "signals": [
+   "the same 400 labelled reports",
+   "real incoming reports it has not seen",
+   "Tuesday's review"
+  ],
+  "stem": "Halsey Crown Insurance has spent six weeks refining a Claude prompt that sorts first-notice-of-loss reports into four severity tiers for claims routing. Each week the team scored the prompt on the same 400 labelled reports and adjusted it wherever a tier came out wrong; it now scores 95% on them. The claims director will approve launch at Tuesday's review only on an accuracy figure that predicts how the prompt will handle real incoming reports it has not seen. Adjuster-labelled reports from the most recent quarter are available in the claims system.",
+  "ask": "Which evidence BEST meets the director's condition?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Accuracy on 400 synthetic reports that Claude writes to target tiers drawn from last quarter's mix",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Reports Claude writes to a target tier carry the model's own idea of severity, so they flatter the prompt rather than test it. Real adjuster-labelled reports already exist and are what predicts performance on incoming claims."
+   },
+   {
+    "id": "b",
+    "text": "Accuracy on a fresh sample of last quarter's adjuster-labelled reports that had no part in the tuning",
+    "correct": true,
+    "trap": null,
+    "why": "Six weeks of fixing errors on the same 400 reports fitted the prompt to them. Real reports it never influenced, labelled by adjusters, are the direct estimate of unseen performance, and they exist now, in time for Tuesday."
+   },
+   {
+    "id": "c",
+    "text": "One pooled accuracy figure across the 400 tuning reports and a fresh sample, for a larger base",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Pooling lets the inflated tuning results pull the figure up and hides how the fresh reports actually scored. The unseen slice is the evidence the director asked for, so it has to stand alone."
+   },
+   {
+    "id": "d",
+    "text": "Tier agreement with adjusters after a month of running the prompt in shadow mode on live reports",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Shadow mode is a sound pre-rollout check, but it cannot report before Tuesday. Labelled unseen reports already exist, so the director's condition can be met now without waiting a month."
+   }
+  ],
+  "explain": "Binding constraint: the figure must predict performance on real reports the prompt has not seen. A set used to tune the prompt is spent as a test set, and reports the model writes itself reflect its own view, so score a held-out sample of real labelled reports and report it separately from the tuning results.",
+  "rule": "CS-D4-04",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-11"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.2-006",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "logistics",
+  "family": "scale-validated-judge",
+  "counterTrap": true,
+  "signals": [
+   "labelled 300 notices drafted by the revised prompt now under review",
+   "the judge has not been changed since",
+   "5,000 held-out notices is due Thursday"
+  ],
+  "stem": "Oakhurst Haulage uses Claude to draft the delay notices its service team sends when a freight shipment misses its delivery window. The agreed eval plan checks each notice's shipment details in code, grades tone and completeness with a rubric judge, and gates release on each lane and customer tier. Last week two senior agents labelled 300 notices drafted by the revised prompt now under review, and the judge matched them within the agreed tolerance on every lane and tier; the judge has not been changed since. Those two agents are the only reviewers, and a release decision on 5,000 held-out notices is due Thursday.",
+  "ask": "What should the evaluation lead do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have the two agents label another 300 notices to re-confirm the judge before scoring",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Re-checking agreement is right when the judge, the prompt or the traffic changes, or when the review cycle comes round. None has happened since last week, so another round spends the only reviewers' time for no new evidence."
+   },
+   {
+    "id": "b",
+    "text": "Have the two agents grade a random 400 notices by hand and extrapolate to the full set",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The plan gates on each lane and tier, and a random 400 split across them leaves every slice far thinner than the full 5,000. An extrapolated overall figure is not what the plan gates on, and the judge can score every notice."
+   },
+   {
+    "id": "c",
+    "text": "Release the revised prompt to a tenth of live shipments and compare the complaint rates",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Live exposure is the stage after an offline pass, not a substitute for it. Complaint rates arrive slowly and would put customers in front of a prompt nobody has yet scored."
+   },
+   {
+    "id": "d",
+    "text": "Score the 5,000 held-out notices with the rubric judge alongside the code checks",
+    "correct": true,
+    "trap": null,
+    "why": "The judge was checked last week on this prompt's own output, per lane and tier, and has not changed, so scaling it is what that calibration was for. It is the practical way to grade 5,000 notices by Thursday."
+   }
+  ],
+  "explain": "Binding constraint: the judge's validity is already established on this prompt's output, which is the condition under which scaling an LLM judge is right. With two reviewers and 5,000 notices, the calibrated judge plus code checks is the valid grader now; re-validation and live exposure come later.",
+  "rule": "CS-D4-04",
+  "ladder": "eval-grading",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.2-007",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "manufacturing",
+  "family": "reference-label-agreement",
+  "counterTrap": false,
+  "signals": [
+   "the engineers split among themselves on nearly a third",
+   "a one-line rubric"
+  ],
+  "stem": "Stavehurst Plastics uses Claude to draft the root-cause section of customer corrective-action reports for moulding defects. Before running a rubric LLM judge across 3,000 archived reports, the quality lead had three senior engineers label 150 of them as acceptable or not. The judge matched the engineers' majority label on 71% of reports, but the engineers split among themselves on nearly a third, mostly over how much evidence an acceptable root cause needs. Their only guidance was a one-line rubric: 'root cause is well supported'.",
+  "ask": "What is the BEST next step before the quality lead runs the judge across the archive?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have the engineers agree a rubric with worked examples, then relabel the 150 and check they agree",
+    "correct": true,
+    "trap": null,
+    "why": "The engineers disagree about the standard itself, so any label they produce is partly noise. A shared rubric with worked examples, confirmed by their agreement with each other, gives the judge a target worth matching."
+   },
+   {
+    "id": "b",
+    "text": "Average the three engineers' ratings into one score per report and calibrate the judge to that score",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Averaging hides the split third instead of resolving it. A report two engineers pass and one fails becomes a middling score that encodes no agreed standard for the judge to learn."
+   },
+   {
+    "id": "c",
+    "text": "Add worked examples to the judge's own rubric until it matches the majority label on 90% of the 150",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "The labels themselves are unreliable: the engineers split on nearly a third under a one-line rubric. Tuning the judge to their majority fits it to that noise, so a 90% match would look like validation while measuring nothing stable."
+   },
+   {
+    "id": "d",
+    "text": "Calibrate the judge later against which reports customers accept, once enough outcomes have accrued",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Customer outcomes are a useful later check, but they arrive slowly and mix in factors beyond root-cause quality. The rubric ambiguity is fixable now, before the judge is run across the archive."
+   }
+  ],
+  "explain": "Binding constraint: the reference labels are unreliable because the rubric is ambiguous. A judge can only be calibrated against labels humans agree on, so fix the rubric and confirm inter-rater agreement before calibrating the judge.",
+  "rule": "CS-D4-04",
+  "ladder": "eval-grading",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

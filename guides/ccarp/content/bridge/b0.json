@@ -1,0 +1,667 @@
+[
+ {
+  "id": "FB-3",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "ownership",
+  "industry": "airline",
+  "family": "escalation-criteria-by-case-type",
+  "counterTrap": false,
+  "signals": [
+   "escalate when appropriate",
+   "two opposite errors",
+   "has no tool that grants one"
+  ],
+  "stem": "Skarsby Air's support agent resolves 62% of contacts on first touch against an 85% target. Transcript review shows two opposite errors: it hands routine rebooking questions to human staff, yet keeps working fare-rule exceptions itself, cycling through standard options until the customer gives up. Only supervisors can approve an exception, and the agent has no tool that grants one, so a late handoff costs goodwill but moves no money. The system prompt currently says only 'escalate when appropriate'.",
+  "ask": "Which change BEST calibrates when the agent escalates?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Ask the agent to score its own certainty as a percentage on each turn and hand off whenever it falls below 60%",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "Self-rated certainty is poorly calibrated, and this agent errs in both directions: sure of itself on exceptions, hesitant on routine rebookings. A cutoff on that number would reproduce the same misroutes with extra ceremony."
+   },
+   {
+    "id": "b",
+    "text": "Write explicit escalation criteria by case type into the system prompt, with examples to hand off and resolve",
+    "correct": true,
+    "trap": null,
+    "why": "Both failures trace to an undefined boundary, since 'when appropriate' gives the agent nothing to apply. Naming the case types that belong to supervisors, with contrasting examples on each side, fixes the decision at its source, and a miss here stays recoverable."
+   },
+   {
+    "id": "c",
+    "text": "Escalate automatically whenever the customer repeats the same request twice within a single conversation",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This treats repetition as a stand-in for case type. It fires only after the customer has been cycled through options, so the goodwill is already spent; it can add handoffs but never remove the needless rebooking ones; and a customer repeating a simple question would be escalated too."
+   },
+   {
+    "id": "d",
+    "text": "Move the agent to a more capable model tier so it can recognise complex cases without any further instructions",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The defect is a missing specification, not missing capability. Any tier told to 'escalate when appropriate' still has to guess where a supervisor's authority starts, so the upgrade adds cost without defining the boundary."
+   }
+  ],
+  "explain": "Binding constraint: fare exceptions are a supervisor's decision, and the agent has never been told where that boundary sits. Route escalation by case type and consequence, written as explicit criteria with examples, never by the model's self-rated certainty or a behavioural proxy such as repetition; no hard gate is needed because the agent cannot grant an exception anyway.",
+  "rule": "CS-D5-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 3
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-9",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "least-privilege",
+  "industry": "media",
+  "family": "scoped-verify-tool",
+  "counterTrap": false,
+  "signals": [
+   "70% of checks are single-figure lookups",
+   "30% need a genuine new investigation",
+   "stay a drafting role"
+  ],
+  "stem": "Inchbrook Press runs a research system in which a coordinator sends questions to a web-search subagent and passes its findings to a synthesis subagent that drafts the briefing. While drafting, the synthesis agent often needs a claim checked, and each check goes back through the coordinator to the search agent, adding several round trips and roughly a third to end-to-end latency. Logs show 70% of checks are single-figure lookups, such as a date or a statistic; 30% need a genuine new investigation. The editors want the synthesis agent to stay a drafting role, not a second researcher.",
+  "ask": "Which configuration change BEST reduces the overhead while keeping verification reliable?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Queue every verification need and send the whole list to the coordinator once the synthesis pass is finished",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Queuing assumes the draft does not depend on the checks. In practice the briefing is written on unverified claims, any failed check forces a rewrite, and verification becomes a blocking step at the end, so latency moves rather than falls."
+   },
+   {
+    "id": "b",
+    "text": "Give the synthesis agent the full set of web-search tools so it can run any check itself with no round trips",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "This removes the round trips by handing a drafting role the open-ended search the editors want kept out of it. Tool choice gets harder, the agent can drift into new research instead of synthesising, and the common case needed only a single lookup."
+   },
+   {
+    "id": "c",
+    "text": "Give the synthesis agent a narrow lookup_figure tool and keep deeper checks routed through the coordinator",
+    "correct": true,
+    "trap": null,
+    "why": "A scoped lookup covers the 70% case inside the agent and removes most of the round trips, while real investigations keep their existing path. The agent gains one narrow capability rather than open-ended search, so it stays a drafting role."
+   },
+   {
+    "id": "d",
+    "text": "Let the synthesis agent message the search agent directly for each check, bypassing the coordinator",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Direct messaging trims one hop, but every one-figure lookup still costs a full search-agent turn, so most of the latency stays. It also takes checks out of the coordinator's view, so no single component tracks, retries or logs verification."
+   }
+  ],
+  "explain": "Binding constraint: least privilege under a latency target. Give a role the narrowest capability that covers its common case and leave the rare, heavier path where it already lives; that removes most of the round trips without widening what the synthesis agent can do or taking checks out of the coordinator's view.",
+  "rule": "CS-D3-02",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 9
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-16",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "education",
+  "family": "triage-simple-to-single-call",
+  "counterTrap": false,
+  "signals": [
+   "about a third are simple lookups",
+   "without weakening the complex ones",
+   "under ten words"
+  ],
+  "stem": "Fennimore University's library runs a research assistant in which a coordinator sends every question through four subagents in turn: web search, document analysis, synthesis and report writing. Most traffic is complex literature questions, but about a third are simple lookups such as 'What is the loan period for a reserve-collection book?'. Those take around 45 seconds and cost as much as a full literature review. Several of the hardest questions last term were under ten words, such as 'Is sleep linked to GPA?'. The service owner wants simple questions answered quickly without weakening the complex ones.",
+  "ask": "Which design change BEST meets the service owner's goal?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a keyword table ahead of the coordinator that sends short, lookup-style queries straight to a single call",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Routing by complexity is sound, but a keyword table judges difficulty by surface wording. Last term's hardest questions included one-line queries such as the sleep and GPA question, which a table would send down the simple path, weakening exactly the complex answers the owner wants protected."
+   },
+   {
+    "id": "b",
+    "text": "Let each subagent judge its own relevance to the question and opt in or out of the pipeline as the query runs",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Adding autonomy to every subagent means each one must still read the query to decide, so cost stays high, and no single component owns the routing decision or can explain why a path was taken."
+   },
+   {
+    "id": "c",
+    "text": "Merge web search and document analysis into one retrieval subagent so every question passes through three stages",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Merging two stages trims some latency but still sends a one-line lookup through a multi-stage pipeline, and it weakens the complex path by blending two distinct retrieval jobs into one agent."
+   },
+   {
+    "id": "d",
+    "text": "Have the coordinator triage questions: one model call with retrieval for simple ones, subagents for the rest",
+    "correct": true,
+    "trap": null,
+    "why": "Triage matches the pattern to the request: a simple lookup needs one augmented call with retrieval and no agents, while a model reading the question's meaning can still send a short but hard research question to the subagents. Both of the service owner's goals are met."
+   }
+  ],
+  "explain": "Binding constraint: latency and cost on simple requests without weakening complex ones. Choose the simplest pattern that works for each request; a one-step lookup gets a single augmented LLM call, and agents are kept for questions whose path cannot be listed in advance.",
+  "rule": "CS-D1-07",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 16
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-21",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "determinism",
+  "industry": "banking",
+  "family": "tool-prerequisite-gate",
+  "counterTrap": false,
+  "signals": [
+   "close_account ran before identity was confirmed",
+   "cannot be reopened online"
+  ],
+  "stem": "Dunmere Savings runs a support agent that closes accounts on request. The procedure is: confirm identity with get_customer, check linked products with check_linked_products, then call close_account. Last quarter's logs show a handful of cases where close_account ran before identity was confirmed, including two accounts the caller did not own. A closed account cannot be reopened online. A colleague proposes adding 'Always verify identity before closing an account' to the system prompt.",
+  "ask": "Which approach BEST ensures an account is closed only after its owner has been verified?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Make close_account refuse to run unless get_customer has verified the caller as this account's owner in the session",
+    "correct": true,
+    "trap": null,
+    "why": "The check lives in the tool, outside the model, and binds the closure to the verified caller's own account, so neither an unverified closure nor a closure of someone else's account can run whatever the agent decides. It still holds if the model ignores its instructions completely."
+   },
+   {
+    "id": "b",
+    "text": "Adopt the prompt rule and add few-shot examples that walk through all three steps in the correct order each time",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Examples raise the odds of the right order, but the logs already show the agent skipping a step it was expected to follow. For an irreversible closure, a better success rate is still a failure rate."
+   },
+   {
+    "id": "c",
+    "text": "Log each close_account call and alert the fraud team whenever no identity check was recorded beforehand",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "The alert reaches the fraud team after the account is already closed, and it cannot be reopened online. Detection is a useful second layer, but the ask is to stop the closure, not to find out about it."
+   },
+   {
+    "id": "d",
+    "text": "Move the agent to a stronger reasoning model that follows multi-step procedures more reliably in production",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Out-of-order calls are a control defect, not a capability gap. A stronger model still follows instructions probabilistically, so wrongful closures become rarer at higher cost but remain possible."
+   }
+  ],
+  "explain": "Binding constraint: the order must hold every time because a wrongful closure is irreversible. Enforce it with a prerequisite check outside the model that refuses close_account until get_customer has verified the caller as the owner of that account; prompts and examples only raise the odds, and alerts arrive after the damage.",
+  "rule": "CS-D5-01",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 21
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-24",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "irreversibility",
+  "industry": "e-commerce",
+  "family": "pre-execution-approval-gate",
+  "counterTrap": false,
+  "signals": [
+   "rarely recovered once paid",
+   "refunds above $500 need a manager's approval"
+  ],
+  "stem": "Ormsby Trail Supply's support agent issues refunds through a process_refund tool. Policy says refunds above $500 need a manager's approval, and the system prompt states this rule plainly. Audit sampling finds the agent paid about 3% of over-limit refunds on its own. Refunds reach the customer's card within minutes and are rarely recovered once paid. Managers are happy to review high-value cases but refuse to approve every refund, which would bury them in routine $20 returns.",
+  "ask": "Which design BEST places the human approval where the policy needs it?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Rewrite the prompt rule in stronger terms, stating that over-limit refunds are forbidden without explicit approval",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Stronger wording nudges the odds, but the rule is already stated plainly and still fails about 3% of the time. Money leaves within minutes, so a control that depends on the model choosing to comply is not enough."
+   },
+   {
+    "id": "b",
+    "text": "Intercept process_refund before it runs and hold every refund, whatever its amount, for a manager to approve",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "This places the gate correctly but ignores the threshold. Managers have said they will not approve every refund, and sending each $20 return to them buries the high-value cases in routine volume and invites click-through approvals, a paper gate."
+   },
+   {
+    "id": "c",
+    "text": "Intercept process_refund before it runs and hold any amount over $500 in a manager approval queue",
+    "correct": true,
+    "trap": null,
+    "why": "The interception sits outside the model and acts before money moves, so no over-limit refund can skip the manager, while routine returns below the threshold flow without review. In an agent framework this is typically a pre-tool-use hook."
+   },
+   {
+    "id": "d",
+    "text": "Run a check after each process_refund call that reverses any refund above $500 lacking a recorded approval",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Reversal acts after the payout, and paid refunds are rarely recovered. An after-the-fact check is useful for audit, but the policy calls for approval before the action, not cleanup once the money has gone."
+   }
+  ],
+  "explain": "Binding constraint: a paid refund is effectively irreversible, so the human gate must sit before the action and apply every time, but only above the policy threshold. Put a control point outside the model that intercepts process_refund and routes over-limit amounts to a manager, gating by amount rather than reviewing everything or relying on prompt wording.",
+  "rule": "CS-D5-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 24
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-27",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "saas",
+  "family": "agentic-loop-open-investigation",
+  "counterTrap": false,
+  "signals": [
+   "no one can say in advance which logs, configs or commits will matter",
+   "The investigation is read-only"
+  ],
+  "stem": "Lumen Ledger, a payments software provider, has a production defect that began sometime in the last two weeks. Symptoms appear in three services, but the change behind it could sit in any of a dozen repositories owned by five teams, and no one can say in advance which logs, configs or commits will matter. The investigation is read-only: Claude can read code, logs and deploy history, and an engineer reviews and approves any fix before it ships.",
+  "ask": "Which architecture pattern BEST fits this investigation?",
+  "options": [
+   {
+    "id": "a",
+    "text": "A fixed prompt chain that checks logs, then configs, then service traces in the same order on every incident",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A fixed chain assumes the path is known in advance. Here nobody can list which logs, configs or commits matter, so the chain runs the same checks every time and cannot follow a lead into an unexpected service."
+   },
+   {
+    "id": "b",
+    "text": "An agentic loop that maps symptoms and deploy history, then plans each next check from what it has found",
+    "correct": true,
+    "trap": null,
+    "why": "Both conditions for an agent hold: the path emerges only as evidence arrives, and a wrong intermediate step is cheap because the work is read-only and an engineer approves any fix before it ships."
+   },
+   {
+    "id": "c",
+    "text": "One agent per service-owning team, each examining its own repositories and reporting to the on-call lead",
+    "correct": false,
+    "trap": "T-ORGCHART",
+    "why": "Each agent searches only its own team's repositories, so a symptom in one service cannot lead it to a commit in another team's code. Linking is left to a person reading separate reports after the fact, and nobody follows the lead across the seam."
+   },
+   {
+    "id": "d",
+    "text": "A single pass that searches every commit from the two weeks and returns a ranked list of suspects for review",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Ranking commits in one pass judges each change on its own text. It cannot follow evidence from a symptom in one service to a config change in another, which is the reasoning this defect demands."
+   }
+  ],
+  "explain": "Binding constraint: the investigation path cannot be listed in advance, because it emerges from each finding. Mistakes along the way are recoverable, since the work is read-only and fixes need an engineer's approval, which makes an agent acceptable. That combination justifies an agentic loop, or orchestrator-workers, over a fixed workflow; a fixed chain, a team split or a one-shot search is under-built here.",
+  "rule": "CS-D1-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 27
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-35",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "least-privilege",
+  "industry": "pharma",
+  "family": "role-scoped-toolset",
+  "counterTrap": false,
+  "signals": [
+   "all 18 tools",
+   "launching fresh searches instead of synthesising",
+   "text copied from external web pages"
+  ],
+  "stem": "Tallis Therapeutics built a literature-review system in which search subagents gather papers, check each claim, and hand verified findings to a synthesis agent that turns them into a structured evidence report. To keep it flexible, the synthesis agent was given all 18 tools in the system, including web search, database queries, email sending and calendar access. Reviewers now see it launching fresh searches instead of synthesising what it was handed, and the findings it reads include text copied from external web pages.",
+  "ask": "Which change BEST addresses the risks in this configuration?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a paragraph to the system prompt telling the synthesis agent which tools to use for each part of its job",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "A routing paragraph asks the model to ignore capabilities it still holds, and choosing among 18 tools stays hard. Email also remains within reach of any instruction injected through the copied web text."
+   },
+   {
+    "id": "b",
+    "text": "Keep all 18 tools but require a human confirmation before the synthesis agent sends email or books a meeting",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "Confirmation guards a capability the role never needs. Synthesis has no reason to send email or book meetings, so removal is the right move, and the confirmation does nothing about the off-role searches."
+   },
+   {
+    "id": "c",
+    "text": "Shorten every tool description to cut the input tokens that 18 schemas add to each synthesis request",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Eighteen schemas do add input tokens, cost and a little time to first token, but that is secondary. Terser descriptions make tool choice harder, and neither the off-role searches nor the email exposure changes."
+   },
+   {
+    "id": "d",
+    "text": "Limit the synthesis agent to its role's tools, removing open-ended search, the database, email and calendar",
+    "correct": true,
+    "trap": null,
+    "why": "Scoping the toolset to the role fixes both findings: without open-ended search the agent works from the verified findings it was handed, and without email, injected text in those findings has no path to send data out."
+   }
+  ],
+  "explain": "Binding constraint: least privilege for a role that only combines findings it is given. Tools outside a role's job degrade tool selection and widen the blast radius when untrusted text reaches the agent, so remove those capabilities rather than guarding or re-describing them; the token overhead is real but secondary.",
+  "rule": "CS-D3-01",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 35
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-75",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.2",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "accuracy-floor",
+  "industry": "insurance",
+  "family": "per-slice-eval-scoring",
+  "counterTrap": false,
+  "signals": [
+   "six claim types",
+   "drive payments directly",
+   "sampled at random from last quarter's intake"
+  ],
+  "stem": "Norrow Insurance extracts 22 fields from claim documents with Claude. Intake spans six claim types, from auto glass to commercial property, and some fields, such as claim_amount and policy_number, drive payments directly. On a validation set of 4,000 claims sampled at random from last quarter's intake, with at least 300 claims of each type, 97% of extracted fields are correct. The company handles about 60,000 claims a month, and the team proposes removing human review.",
+  "ask": "What should the team establish FIRST before removing review?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Accuracy by claim type and by field, including payment fields such as claim_amount and policy_number",
+    "correct": true,
+    "trap": null,
+    "why": "Per-slice scores show whether a rare claim type or a payment field such as claim_amount sits far below the headline. A slice at 85% can sit inside 97% overall, and that slice decides whether review can go."
+   },
+   {
+    "id": "b",
+    "text": "The monthly error count implied by 97%, about 40,000 wrong fields a month, to size the legal exposure",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Converting a rate to a count is a good habit, but it still treats errors as spread evenly. It says nothing about which claim types or fields fail, so it cannot show where review is still needed."
+   },
+   {
+    "id": "c",
+    "text": "Whether the validation set reflects the production mix of claim types, since a skewed set would inflate 97%",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Representativeness matters, but the set was sampled at random from last quarter's intake, so its mix already tracks production, and every type has enough claims to score. The open question is how accuracy varies inside that mix, not whether the mix is right."
+   },
+   {
+    "id": "d",
+    "text": "A standing rule that insurance claims keep full human review whatever the measured accuracy turns out to be",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "A blanket rule ignores the evidence the team is about to gather. Full review of routine, accurate slices wastes reviewer attention and drifts into rubber-stamping; review belongs where errors concentrate."
+   }
+  ],
+  "explain": "Binding constraint: payment-driving fields need an accuracy floor on every slice, not on the average. Score the evaluation set per claim type and per field before removing review, because a strong aggregate can hide the failing slice the decision depends on.",
+  "rule": "CS-D4-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 75
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-83",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "security-boundary",
+  "industry": "energy",
+  "family": "pre-execution-path-deny",
+  "counterTrap": false,
+  "signals": [
+   "even if injected text in a ticket persuades it to try",
+   "Its only file-modifying tool is write_file"
+  ],
+  "stem": "Quarrystone Energy runs a maintenance agent, built with an agent SDK, that edits files in a grid-operations repository. Its only file-modifying tool is write_file, and it has no shell. Security requires that nothing under config/production/ is ever changed by the agent, even if injected text in a ticket persuades it to try. A developer proposes a hook that runs after each tool call, logs every write and pages the on-call engineer when a protected path appears. The agent legitimately edits files elsewhere in the repository.",
+  "ask": "Which control BEST meets the security requirement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "A post-execution hook that restores any protected file from version control as soon as a write to it lands",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "The file has already changed when the hook runs, and services may load the bad config before the restore. Reverting after the write crosses the boundary is cleanup, not the guarantee the requirement asks for."
+   },
+   {
+    "id": "b",
+    "text": "A pre-execution check on write_file that resolves the canonical path and refuses targets in config/production/",
+    "correct": true,
+    "trap": null,
+    "why": "Because write_file is the agent's only way to change files, a check before execution, such as a pre-tool-use hook, holds even when injected text convinces the model to try. Resolving the canonical path first means traversal or symlinks cannot disguise a protected target."
+   },
+   {
+    "id": "c",
+    "text": "A firm system prompt prohibition on protected paths, with the proposed post-execution hook kept for auditing",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "A system prompt is not a security boundary, and the threat here is precisely injected text overriding instructions. The audit hook would record the breach after it happened but could not stop it."
+   },
+   {
+    "id": "d",
+    "text": "Removal of write_file from the agent, with engineers applying each change it drafts by hand in the repository",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "The agent legitimately edits files outside the protected directory, so removal breaks the role to fix a narrow risk. Removal suits capabilities a role never needs; a scoped pre-execution deny covers this one."
+   }
+  ],
+  "explain": "Binding constraint: a protected path must stay unchanged even under prompt injection, so the control must prevent rather than detect and must sit outside the model. A pre-execution check on the agent's only write path, matching the resolved canonical path, meets that; logging, reverting and prompt wording do not, and if the agent also had a shell the check would have to cover that path too.",
+  "rule": "CS-D5-03",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 83
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-84",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "public-sector",
+  "family": "dependency-graph-decomposition",
+  "counterTrap": false,
+  "signals": [
+   "draft the notes from the classified list",
+   "running the three steps as parallel subagents"
+  ],
+  "stem": "The digital service team at Ellisford City Council publishes release notes for its permits portal every fortnight. The workflow has three steps: gather the pull requests merged since the last release tag, classify each one as a feature, fix or security change, and draft the notes from the classified list. A typical release has 60 to 90 pull requests. A developer proposes running the three steps as parallel subagents to cut the time the notes take.",
+  "ask": "Which decomposition BEST fits this workflow?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run all three steps as parallel subagents, since each is a distinct specialism the coordinator can merge",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the steps are independent, but classification needs the gathered list and drafting needs the classifications. Parallel subagents would start later stages before their inputs exist and then have to wait or guess."
+   },
+   {
+    "id": "b",
+    "text": "Run collection as an LLM subagent so it can judge which pull requests matter, then classify and draft in turn",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Which pull requests merged since a tag is a fact the repository already holds. A model doing that lookup adds cost and a chance of silently dropping items, and nothing at that stage needs judgement."
+   },
+   {
+    "id": "c",
+    "text": "Give one prompt the full diff of every merged pull request and ask it to classify and draft in a single pass",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Ninety full diffs can run to hundreds of thousands of tokens per release, which invites skipped or shallow classifications in the middle of the list, and it discards the per-item independence that makes classification easy to parallelise and check."
+   },
+   {
+    "id": "d",
+    "text": "Gather the pull requests with a plain git query, classify them in parallel, then draft the notes in one call",
+    "correct": true,
+    "trap": null,
+    "why": "This follows the dependency graph: a deterministic query gathers the facts, the independent per-PR classifications run concurrently where parallelism is real, and one drafting call works from the complete classified list."
+   }
+  ],
+  "explain": "Binding constraint: each stage consumes the previous stage's output, so the stages run in sequence and parallelism belongs inside a stage. Decompose by dependency and independence: facts come from code, independent items fan out, and dependent steps chain.",
+  "rule": "CS-D1-12",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 84
+  },
+  "status": "verified",
+  "verify": []
+ }
+]

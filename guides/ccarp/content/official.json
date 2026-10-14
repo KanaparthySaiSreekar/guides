@@ -1,0 +1,200 @@
+[
+ {
+  "id": "OS-1",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "official",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "least-privilege",
+  "signals": [
+   "only ever need to read tickets and draft replies",
+   "least-privilege"
+  ],
+  "industry": "saas",
+  "family": "official-least-privilege",
+  "stem": "A team exposes a customer-support agent that can read tickets, draft replies, issue refunds, and delete user accounts. Support staff only ever need to read tickets and draft replies.",
+  "ask": "Applying least-privilege principles, which change best reduces risk?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add logging to the refund and delete tools so misuse can be audited later.",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Logging is a detective control: it tells you about misuse after the refund or deletion has happened, and leaves the unneeded privilege in place."
+   },
+   {
+    "id": "b",
+    "text": "Remove the refund and delete tools from the agent's configuration entirely.",
+    "correct": true,
+    "trap": null,
+    "why": "Least privilege removes capabilities the role does not require. With refund and delete gone, there is no attack surface left to monitor or guard."
+   },
+   {
+    "id": "c",
+    "text": "Keep all tools but add a confirmation prompt before refunds and deletions.",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "A confirmation step is a compensating control. The agent still holds refund and delete, so a prompt injection or a mistaken approval can still use them."
+   },
+   {
+    "id": "d",
+    "text": "Replace the agent with a larger model that follows instructions more reliably.",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Model size has nothing to do with authorization scope. A more obedient model still holds tools the role should never have."
+   }
+  ],
+  "explain": "Least privilege means removing capabilities the role does not require, eliminating the attack surface rather than monitoring or guarding it. Logging (A) and confirmations (C) are detective/compensating controls, not removal of unnecessary privilege; model size (D) is unrelated to authorization scope.",
+  "rule": "CS-D3-01",
+  "ladder": null,
+  "tips": [],
+  "counterTrap": false,
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "official",
+   "ref": "Anthropic, Claude Certified Architect – Professional Exam Guide v1.0 (July 2026), Section 8, Sample 1",
+   "origId": null
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "OS-2",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.5",
+  "set": "official",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "cost",
+  "signals": [
+   "same 8,000-token system prompt and policy document on every request",
+   "Latency and cost are both concerns"
+  ],
+  "industry": "saas",
+  "family": "official-prompt-caching",
+  "stem": "An application sends the same 8,000-token system prompt and policy document on every request, followed by a short, varying user message. Latency and cost are both concerns.",
+  "ask": "Which optimization most directly addresses both?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Truncate the policy document to the first 1,000 tokens.",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Truncation discards policy the model needs, trading correctness for savings instead of reusing the stable prefix."
+   },
+   {
+    "id": "b",
+    "text": "Switch to the smallest available model regardless of task fit.",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Downsizing regardless of task fit risks quality; it is a blunt cut that ignores whether the smaller model clears the bar."
+   },
+   {
+    "id": "c",
+    "text": "Place the static system prompt and policy before the dynamic content and enable prompt caching.",
+    "correct": true,
+    "trap": null,
+    "why": "Stable content first plus prompt caching reuses the repeated prefix, cutting both time-to-first-token and per-request cost without losing context."
+   },
+   {
+    "id": "d",
+    "text": "Move the policy document into a few-shot example block.",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Relocating the policy into few-shot examples does not create a cacheable, reusable prefix; the same tokens are still resent and reprocessed."
+   }
+  ],
+  "explain": "Ordering stable content first and enabling prompt caching lets repeated prefixes be reused, reducing both time-to-first-token and per-request cost without discarding required context. Truncation (A) loses needed policy; downsizing blindly (B) risks quality; relocating to few-shot (D) does not create a cacheable, reusable prefix.",
+  "rule": "CS-D2-10",
+  "ladder": null,
+  "tips": [],
+  "counterTrap": false,
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "official",
+   "ref": "Anthropic, Claude Certified Architect – Professional Exam Guide v1.0 (July 2026), Section 8, Sample 2",
+   "origId": null
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "OS-3",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.4",
+  "set": "official",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "change-scope",
+  "signals": [
+   "after a document refresh",
+   "latency and model version are unchanged"
+  ],
+  "industry": "saas",
+  "family": "official-diagnose-layer",
+  "stem": "A RAG system suddenly returns confident but incorrect answers after a document refresh, while latency and model version are unchanged.",
+  "ask": "What is the most likely first place to investigate?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The model weights have silently changed.",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Model version is stated as unchanged, and nothing in a document refresh touches weights; blaming them ignores the variable that did change."
+   },
+   {
+    "id": "b",
+    "text": "The retrieval/indexing step is returning irrelevant or stale chunks.",
+    "correct": true,
+    "trap": null,
+    "why": "The document refresh is the only change. Confident but wrong answers point to retrieval feeding poor context, such as a broken re-index or mismatched embeddings."
+   },
+   {
+    "id": "c",
+    "text": "The temperature setting is too low.",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "A low temperature makes output more deterministic; it would not be triggered by a document refresh or explain newly wrong answers."
+   },
+   {
+    "id": "d",
+    "text": "The context window has shrunk.",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Nothing about a refresh shrinks the context window; the configured window is independent of the corpus contents."
+   }
+  ],
+  "explain": "Confident-but-wrong answers following a document refresh, with model and latency unchanged, point to retrieval feeding the model poor context, for example a broken re-index or mismatched embeddings. The other options would not be triggered specifically by a document refresh.",
+  "rule": "CS-D4-09",
+  "ladder": null,
+  "tips": [],
+  "counterTrap": false,
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "official",
+   "ref": "Anthropic, Claude Certified Architect – Professional Exam Guide v1.0 (July 2026), Section 8, Sample 3",
+   "origId": null
+  },
+  "status": "verified",
+  "verify": []
+ }
+]

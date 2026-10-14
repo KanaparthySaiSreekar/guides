@@ -1,0 +1,243 @@
+{
+ "domain": 7,
+ "intro": "Domain 7 is worth about four items, and they test decisions, not syntax. Each puts you in a team-scale Claude Code situation and asks where a control belongs, how to prove enablement paid off, or what to examine first when something breaks. The decisions repeat: which scope (user, committed project, managed) gives the reach and overridability the stem demands; guidance or guarantee; what evidence shows a rollout moved outcomes; and which layer a failure touched. Binding constraints hide in 'on any machine', 'every time', 'unattended', 'since the rollout' and 'one team only'. Distractors are sound practice at the wrong scope, strength or moment: a committed rule where a lock is needed, a CLAUDE.md line where a hook is needed, widened access before anyone read the logs.",
+ "delta": "Carried over from CCAR-F: CLAUDE.md and the project-versus-user split, committed MCP config with environment-variable secrets, hooks over prompts, and headless runs. Low-yield at about four items: import depth, rules glob syntax, skill frontmatter, output flags and stop-reason loops. New at Professional level: managed settings as the non-overridable organisation layer, diagnosing denials by scope precedence, rollout evidence against a baseline, and observe-before-change operations.",
+ "sections": [
+  {
+   "obj": "7.1",
+   "core": [
+    "**Scope** is a two-part choice: how far a setting must reach, and whether anyone below may override it. User config is personal and never propagates; committed project config reaches everyone in that repository; managed settings reach every machine or account the organisation deploys them to and sit above all other scopes.",
+    "**Committed project config** (CLAUDE.md, project settings, MCP config) fixes team drift. Reference secrets as environment-variable placeholders so the files can be reviewed and committed like code.",
+    "**Managed CLAUDE.md** standardises org-wide guidance such as coding standards; **managed settings** enforce. If a miss would be a violation rather than a style slip, guidance is the wrong tier.",
+    "A **deny rule** at any scope beats an allow rule at any scope, and nothing below managed can loosen a managed rule. If a team never needs a tool or server, deny it or leave it out instead of guarding it.",
+    "A **fail-closed PreToolUse hook** blocks on a match and on every failure its script can catch, because its author made those paths block (exit code 2 or a deny decision in current docs): a missing scanner binary, a crash inside the check, or a scanner that overruns an internal time limit set below the hook's own timeout. No script can turn two failures into a block: a hook command that cannot start (missing or non-executable script) and a command hook cancelled at its configured `timeout`. Both are non-blocking errors and the call goes ahead, so watch for the hook-error notice and back the rule with a deny rule or the sandbox. Check coverage as well: a `Write|Edit` matcher never sees a file written through a Bash command, and PostToolUse fires only after a successful call (failures fire PostToolUseFailure, denied calls fire neither), so an audit of every attempt belongs in PreToolUse.",
+    "**Permission rules are not an OS boundary.** In current docs a Read deny covers Claude's file tools and the shell reads Claude Code recognises, such as `cat`, but not a script that opens the file itself. Where a subprocess could reach the resource, add the sandbox or an OS-level control.",
+    "Distribute shared practice as a **versioned plugin** from an organisation marketplace: skills, commands, hooks and MCP config in one package that many repositories install and update together, and that an administrator can require on every machine. Treat it as code, with named owners, review before merge (hooks run commands on every developer machine), staged rollout and retirement of items nobody owns. A maintained starter setup (a paved path) plus a short onboarding path spreads it faster than documents do.",
+    "**Secrets and untrusted code.** Whatever sits in the agent's shell environment is readable by its shell commands, so prefer a credential helper (such as `apiKeyHelper`) or a secret manager over long-lived exported keys, and deny reads of `.env` and secrets paths. For an untrusted repository, isolate execution in a VM, or in the sandbox with both filesystem and network isolation, and mount no host secrets. Isolation reduces what a malicious file can reach but is not a complete boundary. The dev container docs recommend dev containers only for trusted repositories, because a malicious project can still exfiltrate whatever sits inside the container."
+   ],
+   "worked": {
+    "scenario": "Aiko Brennan is finalising the Claude Code baseline for Meridian Mutual's 60 developers and has three requests on her desk. Priya Raman requires that no Claude session on any laptop reads the production credential store path, including in repositories created next year. The ClaimsCore facade team wants everyone working in its repository to follow the async job-ID pattern when adding endpoints. One senior developer wants terse output and a personal experimental MCP server.",
+    "ask": "Which placement meets all three requests without over-reaching or under-reaching?",
+    "options": [
+     {
+      "text": "Priya's rule as a deny rule in managed settings; the facade pattern in the facade repository's committed CLAUDE.md; preferences and server in user scope.",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Priya's rule as a deny rule in every repository's committed project settings; the facade pattern, preferences and server in those same shared files.",
+      "correct": false,
+      "trap": "T-REACH"
+     },
+     {
+      "text": "Priya's rule as a firm, bolded instruction in managed CLAUDE.md; the facade pattern in the facade repository's committed CLAUDE.md; preferences and server in user scope.",
+      "correct": false,
+      "trap": "T-ENFORCE"
+     },
+     {
+      "text": "Priya's rule as a committed hook that alerts security whenever a session reads the credential path; the facade pattern in committed CLAUDE.md; preferences and server in user scope.",
+      "correct": false,
+      "trap": "T-DETECT"
+     }
+    ],
+    "steps": {
+     "constraint": "'Any laptop' and 'repositories created next year' make Priya's rule fleet-wide and non-overridable, covering repositories that do not exist yet. The facade request is scoped to one repository and the preferences to one person.",
+     "classify": "Priya's rule is prevention at the configuration-enforcement layer, the top rung of the config-reach ladder. The facade pattern is team guidance; the preferences are personal.",
+     "eliminate": "Strike the all-committed option as T-REACH: committed files bind only the repositories that contain them, each developer can edit their own checkout, and it pushes one person's experimental server onto everyone. Strike managed CLAUDE.md as T-ENFORCE: it reaches every machine but only guides, so nothing stops the read. Strike the alerting hook as T-DETECT: the alert fires after the credential has been read, and a committed hook also misses new repositories.",
+     "choose": "Choose the managed deny, committed CLAUDE.md and user scope split. The runner-up, managed CLAUDE.md, would need Priya's rule to be a convention whose occasional miss is acceptable, and 'no session reads' rules that out. If a script could open the path itself, add managed sandbox rules as well; the scope decision does not change."
+    }
+   },
+   "faded": {
+    "scenario": "Meridian Mutual's health-claims team uses Claude Code to generate test fixtures. A hook in the repository's committed settings runs a PHI scanner before every file write under the fixtures folder. Priya Raman's quarterly audit finds real member identifiers in three fixture files. Traces show that on those days an OS update had removed the scanner binary from two laptops, and the hook exited with a non-blocking error instead of a block.",
+    "ask": "Which change most directly makes the control hold?",
+    "options": [
+     {
+      "text": "Add a bold CLAUDE.md rule telling Claude never to write real identifiers into fixtures and to run the scanner itself first.",
+      "correct": false,
+      "trap": "T-ENFORCE",
+      "why": "Advisory context. Nothing blocks the write when the model skips the step or the scanner is missing."
+     },
+     {
+      "text": "Move the existing hook, unchanged, into managed settings so no developer or repository can remove or disable it.",
+      "correct": false,
+      "trap": "T-ASSUME",
+      "why": "It works only if someone had switched the hook off. The traces show it ran and errored, and a managed copy fails open in exactly the same way."
+     },
+     {
+      "text": "Make the hook block on any internal error, missing binary or scanner timeout, and deploy it through managed settings.",
+      "correct": true,
+      "trap": null,
+      "why": "It fixes the defect the traces show, fail-open on error, and puts the hook where no developer or repository can switch it off."
+     },
+     {
+      "text": "Schedule a nightly scan of the fixtures folder that alerts Priya and opens a ticket whenever identifiers appear.",
+      "correct": false,
+      "trap": "T-DETECT",
+      "why": "It finds PHI after it has been written and possibly committed; the requirement is prevention."
+     }
+    ],
+    "constraint": "The write must be blocked every time, and the audit ties every miss to days when the hook itself errored.",
+    "classify": "Prevention at the tool-call enforcement layer. Two properties decide it: what the hook does when it fails, and which scope can switch it off.",
+    "reasoning": "Strike the CLAUDE.md rule as T-ENFORCE: guidance cannot make a missing scanner block a write. Strike the nightly scan as T-DETECT: its alert arrives after PHI has left the controlled path. Strike the managed move as T-ASSUME: it would be enough only if someone had disabled the hook, but the traces show it ran, errored and let the write through, which a managed copy would do too. Choose the fail-closed hook deployed through managed settings: it fixes the failure mode the traces show and puts the hook where no lower scope can disable it."
+   },
+   "traps": [
+    "T-REACH",
+    "T-ENFORCE",
+    "T-DETECT",
+    "T-REMOVE"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Managed settings",
+     "text": "The rule must hold on every machine and repository, including ones that never opt in, and no developer may loosen it: credential paths, outbound network tools, permission-bypass modes."
+    },
+    "b": {
+     "title": "Committed project config",
+     "text": "The behaviour is a shared, reviewable default for one repository or team that the team should own and evolve: build commands, conventions, the team's own MCP servers."
+    },
+    "decider": "Would a developer or repository turning it off be a violation or merely a deviation? A violation means managed settings."
+   },
+   "explain": {
+    "prompt": "Why does committing the same deny rule to every Meridian repository still fail a requirement that it cannot be disabled on any machine?",
+    "model": "Committed config binds only the repositories that contain it, so new repos, forks and sessions outside a repo are uncovered, and each developer can edit their own checkout. Managed settings are deployed centrally to the machine or account and sit above every other scope, so nothing below can remove or loosen them. Reach is not a lock."
+   },
+   "bridge": "Foundations' CLAUDE.md hierarchy and project-versus-user split carry over. Import depth, rules glob syntax and skill frontmatter keys are overweighted in Foundations prep; the Professional item asks which scope and which enforcement point."
+  },
+  {
+   "obj": "7.2",
+   "core": [
+    "**Enablement evidence** is an outcome moved against a baseline and threshold agreed before rollout (lead time, change-failure rate, escaped defects, review turnaround), plus the mechanism that moved it. Seats, usage and accepted lines are input measures.",
+    "With **no baseline**, build one before any expansion request, often from version-control, CI and incident history, and agree the threshold with the decision owner before comparing it with the period since rollout.",
+    "Put AI on an **enumerable, toil-heavy step** such as first-pass review, test scaffolding or a fixed CI check, as a workflow step rather than an autonomous agent.",
+    "Review with an **independent instance**: the session that wrote a change does not grade it, and no agent approves or merges its own work. Humans keep the merge unless the policy owner has approved auto-merge for a fully test-gated change class. Keep AI-assisted changes small and single-purpose, and the author must be able to explain the change, including its behaviour on untested inputs, before merge; a verification checklist with a security line makes that a gate.",
+    "A **headless CI run** has nobody to answer prompts, so set its policy in advance: a minimal explicit tool allowlist, a mode that denies whatever would prompt, and no capability the job never uses.",
+    "Headless runs show no trust dialog or MCP approval prompt, so a job that auto-discovers project config runs whatever hooks and MCP servers the checked-out branch defines. Load only the config the pipeline passes (bare mode in current docs).",
+    "Give Claude a **verification loop**: tests, a build, a linter or a screenshot it can run and read, named in CLAUDE.md, so it iterates to a pass instead of stopping at 'looks done'. Legacy code without tests is a common cause of poor agentic results, so add characterisation tests first. Generated tests need checking too: write them from the spec rather than the implementation, and confirm each fails against deliberately broken code, or it gives false assurance.",
+    "Find the **bottleneck** before targeting tooling: if review queues or CI waits dominate lead time, faster code generation will not move it. Value comes from high-yield activities that differ by team, spread through supported champions. Claude Code's OpenTelemetry metrics (sessions, active time, cost, commits, pull requests), split by team attributes, show usage and cost, not outcomes; use them for enablement, disclosed to the people measured, never to rate individuals."
+   ],
+   "worked": {
+    "scenario": "Three months after Meridian Mutual rolled Claude Code out to its four claims-platform teams, Aiko Brennan asks Gerald Hume to fund licences for the underwriting and finance developers. Her deck shows 71% of suggestions accepted and 90% weekly active use. Gerald says he has seen adoption charts before. Nobody recorded lead time or change-failure rate before the rollout, but three years of deploy and incident records sit in the CI and incident systems.",
+    "ask": "What should Aiko do FIRST?",
+    "options": [
+     {
+      "text": "Report lead time and change-failure rate for the three months since rollout next to the adoption figures, so Gerald sees outcomes as well as usage.",
+      "correct": false,
+      "trap": "T-VIBES"
+     },
+     {
+      "text": "Rebuild pre-rollout lead time and change-failure rate from CI and incident history, agree a threshold with Gerald, then compare since rollout.",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Start the underwriting rollout on a small batch of twenty licences now and report lead time and failure rates as results arrive.",
+      "correct": false,
+      "trap": "T-LATER"
+     },
+     {
+      "text": "Let an autonomous agent open and merge its own pull requests on the claims repositories so the throughput gain is too large to question.",
+      "correct": false,
+      "trap": "T-AGENTIC"
+     }
+    ],
+    "steps": {
+     "constraint": "Gerald rejects adoption figures and no baseline was captured, yet the delivery history needed to build one exists. The ask is FIRST.",
+     "classify": "Evidence for a funding decision at the pilot go/no-go rung of the lifecycle ladder, which expects success criteria agreed before expansion. The gap is a baseline and a bar, not more activity data.",
+     "eliminate": "Strike the post-rollout report as T-VIBES: the right measures, but with no baseline or agreed bar they cannot show a change. Strike the small-batch rollout as T-LATER: expansion is the decision the evidence should support, so starting it first reverses the order. Strike the self-merging agent as T-AGENTIC: it adds autonomy and risk to manufacture a number and removes the human merge decision.",
+     "choose": "Choose the rebuilt baseline, with the threshold agreed before the comparison is run. The post-rollout report, the runner-up, would need a pre-rollout figure to compare against, and producing one is exactly the step it skips."
+    }
+   },
+   "faded": null,
+   "traps": [
+    "T-VIBES",
+    "T-AGENTIC",
+    "T-LATER",
+    "T-REMOVE"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Human keeps the merge",
+     "text": "The default for AI-assisted review: an independent AI first pass flags issues and a human with context decides. Right for any change class whose risk the tests do not fully capture."
+    },
+    "b": {
+     "title": "Policy-approved auto-merge",
+     "text": "A narrow, low-risk, fully test-gated class such as dependency bumps or regenerated fixtures, where the policy owner has explicitly approved it and rollback is cheap."
+    },
+    "decider": "Has the accountable policy owner approved auto-merge for this specific test-gated class? If not, a human merges."
+   },
+   "explain": {
+    "prompt": "Why should an unattended CI review job that only posts comments lose its push rights rather than keep them under logging and alerts?",
+    "model": "Push is a capability the role never needs. A removed capability cannot be misused, including by instructions injected through the code under review, whereas an alert fires only after a push has landed. Guards belong on capabilities the role actually needs."
+   },
+   "bridge": "Foundations' CI scenario and non-interactive runs carry over. Output-format and structured-output flags are overweighted; the Professional item asks what the job may do and how you prove the tooling paid off."
+  },
+  {
+   "obj": "7.3",
+   "core": [
+    "**Observe before changing.** Pull traces, logs and the configuration that actually loaded for the failing slice before you widen access, reinstall, restart or fail over. Changing first destroys the comparison you need.",
+    "Start from the **triggering change** and use whatever the stem calls unchanged to eliminate suspects. A settings rollout points at scope precedence, a config merge at context or hooks, and 'nothing deployed' at input or dependency drift.",
+    "For a denial, find **which rule matched at which scope**. Settings resolve managed, command-line arguments, local project, shared project, then user, but deny rules from every scope are checked before any allow, so no allow anywhere overrides a deny. Fix the deny where it lives; a wrong managed deny goes to its policy owner.",
+    "When **one team's project MCP server** fails and others are fine, inspect what loaded for that team: server status, approval state, environment variables, logs. Typical causes are silent: a rejected or unanswered approval prompt, or an unset variable that loads with only a warning. A misspelled hook matcher is the same: it never fires and never errors.",
+    "For slow or costly runs, read **token counts, cache hit rate and the slowest span** from traces before touching timeouts, models or regions.",
+    "Claude is a strong **incident-investigation aid**: triaging logs and traces, lining up change events (a deploy, a config or model-version change, an MCP server's tool list, an index refresh, a schema change) with the failure timeline and narrowing hypotheses. A human approves any production change, and logs containing personal or health data go only to a configuration covered for that data. AI-drafted incident summaries and postmortems are checked against the logs and timeline before filing.",
+    "Watch for **silent failures**: an agent can report a write that never happened, so confirm side effects in the system of record, not in the agent's summary. Add every fixed defect to the eval or test suite as a regression case. Support scales through enablement: turn each one-off fix into a runbook entry and define a named escalation boundary instead of staying the escalation point."
+   ],
+   "worked": {
+    "scenario": "Since Tuesday, Meridian Mutual's headless CI review job on the policy-search MCP server repository runs three times longer, and a fifth of runs hit the job timeout. The model version, runner fleet and Bedrock region are unchanged. Tuesday's only merge added the full generated API reference to the review-instructions file the pipeline passes to every run. Aiko Brennan hears two proposals: switch to a larger-context model, or fail over to the secondary region.",
+    "ask": "What should the team do FIRST?",
+    "options": [
+     {
+      "text": "Switch the job to a larger-context model so the added API reference fits with room to spare.",
+      "correct": false,
+      "trap": "T-LAYER"
+     },
+     {
+      "text": "Fail over to the secondary Bedrock region for a day and watch whether run times recover.",
+      "correct": false,
+      "trap": "T-OBSERVE"
+     },
+     {
+      "text": "Compare slow and normal run traces for input tokens, cache hit rate and the slowest span.",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Raise the job timeout to ninety minutes so reviews complete while the cause is investigated.",
+      "correct": false,
+      "trap": "T-LEVER"
+     }
+    ],
+    "steps": {
+     "constraint": "Exactly one change in the window, a larger context file; model, runners and region are stated unchanged; the ask is FIRST.",
+     "classify": "Diagnosis during operation, at the context layer, on the first rung of the diagnosis ladder. The step is evidence gathering, not remediation.",
+     "eliminate": "Strike the larger model as T-LAYER: it changes a model layer the stem calls unchanged and pays more to carry the extra context. Strike failover as T-OBSERVE: it changes an untouched component first and muddies the before-and-after comparison. Strike the longer timeout as T-LEVER: it lets every run carry the extra cost before anyone has measured which term grew.",
+     "choose": "Choose the trace comparison. Failover, the runner-up, would need evidence of a regional degradation; the stem gives none, and the slowdown starts with the merge."
+    }
+   },
+   "faded": null,
+   "traps": [
+    "T-OBSERVE",
+    "T-LAYER",
+    "T-REACH",
+    "T-LEVER"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Observe first",
+     "text": "The default for regressions, denials and one-team failures: pull traces and the loaded config, localise the changed layer, then fix at that layer."
+    },
+    "b": {
+     "title": "Mitigate first",
+     "text": "Claimants or adjusters are being harmed now, or production is down, and a known-good state exists: roll back or use the kill switch, preserve the evidence, then diagnose."
+    },
+    "decider": "Is harm happening right now, with a known-good state to return to? Only then does mitigation come before the trace."
+   },
+   "explain": {
+    "prompt": "Why can't an allow rule added in project settings fix a denial that began with a managed-settings rollout?",
+    "model": "Deny rules from every scope are evaluated before any allow, and nothing below managed settings overrides them, so a project allow cannot beat a managed deny and only clutters the config you need to read. Trace which rule matched and take a wrong managed deny to its owner. If none matched, look for a deny at another scope, or for a managed setting that makes managed rules the only permission source."
+   },
+   "bridge": "Foundations' tool-error handling carries over, and stop-reason loops are overweighted. New here is diagnosing from scope precedence and loaded config rather than by editing prompts."
+  }
+ ],
+ "case": "Aiko Brennan rolls Claude Code out to Meridian's 60 developers without letting four teams drift. Each repository commits its shared behaviour: a CLAUDE.md with build commands and the async facade pattern, project settings with the team's permission rules, and an MCP config for the development policy-search server with secrets as environment-variable placeholders. Priya Raman's rule that no session reads production secrets on any machine ships as a deny rule in centrally deployed managed settings. Org-wide coding standards go in managed CLAUDE.md because they guide rather than enforce. A 'never paste PHI' line that lived only in CLAUDE.md became a hook that blocks on a match and on its own errors. CI review runs headless with an explicit allowlist and only the config the pipeline passes. When one team's policy-search tool vanished, Aiko checked what had loaded before touching permissions and found a dismissed server approval. Gerald Hume judges the rollout on lead time and change-failure rate against a baseline rebuilt from pre-rollout history, not seats or accepted lines."
+}

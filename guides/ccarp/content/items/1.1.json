@@ -1,0 +1,491 @@
+[
+ {
+  "id": "P1-1.1-001",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "determinism",
+  "industry": "legal",
+  "family": "split-deterministic-and-model-tasks",
+  "counterTrap": false,
+  "signals": [
+   "can be rerun and reproduced",
+   "misses spelling variants",
+   "free-text email"
+  ],
+  "stem": "Ashgrove Pell LLP's head of legal operations has asked for 'an AI intake agent' for new client matters. Discovery is complete: intake takes a paralegal about 50 minutes per matter, the agreed target is 15, and she owns the decision. Two tasks take most of the time. One is checking the prospective client and adverse parties against 30 years of matter records for conflicts, where the current exact-match search misses spelling variants. The other is turning the client's free-text email into the firm's structured matter summary. Professional-conduct rules require that any conflict result can be rerun and reproduced for the ethics committee.",
+  "ask": "Which TWO design choices BEST fit these two tasks? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run conflict checks in code using rule-based fuzzy name matching against the 30 years of matter records",
+    "correct": true,
+    "trap": null,
+    "why": "Rule-based fuzzy matching in code returns the same hits every time it is rerun, which the ethics committee requires, and it still catches the spelling variants that exact search misses."
+   },
+   {
+    "id": "b",
+    "text": "Let Claude compare party names with the matter records, as it catches variants exact search misses",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Claude handles name variants well, but its matches can differ between runs. A conflict result that must be reproduced on demand belongs in deterministic code, not in model judgement."
+   },
+   {
+    "id": "c",
+    "text": "Build one intake agent that decides per matter which records to search and when the summary is done",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Both tasks follow a path known in advance. An agent choosing its own searches adds variance to the conflict check and cost to the summary, and makes reruns harder to reproduce."
+   },
+   {
+    "id": "d",
+    "text": "Keep a record of each conflict search and its result in the matter file for the ethics committee",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A stored record is useful evidence, but it does not make a model-made match reproducible on rerun, and it does nothing to bring intake toward the 15-minute target."
+   },
+   {
+    "id": "e",
+    "text": "Use one augmented call per email to fill the firm's matter summary schema from the client's text",
+    "correct": true,
+    "trap": null,
+    "why": "Turning one email into a fixed summary schema is a single extraction step. One augmented call with structured output does it without the cost and unpredictability of a loop."
+   }
+  ],
+  "explain": "Binding constraint: conflict results must be reproducible on rerun. Keep that decision in deterministic code, and give Claude only the unstructured step, which one augmented call handles.",
+  "rule": "CS-D1-08",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.1-002",
+  "rev": 3,
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "lifecycle-stage",
+  "industry": "banking",
+  "family": "reframe-solution-request",
+  "counterTrap": false,
+  "signals": [
+   "Neither complaint has been measured",
+   "nobody has been named to decide what success looks like"
+  ],
+  "stem": "Kestrel Savings Bank's chief operating officer tells the architecture team she wants 'a generative AI assistant for mortgages' launched this year, after a rival bank announced one. Asked what it should fix, she names two things: brokers complain about slow replies on application status, and underwriters spend too long reading payslips and bank statements. Neither complaint has been measured, and nobody has been named to decide what success looks like. She expects a plan from the architect next week.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Interview brokers and underwriters about their workload, then scope one mortgage agent that serves both groups",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Talking to users is sound, but scoping the work around one agent for both groups fixes the most autonomous pattern before anyone has picked the job or measured it. Neither complaint yet calls for an agent."
+   },
+   {
+    "id": "b",
+    "text": "Measure how the most capable model tier handles sample payslips and status queries, and show the COO the results",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "This measures the model, not the business problem. With no chosen job, baseline or bar, a good result on samples cannot show that either complaint improves, and it anchors the cost on the largest tier."
+   },
+   {
+    "id": "c",
+    "text": "Agree a same-day status reply target for brokers with the COO, and name her as the owner of that target",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Naming an owner helps, but reply times have never been measured, so a same-day target is a guess the bank may fail to keep. A target should follow a baseline, not come before it."
+   },
+   {
+    "id": "d",
+    "text": "Ask the COO which complaint to tackle first and who will own it, then measure how that work runs today",
+    "correct": true,
+    "trap": null,
+    "why": "The request names a technology, and two unmeasured complaints compete for it. Picking one job with the COO, naming who owns it and measuring today's performance gives every later target, pattern and model decision a basis."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. The request arrives as a technology with two competing, unmeasured complaints and no owner, so the first step is to pick the job, name who decides and measure it before any pattern, model or promise.",
+  "rule": "CS-D1-01",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.1-003",
+  "rev": 3,
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "irreversibility",
+  "industry": "manufacturing",
+  "family": "rate-to-error-count",
+  "counterTrap": false,
+  "signals": [
+   "routed 97% correctly",
+   "12,000 reports a month",
+   "led to a customer recall"
+  ],
+  "stem": "Brannock Castings piloted Claude to route supplier non-conformance reports to one of 14 engineering queues. On 2,000 pilot reports it routed 97% correctly, beating the 95% bar the plant director agreed, and the pilot log records the correct queue for every report. The director wants it live for all 12,000 reports a month from next week. The quality manager notes that a report on a pressure-bearing part left in the wrong queue delays containment, and a delayed containment once led to a customer recall.",
+  "ask": "What should the architect recommend as the BEST next step?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Convert the 3% into misroutes a month at full volume, and check in the log which report classes they fell in",
+    "correct": true,
+    "trap": null,
+    "why": "At 12,000 reports a month, 3% is roughly 360 misroutes. The log shows which classes they fell in, and whether pressure-part reports are among them decides whether that class needs a fixed rule or a human check before go-live."
+   },
+   {
+    "id": "b",
+    "text": "Rerun routing on a fresh sample of 2,000 recent reports to confirm that the 97% holds before the go-live date",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "A fresh sample tests whether the average holds, but a second 97% still says nothing about which reports fail. Pressure-part misroutes could sit inside either figure, and the existing log can already show where the errors fell."
+   },
+   {
+    "id": "c",
+    "text": "Rerun the pilot reports on a more capable tier, and go live on whichever tier misroutes fewer of them",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Fewer misroutes in total still leaves the deciding question open: whether pressure-part reports are among the errors that remain. The failing class might be fixed by a routing rule on any tier."
+   },
+   {
+    "id": "d",
+    "text": "Phase go-live over four weeks, with a quality engineer checking a random sample of each day's routed reports for misroutes",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "Phasing limits volume, but a random sample spreads checking across every class and catches few misroutes. A pressure-part report missed in the first week still delays containment, and nobody yet knows where the errors fall."
+   }
+  ],
+  "explain": "Binding constraint: a misrouted pressure-part report can end in a recall, which outweighs both the met bar and the go-live date. Convert the 97% into misroutes at real volume and find which classes fail before deciding how to go live.",
+  "rule": "CS-D1-02",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.1-004",
+  "rev": 3,
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "e-commerce",
+  "family": "outcome-success-measure",
+  "counterTrap": false,
+  "signals": [
+   "contact the company again within seven days",
+   "show the board that the problem is fixed"
+  ],
+  "stem": "Pellmore Home, an online homeware retailer, agreed with its head of customer care that the problem to solve is repeat refund enquiries: 31% of customers who ask about a refund contact the company again within seven days, usually because the first reply gave no clear date. In the new design, Claude drafts each first reply using the live refund status from the payments system, and care agents review and send the drafts. The head of care must show the board that the problem is fixed.",
+  "ask": "Which success measure BEST shows that the design solved the stated problem?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The share of refund reply drafts that care agents send without edits, tracked week by week from launch",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "An unedited draft shows that agents accept the output, not that the customer stopped coming back. It works as evidence only if every accepted draft ends repeat contact, and the stem grants no such link."
+   },
+   {
+    "id": "b",
+    "text": "Satisfaction scores from customers after a refund enquiry, compared with the same survey before launch",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Satisfaction and repeat contact can move apart: a customer can like a polite reply and still chase the refund days later. The board needs evidence that repeat contacts fell, which this assumes rather than measures."
+   },
+   {
+    "id": "c",
+    "text": "The share of refund replies an LLM judge rates as giving a clear date, against a sample of pre-launch replies",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "No pass bar is agreed for this score, and nothing says the judge has been checked against human labels. It also scores the usual cause, a missing date, rather than whether the 31% figure has fallen."
+   },
+   {
+    "id": "d",
+    "text": "The share of refund enquirers who make a second contact within a week, compared with the same rate before launch",
+    "correct": true,
+    "trap": null,
+    "why": "The agreed problem is customers coming back within seven days of a refund enquiry. Tracking that rate against the pre-launch figure measures the outcome itself, whichever feature of the reply turns out to drive it."
+   }
+  ],
+  "explain": "Binding constraint: the evidence must show that the stated problem moved. The agreed outcome is repeat refund contact within seven days, so measure that rate against its baseline rather than agent acceptance, satisfaction or a judge score on the mechanism.",
+  "rule": "CS-D1-01",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.1-005",
+  "rev": 3,
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "security-boundary",
+  "industry": "manufacturing",
+  "family": "lowest-rung-within-ot-export",
+  "counterTrap": false,
+  "signals": [
+   "only through a one-way export",
+   "Nothing may connect into the OT network",
+   "free-text notes on similar past work orders"
+  ],
+  "stem": "Torvik Packaging loses about 80 minutes each time a packing line stops while technicians work out why, and the maintenance manager, who signs off the design, wants that under 30. The fault code narrows each stoppage to a few causes, and most of the time goes on searching free-text notes on similar past work orders. Fault logs may leave the plant's OT network only through a one-way export, every 15 minutes, to the corporate network, which has approved access to Claude. Nothing may connect into the OT network.",
+  "ask": "Which design should the team pilot FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "A rules table, with no model involved, that shows the technician each fault code's most frequent past cause",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A code only narrows a stoppage to a few causes, and technicians settle which one from free-text notes on past work orders. A table of the usual cause leaves that search, most of the 80 minutes, in place."
+   },
+   {
+    "id": "b",
+    "text": "An agent that watches the exported fault feed and raises a work order, with parts, whenever it finds a stoppage",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Technicians need a likely cause once per stoppage, a single step with a known shape. An always-on agent that raises its own work orders adds autonomy, cost and failure surface that the job does not call for."
+   },
+   {
+    "id": "c",
+    "text": "One Claude call per stoppage that reads live data over a read-only OT link and past work orders, and names a likely cause",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "The pattern fits and live data would arrive sooner, but the site rule is a gate, not a factor to weigh against the target: nothing may connect into the OT network. The 15-minute export still leaves time inside the 30."
+   },
+   {
+    "id": "d",
+    "text": "One Claude call per stoppage that reads the latest one-way export and similar past work orders, and suggests a likely cause",
+    "correct": true,
+    "trap": null,
+    "why": "Each stoppage needs one step: read the fault data and the relevant past notes, then suggest a cause. One augmented call does that through the approved export, and it is the lowest rung to try before anything more autonomous."
+   }
+  ],
+  "explain": "Binding constraint: fault data leaves the OT network only through the one-way export, and nothing connects in. Within that boundary, pilot the lowest sufficient rung first: one augmented call per stoppage, which a code lookup cannot match and an agent does not improve on.",
+  "rule": "CS-D1-07",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.1-006",
+  "rev": 3,
+  "domain": 1,
+  "obj": "1.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "constraint": "lifecycle-stage",
+  "industry": "retail",
+  "family": "feasibility-prototype-unblocks-decision",
+  "counterTrap": true,
+  "signals": [
+   "none of these has changed",
+   "what share of real notes Claude reads correctly",
+   "cites vendor case studies"
+  ],
+  "stem": "Hollins & Rye, a grocery chain, wants Claude to check drivers' handwritten delivery notes against purchase orders at goods-in. In March the goods-in director, who owns the decision, signed off an 18-minute baseline per delivery, a five-minute target and the data-handling rules, and none of these has changed. Since then the team has run two more rounds of store-manager workshops and costed a design on a mid-range model tier. At each funding review the finance director asks what share of real notes Claude reads correctly, and the team cites vendor case studies. Funding is still not approved.",
+  "ask": "What is the MOST likely reason the funding decision has stalled?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Discovery did not reach the drivers who write the notes, so nobody yet knows how legible their handwriting is",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "Discovery is signed off and unchanged, and two more workshop rounds have not moved funding. Interviewing drivers cannot show whether Claude reads their handwriting; only a test on real notes can, which is when building early is right."
+   },
+   {
+    "id": "b",
+    "text": "The design is costed on a mid-range tier, and finance doubts any tier below the most capable can read handwriting",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "No tier has been tried on these notes, so a doubt about the tier is as untested as the design. Moving to the most capable tier without a test would leave the finance director's question exactly where it is."
+   },
+   {
+    "id": "c",
+    "text": "The business case gives an estimated saving instead of an accuracy figure that the team commits to reaching",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "Nobody has measured how well Claude reads these notes, so any committed figure would be a guess. The finance director asks what share Claude reads correctly, which calls for evidence rather than a promise."
+   },
+   {
+    "id": "d",
+    "text": "No one has tested Claude on a sample of the chain's own notes, so the finance director's question lacks any evidence",
+    "correct": true,
+    "trap": null,
+    "why": "Baseline, target and owner are agreed, so the open question is feasibility, and vendor case studies cannot answer it for this chain's handwriting. A thin prototype on sample notes is the step the decision is waiting for."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. Discovery is signed off and unchanged, and funding waits on whether Claude can read these notes, so the missing step is a feasibility prototype on sample notes; more discovery cannot unblock the decision.",
+  "rule": "CS-D1-01",
+  "ladder": "lifecycle",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.1-007",
+  "rev": 3,
+  "domain": 1,
+  "obj": "1.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "energy",
+  "family": "evidence-prep-for-accountable-decision",
+  "counterTrap": false,
+  "signals": [
+   "a named, accountable person to decide whether each dispute is upheld",
+   "full automation would cost far less",
+   "most of it pulling meter reads"
+  ],
+  "stem": "Ostara Energy has 14,000 billing disputes waiting, and its COO, who owns the programme, wants Claude to 'resolve them automatically'. Handlers spend about an hour on each case, most of it pulling meter reads, tariff history and past letters from three systems, and the COO's target is a backlog under 3,000 within six months. The regulator's complaints code requires a named, accountable person to decide whether each dispute is upheld, giving reasons the ombudsman can review. Finance notes that most disputes are small and that full automation would cost far less than handler time.",
+  "ask": "Which design is BEST to recommend to the COO?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have Claude gather each case's evidence into a summary, and have a named handler decide it and write the reasons",
+    "correct": true,
+    "trap": null,
+    "why": "The code keeps each decision with a named person, and here the handler decides and forms the reasons. Claude takes over the evidence gathering that fills most of each hour, which is what brings the backlog under 3,000."
+   },
+   {
+    "id": "b",
+    "text": "Let Claude decide disputes below a set amount, and route the larger disputes to named handlers who decide them",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Routing by amount is sound risk practice elsewhere, but the code covers every dispute whatever its size. A regulatory gate removes this option before the cost saving that finance points to can be weighed."
+   },
+   {
+    "id": "c",
+    "text": "Let Claude decide each dispute with cited reasons, and have a named handler sign off the outcomes in daily batches",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "A named handler signs, but the decision and reasons are Claude's, and approving hundreds of outcomes in a batch leaves no room to judge each case. The ombudsman would review reasons the accountable person never formed."
+   },
+   {
+    "id": "d",
+    "text": "Keep handlers gathering the evidence and deciding each case, and have Claude draft the outcome letters that they send",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "The decision stays where the code puts it, but letter drafting is not where the time goes. Handlers still spend most of each case pulling evidence, so throughput barely rises and the six-month backlog target is missed."
+   }
+  ],
+  "explain": "Binding constraint: the complaints code requires an accountable person to decide each dispute. Regulation gates the cost argument, so translate \"resolve automatically\" into the real job: Claude cuts the evidence-gathering time while a named handler genuinely decides.",
+  "rule": "CS-D1-01",
+  "ladder": "hitl-routing",
+  "tips": [
+   "TIP-EL-12"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

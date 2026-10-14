@@ -1,0 +1,506 @@
+[
+ {
+  "id": "P2-2.4-001",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "scale",
+  "industry": "telecom",
+  "family": "counter-filter-plus-compaction",
+  "counterTrap": false,
+  "signals": [
+   "hour by hour across the whole fortnight",
+   "even with no tables loaded"
+  ],
+  "stem": "Kestrelnet's radio-planning team uses a Claude agent to investigate capacity complaints across a region. An investigation runs for hours: the agent pulls fortnight-long performance tables for dozens of cells, and planners confirm or rule out causes as it works. Each table holds 40 counters at hourly resolution; the analysis reads four of them hour by hour across the whole fortnight, and tables make up most session tokens. Near the context limit, the harness drops the oldest turns. Cost per investigation is over budget, and the agent recently re-examined cells that planners had already cleared. The longest investigations would reach the limit even with no tables loaded.",
+  "ask": "Which TWO changes BEST bring cost within budget and keep the planners' earlier conclusions in play? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move to a larger-context tier so every table and turn stays in context for the whole investigation",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "With no truncation the history keeps growing, so later turns carry every table's 40 counters and cost per investigation rises further over budget; the extra room changes how much is sent, not how much of it the analysis uses."
+   },
+   {
+    "id": "b",
+    "text": "Have the performance tool return daily averages of each counter in place of the hourly rows",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "The analysis reads its four counters hour by hour, so daily averages erase the pattern it depends on, and each averaged row still carries 36 counters the analysis never reads."
+   },
+   {
+    "id": "c",
+    "text": "Add per-tool token counts to session traces so planners can see which cells produce the largest tables",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Tables are already known to dominate session tokens; more accounting confirms that but neither lowers cost nor stops cleared cells being dropped with the oldest turns."
+   },
+   {
+    "id": "d",
+    "text": "Have the performance tool return only the four counters the analysis uses for each requested cell",
+    "correct": true,
+    "trap": null,
+    "why": "The analysis reads four of 40 counters, so filtering at the tool removes most of the dominant token source while keeping the hourly values across the fortnight that the analysis depends on."
+   },
+   {
+    "id": "e",
+    "text": "Replace oldest-turn dropping with compaction that keeps cleared cells, confirmed causes and open leads",
+    "correct": true,
+    "trap": null,
+    "why": "The longest investigations hit the limit even without tables, so filtering alone cannot stop turns being dropped; a compaction that preserves cleared cells and confirmed causes stops the repeated work."
+   }
+  ],
+  "explain": "Binding constraint: the longest investigations reach the limit even without tables, so cutting table volume alone cannot stop turns being dropped. Filter tool output to the counters and resolution the analysis uses, and replace blind truncation with compaction that keeps the state the task still needs.",
+  "rule": "CS-D2-09",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-MR-02",
+   "TIP-EL-05"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.4-002",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "legal",
+  "family": "whole-document-fits-comfortably",
+  "counterTrap": true,
+  "signals": [
+   "fits comfortably within the context window",
+   "wording unlike its definition"
+  ],
+  "stem": "Whitcombe Rowe LLP's corporate team uses Claude to check draft share-purchase agreements for inconsistent use of defined terms before signing. To save tokens, the pipeline sends the model only the ten passages most similar to each defined term. Reviewers find it misses inconsistencies in schedules and boilerplate, where a variant of a term sits in wording unlike its definition. A typical agreement fits comfortably within the context window, and each draft is checked once before it goes to the other side.",
+  "ask": "Which change BEST fixes the missed inconsistencies?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Raise retrieval from ten to thirty passages per defined term so the schedules are better covered",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "More passages chosen by similarity to the definition still favour wording like the definition, so variants in dissimilar boilerplate stay missed while each call grows."
+   },
+   {
+    "id": "b",
+    "text": "Summarise each schedule into a short digest and send the digests alongside the retrieved passages",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "A digest paraphrases the schedules, which drops the exact wording in which a variant term appears; the check depends on the clause text itself."
+   },
+   {
+    "id": "c",
+    "text": "Place the definitions clause first as a cached prefix shared by the term checks in the pipeline",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Caching lowers the price of the repeated definitions clause, but the misses come from which passages are sent, not from cost, so nothing new is found."
+   },
+   {
+    "id": "d",
+    "text": "Send the full agreement in one check per draft, since a variant of a term can sit in any clause",
+    "correct": true,
+    "trap": null,
+    "why": "The agreement fits comfortably and is checked once, and the check depends on every usage of each term, so sending it whole removes the filtering step that was dropping the clauses that matter."
+   }
+  ],
+  "explain": "Binding constraint: the task depends on every usage of each term, and the whole agreement fits comfortably. When the required context fits, send it; relevance filtering that removes needed clauses is a false economy.",
+  "rule": "CS-D2-08",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-EL-05"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.4-003",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "telecom",
+  "family": "raw-transcript-handoff",
+  "counterTrap": false,
+  "signals": [
+   "most of it subagents' tool calls and intermediate results",
+   "requests stay well within the context window"
+  ],
+  "stem": "Halcyon Telecom's business-sales team drafts connectivity proposals with a multi-agent system: subagents check site coverage, pricing eligibility and contract terms, and an orchestrator writes each proposal from their results. Since last week's agent-framework upgrade, cost per proposal has jumped, and proposals now omit contract-term conflicts that the contract subagent flagged, which they carried reliably before. Traces show orchestrator input per proposal up about sixfold, most of it subagents' tool calls and intermediate results. Model versions, prompts, subagent tools and proposal length are unchanged, and requests stay well within the context window.",
+  "ask": "What is the MOST likely cause of both the cost rise and the missing conflicts?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The upgraded handoff passes subagents' working transcripts to the orchestrator instead of their findings",
+    "correct": true,
+    "trap": null,
+    "why": "The new input is tool calls and intermediate results, which reach the orchestrator only if the handoff now carries whole transcripts; that volume raises cost and buries each flagged conflict, explaining both symptoms."
+   },
+   {
+    "id": "b",
+    "text": "The upgrade now places pricing and contract findings mid-input, where the orchestrator attends to them less",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Position could explain missed conflicts, but reordering the same findings cannot raise input sixfold; the traces put the growth in tool calls and intermediate results, which points to what the handoff now carries."
+   },
+   {
+    "id": "c",
+    "text": "Longer generated proposals are raising output tokens, which now account for most of the cost increase",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Proposal length is unchanged and the traces place the rise in orchestrator input, so this blames a term the upgrade did not touch, and it would not explain the missing conflicts either."
+   },
+   {
+    "id": "d",
+    "text": "The orchestrator lacks the contract rules needed to judge a conflict, so it drops flags it cannot verify",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the orchestrator must verify flags itself, which nothing here grants: with the same prompt it carried flagged conflicts before the upgrade, and missing rules would not raise input sixfold."
+   }
+  ],
+  "explain": "Binding constraint: only the framework changed, with models, prompts, tools and output unchanged, and the traces show the new input is subagents' working material. When cost and recall degrade together after more text enters the window, volume is the cause; pass structured findings between agents, not raw transcripts.",
+  "rule": "CS-D2-08",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.4-004",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "accuracy-floor",
+  "industry": "manufacturing",
+  "family": "eval-before-context-cut",
+  "counterTrap": false,
+  "signals": [
+   "keep their current accuracy",
+   "labelled set of 250 past reports",
+   "most suppliers file only a few reports a month"
+  ],
+  "stem": "Brandt Castings' quality engineers use Claude to draft root-cause analyses for non-conformance reports from about 300 suppliers. Each request carries that supplier's full quality manual, around 80 pages, and traces show manuals make up most input tokens; most suppliers file only a few reports a month. Finance wants cost per report halved this quarter. The engineering lead proposes sending only the manual sections most similar to each report. The quality director points out that customer audits require analyses to keep their current accuracy, which is scored on a labelled set of 250 past reports.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Switch one supplier group to retrieved sections and compare its analyses with the others for a month",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A production canary is a sensible later step, but running it before any offline score puts unmeasured analyses in front of the customer audits that require current accuracy."
+   },
+   {
+    "id": "b",
+    "text": "Tune the section retrieval on the labelled set until its score matches the full-manual accuracy",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Tuning against the same 250 reports that measure audited accuracy fits the set rather than the task, so a matching score stops showing how analyses of new reports would hold up."
+   },
+   {
+    "id": "c",
+    "text": "Score full manuals and retrieved sections on the labelled set of 250 reports, then compare the two",
+    "correct": true,
+    "trap": null,
+    "why": "The accuracy floor is audited and nobody yet knows whether analyses rely on sections that retrieval would drop. Scoring both variants on the labelled set shows whether the cut holds accuracy before anything changes in production."
+   },
+   {
+    "id": "d",
+    "text": "Cache each supplier's manual as a stable prefix so that later reports from that supplier cost less",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Most suppliers file only a few reports a month, so a cached manual would rarely be reused before it lapses; the lever does not fit this traffic pattern."
+   }
+  ],
+  "explain": "Binding constraint: an audited accuracy floor measured on the labelled set. Before cutting context the task might need, score the candidate against the current design on that set as it stands; piloting in production, tuning on the audit set or pulling a cost lever first all risk the floor.",
+  "rule": "CS-D2-08",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-RD-02",
+   "TIP-EL-05"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.4-005",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "public-sector",
+  "family": "per-document-fact-records",
+  "counterTrap": false,
+  "signals": [
+   "every submitted document was considered",
+   "fixed processing budget per appeal",
+   "the largest files exceed the context window"
+  ],
+  "stem": "Nortown Borough Council's benefits-appeals team uses a Claude agent to draft review decisions. Each case file holds 40 to 300 scanned documents, and the largest files exceed the context window. An appeal raises several grounds, the agent drafts each one over many turns, and finance has set a fixed processing budget per appeal. The tribunal's procedure rules require the decision record to show that every submitted document was considered and to cite the page relied on for each finding.",
+  "ask": "Which design BEST keeps each appeal within budget while meeting the procedure rules?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Retrieve the passages most relevant to each ground and cite the page of each passage relied on",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Relevance retrieval with page citations meets the citation rule, but documents that are never retrieved are never considered, so the record cannot show that every submitted document was taken into account."
+   },
+   {
+    "id": "b",
+    "text": "Read each document once in its own call to record facts with page references, then draft from them",
+    "correct": true,
+    "trap": null,
+    "why": "Each document is read in full once, which the record can show, and page-referenced fact records support every citation; drafting turns carry those compact records instead of raw scans, so the many turns stay within budget."
+   },
+   {
+    "id": "c",
+    "text": "Split the case file into batches that fit the window and draft each ground across the batches in turn",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Batching covers every document, but each ground is drafted over many turns with raw scans riding along in each batch, so the whole file passes through the window repeatedly and input per appeal breaks the fixed budget."
+   },
+   {
+    "id": "d",
+    "text": "Cache the case file as a prompt prefix so that each drafting turn rereads the documents at a lower price",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Caching lowers the price of rereading but not how much the window holds; the largest case files exceed the context window, so they still cannot be loaded as one prefix."
+   }
+  ],
+  "explain": "Binding constraint: the procedure rules, which gate any cost saving. Extract page-referenced facts from every document in an upstream step, so each document is demonstrably considered, and let drafting turns carry only those structured records.",
+  "rule": "CS-D2-08",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-12"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.4-006",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "cost",
+  "industry": "e-commerce",
+  "family": "order-payload-and-poll-clearing",
+  "counterTrap": false,
+  "signals": [
+   "chats concern one current order",
+   "a newer poll has replaced",
+   "make up most input tokens"
+  ],
+  "stem": "Larkspur Home, an online furniture retailer, runs a delivery-support assistant. At the start of each chat it calls an order tool that returns the customer's full order history, often years of orders with every line item, though chats concern one current order. While customers wait, it polls a carrier-tracking tool several times, and every poll result stays in context. Cost per chat is well above target, and the assistant sometimes quotes a delivery status that a newer poll has replaced. The system prompt is short, and traces show order histories and tracking results make up most input tokens.",
+  "ask": "Which TWO changes BEST bring cost per chat to target and stop outdated statuses being quoted? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Enable prompt caching on the system prompt and tool definitions to cut repeated input on each turn",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "The system prompt is short and traces show tool results dominate input, so caching it barely moves cost and does nothing about stale statuses."
+   },
+   {
+    "id": "b",
+    "text": "Stop preloading order history and have the assistant fetch the current order's details when needed",
+    "correct": true,
+    "trap": null,
+    "why": "Chats concern one current order, so years of line items never need to enter the window; fetching that order on demand removes the largest input source without losing anything the answer uses."
+   },
+   {
+    "id": "c",
+    "text": "Timestamp each poll result as it arrives and tell the assistant to quote only the most recent one",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Every earlier poll still rides along on each turn, so cost stays above target, and superseded statuses still compete with the newest for attention however the instruction is worded."
+   },
+   {
+    "id": "d",
+    "text": "Clear earlier tracking results from context whenever a newer poll for that shipment returns",
+    "correct": true,
+    "trap": null,
+    "why": "A newer poll makes earlier ones obsolete, so clearing them removes both the stale statuses the assistant has been quoting and the tokens they add on each turn."
+   },
+   {
+    "id": "e",
+    "text": "Document for support staff which carrier status codes map to which customer-facing delivery messages",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Clearer status wording helps staff and customers, but it neither shrinks the order payload nor removes superseded polls, so cost per chat and the outdated quotes stay as they are."
+   }
+  ],
+  "explain": "Binding constraint: cost per chat, with traces showing tool payloads dominate input. Reduce what enters the window: fetch only the order the chat concerns when it is needed, and clear tracking results that newer polls have superseded.",
+  "rule": "CS-D2-08",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-09",
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.4-007",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "change-scope",
+  "industry": "education",
+  "family": "compaction-instructions-drop-state",
+  "counterTrap": false,
+  "signals": [
+   "threads that have not yet been compacted show none of these errors",
+   "Model version, system prompt and retrieval settings are unchanged",
+   "cost per thread fell within the faculty's budget"
+  ],
+  "stem": "Oakhurst University's dissertation coach supports each master's student in one thread across a term. Three weeks ago the team added compaction, which summarises a thread once it nears a set size, and cost per thread fell within the faculty's budget. Since then, supervisors report that in long threads the coach asks students again for research questions they settled on early in term and loses track of agreed chapter deadlines. Model version, system prompt and retrieval settings are unchanged, and threads that have not yet been compacted show none of these errors.",
+  "ask": "What should the architect do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Retune retrieval so the coach pulls each student's earlier supervisor notes into long threads",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Retrieval settings are unchanged and uncompacted threads show no errors, so retrieval is not what changed; the summary is, and supervisor notes would not restore what students settled inside the thread."
+   },
+   {
+    "id": "b",
+    "text": "Rewrite the compaction instructions to keep settled research questions, decisions, deadlines and open tasks",
+    "correct": true,
+    "trap": null,
+    "why": "Only compacted threads fail and nothing else changed, so the summary is dropping state the coach still needs. Telling compaction what to preserve keeps the budget gain and restores the settled questions and deadlines."
+   },
+   {
+    "id": "c",
+    "text": "Replace compaction with a window that keeps only the most recent 40 turns of each thread verbatim",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "A recent-turns window discards older content outright, so research questions and deadlines agreed early in term would be lost more reliably than they are now."
+   },
+   {
+    "id": "d",
+    "text": "Turn compaction off and cache each thread's history so that each repeated turn costs less to process",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Caching lowers the price of rereading history but not how much the window holds, so threads grow toward the limit and the budget gain from compaction is lost."
+   }
+  ],
+  "explain": "Binding constraint: the errors appeared only in compacted threads while model, prompt and retrieval were unchanged, so the compaction summary is the cause. Fix what the summary preserves (decisions, open state, next steps) rather than retuning an untouched layer, truncating history or abandoning compaction.",
+  "rule": "CS-D2-09",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

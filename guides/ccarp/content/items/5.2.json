@@ -1,0 +1,484 @@
+[
+ {
+  "id": "P5-5.2-001",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "evidence",
+  "industry": "manufacturing",
+  "family": "pre-pilot-failure-register",
+  "counterTrap": false,
+  "signals": [
+   "will not give a wrong setting",
+   "150 hand-picked questions without error"
+  ],
+  "stem": "Brackwell Precision Castings will pilot an assistant that answers technicians' questions about furnace maintenance from 1,800 equipment manuals and service bulletins. Technicians will apply the settings it returns, such as burner pressures and hold times, during scheduled maintenance. The operations director will approve the pilot only if the architect confirms in writing that the assistant 'will not give a wrong setting'. The evidence so far is a demo in which it answered 150 hand-picked questions without error.",
+  "ask": "What should the architect do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Sign the confirmation once a 500-question held-out test drawn from real technician queries shows no wrong settings",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "A held-out test from real queries is far better evidence than the demo, but a clean run bounds the error rate; it cannot prove zero. The architect would still be signing a guarantee that a probabilistic system cannot meet."
+   },
+   {
+    "id": "b",
+    "text": "Present a register of failure modes, each with a check outside the model, a fallback, the residual risk and an owner",
+    "correct": true,
+    "trap": null,
+    "why": "No demo or test can support 'will not give a wrong setting'. Naming each way a wrong setting can arise, such as a superseded bulletin or a misread table, with a check that does not rely on the model and an owner for what remains, gives the director an honest basis to approve."
+   },
+   {
+    "id": "c",
+    "text": "Have the assistant score its certainty on each setting and route any answer scored below high to a maintenance engineer",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "The model's certainty score is not calibrated, and a confidently wrong burner pressure is the failure that matters. Answers it scores high would still reach technicians unchecked, so the most dangerous errors pass straight through."
+   },
+   {
+    "id": "d",
+    "text": "Pilot on one furnace line first, with technicians flagging any returned setting that differs from what they expect",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This works only if technicians already know the right pressures and hold times, which the stem never grants, since that is what they ask the assistant for. A smaller pilot limits exposure but does not answer the director's condition."
+   }
+  ],
+  "explain": "Binding constraint: the evidence. A small hand-picked demo cannot support a zero-error promise, and no finite test could. Before a pilot, answer a guarantee request with a failure-mode register (each mode, an independent check, a fallback, the residual risk and its owner) rather than a signed promise or a model self-rating.",
+  "rule": "CS-D5-05",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.2-002",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "data-shape",
+  "industry": "pharma",
+  "family": "premise-acceptance-diagnosis",
+  "counterTrap": false,
+  "signals": [
+   "questions worded like",
+   "the assistant gave the label's answer",
+   "current label section in context in both cases"
+  ],
+  "stem": "Tessaly Pharma's medical-information assistant answers pharmacists' questions about storage, handling and interactions from approved product labels. A quality review found 9 wrong answers in 420 conversations. Nearly all came from questions worded like 'Since opened pens keep for 60 days at room temperature, what should patients do after that?', where the label allows 28 days. When pharmacists asked 'How long do opened pens keep at room temperature?', the assistant gave the label's answer, and traces show the current label section in context in both cases. The model version, prompt and label index have not changed since launch.",
+  "ask": "What is the MOST likely cause of the wrong answers?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The model is deferring to claims built into the question over the label text it was given",
+    "correct": true,
+    "trap": null,
+    "why": "The errors follow the wording, not the content: asked without the embedded claim, the same question gets the label's answer from the same text in context. The model is going along with the asker's figure, a generation failure that retrieval changes cannot fix."
+   },
+   {
+    "id": "b",
+    "text": "The model is overriding the label with general-practice storage values from its training data",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A training-data override would not depend on wording. Neutral questions about the same pens, with the same label section in context, got the label's 28 days, so the model is not substituting general-practice values of its own."
+   },
+   {
+    "id": "c",
+    "text": "The retriever is ranking an older label revision first when a question quotes a storage period",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Traces show the current label section in context for both wordings, and the index has not changed since launch. Retrieval is delivering the right text, so the failure happens after it."
+   },
+   {
+    "id": "d",
+    "text": "Long label sections are burying the storage details where the model gives them little attention",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The same label section sits in context for both wordings, and the neutral question gets the right storage period from it. Context length does not change with how the question is phrased, so it cannot explain errors that follow the phrasing."
+   }
+  ],
+  "explain": "Binding constraint: the query pattern. Errors appear only when a question carries its own claim, while the right label text is in context and neutral wording is answered correctly, which isolates the model deferring to the asker (a sycophancy failure mode) rather than retrieval, training-data recall or long-context dilution.",
+  "rule": "CS-D5-05",
+  "ladder": "diagnosis",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": "4.4"
+ },
+ {
+  "id": "P5-5.2-003",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "least-privilege",
+  "industry": "saas",
+  "family": "injection-outbound-bound",
+  "counterTrap": false,
+  "signals": [
+   "a send-email tool that accepts any recipient",
+   "legitimate replies go only to the account holder's registered users",
+   "even a successful injection cannot deliver customer data to outsiders"
+  ],
+  "stem": "Corvane sells invoicing software to small businesses. Its support agent reads inbound customer emails, looks up the sender's account, and replies through a send-email tool that accepts any recipient, although legitimate replies go only to the account holder's registered users. In a red-team test, a customer forwarded a supplier email containing instructions addressed to 'the AI assistant', and the agent sent that customer's bank details and client list to an address in the email. Support must keep handling every inbound email as received, and the security lead requires that even a successful injection cannot deliver customer data to outsiders.",
+  "ask": "Which change BEST meets the security lead's requirement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Wrap each email body in tags marking it as untrusted data and instruct the agent to ignore any instructions inside",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Marking email text as untrusted lowers the odds that the agent obeys it but cannot stop it. The requirement concerns what happens when an injection succeeds, and the tool would still send to any address."
+   },
+   {
+    "id": "b",
+    "text": "Screen inbound emails with an injection classifier and quarantine any it flags before the agent reads them",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Quarantining flagged mail breaks the rule that support handles every inbound email as received, and the classifier is itself a model that a reworded injection can slip past. It assumes detection is complete, yet a missed injection could still reach any address."
+   },
+   {
+    "id": "c",
+    "text": "Log outbound emails and alert security whenever a recipient is not one of the account holder's registered addresses",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "This tells security about a leak after the bank details have already left. The requirement is preventive: customer data must not be able to reach an outside address in the first place."
+   },
+   {
+    "id": "d",
+    "text": "Restrict the send-email tool in code to recipients who are the account holder's own registered users",
+    "correct": true,
+    "trap": null,
+    "why": "Exfiltration needs an instruction channel and an outbound path. The inbound channel has to stay open, so bounding the tool in code to the account's own users leaves a successful injection no outside address to reach, while legitimate replies still go through."
+   }
+  ],
+  "explain": "Binding constraint: least privilege on the one channel that can still be restricted. Prompt injection is bounded, not solved; with every inbound email handled as received, cut the outbound reach in the tool layer to the recipients the role actually needs, so a successful injection cannot exfiltrate data.",
+  "rule": "CS-D5-04",
+  "ladder": "control-strength",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.2-004",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "irreversibility",
+  "industry": "media",
+  "family": "dependency-timeout-fallback",
+  "counterTrap": false,
+  "signals": [
+   "posts the comment if that call times out",
+   "clipped and shared within minutes",
+   "the next show is Friday"
+  ],
+  "stem": "Lumenfall Studios streams live youth talent shows with an on-screen comment feed. Each viewer comment passes through a Claude-based moderation call before it is posted, and the integration posts the comment if that call times out, a choice made to keep chat flowing. During a 40-minute provider slowdown last Saturday, dozens of abusive comments reached the screen and were clipped and shared within minutes. The provider has had two similar slowdowns this quarter, and the next show is Friday.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Change the timeout path to queue comments unposted and show viewers a notice that chat is delayed",
+    "correct": true,
+    "trap": null,
+    "why": "The harm comes from the fallback itself: when moderation is unavailable, unchecked comments go live to a young audience and cannot be taken back. Holding them is a small change that makes the next slowdown safe before Friday."
+   },
+   {
+    "id": "b",
+    "text": "Add automatic failover to a second provider region so moderation calls keep completing during slowdowns",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Failover is worth adding, but it only reduces how often the timeout path runs. If both regions slow down, the code still posts unmoderated comments, so the fallback behaviour has to be fixed first."
+   },
+   {
+    "id": "c",
+    "text": "Alert the on-call engineer when the moderation timeout rate crosses an agreed threshold",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Alerting is a useful second layer once the fallback is safe. On its own it tells an engineer about abusive comments that are already on screen during a live show."
+   },
+   {
+    "id": "d",
+    "text": "Raise the moderation timeout so slow calls finish and are checked instead of falling through to posting",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This works only if every slow call completes within the new timeout, which nothing in the stem guarantees. Any call that still times out posts unchecked, and longer waits stall the live feed."
+   }
+  ],
+  "explain": "Binding constraint: irreversibility, since a comment shown live to young viewers and clipped cannot be withdrawn. Fix the degraded-mode behaviour of the failing dependency first (hold, do not publish); failover only reduces how often that path runs and alerting only detects the gap, so both come later.",
+  "rule": "CS-D5-05",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.2-005",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "security-boundary",
+  "industry": "legal",
+  "family": "document-injection-independent-check",
+  "counterTrap": false,
+  "signals": [
+   "white-on-white text telling the reviewer",
+   "in whatever format they choose"
+  ],
+  "stem": "Aldermoor & Pike, a commercial law firm, uses an assistant that compares counterparty-drafted agreements with the firm's standard terms and lists the deviations associates should negotiate. One counterparty draft contained white-on-white text telling the reviewer to report the indemnity clause as unchanged. The report did exactly that, and an associate nearly accepted a capped indemnity. Associates will keep relying on the report, and drafts will keep arriving from opposing counsel in whatever format they choose.",
+  "ask": "Which TWO changes BEST reduce the risk that a manipulated draft produces a clean report an associate acts on? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Render each draft to its visible text before review and pass it to the model as labelled, untrusted content",
+    "correct": true,
+    "trap": null,
+    "why": "Hidden text is an instruction channel the associate never sees. Reviewing only what a human would read, marked as untrusted data rather than direction, removes this attack path and lowers the authority of any visible attempt."
+   },
+   {
+    "id": "b",
+    "text": "Generate a clause-by-clause comparison against standard terms in code and show it beside the assistant's report",
+    "correct": true,
+    "trap": null,
+    "why": "A deterministic comparison does not depend on the model, so a manipulated report sits next to evidence that the indemnity changed. Injection is bounded rather than solved, and this catches whatever still gets through."
+   },
+   {
+    "id": "c",
+    "text": "Record a hash of each draft with its report and the reviewing associate's name in the matter file for audit",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A tamper-evident record helps a later investigation, but it neither stops the manipulated report nor helps the associate notice the changed indemnity before accepting it."
+   },
+   {
+    "id": "d",
+    "text": "Require opposing counsel to send drafts as tracked changes against the firm's template and reject untracked files",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "The counterparty is the adversary here. Tracked changes depend on them marking each edit honestly, and the stem says drafts arrive in whatever format opposing counsel chooses, so the firm cannot reject the rest."
+   },
+   {
+    "id": "e",
+    "text": "Have the assistant re-read each draft in a second pass to verify its own report and flag mismatches to a partner",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "The second pass reads the same draft, hidden text included, so an instruction that shaped the report can shape the check too. A matching self-review proves nothing; independent evidence has to come from outside the model."
+   }
+  ],
+  "explain": "Binding constraint: the security boundary between untrusted counterparty text and the review instructions. Pair a preventive control that removes the hidden instruction channel with an independent, deterministic check that catches a manipulated report, rather than a check run by the same model.",
+  "rule": "CS-D5-04",
+  "ladder": null,
+  "tips": [
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.2-006",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "public-sector",
+  "family": "model-upgrade-regression",
+  "counterTrap": true,
+  "signals": [
+   "moved to a newer model version",
+   "report a normal finish well under the output limit",
+   "with the old wording restored"
+  ],
+  "stem": "Tallowmere County's benefits office uses an assistant to draft decision letters for caseworkers to review. The system prompt says to include the statutory appeal-rights paragraph from the template before the signature block. Weekly audits of 200 drafts found it in every letter for six months. On Tuesday the assistant moved to a newer model version, and legal revised the paragraph's wording in the template. Since then 9% of drafts omit it, mostly long letters covering several decisions; these still end with the signature block and report a normal finish well under the output limit. Replayed on the new version with the old wording restored, 31 of 40 affected cases still omitted it. The retrieval index and case mix are unchanged.",
+  "ask": "What is the MOST likely cause of the missing paragraph?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Legal's revised paragraph wording, which the assistant is failing to carry into long multi-decision letters",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Restoring the old wording on the new version left the paragraph missing in 31 of 40 affected cases, so the revision is not what drives the omissions. The problem follows the model, not the text it was given."
+   },
+   {
+    "id": "b",
+    "text": "The newer model version, following the unchanged prompt instruction less reliably in long multi-decision letters",
+    "correct": true,
+    "trap": null,
+    "why": "Before Tuesday the old model carried the paragraph in every long letter, and putting the old wording back on the new version did not fix it. A requirement held only by prompt wording can shift when the model changes, which is why version changes need regression evals."
+   },
+   {
+    "id": "c",
+    "text": "Long multi-decision letters running into the output limit, so that generation stops before the paragraph is written",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The affected drafts report a normal finish well under the limit, and they still end with the signature block that sits below the paragraph. A letter cut off by the limit would stop before the signature, so the output limit is not the layer at fault."
+   },
+   {
+    "id": "d",
+    "text": "Ordinary sampling variation, which 200 audited drafts a week were bound to surface sooner or later",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Six months of weekly audits found no omission, then the rate jumped to 9% on the day of the change and concentrates in one letter type. Random variation does not produce a step change that lines up with a release."
+   }
+  ],
+  "explain": "Binding constraint: what changed. Two things changed on Tuesday and restoring the old wording did not help, which leaves the model; here the usual 'don't blame the model' tell is reversed because the model is the layer that changed. A requirement held only by prompt wording is a failure mode on every upgrade, so regression-test version changes and insert mandatory text in code.",
+  "rule": "CS-D4-09",
+  "ladder": "diagnosis",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": "4.4"
+ },
+ {
+  "id": "P5-5.2-007",
+  "rev": 3,
+  "domain": 5,
+  "obj": "5.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "pharma",
+  "family": "fabricated-reference-verification",
+  "counterTrap": false,
+  "signals": [
+   "cannot contain a single reference that has not been confirmed to exist as cited",
+   "one carried a real PMID belonging to an unrelated paper"
+  ],
+  "stem": "Solenne Biologics' medical writers use an assistant to draft literature summaries for a regulatory dossier, each listing its supporting references with a DOI or PMID. In a quality check, 2 of 60 references cited papers that do not exist: both had plausible authors and journals, and one carried a real PMID belonging to an unrelated paper. The regulatory affairs lead has ruled that the dossier cannot contain a single reference that has not been confirmed to exist as cited.",
+  "ask": "Which control BEST addresses this failure mode?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have the assistant search the web for each reference in a second pass, compare what it finds with the citation, and delete any reference it cannot match",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "The same kind of model that invented the papers now decides whether a search result matches, so a plausible fake can be accepted on a near-miss title or a colliding identifier. The lead's rule needs confirmation that does not depend on the model."
+   },
+   {
+    "id": "b",
+    "text": "Instruct the assistant to cite only papers returned by this session's literature search and to copy each DOI or PMID from those results",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Grounding in the search results is good practice and should cut the rate, but an instruction confirms nothing: the model can still invent a paper or attach a real identifier to the wrong one. The lead requires each reference to be confirmed."
+   },
+   {
+    "id": "c",
+    "text": "Resolve each DOI or PMID in the bibliographic database, match the returned title, authors and journal to the citation, and block any miss or mismatch",
+    "correct": true,
+    "trap": null,
+    "why": "Resolving each reference and matching its metadata against the database confirms existence without relying on the model. An identifier alone can collide with a real, unrelated paper, as one fake did, so blocking on any miss or mismatch is what meets the lead's rule."
+   },
+   {
+    "id": "d",
+    "text": "Have a senior medical writer look up a random 10% of each draft's references in the bibliographic database and reject the draft on any miss or mismatch",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A 10% sample shows whether fabrication is happening, not which references are fabricated. It assumes the unchecked 90% are clean; with 2 in 60 invented, most fakes would pass unseen, which the lead's ruling forbids."
+   }
+  ],
+  "explain": "Binding constraint: an accuracy floor of zero unconfirmed references. Catch confident errors with verification that does not depend on the model and covers each reference, here resolving every citation and matching its metadata, because a fabricated reference can carry a real identifier.",
+  "rule": "CS-D5-05",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

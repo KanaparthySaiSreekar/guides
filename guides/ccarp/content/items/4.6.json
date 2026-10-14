@@ -1,0 +1,493 @@
+[
+ {
+  "id": "P4-4.6-001",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "change-scope",
+  "industry": "retail",
+  "family": "no-deploy-regression-pull-traces",
+  "counterTrap": false,
+  "signals": [
+   "no prompt, model, index or tool deployment",
+   "request volume, error rate and p95 latency are flat"
+  ],
+  "stem": "Copperlane Home's web store runs a gift-finder assistant that retrieves products from a catalogue index and checks stock through a tool. Over twelve days, the share of shoppers who leave straight after its recommendation has risen from 17% to 29%. The release log shows no prompt, model, index or tool deployment in that period, and request volume, error rate and p95 latency are flat. Every request already writes a trace with prompt and model versions, retrieved product IDs, tool calls and results, and the reply, keyed by session ID. The digital lead asks the on-call platform engineer to find out why.",
+  "ask": "What is the BEST next step for the engineer?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run half of sessions on the launch prompt version and compare abandonment between the two groups",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "A prompt A/B test changes a variable the release log has already cleared, and it needs days of traffic to read. The traces that would show how leaving and staying sessions differ are already recorded and unread."
+   },
+   {
+    "id": "b",
+    "text": "Add a check that withholds any recommendation whose stock result shows the product as unavailable",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "It blocks one guessed failure before anyone knows the cause. The lead asked why shoppers are leaving, and stock is only one of the layers the traces could implicate, so this changes the product without finding out."
+   },
+   {
+    "id": "c",
+    "text": "Score a random sample of recent replies with the quality judge and compare the mean with launch",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "A mean across every session mixes shoppers who stayed with those who left, so it may barely move, and even a clear drop would not show which layer changed. Comparing the two groups of sessions answers both questions."
+   },
+   {
+    "id": "d",
+    "text": "Pull traces of abandoned and completed sessions and compare their retrievals, stock results and replies",
+    "correct": true,
+    "trap": null,
+    "why": "Nothing was deployed and the operational metrics are flat, so the cause lies in what the requests contained. Setting traces of sessions that ended in abandonment against those that did not shows which layer differs before anyone changes it."
+   }
+  ],
+  "explain": "Binding constraint: what changed, which is nothing in the deployment, with volume, errors and latency flat. Observe before changing anything: compare traces of failing and passing sessions to locate the layer at fault.",
+  "rule": "CS-D4-14",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.6-002",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "saas",
+  "family": "contracted-slice-drift-alert",
+  "counterTrap": false,
+  "signals": [
+   "commit to a minimum answer-quality score measured on their own traffic",
+   "as few drift alerts as possible"
+  ],
+  "stem": "Brightloom sells a helpdesk platform whose answer assistant serves about 900 tenant businesses. A rubric judge, validated against human labels last quarter, scores a daily sample of each tenant's conversations. Eleven enterprise tenants have contracts that commit to a minimum answer-quality score measured on their own traffic, reviewed monthly. The on-call team, already paged too often, has asked for as few drift alerts as possible to keep pages rare. The observability lead must design quality drift alerting that gives warning before a monthly review finds any contract breached.",
+  "ask": "Which monitoring design BEST fits these requirements?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Alert when the combined score of the eleven contracted tenants, or of all other tenants, leaves its baseline band",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Two pooled alerts keep pages rare, but each commitment is measured on one tenant's own traffic. A single tenant's slide is diluted by ten healthy ones, so it can cross its minimum while the combined score stays inside its band."
+   },
+   {
+    "id": "b",
+    "text": "Judge each contracted tenant's replies inline and hold back any reply that scores below that tenant's own minimum",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "An inline gate offers prevention for a detection need. It adds judge latency and cost to every reply and changes the product path, yet still gives the team no warning that a tenant's quality is trending towards its floor."
+   },
+   {
+    "id": "c",
+    "text": "Alert when any contracted tenant's own daily score leaves its baseline band, and pool the other tenants into one alert",
+    "correct": true,
+    "trap": null,
+    "why": "The contracts bind per tenant, so each contracted tenant needs a signal against its own baseline that warns while there is time to act. Pooling the long tail, where no commitment applies, limits the added paging to those eleven tenants."
+   },
+   {
+    "id": "d",
+    "text": "Chart each contracted tenant's daily judge score on a trend dashboard that the account team reviews weekly",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A trend chart has no threshold, so drift is caught only if someone looks and notices. A weekly review can let much of a month's slide pass before anyone acts, and nothing pages when a tenant heads for its minimum."
+   }
+  ],
+  "explain": "Binding constraint: the per-tenant contractual quality floor, which outranks the on-call team's wish for fewer pages. Alert on the slice each commitment is measured on, against its own baseline, and pool only where no commitment applies.",
+  "rule": "CS-D4-06",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-RD-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.6-003",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "auditability",
+  "industry": "energy",
+  "family": "agent-step-evidence-for-regulator",
+  "counterTrap": false,
+  "signals": [
+   "which agent step created or changed it and what the agent saw at that point",
+   "the agent logs its final reply"
+  ],
+  "stem": "Harrowfield Energy's booking agent arranges smart-meter exchanges by calling the customer database, the field-scheduling system and the meter registry, often several times in one conversation. Some customers dispute their appointments, and the energy regulator requires Harrowfield to show, for any disputed booking, which agent step created or changed it and what the agent saw at that point. Today the agent logs its final reply, and each downstream system keeps its own logs under its own request IDs. Reconstructing last month's disputed bookings took engineers several days. The platform architect is choosing a logging change.",
+  "ask": "Which change BEST meets the regulator's requirement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have a judge score a weekly sample of booking sessions and report each step's error rate to the regulator",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "A step error rate tells the regulator how often the agent goes wrong in general, not what happened in one booking. A disputed appointment from an unsampled session cannot be explained from a rate, however well the judge is calibrated."
+   },
+   {
+    "id": "b",
+    "text": "Record each agent step with the data it read, the tool call it made and the response, under one session ID",
+    "correct": true,
+    "trap": null,
+    "why": "The regulator asks which step created or changed a booking and what the agent saw. A record of each step's inputs, tool call and response answers both for any booking, and the scheduling response in that record ties the step to the booking it wrote."
+   },
+   {
+    "id": "c",
+    "text": "Add an idempotency check to the scheduling tool so a second booking for one meter is rejected at once",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Idempotency would prevent one kind of faulty booking and is worth doing, but the requirement is evidence about any disputed booking. Preventing one failure leaves the regulator's question unanswered for every other dispute."
+   },
+   {
+    "id": "d",
+    "text": "Pass one correlation ID into every downstream call and index the three systems' logs under it centrally",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Joining the downstream logs shows which system recorded each write and when, but the agent would still log just its final reply. Which of its steps made the call and what it had read at that point stay unrecorded, and that is what the regulator asks for."
+   }
+  ],
+  "explain": "Binding constraint: auditability of each disputed booking, down to the agent step and what it saw. Record each step's inputs, tool call and response under a session ID; joining the downstream logs alone shows the writes but not the agent's view.",
+  "rule": "CS-D4-15",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.6-004",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "evidence",
+  "industry": "education",
+  "family": "cancelled-attempts-missing-from-latency",
+  "counterTrap": false,
+  "signals": [
+   "about one in ten evening requests",
+   "the gateway's response durations",
+   "counts server and provider errors"
+  ],
+  "stem": "Kestwick Learning's homework tutor has an objective of p95 under 12 seconds to a complete reply. Since the autumn term began, the student app has abandoned and resent about one in ten evening requests, because it gives up on any request left unanswered after 20 seconds. Yet the latency panel, which charts hourly p95 from the gateway's response durations, shows 8 to 9 seconds all evening, and the error panel, which counts server and provider errors, is flat. The gateway records every attempt and marks abandoned ones client-cancelled; their traces show them still waiting on the model. Prompt and model versions are unchanged.",
+  "ask": "What is the MOST likely reason both panels look healthy?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Abandoned attempts end without a response, so the slowest requests are missing from both panels",
+    "correct": true,
+    "trap": null,
+    "why": "One evening request in ten waits past 20 seconds, which would put p95 far above the objective if it were counted. An abandoned attempt produces no response duration and is not a server or provider error, so the slowest requests drop out of both panels."
+   },
+   {
+    "id": "b",
+    "text": "An hourly p95 blends each busy stretch with quieter minutes, so short runs of slow replies are smoothed away",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Smoothing can hide a brief burst, but these failures run all evening at about one request in ten. A share that large would lift any hourly p95 above 20 seconds if those requests were being counted at all."
+   },
+   {
+    "id": "c",
+    "text": "The latency panel is built from a sample of gateway requests that happens to miss most of the slow ones",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "The gateway records every attempt, so there is no sample for slow requests to escape. The gap lies in which records produce a duration for the panel, not in how many records are kept."
+   },
+   {
+    "id": "d",
+    "text": "The delay builds up in students' home networks between the app and gateway, which neither panel measures",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "A network delay would leave gateway timings healthy, but the traces show abandoned attempts still waiting on the model when the app cancelled them. The time is spent behind the gateway, which is exactly what the latency panel is meant to measure."
+   }
+  ],
+  "explain": "Binding constraint: what the panels are built from. Dashboards only consume the underlying records, and both a p95 of response durations and a count of server errors skip requests cancelled while still waiting, so check the per-attempt records before trusting a green panel.",
+  "rule": "CS-D4-14",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.6-005",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "irreversibility",
+  "industry": "media",
+  "family": "rollback-before-traces-live-harm",
+  "counterTrap": true,
+  "signals": [
+   "each new court story repeats the error in public",
+   "can be restored in one step"
+  ],
+  "stem": "Larkspur Media's summariser writes the summary line for each news article, which is published to the live site and to push alerts without an editor's check. Forty minutes ago a new prompt version went live. Since then several court-report summaries have described people who were only charged as convicted, and each new court story repeats the error in public. The previous prompt version ran for six months without this fault and can be restored in one step. Every request is traced with its prompt version.",
+  "ask": "What should the platform lead do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Restore the previous prompt version so the live site stops publishing the faulty summaries",
+    "correct": true,
+    "trap": null,
+    "why": "Each minute on the new version publishes more potentially defamatory summaries, and a known-good version exists. Mitigating first stops the harm, and because the traces are already captured, diagnosis loses nothing by coming second."
+   },
+   {
+    "id": "b",
+    "text": "Pull traces of faulty and correct court summaries to find which new instruction causes the error",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Reading the traces is the right second step, and they are already recorded. Doing it first leaves the faulty version publishing to the live site while the team studies it."
+   },
+   {
+    "id": "c",
+    "text": "Add an alert that pages the duty editor whenever a court summary states that someone was convicted",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "An alert would report each bad summary after it has gone out. The harm here is the publication itself, so the fault needs stopping, not faster notice."
+   },
+   {
+    "id": "d",
+    "text": "Check whether the site-wide summary quality score has left its band before declaring an incident",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Court stories are a small share of output, so a site-wide score may barely move while a legally risky slice fails in public. The incident is already visible without it."
+   }
+  ],
+  "explain": "Binding constraint: irreversible public harm, with a known-good version one step away. That meets the exception to observe-first: mitigate by rolling back, then diagnose from the traces already captured.",
+  "rule": "CS-D4-19",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.6-006",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.6",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "regulation",
+  "industry": "retail",
+  "family": "pii-redact-at-capture-heavy-payloads",
+  "counterTrap": false,
+  "signals": [
+   "minimised before anything is stored",
+   "reproduce wrong answers"
+  ],
+  "stem": "Norrland Outdoor's order-support assistant handles returns and delivery questions for EU customers, and its prompts carry names, addresses, order numbers and sometimes partial card numbers. Conversation logging was switched off after a privacy review, so engineers can no longer reproduce wrong answers, which needs each conversation's prompt, retrieved policy passages and reply. The data protection officer will approve logging again only if personal data is minimised before anything is stored. The support platform lead must propose a logging design that meets the officer's condition and the engineers' need.",
+  "ask": "Which TWO measures BEST meet both needs? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Keep raw transcripts in an encrypted, access-logged vault for seven days, then redact them for engineers",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "Encryption and access logs protect the transcripts, but raw personal data still sits in a store for a week before anything is removed. The officer's condition is minimisation before storage, and protection after storage does not meet it."
+   },
+   {
+    "id": "b",
+    "text": "Redact or tokenise personal fields in the capture layer before any log record is written",
+    "correct": true,
+    "trap": null,
+    "why": "The officer requires minimisation before storage. Redacting in the capture layer means no store receives names, addresses or card digits, and tokens keep order numbers usable for joins, which is what lets logging be switched back on."
+   },
+   {
+    "id": "c",
+    "text": "Log only the redacted final reply for each conversation, with its timestamp and support channel",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "It meets the privacy condition, but a reply on its own shows engineers that an answer was wrong, not why. Without the prompt and retrieved policy passages they cannot rerun the conversation or tell a retrieval fault from a generation fault."
+   },
+   {
+    "id": "d",
+    "text": "Publish a platform logging standard that lists each logged field, its owner and its retention period",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A written standard helps teams log consistently, but it neither removes personal data at capture nor stores what engineers need to reproduce an answer. It changes neither outcome the lead has to deliver."
+   },
+   {
+    "id": "e",
+    "text": "Keep each conversation's prompt, retrieved passages and reply in an access-controlled store with set retention",
+    "correct": true,
+    "trap": null,
+    "why": "Reproducing a wrong answer needs what the assistant read and wrote, so each conversation's full payload has to be kept. Limiting who can read it and how long it lives reduces exposure of whatever remains after capture-time redaction."
+   }
+  ],
+  "explain": "Binding constraint: privacy regulation, applied as minimisation before storage. Redact at the point of capture, then keep each conversation's prompt, retrieved passages and reply in an access-controlled store so engineers can reproduce wrong answers.",
+  "rule": "CS-D4-15",
+  "ladder": null,
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.6-007",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.6",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "evidence",
+  "industry": "energy",
+  "family": "transport-success-hides-empty-results",
+  "counterTrap": false,
+  "signals": [
+   "records every call's status and latency by network area",
+   "a normal status and zero incidents returned"
+  ],
+  "stem": "Holmcroft Networks, an electricity distributor, took over a neighbouring network area two weeks ago. Its outage assistant answers 'is there a power cut at my address?' by calling the live outage-management tool with the customer's postcode. Customers in the new area report being told there is no known outage during active faults, yet tool monitoring raised no warning. It records every call's status and latency by network area, and success sits at 99.9% in both areas with latency unchanged. Traces of the complaint calls show a normal status and zero incidents returned.",
+  "ask": "What is the MOST likely reason tool monitoring gave no warning?",
+  "options": [
+   {
+    "id": "a",
+    "text": "It counts any normal response as a success, and a call that returns no incidents is a normal response",
+    "correct": true,
+    "trap": null,
+    "why": "The complaint calls came back with a normal status and zero incidents, which the monitoring scores as success. It watches transport health, status and latency, so a fast call with empty content looks the same as a correct one."
+   },
+   {
+    "id": "b",
+    "text": "Its success rate is pooled across the network, and the new area is too small a share to move it",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Pooling can hide a slice, but the monitoring already breaks results down by network area, and the new area also sits at 99.9%. The slice is visible and still healthy on this measure, so its size is not what hid the fault."
+   },
+   {
+    "id": "c",
+    "text": "It records a sample of tool calls, and the failing calls from the new area fell outside that sample",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Monitoring records every call, so no failing call can fall outside a sample. The complaint calls are in the data and were counted, and they were counted as successes."
+   },
+   {
+    "id": "d",
+    "text": "The assistant has no check that stops an all-clear reply when the outage tool returns no incidents",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Such a check is a preventive control that might have stopped some wrong replies. Its absence explains why the answers reached customers, not why a monitor watching the tool raised no warning."
+   }
+  ],
+  "explain": "Binding constraint: what the monitoring measures. Status and latency look the same for a correct result and an empty one, so a content failure shows only in what the calls returned, which the traces hold and a health metric does not.",
+  "rule": "CS-D4-14",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

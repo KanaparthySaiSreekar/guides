@@ -1,0 +1,434 @@
+[
+ {
+  "id": "P2-2.3-001",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.3",
+  "set": "formA",
+  "type": "multi",
+  "select": 3,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "accuracy-floor",
+  "industry": "airline",
+  "family": "per-failure-technique-matching",
+  "counterTrap": false,
+  "signals": [
+   "reorder or omit the standard options section",
+   "the carrier's disruption-waiver rule interact",
+   "which for payloads is zero rejections"
+  ],
+  "stem": "Tern Coast Airlines is piloting an assistant that drafts rebooking offers for passengers on cancelled flights. Each offer is a message to the passenger plus a payload that the reservation system parses automatically. The prompt asks for the offer directly and contains no examples. On 600 labelled disruptions, failures fall into three clusters: messages that reorder or omit the standard options section, refund amounts wrong where the fare's refund rule and the carrier's disruption-waiver rule interact, and payloads the reservation system rejects as malformed. Both rules were retrieved in every failed refund case. Launch requires each cluster to clear its agreed bar, which for payloads is zero rejections.",
+  "ask": "Which THREE changes BEST bring every cluster up to its bar? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Instruct the model to return the payload as valid JSON in the reservation system's format with a sample payload",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "An instruction and a sample make valid payloads more likely but not certain. Output that software parses must be valid every time, so rejections continue at a lower rate and the zero-rejection bar is still missed."
+   },
+   {
+    "id": "b",
+    "text": "Add a few complete example offers, including edge cases, that show the standard options section in order",
+    "correct": true,
+    "trap": null,
+    "why": "Section order and completeness are format defects. Complete example offers that include edge cases give the model the standard options section to copy, which a bare request for the offer leaves to chance."
+   },
+   {
+    "id": "c",
+    "text": "Have the model work through the fare refund and waiver rules step by step in a tagged section stripped before sending",
+    "correct": true,
+    "trap": null,
+    "why": "Refund amounts fail only where two retrieved rules interact, a multi-step logic failure. Working through both rules before the amount targets that cluster, and stripping the section keeps the working out of the passenger message."
+   },
+   {
+    "id": "d",
+    "text": "Attach the full conditions of carriage and the active waivers to each request instead of the retrieved rules",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Both the refund rule and the waiver rule were already retrieved in every failed case, so more policy text adds tokens and noise without repairing how the two rules combine."
+   },
+   {
+    "id": "e",
+    "text": "Define the payload as a strict schema and validate each one before it reaches the reservation system",
+    "correct": true,
+    "trap": null,
+    "why": "The payload bar is zero rejections, so validity has to hold on every offer. A strict schema plus validation before hand-off turns a malformed payload into a caught, retryable error instead of a downstream rejection."
+   },
+   {
+    "id": "f",
+    "text": "Open the system prompt with a role that describes the assistant as an experienced airline rebooking agent",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A role sets framing and tone, but it shows no section layout, adds no working for the interacting refund rules and makes no payload valid, so no cluster moves closer to its bar."
+   }
+  ],
+  "explain": "Binding constraint: each cluster must clear its own bar, and the payload bar is zero rejections. Match the technique to the failure: examples for format, step-by-step working kept out of the message for interacting rules, and a schema with validation for machine-read output that must be valid every time.",
+  "rule": "CS-D2-06",
+  "ladder": null,
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.3-002",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "logistics",
+  "family": "answer-only-schema-removed-reasoning",
+  "counterTrap": false,
+  "signals": [
+   "only the final quote fields",
+   "whole leg surcharges",
+   "single-stop quotes stay accurate"
+  ],
+  "stem": "Halvard Freight's quoting assistant prices less-than-truckload shipments from each lane's retrieved rate table. Until last month its free-text reply walked through each leg's charges before stating the total. To feed a new booking portal, the team switched to a response schema holding only the final quote fields, leaving the instructions otherwise unchanged. Since then, quotes for routes with three or more stops omit or double-count whole leg surcharges, while single-stop quotes stay accurate. The pinned model version, the retrieval pipeline and the share of multi-stop requests are unchanged, and the logged context for failing quotes holds the right rate tables.",
+  "ask": "What is the MOST likely cause of the multi-stop errors?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The pinned tier lacks the reasoning depth that routes with three or more stops demand and has reached its limit",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The pinned tier is an unchanged layer: it priced multi-stop routes accurately until the schema change, so blaming its capability ignores the one variable that moved."
+   },
+   {
+    "id": "b",
+    "text": "The model now commits to a total without first writing out the charges for each separate leg of the route",
+    "correct": true,
+    "trap": null,
+    "why": "The response format is the only variable that moved, and the answer-only schema took away the written leg-by-leg working that came before the total. Combining several surcharges in one step fails only on multi-stop routes."
+   },
+   {
+    "id": "c",
+    "text": "Multi-stop lanes need more rate-table chunks than the retrieval step currently places in the context",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Retrieval is unchanged and the logged context for failing quotes already holds the right rate tables, so missing context cannot explain errors that began with the format change."
+   },
+   {
+    "id": "d",
+    "text": "The schema's total field is an integer, so rounding error grows on routes that carry many separate charges",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Nothing says the field is an integer, and rounding would shift a total by a fraction of a unit, not by whole leg surcharges omitted or counted twice, while single-stop quotes in the same field stay accurate."
+   }
+  ],
+  "explain": "Binding constraint: what changed. Only the response format moved while model, retrieval and traffic mix held steady, and multi-step errors that start when written reasoning is removed point to the lost step-by-step working, so restore room for reasoning before the structured answer.",
+  "rule": "CS-D2-07",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.3-003",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "audience",
+  "industry": "energy",
+  "family": "few-shot-range-for-layout-drift",
+  "counterTrap": false,
+  "signals": [
+   "read in their first ten minutes on shift",
+   "puts open switching orders first",
+   "quiet nights to major faults"
+  ],
+  "stem": "Ashcombe Grid's control-room assistant drafts the shift-handover summary that incoming engineers read in their first ten minutes on shift. Engineers check the facts against the logs and find them accurate, but from run to run the summaries change section order, swing between terse bullets and long paragraphs, and put open switching orders in different places. The prompt is zero-shot with a one-line format instruction. The control-room manager has approved a standard layout that puts open switching orders first. Shifts range from quiet nights to major faults with dozens of open orders, and past handover notes were written freehand in personal layouts.",
+  "ask": "What should the architect do NEXT to make the summaries consistent for the incoming shift?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move summary drafting to the largest model tier, which tends to follow a brief format instruction more closely",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "A larger tier still gets only a one-line instruction and has never seen the approved layout, so the structure stays underspecified; capability is not the gap when the content is already accurate."
+   },
+   {
+    "id": "b",
+    "text": "Add one complete example handover from a typical quiet night shift, written out in the approved layout",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A single quiet-night example assumes one pattern fits every shift, so major-fault handovers with dozens of open orders still drift or get squeezed into the quiet shape that engineers must scan at shift start."
+   },
+   {
+    "id": "c",
+    "text": "Add a few complete example handovers in the approved layout, from quiet nights to major faults",
+    "correct": true,
+    "trap": null,
+    "why": "Content is accurate and only structure varies, a format defect. Examples in the approved layout that span quiet and fault shifts show open switching orders first in each case, which a one-line instruction leaves to chance."
+   },
+   {
+    "id": "d",
+    "text": "Fine-tune a drafting model on handovers written in the approved layout so the prompt needs no examples",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Fine-tuning needs a corpus in the approved layout, and past notes are freehand, so that corpus exists only after a prompt fix has produced and reviewed such handovers. It is a later step, not the next one."
+   }
+  ],
+  "explain": "Binding constraint: the audience, incoming engineers who must find open switching orders first in a layout they can scan within minutes. Accurate content with drifting structure is a format defect, so the next step is a few complete examples in the approved layout that cover the range of shifts.",
+  "rule": "CS-D2-06",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.3-004",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "manufacturing",
+  "family": "ambiguous-labels-examples-not-cot",
+  "counterTrap": false,
+  "signals": [
+   "waits 1.5 seconds at p95",
+   "measured 1.8 seconds at p95 and 92% accuracy",
+   "the labelled set uses those queues"
+  ],
+  "stem": "Brennmoor Plastics' maintenance router reads alarm text from injection-moulding PLCs and assigns one of nine repair queues. The plant's execution system waits 1.5 seconds at p95 before diverting an alarm to a manual queue. The zero-shot router answers in 0.8 seconds at p95 and scores 91% against an agreed 94% bar on 2,000 labelled alarms. Nearly all misroutes involve four alarm types whose wording fits two queues, which operators routed inconsistently in the maintenance log. Maintenance leads have since agreed which queue owns each of the four types, and the labelled set uses those queues. A trial with step-by-step reasoning measured 1.8 seconds at p95 and 92% accuracy.",
+  "ask": "Which change BEST lifts the router to the bar?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Adopt the trial prompt, so the model reasons step by step through each alarm before it names the queue",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The trial already measured this: 1.8 seconds at p95 breaches the 1.5-second diversion point, and 92% still misses the bar, because reasoning cannot reveal a queue convention the model has never been shown."
+   },
+   {
+    "id": "b",
+    "text": "Add a few curated examples of the four ambiguous alarm types, each labelled with its agreed repair queue",
+    "correct": true,
+    "trap": null,
+    "why": "Misroutes cluster in four types whose wording fits two queues, and the agreed owners appear only in the labelled set. Curated examples show the model that convention through a few input tokens and no extra output, so answers stay well inside 1.5 seconds."
+   },
+   {
+    "id": "c",
+    "text": "Add the moulding lines' full alarm-code manual to each routing request so the model can look up what a code means",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "The manual defines what each alarm code means, not which queue the leads agreed owns each of the four borderline types, so it adds text without supplying the convention behind the misroutes."
+   },
+   {
+    "id": "d",
+    "text": "Retrieve the most similar past alarms from the maintenance log and include their queues as examples",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Dynamic examples help only if past routings are right, but operators routed these exact types inconsistently in the log, so retrieved examples would teach that confusion rather than the queues the leads agreed."
+   }
+  ],
+  "explain": "Binding constraint: the 1.5-second p95 before alarms divert to manual handling, which the measured reasoning trial breaches while still missing the bar. Zero-shot stays the default only while it clears the bar; here the defect is an ambiguous label boundary in single-label routing, so a few curated examples of the agreed queues fix it without adding output latency.",
+  "rule": "CS-D2-06",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.3-005",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "retail",
+  "family": "anchoring-examples-ablation-zero-shot",
+  "counterTrap": true,
+  "signals": [
+   "examples removed and the style guide kept scored 95%",
+   "all for bedding",
+   "approved example copy only for bedding"
+  ],
+  "stem": "Larchmont Goods, an online homewares retailer, generates product descriptions for about 30,000 new items a season across 14 categories. The prompt carries a written style guide and three example descriptions, all for bedding, added two years ago. A merchandising review found lamp and cookware descriptions borrowing bedding phrasing, such as thread-count style specifications, and many opening with the same sentence. On 600 labelled listings, a variant with the examples removed and the style guide kept scored 95% against the agreed 92% bar, versus 86% for the current prompt. The brand team has approved example copy only for bedding.",
+  "ask": "Which change to the description prompt is BEST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Replace the bedding examples with one approved example description for each of the 14 categories",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This depends on approved copy existing for all 14 categories, but the brand team has approved examples for bedding alone, and the variant is untested while a measured fix already clears the bar."
+   },
+   {
+    "id": "b",
+    "text": "Remove the three bedding examples and run the prompt zero-shot with the written style guide it already has",
+    "correct": true,
+    "trap": null,
+    "why": "The ablation shows the examples are the problem: without them the prompt clears the bar by three points, and with them it misses by six. Examples that cover one category anchor every other category to bedding."
+   },
+   {
+    "id": "c",
+    "text": "Keep the examples and move description writing to the largest tier, which generalises across categories better",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "A larger tier would still see three bedding examples to imitate, and it adds cost across 30,000 items a season when removing the examples has already been measured above the bar."
+   },
+   {
+    "id": "d",
+    "text": "Keep the examples and add the brand's full style book and twenty recent listings to each request",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "More context leaves the bedding examples in place as the strongest pattern to copy, and it adds tokens to each of 30,000 requests without fixing the anchoring the review found."
+   }
+  ],
+  "explain": "Binding constraint: the evidence, an ablation on labelled listings showing that the examples lower quality and zero-shot clears the bar. Cutting prompt content is right when evals show it hurts; examples that do not cover the input range anchor varied inputs to one pattern.",
+  "rule": "CS-D2-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.3-006",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "audience",
+  "industry": "energy",
+  "family": "structured-cot-hidden-working",
+  "counterTrap": false,
+  "signals": [
+   "thinking disabled",
+   "that working now appears in the replies customers receive",
+   "lifted the score to 98%"
+  ],
+  "stem": "Solwen Energy's assistant tells customers in arrears whether they qualify for a hardship payment plan, which turns on interacting rules: arrears amount, concession status and any plan defaulted in the past year. It runs on a pinned model version with thinking disabled to meet cost targets, and the team cannot change that setting this quarter. Asking for the verdict directly scored 86% on 700 labelled cases against the agreed 96% bar. An instruction to work through each rule step by step lifted the score to 98%, but that working now appears in the replies customers receive, and the customer-care director has rejected it. Replies go out without human review.",
+  "ask": "Which change BEST keeps the accuracy gain and meets the director's objection?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Instruct the model to work through the rules silently and to write only the reply the customer reads",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "With thinking disabled on this deployment, reasoning the model never writes out does not take place, so this removes what produced the gain and heads back toward 86%."
+   },
+   {
+    "id": "b",
+    "text": "Drop the reasoning instruction and send hardship eligibility cases to the largest model tier instead",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "A larger tier answering directly is untested against the 96% bar and adds the cost the deployment is tuned to avoid, while written reasoning on the current model has already measured 98% on these cases."
+   },
+   {
+    "id": "c",
+    "text": "Replace the reasoning instruction with ten labelled past cases showing correct eligibility verdicts",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Verdict-only examples show outcomes, not how the three rules combine, so they do not repair the multi-rule logic that failed at 86%."
+   },
+   {
+    "id": "d",
+    "text": "Have the model write its rule-by-rule working in XML tags and send customers only the answer tag's content",
+    "correct": true,
+    "trap": null,
+    "why": "Separating the working from the answer keeps the written reasoning that lifted accuracy to 98%, and extracting only the answer tag's content means customers receive the reply alone even if some working strays outside its tags."
+   }
+  ],
+  "explain": "Binding constraint: the audience, customers who must receive the reply without the working, on a deployment where thinking stays off. Multi-rule errors need written step-by-step reasoning, so keep it, separate it from the answer with tags, and send customers only the extracted answer.",
+  "rule": "CS-D2-07",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

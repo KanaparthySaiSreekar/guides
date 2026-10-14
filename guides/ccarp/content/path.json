@@ -1,0 +1,441 @@
+{
+ "stages": [
+  {
+   "id": "s0",
+   "title": "Orient and logistics",
+   "minutes": "20",
+   "why": "You cannot study well for an exam you are not eligible for, have not booked, or are preparing for with the wrong blueprint.",
+   "do": [
+    "Read the Exam facts page and 'Why you saw 27%'. Discard any trainer built on 27/18/20/20/15.",
+    "Confirm your employer is in the Claude Partner Network and that you can register with a company-domain email.",
+    "Check your partner tier for a discount, and note that the reschedule deadline is 48 hours before your appointment.",
+    "Choose OnVUE or a test centre. If OnVUE, run the Pearson system test now on the machine you will use.",
+    "Set an exam date (or choose 'no date yet'), your minutes per day, and a schedule: 2-week, 3-week or 6-week."
+   ],
+   "exit": "The exam date (or 'no date yet') and the schedule are saved, and every item on the logistics checklist is ticked."
+  },
+  {
+   "id": "s1",
+   "title": "Self-assess and baseline",
+   "minutes": "60–75",
+   "why": "A measured baseline tells you where the points are. Self-ratings alone miss the objectives you are overconfident about.",
+   "do": [
+    "Rate all 38 objectives R/Y/G. Red: you cannot state the decision rule. Yellow: you know it but are unsure under trade-offs. Green: you can decide a scenario and name the trap (about 15 min).",
+    "Work the 3 official Section 8 samples as worked examples: find the constraint, classify it, name each distractor's trap (about 10 min).",
+    "Take the 21-item baseline (3 per domain, 4 multi-response) and mark your confidence on each answer (about 40 min).",
+    "Review the calibration flags (Overconfident / Underrated / Unmeasured) and accept or edit the suggested re-ratings."
+   ],
+   "exit": "The baseline is submitted, the priority queue is generated, and the re-ratings are confirmed."
+  },
+  {
+   "id": "s2",
+   "title": "Foundations gap-fill (conditional)",
+   "minutes": "120–480",
+   "why": "Professional items assume fluency with the API, MCP and Claude Code basics. Without that fluency, judgement items feel like vocabulary tests.",
+   "do": [
+    "Open this stage only if your baseline is below 55% in D2, D3 or D7, or 5 or more objectives are Red.",
+    "Take only the prerequisite courses that cover your Red areas: Building with the Claude API, Introduction to MCP and Claude Code in Action first; Claude 101, AI Fluency and AI Capabilities & Limitations only if needed.",
+    "Run the Foundations bridge drills. They are for mastery only and never count toward readiness.",
+    "Do not study CCAR-F material at CCAR-F weight. Claude Code internals are 7% here."
+   ],
+   "exit": "You score 70% or better on the bridge drills, or the stage is skipped because its trigger was not met."
+  },
+  {
+   "id": "s3",
+   "title": "Priority study loop",
+   "minutes": "600–1,350 (38 sections at about 10 min each plus interleaved drills is about 600; the 733-minute official prep path adds up to 733 more, less if you take only the courses for your weak domains)",
+   "why": "This is where most of your score is built. Order the work by weight × gap so the hours go where the points are.",
+   "do": [
+    "Study objective sections in priority order (default D3 > D1 > D4 > D5 = D6 > D2 > D7, re-sorted by your gaps and overconfidence flags).",
+    "For each section: pretest, rule, core idea, cue rows, worked example, traps and contrast, self-explain, check, then 'Prove it' and a re-rating.",
+    "Pair each domain block with its official course: Course 2 with D3/D4, Course 1 with D1/D2, Course 3 with D5, Course 4 with D6, Course 5 with D7.",
+    "After every 3 sections, run a 10-item interleaved mix.",
+    "Do due spaced reviews first each day, capped at 40% of the day's minutes."
+   ],
+   "exit": "Every objective is Practised: 4 or more graded items with accuracy of 0.6 or better."
+  },
+  {
+   "id": "s4",
+   "title": "Reading and build project (parallel)",
+   "minutes": "240–600",
+   "why": "The official guide tells you to build and run one end-to-end solution. Primary sources give you the vocabulary that the exam's rationales use.",
+   "do": [
+    "Read the primary sources on the Reading list alongside the matching domain block.",
+    "Build a small Meridian-style system: RAG over policy text plus a system-of-record lookup for live status.",
+    "Add an eval harness with pre-agreed thresholds, a per-slice breakdown and one A/B test whose metric, sample size and stopping rule are fixed in advance.",
+    "Add tracing, input and output guardrails, HITL on irreversible actions, and a compliance map linking each obligation to its control, owner and evidence.",
+    "Write one ADR and a one-page stakeholder brief with an SLA stated as p95 at peak."
+   ],
+   "exit": "The 8 build artefacts are ticked, or the stage is marked skipped with a reason."
+  },
+  {
+   "id": "s5",
+   "title": "Trap mastery",
+   "minutes": "90–150",
+   "why": "Most misses come from a small number of recurring distractor families. Once you can name the trap, you stop falling for it.",
+   "do": [
+    "Open this stage when any trap has 5 or more exposures and a fall rate of 35% or more.",
+    "Read the atlas cards and trigger words for your top traps.",
+    "Run trap drills, including the name-the-trap question and the counter-trap items where the tempting answer is actually right.",
+    "Do the multi-response clinic twice: count first, judge options independently, drop the filler, check the pair's balance."
+   ],
+   "exit": "Every trap with 5 or more exposures has a fall rate under 30%, and multi-response accuracy is 60% or better."
+  },
+  {
+   "id": "s6",
+   "title": "Form A and remediation",
+   "minutes": "120 + 60–90",
+   "why": "Your first full timed sitting measures readiness on fresh items and shows your pacing under realistic conditions.",
+   "do": [
+    "Sit Form A in strict mode at about 55% of your timeline, once at least 70% of objectives are Practised and no later than T-7, so Form B fits at least 3 days later and Form C by T-3.",
+    "Pace at 1:45 per item, using the checkpoints (17/30:00, 34/60:00, 51/90:00, 63/110:00) and the 3-minute flag rule.",
+    "Read the score report: expected misses per domain and the traps that cost you points.",
+    "Remediate the top 5 weak objectives: reread the cue rows and trap cards, then answer 5 items each."
+   ],
+   "exit": "Form A is submitted, reviewed and remediated."
+  },
+  {
+   "id": "s7",
+   "title": "Form B and second remediation",
+   "minutes": "120 + 60–90",
+   "why": "A second fresh form shows whether the remediation worked, rather than whether you remembered the items.",
+   "do": [
+    "Sit Form B at least 3 days after Form A.",
+    "Run a second remediation pass on your weakest objectives and on any D5 or D6 score below 70%.",
+    "If the readiness interval is still wide, add a half mock (32 items) or an adaptive mock."
+   ],
+   "exit": "Readiness shows On track: every domain gate is met and multi-response accuracy is 60% or better."
+  },
+  {
+   "id": "s8",
+   "title": "Dress rehearsal",
+   "minutes": "120 + 45",
+   "why": "Sitting a full exam under real conditions takes the logistics and pacing surprises out of exam day.",
+   "do": [
+    "Unseal Form C and sit it between T-7 and T-3 under exam conditions: one monitor, no phone, no notes, a single sitting.",
+    "Rehearse the full timeline, including 15 minutes of pre-exam setup.",
+    "Write a final targeted remediation list of no more than 5 objectives."
+   ],
+   "exit": "Readiness shows Ready, or a final remediation list is written."
+  },
+  {
+   "id": "s9",
+   "title": "Taper and exam day",
+   "minutes": "30–45 per day for the last 3 days",
+   "why": "Consolidating what you know beats learning new material in the last days, and a rested reader catches constraint words.",
+   "do": [
+    "Learn no new material, and take no sealed form after T-2.",
+    "Each day: the night-before cheat-sheet mode, cue flashcards, and clearing the spaced-review queue.",
+    "Do one 10-item pacing drill at 1:45 per item.",
+    "Recheck the OnVUE system test, make sure your ID name matches your registration, and set up the room.",
+    "Exam day: count first on multi-response, flag anything past 3 minutes, keep the last 10 minutes for flags and counts, and answer everything."
+   ],
+   "exit": "The exam is taken, and the score report's domain percentages are logged."
+  }
+ ],
+ "schedules": [
+  {
+   "id": "sprint-2w",
+   "name": "2-week sprint",
+   "who": "Engineers who already ship production LLM systems and whose baseline is mostly Yellow or Green",
+   "perDay": "About 100–155 min",
+   "plan": [
+    "Day 1: Stages 0–1 (logistics, 38 ratings, 3 official samples, 21-item baseline).",
+    "Day 2: D3 Integration, all 8 sections, plus a 10-item mix. Start official Course 2.",
+    "Day 3: D1 Solution Design, 6 sections, plus a mix. Start Course 1.",
+    "Day 4: D4 Evaluation, 6 sections, plus a mix. Finish Course 2 at 1.5x speed where you are Green.",
+    "Day 5: D5 Governance (5) and D6 6.1–6.2. Start Course 3.",
+    "Day 6: D6 6.3–6.5, D2 (5) and D7 (3). Skim sections where your rating and baseline agree Green. Skim Courses 4–5.",
+    "Day 7: Trap mastery for your top traps, plus the multi-response clinic twice.",
+    "Day 8: Form A, timed and strict, then read the score report.",
+    "Days 9–10: Remediate the top 5 weak objectives and drill the traps that cost you points.",
+    "Day 11: Form B, then a short remediation pass.",
+    "Day 12 (T-3): Form C dress rehearsal, or an adaptive mock if Form C was already used.",
+    "Days 13–14: Taper only (cheat sheet, flashcards, due reviews, OnVUE check). Day 15: exam."
+   ]
+  },
+  {
+   "id": "standard-3w",
+   "name": "3-week standard (default)",
+   "who": "Most candidates: architects with some production LLM exposure",
+   "perDay": "70–110 min",
+   "plan": [
+    "Days 1–2: Stages 0–1. Book the exam and note the 48-hour reschedule deadline.",
+    "Days 3–5: D3 Integration sections, paired with official Course 2 (Enterprise Integration & Production).",
+    "Days 6–7: D1 Solution Design sections, paired with Course 1 (Claude Platform & Solution Design).",
+    "Days 8–9: D4 Evaluation sections. Finish Course 2. Build an eval harness with thresholds.",
+    "Day 10: D5 Governance sections, paired with Course 3 (Responsible AI, Safety & Risk).",
+    "Day 11: D6 Stakeholder sections, paired with Course 4 (Stakeholder Engagement, Lifecycle & GTM).",
+    "Day 12: Form A, timed, and review (about 55% of the timeline; D3, D1, D4, D5 and D6, about 30 of 38 objectives, are Practised by now).",
+    "Day 13: D2 and D7 sections, paired with Course 5 (Team Enablement), and trap mastery for the traps Form A exposed.",
+    "Days 14–15: Remediation (top 5 weak objectives) and the multi-response clinic.",
+    "Day 16: Form B. Day 17: second remediation pass, focused on D5 and D6.",
+    "Day 18 (T-3): Form C dress rehearsal.",
+    "Days 19–20: Taper (no new material). Day 21: exam."
+   ]
+  },
+  {
+   "id": "foundation-6w",
+   "name": "6-week foundation",
+   "who": "Candidates newer to production LLM systems, or with 5 or more Red objectives",
+   "perDay": "45–80 min",
+   "plan": [
+    "Week 1: Stages 0–1. Start Stage 2 with the prerequisite courses for your Red areas (API, MCP, Claude Code in Action) and the bridge drills.",
+    "Week 2: D3 and D1 sections with Courses 1–2 (the two heaviest domains, 36% together). Start the build project: RAG plus a system-of-record lookup.",
+    "Week 3: D4, D5 and D6 sections with Courses 3–4. Add an eval harness, guardrails, HITL and a compliance map to the build. 14-item check-in (2 per domain).",
+    "Week 4: D2 and D7 sections with Course 5, then trap mastery and the multi-response clinic. Form A at the end of the week (about day 24, 57% of the timeline), then its remediation list.",
+    "Week 5: Remediation from Form A (write the ADR and stakeholder brief as D6 practice). Form B mid-week (at least 3 days after A), then a second remediation pass. Adaptive or half mocks if the readiness interval is still wide.",
+    "Week 6: Form C at T-5 as the dress rehearsal. Final targeted remediation, then taper for the last 3 days: cheat sheet night-before mode, flashcards, one pacing drill. Exam at the end of the week."
+   ]
+  }
+ ],
+ "prereq": [
+  "Claude 101",
+  "Claude Code in Action",
+  "AI Fluency: Framework & Foundations",
+  "Building with the Claude API",
+  "Introduction to Model Context Protocol",
+  "AI Capabilities and Limitations"
+ ],
+ "prep": [
+  {
+   "title": "Claude Platform & Solution Design",
+   "minutes": 238,
+   "domains": "D1 + D2 (30%)"
+  },
+  {
+   "title": "Enterprise Integration & Production",
+   "minutes": 158,
+   "domains": "D3 + D4 (35%)"
+  },
+  {
+   "title": "Responsible AI, Safety & Risk for Architects",
+   "minutes": 114,
+   "domains": "D5 (14%)"
+  },
+  {
+   "title": "Stakeholder Engagement, Lifecycle & GTM",
+   "minutes": 178,
+   "domains": "D6 (14%)"
+  },
+  {
+   "title": "Team Enablement & Operational Productivity",
+   "minutes": 45,
+   "domains": "D7 (7%)"
+  }
+ ],
+ "reading": [
+  {
+   "title": "Claude Certified Architect – Professional Exam Guide v1.0 (PDF)",
+   "url": "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf",
+   "why": "The source of truth for the blueprint: the 7 domains, 38 objectives, format, policies and the 3 official samples. Read it first and again during the taper.",
+   "domains": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  {
+   "title": "Building effective agents",
+   "url": "https://www.anthropic.com/engineering/building-effective-agents",
+   "why": "The augmented LLM, workflow patterns (chaining, routing, parallelisation, orchestrator-workers, evaluator-optimizer) and when an agent is actually justified.",
+   "domains": [
+    1
+   ]
+  },
+  {
+   "title": "How we built our multi-agent research system",
+   "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+   "why": "When multi-agent designs pay off (independent, parallel breadth), what they cost, how to hand context over, and how to evaluate agents.",
+   "domains": [
+    1,
+    4
+   ]
+  },
+  {
+   "title": "Effective context engineering for AI agents",
+   "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+   "why": "Context as a finite resource: just-in-time retrieval, compaction, structured notes and sub-agent isolation.",
+   "domains": [
+    2,
+    1
+   ]
+  },
+  {
+   "title": "Writing effective tools for agents — with agents",
+   "url": "https://www.anthropic.com/engineering/writing-tools-for-agents",
+   "why": "Tool design, namespacing, token-efficient responses, and evaluating tools. Explains why a mega-tool and endpoint-per-tool designs both fail.",
+   "domains": [
+    3,
+    2
+   ]
+  },
+  {
+   "title": "Introducing Contextual Retrieval",
+   "url": "https://www.anthropic.com/engineering/contextual-retrieval",
+   "why": "Chunk context, hybrid lexical plus embedding search, and re-ranking: how to fix precision instead of raising top-k.",
+   "domains": [
+    3
+   ]
+  },
+  {
+   "title": "Code execution with MCP: Building more efficient agents",
+   "url": "https://www.anthropic.com/engineering/code-execution-with-mcp",
+   "why": "Progressive discovery of tools and keeping intermediate data out of context when there are many MCP servers.",
+   "domains": [
+    3,
+    2
+   ]
+  },
+  {
+   "title": "Equipping agents for the real world with Agent Skills",
+   "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills",
+   "why": "Skills as on-demand know-how with progressive disclosure, and how they differ from MCP connections.",
+   "domains": [
+    2,
+    3,
+    7
+   ]
+  },
+  {
+   "title": "Prompt caching (docs)",
+   "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+   "why": "Prefix order, breakpoint placement, and why content that changes per request invalidates the cache. Sample 2 rests on this.",
+   "domains": [
+    2,
+    4
+   ]
+  },
+  {
+   "title": "Tool use with Claude (docs)",
+   "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+   "why": "Client and server tools, strict schemas, and the tool-call loop you design authorization around.",
+   "domains": [
+    3
+   ]
+  },
+  {
+   "title": "Tool search tool (docs)",
+   "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+   "why": "Loading tools on demand for large catalogues, the platform answer to tool bloat.",
+   "domains": [
+    3
+   ]
+  },
+  {
+   "title": "Define success criteria and build evaluations (docs)",
+   "url": "https://platform.claude.com/docs/en/test-and-evaluate/develop-tests",
+   "why": "Specific, measurable success criteria, eval design and grader choice (code, human, model), which are the core of D4.",
+   "domains": [
+    4
+   ]
+  },
+  {
+   "title": "Reduce hallucinations (docs)",
+   "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations",
+   "why": "Grounding, quote-first answers, citations and permission to say 'I don't know'.",
+   "domains": [
+    4,
+    5
+   ]
+  },
+  {
+   "title": "Mitigate jailbreaks and prompt injections (docs)",
+   "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks",
+   "why": "Layered input screening, harmlessness checks and the principle that guardrails sit outside the model's discretion.",
+   "domains": [
+    5
+   ]
+  },
+  {
+   "title": "Batch processing (docs)",
+   "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+   "why": "Asynchronous, lower-cost processing for non-interactive work, and why it is wrong for anything a user waits on.",
+   "domains": [
+    2,
+    4
+   ]
+  },
+  {
+   "title": "Citations (docs)",
+   "url": "https://platform.claude.com/docs/en/build-with-claude/citations",
+   "why": "Returns the passages that support each claim. Useful for grounded RAG answers and auditability.",
+   "domains": [
+    3,
+    5
+   ]
+  },
+  {
+   "title": "Context windows (docs)",
+   "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+   "why": "Context budgeting, compaction and context editing. Read principles only; sizes are version-sensitive.",
+   "domains": [
+    2
+   ]
+  },
+  {
+   "title": "Agent Skills overview (docs)",
+   "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+   "why": "Three-level progressive disclosure and the difference between a Skill and MCP.",
+   "domains": [
+    2,
+    7
+   ]
+  },
+  {
+   "title": "Model Context Protocol specification (latest)",
+   "url": "https://modelcontextprotocol.io/specification/latest",
+   "why": "Protocol roles, primitives and transports. Read to understand when MCP is the right integration mechanism.",
+   "domains": [
+    3
+   ]
+  },
+  {
+   "title": "MCP specification: Authorization",
+   "url": "https://modelcontextprotocol.io/specification/latest/basic/authorization",
+   "why": "Token audience validation, no token passthrough, and why the model must never decide authorization.",
+   "domains": [
+    3,
+    5
+   ]
+  },
+  {
+   "title": "Claude Code: Settings files and precedence",
+   "url": "https://code.claude.com/docs/en/settings",
+   "why": "User, project and managed scopes, and which scope wins. Covers the difference between how far a setting reaches and whether it can be overridden (D7).",
+   "domains": [
+    7
+   ]
+  },
+  {
+   "title": "Claude Code: How Claude remembers your project (memory)",
+   "url": "https://code.claude.com/docs/en/memory",
+   "why": "CLAUDE.md scopes and what memory can and cannot guarantee.",
+   "domains": [
+    7
+   ]
+  },
+  {
+   "title": "Claude Code: Hooks reference",
+   "url": "https://code.claude.com/docs/en/hooks",
+   "why": "Deterministic enforcement points, the answer when a rule must hold every time.",
+   "domains": [
+    7,
+    5
+   ]
+  },
+  {
+   "title": "Claude Code: Configure permissions",
+   "url": "https://code.claude.com/docs/en/permissions",
+   "why": "Allow and deny rules and org-wide non-overridable policy, which is least privilege for developer tooling.",
+   "domains": [
+    7,
+    5
+   ]
+  }
+ ]
+}

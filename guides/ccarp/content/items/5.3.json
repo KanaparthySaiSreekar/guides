@@ -1,0 +1,575 @@
+[
+ {
+  "id": "P5-5.3-001",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "lifecycle-stage",
+  "industry": "logistics",
+  "family": "hitl-consequence-map-first",
+  "counterTrap": false,
+  "signals": [
+   "about 96% in each of the three types",
+   "no review queue, routing rules or reviewer staffing exist yet",
+   "FIRST"
+  ],
+  "stem": "Brackwater Freight's dispatch agent has run in shadow mode for three months, logging what it would have done. It proposes three kinds of action: re-sequencing a driver's stops in the internal route planner, emailing revised delivery windows to consignees, and releasing carrier payments through payables. Senior dispatchers compared its proposals with their own decisions and found it matched them on about 96% in each of the three types. Operations wants human review in place before go-live next quarter, but no review queue, routing rules or reviewer staffing exist yet.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Estimate reviewer headcount from the shadow-mode volumes and agree a queue-time target with the dispatch managers",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Headcount depends on how many proposals will pass through a gate, and that is unknown until each action type has a review mode. Sizing the team now means guessing at the size of the queue."
+   },
+   {
+    "id": "b",
+    "text": "Build a review screen that shows each proposal beside the order, route and carrier contract data it relied on",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Evidence beside each proposal is what makes a gate real, but the screen can only be designed once the team knows which action types will be reviewed and what a reviewer must check for each of them."
+   },
+   {
+    "id": "c",
+    "text": "Set a review sample for each action type in proportion to the mismatch rate that the dispatchers measured",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "The mismatch rate is the same for all three types, so this spreads review evenly. A wrong re-sequence is fixed in the planner, while a released payment cannot be pulled back, and the sample ignores that difference."
+   },
+   {
+    "id": "d",
+    "text": "Rate each action type on reversibility and who a wrong proposal reaches, then set its review mode",
+    "correct": true,
+    "trap": null,
+    "why": "The dispatchers' check shows the error rate is the same across the three types, so consequence is what separates them. Payments and consignee emails leave the company and cannot be taken back, re-sequencing is internal, and staffing and screens follow from that map."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage, since no gate exists yet and error rates are equal across the action types. Classify each action by reversibility and reach first; sampling rates, staffing and review screens all depend on that map.",
+  "rule": "CS-D5-06",
+  "ladder": "hitl-routing",
+  "tips": [
+   "TIP-EL-10"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.3-002",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "airline",
+  "family": "self-rated-confidence-bypass",
+  "counterTrap": false,
+  "signals": [
+   "only drafts the model rates below 80% confident",
+   "most overpaid drafts carried self-ratings above 95%",
+   "reviewers still correct about a fifth"
+  ],
+  "stem": "Kestrel Atlantic Airways uses an assistant to draft goodwill compensation for disrupted passengers: travel vouchers, loyalty miles or cash refunds to the original card. To clear a review backlog, the team changed routing six weeks ago so that only drafts the model rates below 80% confident reach the customer-care desk. Cash overpayments have since risen sharply, and most overpaid drafts carried self-ratings above 95%. The model version, prompt, fare-rule data and reviewer team are unchanged, and reviewers still correct about a fifth of the drafts they see.",
+  "ask": "What is the MOST likely cause of the rise in overpayments?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The 80% cutoff is set too low for cash refunds, which cannot be recovered once paid, so risky cash drafts skip review",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "Most overpaid drafts were rated above 95%, far from the cutoff. A stricter cutoff for cash still trusts the same self-rating, and it would still wave through the confident errors that are driving the losses."
+   },
+   {
+    "id": "b",
+    "text": "The smaller queue has made reviewers complacent, so flawed cash drafts are being approved at the customer-care desk",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The reviewer team is unchanged and still corrects about a fifth of the drafts it sees. Most overpaid drafts were rated above 95% and never reached the desk, so reviewer complacency cannot explain them."
+   },
+   {
+    "id": "c",
+    "text": "The desk now sees a draft when the model doubts it, and the model's rating does not pick out its wrong cash drafts",
+    "correct": true,
+    "trap": null,
+    "why": "Routing is the only thing that changed, and it now keys on the model's rating of its own draft. Most overpaid drafts were rated above 95%, so they never reached the desk: the rating does not separate right cash refunds from wrong ones."
+   },
+   {
+    "id": "d",
+    "text": "The model's handling of fare rules has drifted since the change, so its cash drafts have become more generous",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Model version, prompt and fare-rule data are unchanged, and routing is the only thing the team altered. Blaming the model's reasoning ignores the variable that actually changed six weeks ago."
+   }
+  ],
+  "explain": "Binding constraint: what changed. Only routing changed, and it now keys on the model's rating of its own drafts, so confidently wrong cash refunds bypass the desk; the unchanged model, data and reviewer team rule out the other layers.",
+  "rule": "CS-D5-06",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-EL-10"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.3-003",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "scale",
+  "industry": "pharma",
+  "family": "risk-routing-plus-closure-sampling",
+  "counterTrap": false,
+  "signals": [
+   "about 6,000 adverse-event reports a month",
+   "three weeks behind",
+   "how often the automated closures are wrong"
+  ],
+  "stem": "Halvorsen Biologics' pharmacovigilance team uses an assistant to triage about 6,000 adverse-event reports a month. It codes each event, assesses seriousness, and either queues the case for expedited regulatory submission or closes it as non-serious for periodic reporting. Safety physicians review every case and are now three weeks behind, which puts expedited deadlines at risk. The head of safety wants physician time spent where a missed serious case would do harm, and wants to know how often the automated closures are wrong.",
+  "ask": "Which TWO changes BEST meet the head of safety's goals? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Keep physician review of every case, with the assistant's coding shown beside the source narrative to speed each review",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "Evidence beside each case helps, but at 6,000 cases a month blanket review is what built the backlog. Physician time stays spread across routine closures instead of landing on the cases where a miss would do harm."
+   },
+   {
+    "id": "b",
+    "text": "Escalate any expedited case still unreviewed five days before its regulatory due date to the head of safety",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "A deadline alert reports cases that are already at risk of being late. It does not send physicians the risky cases first, and it says nothing about closure errors, so neither goal changes."
+   },
+   {
+    "id": "c",
+    "text": "Route cases to physicians by rule: a possible seriousness criterion, a new product-event pair or a failed field check",
+    "correct": true,
+    "trap": null,
+    "why": "Seriousness criteria, novelty and failed checks are deterministic risk signals, so physician time lands on the cases where a miss would breach an expedited deadline or harm a patient, and routine cases stop queuing."
+   },
+   {
+    "id": "d",
+    "text": "Have physicians re-review a weekly stratified sample of the automated closures and record each case they reverse",
+    "correct": true,
+    "trap": null,
+    "why": "Closures no longer pass a physician, so re-reviewing a stratified sample of them is the detective control that shows how often they are wrong, and each reversal becomes a case for the eval set."
+   },
+   {
+    "id": "e",
+    "text": "Report how often physicians overturn the assistant on routed cases to the safety committee each month",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "An override rate on routed cases shows how the gate performs, but it says nothing about the closures that never reach a physician and moves no physician time, so neither goal changes."
+   }
+  ],
+  "explain": "Binding constraint: volume. At 6,000 cases a month, pair a preventive gate routed on deterministic seriousness signals with a detective sample of the automated closures; faster blanket review, deadline alerts and gate override rates each miss one of the two goals.",
+  "rule": "CS-D5-08",
+  "ladder": "hitl-routing",
+  "tips": [
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.3-004",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "evidence",
+  "industry": "logistics",
+  "family": "rubber-stamp-gate-redesign",
+  "counterTrap": false,
+  "signals": [
+   "approve 98% of proposals unedited",
+   "median review of six seconds",
+   "not a personal approval of every entry"
+  ],
+  "stem": "Portsea Customs Brokerage uses an assistant to propose tariff classifications for import entries, and a licensed broker currently approves each entry before filing. Compliance confirms the licence rules require broker supervision of the filing process, not a personal approval of every entry. Entry volume tripled this year and broker headcount will not change. Telemetry shows brokers approve 98% of proposals unedited, with a median review of six seconds, and a customs audit found misclassified entries that brokers had approved. The same brokers catch these errors reliably when they classify goods by hand.",
+  "ask": "Which TWO changes BEST restore review that actually catches errors? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add each broker's edit rate and median review time to the weekly compliance report to show whether their scrutiny recovers",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Telemetry already measures both numbers and already shows the stamp. Reporting them weekly is how to confirm a redesigned gate works, but by itself it leaves the same six-second review of every entry in place."
+   },
+   {
+    "id": "b",
+    "text": "Enforce a minimum 60-second review on each proposal before the approve button becomes active for the broker",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "With volume tripled and headcount fixed, a forced minute on every entry builds a backlog or becomes a timer that brokers wait out. Time without evidence or targeting does not turn a glance at a code into a check."
+   },
+   {
+    "id": "c",
+    "text": "Limit broker review to entries with risk signals, such as a code new to the importer, plus a daily sample of the rest",
+    "correct": true,
+    "trap": null,
+    "why": "Compliance requires supervision, not approval of every entry, so the queue can shrink to the entries where misclassification concentrates. With headcount fixed, that gives brokers time to judge, and the sample keeps routine filings under supervision."
+   },
+   {
+    "id": "d",
+    "text": "Run a refresher course for the broker team on classification rules and the most recent binding rulings",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "The brokers already classify these goods correctly by hand, so knowledge is not the gap. Training leaves the six-second, evidence-free review of every entry exactly as it is."
+   },
+   {
+    "id": "e",
+    "text": "Show each proposal beside the product description, the tariff note it relies on and the importer's past rulings",
+    "correct": true,
+    "trap": null,
+    "why": "Brokers catch these errors when they see the goods and the rules, so putting that evidence beside each proposal turns a glance at a code into an actual check."
+   }
+  ],
+  "explain": "Binding constraint: the telemetry evidence that the gate exists only on paper. Because compliance requires supervision rather than approval of every entry, redesign the gate: risk-target the queue with a sample of the remainder and surface the evidence brokers need; timers, training and reports leave the stamp in place.",
+  "rule": "CS-D5-07",
+  "ladder": "hitl-routing",
+  "tips": [
+   "TIP-EL-10",
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.3-005",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "healthcare",
+  "family": "clinician-reserved-denials",
+  "counterTrap": false,
+  "signals": [
+   "review the clinical record and decide any denial or partial denial",
+   "cut clinician review hours by 60%",
+   "possible denials take about 70% of clinician hours"
+  ],
+  "stem": "Lindqvist Health Plan uses an assistant to assess prior-authorisation requests against coverage criteria, and clinicians currently decide every request. Finance has set a target to cut clinician review hours by 60% this year. Most requests are approved, but possible denials take about 70% of clinician hours because they need the longest review. The state's utilisation-review rule requires that a licensed clinician review the clinical record and decide any denial or partial denial, and the compliance officer confirms that no exemption applies.",
+  "ask": "Which design BEST fits these requirements?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Auto-approve requests that clearly meet criteria, and queue each possible denial for a clinician with the full record",
+    "correct": true,
+    "trap": null,
+    "why": "The rule reserves every denial, full or partial, for a clinician who reviews the record, so the lawful saving is taking clear approvals out of the queue. With possible denials taking about 70% of hours, that saves at most about 30%, well short of 60%, and finance needs to hear that rather than have the design bend the rule."
+   },
+   {
+    "id": "b",
+    "text": "Auto-approve clear requests, auto-issue partial denials that only trim the units requested, and queue full denials",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Partial denials are named in the rule, so issuing them without a clinician breaches it however small the trim. It moves closer to finance's number by treating part of the legal gate as a trade-off."
+   },
+   {
+    "id": "c",
+    "text": "Auto-approve clear requests, and auto-issue the denials that a classifier validated on past clinician decisions rates clear-cut",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "A validated classifier is a sound routing signal, but the rule does not ask how likely a denial is to be right: it requires a clinician to decide it. Calibration cannot lift a legal gate."
+   },
+   {
+    "id": "d",
+    "text": "Auto-approve clear requests, and have clinicians sign off the assistant's proposed denials in a daily batch from its summaries",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "The rule requires a clinician to review the clinical record and decide. A batch sign-off from the assistant's summaries is a signature on the assistant's decision, so the gate exists on paper and skips the record the rule names."
+   }
+  ],
+  "explain": "Binding constraint: regulation, which outranks the cost target. Every full or partial denial must be decided by a clinician who reviews the record, so automate only clear approvals and queue possible denials with the record; the remaining gap to 60% goes back to finance rather than into the design.",
+  "rule": "CS-D5-06",
+  "ladder": "hitl-routing",
+  "tips": [
+   "TIP-EL-12"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.3-006",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "irreversibility",
+  "industry": "pharma",
+  "family": "irreversible-external-vs-bulk-internal",
+  "counterTrap": false,
+  "signals": [
+   "sends them to the physician by email",
+   "rolled back from a snapshot",
+   "cannot check both workloads in full"
+  ],
+  "stem": "Orrin Therapeutics' medical-information team uses an assistant for two jobs. It drafts answers to physicians' questions about dosing and drug interactions, about 40 a day, and sends them to the physician by email. It also re-tags the internal literature library each night, changing topic labels on up to 20,000 records, and any run can be rolled back from a snapshot. Two pharmacists are available for review, and they cannot check both workloads in full.",
+  "ask": "Which review design is BEST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Gate each nightly re-tag run before it applies, since it changes far more records, and sample the physician answers weekly",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "Size is not risk. A re-tag run is internal and rolls back from a snapshot, while one wrong dosing answer reaches a physician and cannot be recalled, so this gates the recoverable work and samples the harmful one."
+   },
+   {
+    "id": "b",
+    "text": "Gate both workloads before release, with one pharmacist checking the answers and the other checking each re-tag run",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "The pharmacists cannot check both in full, so one person facing 20,000 reversible label changes a night becomes a rubber stamp, while the dosing answers lose half the review time they need."
+   },
+   {
+    "id": "c",
+    "text": "Let both workloads run and have the pharmacists review a stratified daily sample of each, weighted toward dosing answers",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Sampling finds a wrong dosing answer only after the physician has read it. An emailed answer that may shape a prescription needs a check before it is sent, not a measure of how often errors went out."
+   },
+   {
+    "id": "d",
+    "text": "Gate each physician answer before it is emailed, and check a stratified sample of the changes from each re-tag run",
+    "correct": true,
+    "trap": null,
+    "why": "An emailed dosing answer cannot be recalled and may shape a prescribing decision, and about 40 a day fits the pharmacists' time. Re-tagging is internal and rolls back from a snapshot, so a sample is proportionate."
+   }
+  ],
+  "explain": "Binding constraint: irreversibility. A small external, irreversible action outranks a large internal, reversible one, so the pharmacists gate the emailed answers and sample the re-tagging that a snapshot can undo.",
+  "rule": "CS-D5-08",
+  "ladder": "hitl-routing",
+  "tips": [
+   "TIP-RD-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.3-007",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "saas",
+  "family": "calibrated-classifier-routing",
+  "counterTrap": true,
+  "signals": [
+   "separate dispute-outcome classifier",
+   "validated its scores against 18 months of labelled resolutions",
+   "no pattern simple enough to write as a rule"
+  ],
+  "stem": "Quillstack, a subscription-billing SaaS vendor, uses an assistant to resolve about 40,000 customer billing disputes a month. Rules already force analyst review for refunds above a set limit and for account closures. An error analysis found that wrong resolutions outside those rules follow no pattern simple enough to write as a rule. The risk team then trained a separate dispute-outcome classifier and validated its scores against 18 months of labelled resolutions, with thresholds checked per customer segment. Analysts can review about 3,000 of the remaining disputes a month.",
+  "ask": "What is the BEST way to choose which of the remaining disputes analysts review?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Route disputes to analysts by the risk team's classifier score at each segment's thresholds, beside the existing risk rules",
+    "correct": true,
+    "trap": null,
+    "why": "The classifier is separate from the assistant and has been checked against labelled outcomes per segment, so its score is a calibrated system signal. Used beside the risk rules, it finds the wrong resolutions that no rule can describe."
+   },
+   {
+    "id": "b",
+    "text": "Route disputes by the assistant's own confidence rating, using the cutoff that the pilot team chose last quarter",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "Unlike the classifier, the assistant's rating of its own resolutions has never been checked against outcomes. A cutoff picked in a pilot does not make a self-assessment calibrated."
+   },
+   {
+    "id": "c",
+    "text": "Split the 3,000 reviews across segments in line with each segment's past error rate, drawn at random within each",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "Weighting by segment helps estimate quality, but within a segment the draw is random, so most reviews land on disputes that were resolved correctly. Targeting needs a score for each dispute, which the classifier provides."
+   },
+   {
+    "id": "d",
+    "text": "Write more rules, for new customers, multi-invoice disputes and mid-cycle plan changes, instead of routing on a score",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "It assumes rules can find these errors, but the error analysis found no pattern simple enough to write as one. The classifier was validated on exactly that job, so replacing its score with rules discards the best evidence available."
+   }
+  ],
+  "explain": "Binding constraint: evidence quality. A separate classifier validated against labelled outcomes, used beside risk rules, is a legitimate routing signal, and here it is the only signal that finds errors no rule can describe; the assistant's own rating is not.",
+  "rule": "CS-D5-06",
+  "ladder": "hitl-routing",
+  "tips": [
+   "TIP-EL-10"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.3-008",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "auditability",
+  "industry": "telecom",
+  "family": "override-feedback-loop",
+  "counterTrap": false,
+  "signals": [
+   "stores each decision as approve or reject with a timestamp",
+   "which assistant fixes to prioritise next quarter",
+   "reject about 15% of the drafts they see"
+  ],
+  "stem": "Tessaline Mobile uses an assistant to assess SIM-swap and number port-out requests. It checks the customer's ID document, recent account changes and device history, then drafts one of three outcomes: approve, ask for further ID, or block. Requests that trip a fraud rule, such as a password reset within the last day, go to a fraud analyst before any outcome is issued. Three months in, analysts reject about 15% of the drafts they see, after a median review of two minutes. Product owners ask which assistant fixes to prioritise next quarter. The review tool stores each decision as approve or reject with a timestamp.",
+  "ask": "What is the BEST next step?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add fraud rules so that a larger share of requests reaches an analyst before any outcome is issued to the customer",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "The gate already catches real errors. Widening it catches more instances of the same mistakes, but it spreads analyst time thinner and still cannot tell the product owners which mistakes to fix."
+   },
+   {
+    "id": "b",
+    "text": "Chart each week's rejection rate, split by analyst and by fraud rule, on the fraud operations dashboard",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Rates by analyst and rule show where rejections happen, not what the assistant got wrong. A dashboard can only display what the tool records, and approve or reject with a timestamp holds no reason to rank a fix."
+   },
+   {
+    "id": "c",
+    "text": "Have analysts record a reason code and the correct outcome with each rejection, and add each case to the offline eval set",
+    "correct": true,
+    "trap": null,
+    "why": "Rejections are the richest error signal the gate produces, and approve or reject throws it away. Reasons and correct outcomes show which errors recur, give the owners a ranked list of fixes, and become eval cases that guard each fix."
+   },
+   {
+    "id": "d",
+    "text": "Re-prompt the assistant with last quarter's rejected drafts as examples of outcomes it should not repeat",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Tuning on rejected drafts is right once their causes are known, but a bare rejection shows neither what was wrong nor which of the other two outcomes was correct, so the examples cannot target a fix."
+   }
+  ],
+  "explain": "Binding constraint: traceability of reviewer decisions. The gate works, but approve or reject records nothing about what went wrong, so capture a reason and the correct outcome with each rejection and feed them into evals; only then can the owners rank fixes.",
+  "rule": "CS-D1-03",
+  "ladder": "hitl-routing",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

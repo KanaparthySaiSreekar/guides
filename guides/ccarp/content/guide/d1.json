@@ -1,0 +1,280 @@
+{
+ "domain": 1,
+ "intro": "Domain 1 tests whether you shape a solution before you pick technology. Items give you a business request, one binding constraint and four or more designs that would all run. The constraint might be a path auditors check, a caller that times out, a decision a person must own, a missing baseline or a value claim on the wrong denominator. The right answer is the least complex design that satisfies it: discovery before build, facts and rules in code, a feedback loop that reaches a named owner, and value claimed in the pillar the evidence supports. Distractors over-build, reach for a bigger model or more context, or skip a stage. Some items are counter-traps where an agent really is justified, so decide on what varies between requests, never on how hard the task sounds.",
+ "delta": "From CCAR-F you keep the pattern ladder, hub-and-spoke orchestration, explicit subagent handoffs and the chaining versus parallel distinction. Agent-loop and SDK mechanics (stop reasons, spawning wiring, tool allowlists) are now low-yield, because orchestration shrank from a whole Foundations domain to two objectives here. New at Professional level are discovery-first framing, feedback loops with a named owner, the delegation boundary between Claude, deterministic systems and people, and value claims and SLAs tied to the right pillar.",
+ "sections": [
+  {
+   "obj": "1.1",
+   "core": [
+    "The **job to be done** is the outcome a request should move, stated in the sponsor's own metric. A request that arrives as a solution ('a bot', 'an agent') gets restated this way, and that metric against its baseline becomes the success measure; model accuracy, adoption and output volume are only proxies. If the literal ask and the job diverge, take the evidence back to the sponsor instead of quietly building either.",
+    "**Discovery outputs** are a written baseline, a numeric target, a constraint inventory (latency, cost, residency, regulation), a data and access map and a named decision owner. Until they exist, no design option can be shown to be better than another.",
+    "An **error count** is the error rate (one minus accuracy) multiplied out at real volume. Ask which cases make up the count and what each one costs, because a correctable address change and a misrouted injury claim need different architectures. Never promise the sponsor's headline rate as a guarantee; commit to a measured rate with a handling path for each failure class.",
+    "The **delegation boundary** gives each part of the work one owner: Claude for judgement over unstructured input, deterministic systems for facts, calculations and entitlements, people for decisions that carry accountability. Human review is placed by the cost and reversibility of an error, never by the model's self-reported confidence.",
+    "The **no-AI outcome** is legitimate. When the rule can be written down (a lookup, a threshold, routing on a known field), code is cheaper and more reliable, and discovery that concludes this has done its job. The same holds when output must be guaranteed correct and there is no way to verify it, by rule, reference or reviewer, before it acts.",
+    "A **thin vertical slice** scopes a broad mandate to one end-to-end workflow with an outcome metric, chosen to test the riskiest assumption first and built to extend. When two sources both claim to be authoritative, have the data owners name the system of record as a scoping decision; the model cannot reconcile them reliably at request time."
+   ],
+   "worked": {
+    "scenario": "Meridian Mutual's Head of Claims Operations, Luis Ferreira, wants 'an agent that reads every adjuster note overnight and flags anything wrong'. He has budget and a vendor demo booked for Friday. His stated reason is claims reopened after closure, each costing his team about a day of re-handling. Nobody has defined what 'wrong' means, measured today's reopen rate, or said who would act on a flag.",
+    "ask": "What should you do first?",
+    "options": [
+     { "text": "Agree with Luis the job (fewer reopens), today's reopen rate as baseline, a target, the constraints and who acts on each flag.", "correct": true, "trap": null },
+     { "text": "Build a prototype over last month's adjuster notes before Friday's demo so that Luis can see what an agent would flag.", "correct": false, "trap": "T-SKIPDISC" },
+     { "text": "Design an agent that reads each night's notes, checks ClaimsCore for the claim history and opens corrective tasks for adjusters.", "correct": false, "trap": "T-AGENTIC" },
+     { "text": "Choose the highest model tier so that the overnight review catches subtle note errors that a smaller model would miss.", "correct": false, "trap": "T-BIGMODEL" }
+    ],
+    "steps": {
+     "constraint": "Nothing is agreed: 'wrong' is undefined, the reopen rate is unmeasured and no one owns a flag. The binding constraint is the missing problem definition, not capability.",
+     "classify": "Discovery stage. This is a framing decision that prevents building the wrong thing; no pattern or layer has been chosen yet.",
+     "eliminate": "B is T-SKIPDISC: a prototype answers 'can it flag?' before anyone agreed what a useful flag is. C is T-AGENTIC: it picks a pattern for a job nobody has defined. D is T-BIGMODEL: a tier choice presumes a capability gap nobody has measured.",
+     "choose": "Choose A. B would win only if the baseline, target and owner were already agreed and the prototype were framed as a feasibility test of that agreed question."
+    }
+   },
+   "faded": null,
+   "traps": ["T-SKIPDISC", "T-AGENTIC", "T-BIGMODEL", "T-OVERPROMISE"],
+   "contrast": {
+    "a": { "title": "Reframe first", "text": "The request names a solution and the baseline, target or decision owner is missing. Every build option is premature." },
+    "b": { "title": "Build next", "text": "Baseline, target, constraints and owner are written down, or the prototype is framed as a feasibility test of an agreed question." },
+    "decider": "Does the stem already state the baseline, the target and who owns the decision?"
+   },
+   "explain": {
+    "prompt": "Why does restating 99.7% routing accuracy as a monthly error count change the design conversation?",
+    "model": "A rate hides both volume and severity. On 14,000 claims a month, 0.3% is about 42 wrong claims, and the design depends on which claims they are: misrouted address changes are cheap to correct downstream, while misrouted injury or health claims may need their own path or a human gate. The count turns a headline figure into a question about failure cost."
+   },
+   "bridge": "Foundations prep barely covers discovery, so its reflex is to open with a pattern or a tool. At Professional level expect 'first step' stems where every build option is premature until the baseline, target and owner exist."
+  },
+  {
+   "obj": "1.2",
+   "core": [
+    "The **four stages** are input (sources, trust, minimisation), processing (pattern, tools, retrieval), output (where it lands, who acts) and feedback (what flows back, and to whom). Items often describe three and ask which one is missing.",
+    "A **closed loop** captures real outcomes and human corrections (edits, overrides, reopened cases), routes them to a named owner with authority to change the system, and turns them into labelled eval cases that gate the next change.",
+    "**Live state** such as claim status, reserves or balances comes from the system of record through a tool at request time. Retrieval is for knowledge that changes on a schedule, and faster re-indexing never fixes a live-state design error.",
+    "An **async boundary** resolves a caller timeout that is shorter than the work: accept, return a job ID, deliver by callback or polling. Downsizing the model or trimming required context to beat the clock trades away quality the sponsor never agreed to give up.",
+    "**Input-edge controls** sit before data enters the prompt: minimise and redact at intake, and treat claimant text and attachments as data, never as instructions. An output filter cannot undo data that has already crossed.",
+    "A **central LLM gateway**, one egress point for every model call, holds authentication, per-team quotas and budgets, logging, routing, model-version pinning and redaction in one place, and keeps the provider behind an adapter so moving between the Claude API, Bedrock, Google Cloud or Foundry stays cheap. It is also where a control must live when it has to cover every prompt leaving the network: Claude Code hooks run only in Claude Code and Agent SDK sessions, so a custom app needs the control in its own code or at the gateway.",
+    "**Retries need idempotency.** A side-effecting tool call (refund, ticket, payment) carries an idempotency key so a retry after a timeout or unknown outcome cannot act twice. Retry transient errors (429 with `retry-after`, 5xx, 529 overloaded) with jittered exponential backoff and a cap; do not retry validation errors or a spend-cap 429, which carries no `retry-after`. Queue deferrable work and shed interactive load with a clear message rather than letting retries amplify an overload. Records that fail validation go to a quarantine queue with an owner, never dropped silently, and a rising rejection rate is an early sign of upstream change."
+   ],
+   "worked": {
+    "scenario": "Meridian Mutual's adjuster-drafting assistant has been live for six weeks. Drafts land in the Adjuster Workbench, where adjusters edit, approve or reject them. The design document ends with 'quality monitored on a weekly dashboard'. Unedited approvals on travel claims have fallen for three weeks running. Nobody can say whether the prompt, the retrieved wording or the claim mix changed, and no one is named to decide what to do.",
+    "ask": "Which change completes the architecture?",
+    "options": [
+     { "text": "Log each edit and rejection with its trace, route them to Luis Ferreira as owner, and add them as labelled cases to the gating eval set.", "correct": true, "trap": null },
+     { "text": "Add an alert that notifies the platform team whenever the weekly unedited-approval rate on travel claims falls below a threshold.", "correct": false, "trap": "T-OBSERVE" },
+     { "text": "Re-index PolicyVault every night so that newly published travel-policy wording reaches the adjuster drafts within a day.", "correct": false, "trap": "T-ASSUME" },
+     { "text": "Ask the model to rate its confidence in each draft and send any draft it scores below 70% to a senior adjuster for review.", "correct": false, "trap": "T-SELFCONF" }
+    ],
+    "steps": {
+     "constraint": "The design stops at a dashboard. Nothing flows back to anyone who can change the system, so the binding gap is a feedback stage with an owner.",
+     "classify": "Detect and correct, at the feedback stage, in production. It is a design fix, not a diagnosis of this particular drop.",
+     "eliminate": "B is T-OBSERVE: an alert on an aggregate still has no captured corrections, no owner who acts and no path into evals. C is T-ASSUME: it presumes stale wording caused the drop, which nothing in the stem shows. D is T-SELFCONF: a self-rating is not a calibrated routing signal, and it adds review without closing the loop.",
+     "choose": "Choose A. B would need the stem to say corrections are already captured and owned, so that only the trigger is missing."
+    }
+   },
+   "faded": null,
+   "traps": ["T-OBSERVE", "T-LIVESTATE", "T-BOUNDARY", "T-ASSUME"],
+   "contrast": {
+    "a": { "title": "Live tool call", "text": "The answer depends on state that changes with each transaction, such as claim status or a reserve. Read it from the system of record at request time." },
+    "b": { "title": "Retrieval index", "text": "The content is document knowledge that changes on a schedule, such as policy wording by edition. Index it with the metadata the query filters on." },
+    "decider": "Does the value change with every transaction, or only when a new version is published?"
+   },
+   "explain": {
+    "prompt": "Why does a synchronous 2-second gateway timeout call for an async job rather than a smaller model?",
+    "model": "The timeout constrains the shape of the interaction, not the quality the work needs. A smaller model or trimmed context might fit under the limit on average, but it gives up accuracy nobody agreed to lose and the tail still breaches. Accepting the request, returning a job ID and delivering by callback removes the conflict instead of splitting the difference."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "1.3",
+   "core": [
+    "An **augmented LLM** is one model call enhanced with retrieval, tools or memory, often returning structured output. If one request and response does the job (classify, extract, answer with citations), the workflow and agent options are both over-engineering.",
+    "A **workflow** keeps the sequence in code, with gates between steps. Choose it when the path can be written down in advance and you need fixed order, halt on failure, per-step validation or an audit trail. Variation you can list ahead of time is a branch, not a reason for autonomy.",
+    "An **agent** lets the model choose its next step from what earlier steps returned. It needs both conditions: the steps cannot be listed in advance, and a wrong intermediate step is acceptable and recoverable. Difficulty or messy input alone never qualifies.",
+    "The **deterministic core** stays in code or the system of record whatever the pattern: eligibility, payout arithmetic, authority limits and anything regulators check. Stricter prompt wording does not make a model deterministic.",
+    "The **counter-trap** is real. In open-ended investigation, where each result decides the next query, a fixed workflow is the under-built answer. Bound the agent with scoped read-only tools, a step limit and a human who acts on its output."
+   ],
+   "worked": {
+    "scenario": "Each month Meridian Mutual sends its reinsurer a large-loss report. Someone pulls closed large-loss claims from ClaimsCore, summarises each loss narrative, maps it to treaty codes, reconciles totals against the ledger and files the report. The steps never change, the reinsurer audits every figure, and a total that fails to reconcile must stop the run. Aiko Brennan suggests an autonomous agent because the narratives are messy.",
+    "ask": "Which pattern fits this report?",
+    "options": [
+     { "text": "A logged workflow: code runs the fixed steps, Claude summarises and codes each narrative, and a reconciliation gate halts on any mismatch.", "correct": true, "trap": null },
+     { "text": "An autonomous agent with ClaimsCore and ledger tools that plans the report afresh each month and retries until the totals reconcile.", "correct": false, "trap": "T-AGENTIC" },
+     { "text": "Three agents, one each for the claims, finance and reinsurance teams, each passing its share of the report on to the next team's agent.", "correct": false, "trap": "T-ORGCHART" },
+     { "text": "One augmented call per claim that summarises, codes and also computes the treaty totals, with a prompt telling it to double-check its sums.", "correct": false, "trap": "T-ENFORCE" }
+    ],
+    "steps": {
+     "constraint": "'The steps never change', 'the reinsurer audits every figure' and 'must stop the run' bind: a fixed path, auditability and halt on failure.",
+     "classify": "Pattern selection at design stage. The reconciliation is a preventive control, and it belongs in code.",
+     "eliminate": "B is T-AGENTIC: messy narratives justify a model inside a step, not a model-chosen path. C is T-ORGCHART: team boundaries are not technical seams, and the split gives up guaranteed order and a single audit trail. D is T-ENFORCE: totals an auditor checks are computed deterministically, not requested in a prompt.",
+     "choose": "Choose A. B would need the stem to say the steps vary each month in ways nobody can list, and that a wrong intermediate result is recoverable."
+    }
+   },
+   "faded": {
+    "scenario": "Meridian Mutual's investigations unit (SIU) wants help preparing complex suspected-fraud files. Every file is different: one needs repair invoices checked against photos, another needs prior claims across linked policies, a third needs weather records for the date of loss. Investigators decide every outcome, and the assistant would only gather and summarise evidence, read-only. Luis Ferreira suggests reusing the fixed FNOL intake workflow for consistency.",
+    "ask": "Which pattern fits the investigation support?",
+    "options": [
+     { "text": "Extend the FNOL intake workflow with a fixed list of evidence checks (invoices, prior claims, weather) that runs on every file.", "correct": false, "trap": "T-ASSUME", "why": "It assumes the checks can be listed in advance. The stem says each file needs different ones, so a fixed list misses sources or runs irrelevant ones." },
+     { "text": "A read-only agent that picks its next source from what it has found, within a step limit, and returns a cited evidence summary.", "correct": true, "trap": null, "why": "Both agent conditions hold: the path emerges from each result, and errors are recoverable because an investigator decides. Read-only tools and a step limit contain the autonomy." },
+     { "text": "One augmented call that receives the whole claim file plus every linked policy, prior claim and weather record, and writes the summary.", "correct": false, "trap": "T-STUFF", "why": "More volume in one call is not a path. The model still cannot fetch a source it only discovers it needs halfway through." },
+     { "text": "Keep the intake workflow but move each of its steps to the highest model tier so that it adapts its checks to each file.", "correct": false, "trap": "T-BIGMODEL", "why": "A stronger model inside a fixed path still runs the fixed path. The defect is structural, not capability." }
+    ],
+    "constraint": "'Every file is different', 'investigators decide every outcome' and 'read-only' are the phrases that bind.",
+    "classify": "Pattern selection at design stage. Walk the pattern ladder: ask what varies between two files, and what a wrong intermediate step would cost.",
+    "reasoning": "Each finding decides the next source, and a wrong step is recoverable because the tools are read-only and an investigator decides, so both agent conditions hold and the fixed workflow is under-built. A fails on T-ASSUME: the checks cannot be listed in advance. C (T-STUFF) and D (T-BIGMODEL) add volume or capability but never let the next step depend on the last result. Choose B: its autonomy is contained by what it cannot do (no write tools, a step limit), not by what it is told."
+   },
+   "traps": ["T-AGENTIC", "T-ENFORCE", "T-ORGCHART"],
+   "contrast": {
+    "a": { "title": "Workflow", "text": "The path can be written down before the request arrives, and you need fixed order, gates or an audit trail." },
+    "b": { "title": "Agent", "text": "The next step depends on what the last one found, and a wrong step is recoverable before anything irreversible happens." },
+    "decider": "Can you list the steps before the request arrives?"
+   },
+   "explain": {
+    "prompt": "Why does messy input justify a model inside a step but not an agent?",
+    "model": "Messy input is a content problem, and an augmented call handles unstructured text inside a fixed step. An agent answers a path problem: it is justified only when the sequence cannot be known in advance. Confusing the two buys autonomy and gives up the order, halting and audit trail a workflow provides for free."
+   },
+   "bridge": "The pattern ladder carries over from Foundations intact. What Foundations prep overweights is agent-loop mechanics such as stop reasons and iteration caps; here the item asks only which rung, and why."
+  },
+  {
+   "obj": "1.4",
+   "core": [
+    "**Orchestrator-workers** means a lead model decides the split from the input, dispatches workers and synthesises their structured results. With subagents as the workers, each in an isolated context, it suits breadth-first work whose threads are independent, exploratory and too large for one context. If each part is a single call and the split is fixed in advance, sectioning in code (1.5) is simpler.",
+    "In **hub and spoke** the coordinator owns routing, sequencing, error handling and aggregation, and subagents never hand work to one another. Peer-to-peer handoffs remove the one place where order and failure are managed.",
+    "An **explicit handoff** carries the goal, constraints, required facts, allowed sources and return schema, because a subagent starts in a fresh context and sees none of the coordinator's history (in Claude Code only a fork inherits the conversation). Send only what the subtask needs, which also keeps unneeded personal data out of its context.",
+    "**Legitimate seams** are parallel independent subtasks, tool sets or permissions that must stay apart, and context one agent cannot hold. A department boundary counts only when it coincides with one of these. When one agent keeps picking the wrong tool from a growing catalogue, scope tools per task and load the rest on demand; longer descriptions or one merged mega-tool do not fix it.",
+    "**Splitting has a cost**: more tokens, synthesis latency, harder tracing, and lost ordering and halt on failure. Delegation can nest within a depth limit, which multiplies those costs, so justify every level you add.",
+    "**Fan-out failures** belong to the orchestrator: retry a failed worker within a bound, have each worker return an explicit gap flag rather than a silent partial result, and reconcile results received against units dispatched so a dropped unit is caught before synthesis. Concurrent workers never write to the same mutable state; give each its own workspace (a separate branch or worktree) and merge through an explicit handoff artefact."
+   ],
+   "worked": {
+    "scenario": "After a major storm, Meridian Mutual's catastrophe team needs a briefing within hours: exposure by postcode, reinsurance treaty triggers, early FNOL volume by channel and staffing gaps by region. The four analyses share no intermediate results and each draws on different data. Within each one, the next query depends on what the last showed about the storm's footprint. A first build ran all four in sequence inside one agent, overflowed its context and returned a thin staffing section.",
+    "ask": "Which design fits best?",
+    "options": [
+     { "text": "A lead agent dispatches four parallel subagents, each with its own question, data scope and return schema, then synthesises one briefing.", "correct": true, "trap": null },
+     { "text": "Keep the single agent and give it a larger context window so that all four analyses fit into one sequential pass over the data.", "correct": false, "trap": "T-STUFF" },
+     { "text": "One agent per owning department (underwriting, finance, operations, workforce), each passing its finished output on to the next.", "correct": false, "trap": "T-ORGCHART" },
+     { "text": "Expose each analysis as an agent-to-agent service that the departments' own agents discover and negotiate into one briefing.", "correct": false, "trap": "T-PROTOCOL" }
+    ],
+    "steps": {
+     "constraint": "'Share no intermediate results', 'different data', a next query that depends on the last, and an overflowed context under a deadline of hours: independent threads, each exploratory, too much for one context.",
+     "classify": "Orchestration design at build stage. The seam is technical independence, not ownership.",
+     "eliminate": "B is T-STUFF: a bigger window keeps one slow sequential pass and the shallow section. C is T-ORGCHART: departments are not the seam, and a chain serialises independent work. D is T-PROTOCOL: nothing here reasons or negotiates across an ownership boundary; these are workers under one coordinator.",
+     "choose": "Choose A. If each analysis were one fixed query, code-run parallel sections would be simpler; subagents earn their place because every thread needs its own multi-step search. C would need a department's data to sit behind its own security boundary, and even then the work would run in parallel under one coordinator, not as a chain."
+    }
+   },
+   "faded": {
+    "scenario": "Meridian Mutual's investigation agent delegates weather checks to a subagent. Investigators notice that the subagent's summaries often describe weather at the claimant's home address rather than the loss location, and sometimes for the wrong date. The coordinator had both facts in its own context from the claim file. A developer on Aiko Brennan's team asks whether the subagent simply needs a stronger model.",
+    "ask": "What is the best fix?",
+    "options": [
+     { "text": "Pass the loss location, date of loss, the question, allowed sources and a return schema explicitly in every handoff.", "correct": true, "trap": null, "why": "A subagent knows only what its handoff carries. The facts the coordinator held never reached it, so the fix is the handoff." },
+     { "text": "Move the subagent to a higher model tier so that it can infer the right place and date from the claim narrative itself.", "correct": false, "trap": "T-BIGMODEL", "why": "The defect is missing context, not reasoning. No tier can use facts it was never given." },
+     { "text": "Give the subagent the coordinator's full conversation history, claim file included, so that it never misses any context.", "correct": false, "trap": "T-STUFF", "why": "More context is not a clearer brief. The history also holds the home address, so the ambiguity survives, and claimant data a weather check never needs crosses anyway." },
+     { "text": "Add an instruction to the subagent's system prompt to always use the loss location and the date of loss, never the home address.", "correct": false, "trap": "T-ASSUME", "why": "It assumes the subagent can see those facts. An instruction to use a value does not supply it." }
+    ],
+    "constraint": "The coordinator held the loss location and the date of loss; the subagent's summaries use other places and dates.",
+    "classify": "Orchestration defect in production. Before picking a fix, name the defect class: reasoning, missing context or instruction wording.",
+    "reasoning": "The defect is missing context: the facts the coordinator held never crossed the handoff, and no tier can reason from facts it never received, which removes B (T-BIGMODEL). D (T-ASSUME) tells the subagent to use facts it cannot see. C (T-STUFF) sends everything, home address included, so the ambiguity survives and unneeded claimant data crosses. Choose A: the minimum required facts plus a schema that makes each return checkable."
+   },
+   "traps": ["T-ORGCHART", "T-AGENTIC", "T-MEGATOOL", "T-PROTOCOL"],
+   "contrast": {
+    "a": { "title": "Single agent, scoped tools", "text": "Steps are sequential or share state, one context holds the work, and ordering or a single audit trail matters." },
+    "b": { "title": "Orchestrator with subagents", "text": "Subtasks are independent and can run in parallel, or they need separate tools, permissions or context windows." },
+    "decider": "Does any subtask need another subtask's intermediate result?"
+   },
+   "explain": {
+    "prompt": "Why does splitting a sequential, audited process across several agents make it worse?",
+    "model": "Splitting moves sequencing from one owner into message passing, so you lose guaranteed order, halt on failure and a single audit trail, and every handoff can drop context. Those are the properties an audited process depends on. A second agent earns its place only through independence, or specialisation one context cannot hold."
+   },
+   "bridge": "Hub-and-spoke and explicit handoffs carry over directly from Foundations. The spawning mechanics and tool allowlists that Foundations prep drilled are low-yield; items ask whether to split and what the handoff must carry."
+  },
+  {
+   "obj": "1.5",
+   "core": [
+    "**Prompt chaining** runs dependent steps in sequence, each consuming the previous output, with programmatic gates that stop or reroute on failure. Use it when a later step is meaningless without a valid earlier one.",
+    "**Sectioning** runs independent aspects as parallel calls and combines them in a final step, with the split decided in code. It fixes skipped or shallow sections in one long prompt.",
+    "**Routing** classifies first, then sends each input class to its own prompt, schema, tools or tier. It fits when classes need different handling and one shared prompt degrades each of them.",
+    "A **model-decided split** (orchestrator-workers) is for subtasks you cannot know until the input has been inspected. If the split can be written down in advance, sectioning is simpler and easier to test. Either way, draw the lines by dependency and independence, never by which team owns a step.",
+    "**Voting** runs the same judgement several times and aggregates the results to buy confidence on high-stakes calls. It multiplies cost, so keep it for calls where an error costs more than the extra runs. With asymmetric error costs, act automatically only when the runs agree and send disagreement to a person.",
+    "An **evaluator-optimizer** loop has one call generate and another critique against stated criteria, repeating until the criteria pass or a retry cap is hit, then escalating. It earns its cost only when the criteria are clear and feedback measurably improves the draft; with vague criteria the loop polishes nothing. Where a criterion can be checked in code (schema valid, citation resolves, totals match), the code check is the evaluator.",
+    "Check a decomposition before building it. Each subtask should have an output you can verify on its own and a bounded context need. Map every case category from discovery onto a subtask or route, and slice evals by category, so no class of case is left unowned. Stop splitting at real separability: each extra handoff loses context and adds latency."
+   ],
+   "worked": {
+    "scenario": "Meridian Mutual drafts coverage explanations for complex home claims in one long prompt: summarise the loss, identify the clauses in force at the date of loss, check exclusions, assess each rider, then write the claimant letter. When a claim carries several riders, some rider assessments are skipped, and letters sometimes cite exclusions the clause step never identified. Where a rider is assessed, adjusters rate the reasoning sound. Tomasz Wiśniewski's evals confirm the misses cluster on claims with three or more riders.",
+    "ask": "Which change best fixes the failure?",
+    "options": [
+     { "text": "Chain the dependent steps, with a gate that rejects any exclusion not found upstream, and assess each rider as a parallel section.", "correct": true, "trap": null },
+     { "text": "Move to a larger context window and include every rider's full wording so the single prompt has every clause it could need.", "correct": false, "trap": "T-STUFF" },
+     { "text": "Replace the prompt with an autonomous agent that decides, claim by claim, which of the five steps to perform and in what order to run them.", "correct": false, "trap": "T-AGENTIC" },
+     { "text": "Route claims with three or more riders to the highest model tier, keeping the same single prompt and the same letter template.", "correct": false, "trap": "T-BIGMODEL" }
+    ],
+    "steps": {
+     "constraint": "Misses cluster where the prompt carries the most independent parts, the reasoning holds wherever a rider is assessed, and the letter cites facts no earlier step produced: a structural defect in coverage and dependency, not capability.",
+     "classify": "Decomposition at design stage. The gate is a preventive check in code between steps.",
+     "eliminate": "B is T-STUFF: more text in the same prompt deepens the coverage problem. C is T-AGENTIC: the steps are known in advance, so a model-chosen path adds risk and nothing else. D is T-BIGMODEL: a higher tier on the same monolithic prompt still has no gate.",
+     "choose": "Choose A. D would need evals showing the rider reasoning itself fails on a well-structured prompt, which would make capability the binding defect."
+    }
+   },
+   "faded": {
+    "scenario": "Meridian Mutual's claimant inbox mixes address changes, new FNOLs, complaints and medical invoices in one stream. A single prompt classifies each email, extracts fields and drafts a reply. Slice results show medical-invoice extraction is the weakest, and some complaint replies reuse the FNOL acknowledgement template. Luis Ferreira wants the fix in place before the next quarterly review.",
+    "ask": "Which decomposition fixes this?",
+    "options": [
+     { "text": "Classify first, then route each email class to its own extraction prompt, schema and reply template, scored as its own slice.", "correct": true, "trap": null, "why": "The classes need different handling, and the template error is classes bleeding into each other inside one prompt. Routing isolates them." },
+     { "text": "Split the prompt into parallel sections for classification, field extraction and reply drafting, then merge the three results.", "correct": false, "trap": "T-ASSUME", "why": "Sectioning assumes the parts are independent. Extraction and reply both depend on the class, so they cannot run alongside it." },
+     { "text": "Add several worked examples of every email type, medical invoices and complaints included, to the single prompt to sharpen each output.", "correct": false, "trap": "T-STUFF", "why": "More examples add volume to the same shared prompt; the classes still compete in one context." },
+     { "text": "Wait for next quarter's eval refresh so that any design change is measured on fresh, representative inbox data before it ships.", "correct": false, "trap": "T-LATER", "why": "The slice failure is already measured. Waiting pushes a fix the current stage needs into a later one." }
+    ],
+    "constraint": "Errors concentrate on particular email types: medical-invoice extraction, and complaint replies that borrow the FNOL template.",
+    "classify": "Decomposition at design stage. Before choosing a chain, sections or routing, check which steps need another step's output.",
+    "reasoning": "Extraction and reply both depend on the email's class, and each class needs its own handling, so classify first and route. One classification step reveals the class, so no model-decided split is needed. B fails on T-ASSUME because the parts are not independent. C (T-STUFF) adds volume to the shared prompt, and D (T-LATER) waits for evidence already in hand. Choose A, and score each route as its own slice."
+   },
+   "traps": ["T-STUFF", "T-AGENTIC", "T-ASSUME", "T-LATER"],
+   "contrast": {
+    "a": { "title": "Prompt chain", "text": "Each step needs the previous output, and a failed check must stop or reroute the run." },
+    "b": { "title": "Parallel sections", "text": "The aspects are independent, can be judged separately, and a final step combines them." },
+    "decider": "Does step B need step A's output?"
+   },
+   "explain": {
+    "prompt": "Why does a larger context window not fix skipped sections in a long multi-part prompt?",
+    "model": "Skipped or shallow sections are structural: many independent tasks compete for attention in one pass, and nothing checks that each was done. A larger window adds room, not structure. Sectioning gives each aspect its own call, and the combining step can verify coverage before anything ships."
+   },
+   "bridge": "Chaining versus parallel decomposition is Foundations material that carries over. Foundations prep leans on how parallel work is spawned; here you are graded on choosing the split (dependency, independence, input class) that removes the observed failure."
+  },
+  {
+   "obj": "1.6",
+   "core": [
+    "The **denominator** names the pillar. Gains per unit of work (per claim, per case) are efficiency. Gains per person (claims closed per adjuster) are productivity, claimed only once output per person has actually risen. Work that was not feasible before (a new service, a new segment, a decision nobody could afford at the old cost) is transformation. A faster version of the same process is efficiency however large the gain, and removing a role counts as efficiency too.",
+    "The **cost** pillar is cost per unit of work against the discovery baseline, including review and rework, with token spend tracked against volume. Seats, adoption and demo anecdotes are activity, not value.",
+    "A **performance SLA** is a latency percentile at peak load, a quality floor on a named eval, an error budget and defined degraded behaviour. It is a gate: drop options that miss it before comparing cost or preference.",
+    "An **honest value claim** is segmented by line or case type, states its method and is measured end to end after human review. Commit to measured rates with error handling, never to certainty, except for deterministic parts you control.",
+    "**Audience fit** means executives get the decision, business impact, risks and the ask in their pillar's terms, with an SLA stated as the experience it protects (first contact within the target during a catastrophe surge). Architecture diagrams go to the technical reviewers who sign off the design.",
+    "**Use-case portfolio** ranking is a different decision from choosing a design for one system. Score each candidate's quantified value against its feasibility (data readiness and rights, integration) and its risk, and start where value is high and feasibility and risk are favourable. An SLA gate eliminates designs that miss one system's SLA; it does not rank use cases that have no SLA yet.",
+    "**Value realisation**: hours saved count as value only through a named realisation path (redeployed capacity, avoided hires, faster revenue), net of run cost, review and rework. A finance audience gets unit economics with explicit, adjustable assumptions and a sensitivity range. A transformation proposal whose value is not yet known is funded as a bounded experiment with a decision point, not judged against an efficiency baseline."
+   ],
+   "worked": {
+    "scenario": "A pilot of Meridian Mutual's FNOL intake assistant cut adjuster handling time from 19 to 6 minutes per claim. Headcount and monthly claim volume stayed flat. Dana Okafor's draft board slide says the assistant has 'transformed claims handling' and cites 94% adjuster adoption. Gerald Hume, the CFO, wants to know what the finance committee is being asked to approve, and on what evidence.",
+    "ask": "How should you frame the value claim?",
+    "options": [
+     { "text": "Efficiency: adjuster minutes per claim against the pre-pilot baseline, segmented by line, with cost per claim and the method stated.", "correct": true, "trap": null },
+     { "text": "Transformation: the assistant changes how claims work is done across the whole team, as the 94% adjuster adoption figure shows.", "correct": false, "trap": "T-OVERPROMISE" },
+     { "text": "Productivity: claims closed per adjuster each month, since the 13 minutes saved on every claim will convert into more closures.", "correct": false, "trap": "T-ASSUME" },
+     { "text": "The full architecture and a side-by-side model comparison, so the finance committee can see why the pilot's gains will last at scale.", "correct": false, "trap": "T-AUDIENCE" }
+    ],
+    "steps": {
+     "constraint": "The evidence is per claim, with flat headcount and flat volume, and the audience is a CFO asking for a decision. The denominator binds.",
+     "classify": "Value framing at pilot exit, before the go or no-go decision, for an executive finance audience.",
+     "eliminate": "B is T-OVERPROMISE: a faster existing process is efficiency, and adoption is activity, not value. C is T-ASSUME: nothing shows the saved minutes became more closed claims per adjuster. D is T-AUDIENCE: a finance committee needs impact, cost and the ask, not diagrams.",
+     "choose": "Choose A, and report the freed minutes as capacity: with headcount flat, cash savings arrive only once that time is redeployed. C would need the stem to show that claims handled per adjuster actually rose, for example a catastrophe surge absorbed without overtime."
+    }
+   },
+   "faded": null,
+   "traps": ["T-OVERPROMISE", "T-AVGSLA", "T-AUDIENCE", "T-VIBES"],
+   "contrast": {
+    "a": { "title": "Efficiency", "text": "An existing task gets cheaper or faster per unit of work, even dramatically. The evidence is per claim or per case." },
+    "b": { "title": "Transformation", "text": "The solution does work that was not feasible before, such as contacting every claimant in a flood zone within hours of the event." },
+    "decider": "Did this work happen at all before the solution existed?"
+   },
+   "explain": {
+    "prompt": "Why is a performance SLA an elimination gate rather than one weight on a scorecard?",
+    "model": "An SLA is a commitment users and contracts rely on, so an option that misses p95 at peak fails the requirement however cheap it is. Weighting it lets savings buy back a breach, a trade the sponsor never authorised. Filter on the SLA first, then compare cost and preference among the options that survive."
+   },
+   "bridge": null
+  }
+ ],
+ "case": "Dana Okafor asked for 'an AI claims bot'. Discovery reframed the job as shorter FNOL-to-first-contact time and fewer misroutes, each of which costs Luis Ferreira's team a re-handle, with a baseline and target agreed before any model was discussed. Her '99.9% accurate routing' became an error count: on 14,000 claims a month, 99.9% still leaves about 14 misroutes and 99.7% about 42, so the question became which claims they are. The design splits by problem shape, not by department. FNOL intake is a gated workflow with one augmented extraction call, and the independent coverage and fraud-signal checks run as parallel sections. Policy Q&A is a single retrieval call that cites the edition in force. Claim status is a live ClaimsCore tool call behind an async facade that returns a job ID, because the gateway times out at 2 seconds. Only SIU investigation support earns a bounded, read-only agent, and every handoff it receives or makes carries the goal, the required facts (claim ID, loss location, date of loss), the allowed sources and a return schema. Adjuster overrides feed an eval set Luis owns. The value case is efficiency, cost per claim against baseline, and p95 at catastrophe peak is a gate."
+}

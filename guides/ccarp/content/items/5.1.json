@@ -1,0 +1,581 @@
+[
+ {
+  "id": "P5-5.1-001",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formA",
+  "type": "multi",
+  "select": 3,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "determinism",
+  "industry": "media",
+  "family": "fail-closed-action-layers",
+  "counterTrap": false,
+  "signals": [
+   "stopped every time, before publication",
+   "even if the model misbehaves",
+   "one duty editor overnight"
+  ],
+  "stem": "Ravensholt Media's newsroom assistant turns wire copy and reader tips into social posts and schedules them to the group's verified accounts through a publish tool. The desk schedules about 450 posts a day across 14 accounts, with one duty editor overnight, and posts link only to the group's own articles. In one month, a tip carrying hidden instructions produced a post linking to a scam site, a draft named a complainant on the legal team's reporting-restrictions list, and a post went out before a press embargo lifted. The legal director says each failure must be stopped every time, before publication, even if the model misbehaves.",
+  "ask": "Which THREE controls BEST meet the legal director's requirement? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Hold every scheduled post for the duty editor's approval before it goes out",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "One duty editor facing a share of 450 posts a day ends up approving in seconds, and a human gate cannot promise the same check every time. Link domains, the list and embargo times are facts that code can test."
+   },
+   {
+    "id": "b",
+    "text": "Reject posts at the publish tool when any link points outside the group's own article pages",
+    "correct": true,
+    "trap": null,
+    "why": "Posts link only to the group's own articles, so an allowlist at the publish tool blocks nothing legitimate. It refuses the scam link whatever the injected tip told the model, closing that path at the action itself."
+   },
+   {
+    "id": "c",
+    "text": "Screen drafts in code against the restrictions list, and publish with an alert to legal if the lookup fails",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Blocking on a match is right, but failing open means a lookup outage lets a restricted name go out with only an alert, after publication. Stopping it every time needs the check to fail closed."
+   },
+   {
+    "id": "d",
+    "text": "Check each draft in code against the restrictions list, blocking it on a match or on a failed lookup",
+    "correct": true,
+    "trap": null,
+    "why": "A lookup in code against the legal team's list catches restricted names before scheduling, whatever the model wrote, and blocking on a failed lookup keeps the check fail-closed, so an outage cannot let a name through."
+   },
+   {
+    "id": "e",
+    "text": "Refuse to schedule any story whose embargo time in the CMS has not yet passed",
+    "correct": true,
+    "trap": null,
+    "why": "The embargo time is a fact the CMS already holds. A check in code at scheduling refuses early posts deterministically, which neither the model nor an overloaded editor can promise."
+   },
+   {
+    "id": "f",
+    "text": "Strip hidden text and markup from reader tips before the assistant reads them",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Cleaning tips lowers injection risk, but instructions can arrive as plain visible text too. Once the publish tool refuses outside links, the scam path is closed whatever a tip says, so this adds nothing to the guarantee."
+   }
+  ],
+  "explain": "Binding constraint: each failure must be stopped every time before publication, even if the model misbehaves. That needs a deterministic, fail-closed check outside the model on each failure path (link allowlist, list lookup that blocks on error, embargo gate); an overloaded human gate, a fail-open screen and input cleaning cannot promise every time.",
+  "rule": "CS-D5-01",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-03",
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.1-002",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "least-privilege",
+  "industry": "e-commerce",
+  "family": "bound-needed-capability",
+  "counterTrap": true,
+  "signals": [
+   "Issuing refunds is its core job",
+   "routine refunds stay automatic"
+  ],
+  "stem": "Brightcart's customer assistant settles damaged-item claims for an online homewares store whose orders range from 5 to 2,000 pounds. Issuing refunds is its core job: the business case depends on routine refunds landing within minutes without staff involvement, across about 6,000 requests a day. Last month a customer talked it into three refunds totalling 900 pounds on a 90-pound order. The payments lead wants any refund that would take an order past what the customer paid stopped, while routine refunds stay automatic.",
+  "ask": "Which control BEST meets the payments lead's goal?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Remove the refund tool so the assistant only logs claims for the payments team to settle",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "Removal suits capabilities a role never needs; refunds are this role's job, and moving 6,000 requests a day to staff ends the automatic refunds the business case depends on."
+   },
+   {
+    "id": "b",
+    "text": "Keep the refund tool, with the payments service sending refunds over 100 pounds to staff for approval",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "A size threshold misses the risk it targets: 95 pounds refunded on a 20-pound order passes, while routine refunds on large orders queue for staff. The limit that matters is the order's value, not the refund's size."
+   },
+   {
+    "id": "c",
+    "text": "Keep the refund tool, and alert the fraud team whenever an order's refunds exceed what was paid",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "The alert fires after the money has left, and recovering a card refund depends on the customer's cooperation. The payments lead asked for over-refunds to be stopped, which needs a control before payment."
+   },
+   {
+    "id": "d",
+    "text": "Keep the refund tool, with the payments service capping total refunds on each order at its value",
+    "correct": true,
+    "trap": null,
+    "why": "Refunds are this role's purpose, so the tool stays. A cumulative cap in the payments service bounds it: routine refunds remain automatic, and repeated or inflated refunds stop at the order's value whatever the customer says."
+   }
+  ],
+  "explain": "Binding constraint: refunds are the role's core capability, so least privilege means keeping the tool and bounding it rather than removing it. A cumulative cap enforced in the payments service targets the actual risk; removal, a size threshold and an after-the-fact alert each miss it.",
+  "rule": "CS-D5-02",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.1-003",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "irreversibility",
+  "industry": "retail",
+  "family": "fail-closed-by-reversibility",
+  "counterTrap": false,
+  "signals": [
+   "who treat a sent order as binding",
+   "which the warehouse team can reverse the next morning",
+   "kept flowing through the peak"
+  ],
+  "stem": "Cobbleford Home & Garden's replenishment agent calls one policy service to check budget and limits before two kinds of action: purchase orders to 300 suppliers, who treat a sent order as binding, and stock transfers between the group's own stores, which the warehouse team can reverse the next morning. During the spring peak the policy service began timing out, and the integration lets both actions go ahead when no answer arrives. So far 140 unchecked supplier orders have gone out, several far above limit. The operations director wants the agent's work kept flowing through the peak, above all the overnight transfers that restock shelves.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Hold both supplier orders and store transfers on timeout until the policy service returns a result",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Holding supplier orders is right, but transfers are internal and reversible by the next morning, so failing open with an alert is acceptable there. Holding them too stalls the restocking the director needs, for no lasting safety gain."
+   },
+   {
+    "id": "b",
+    "text": "Scale out the policy service and load-test it at peak volume before the next trading weekend",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Capacity is the root cause and needs fixing, but that takes days, and any timeout in the meantime still sends an unchecked binding order. Close the fail-open path for orders first, then scale."
+   },
+   {
+    "id": "c",
+    "text": "Hold supplier orders on timeout until the check answers, and let transfers proceed with an alert",
+    "correct": true,
+    "trap": null,
+    "why": "Binding supplier orders cannot be undone, so they must fail closed and wait for the check. Transfers can be reversed next morning, so failing open with an alert keeps restocking moving while any bad transfer is caught and undone."
+   },
+   {
+    "id": "d",
+    "text": "Put the budget and supplier limits in the agent's prompt so it stays within them when checks time out",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Limits in the prompt only raise the odds that the agent orders within them, and it has already ordered far above limit. When the policy check is silent, nothing outside the model is left to refuse an over-limit order."
+   }
+  ],
+  "explain": "Binding constraint: supplier orders are binding and cannot be undone, which outranks the director's wish to keep all the agent's work flowing, so orders must fail closed first. Transfers are internal and reversible, which is the case where failing open with alerting is acceptable, so restocking keeps moving; capacity work follows.",
+  "rule": "CS-D5-01",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-RD-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.1-004",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "security-boundary",
+  "industry": "insurance",
+  "family": "unneeded-capability-at-launch",
+  "counterTrap": false,
+  "signals": [
+   "brokers need only claim status and document requests",
+   "came across by default",
+   "committed launch date"
+  ],
+  "stem": "Bexley Assurance is launching a portal assistant for independent brokers, built from its adjusters' claims assistant. At launch, brokers need only claim status and document requests, but the adjuster build's similar-claims search, which queries one index of every broker's claims, came across by default. A penetration test found a broker could coax that search into describing another broker's clients' claims; the only control is an output filter masking names and policy numbers, and it missed claims described by street address. Tagging each indexed claim with its broker takes three weeks, past the portal's committed launch date.",
+  "ask": "What should the architect recommend as the next step?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Extend the output filter to mask street addresses, loss dates and vehicle registrations as well",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "Masking acts after other brokers' claims are already in the context, and the test showed that paraphrase slips past it. Each extra field masked leaves the next kind of description open, and the search stays exposed."
+   },
+   {
+    "id": "b",
+    "text": "Tag claims by broker and filter the search to the signed-in broker, moving the launch date back",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "Entitlement filtering is the right control once brokers need the search, but at launch they need only status and documents. Guarding a capability the role does not use costs the committed date when removing it costs nothing."
+   },
+   {
+    "id": "c",
+    "text": "Launch on schedule with similar-claims search switched off for broker sessions until tagging is done",
+    "correct": true,
+    "trap": null,
+    "why": "The brokers' launch scope never touches similar-claims search, so removing it from broker sessions closes the leak path outright and keeps the date. The search can return once retrieval filters by broker."
+   },
+   {
+    "id": "d",
+    "text": "Launch on schedule with full session logs, and have compliance review answers that cite other clients",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Log review finds a leak only after another broker's clients have been exposed. Detection is a sound second layer, but the search that leaks is one brokers do not need at launch, so prevention costs nothing."
+   }
+  ],
+  "explain": "Binding constraint: the data boundary between brokers, which the committed launch date cannot override. Because the launch scope does not need similar-claims search, removing it for broker sessions closes the boundary without moving the date; filters, delays and logs guard a capability the role does not use.",
+  "rule": "CS-D5-02",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.1-005",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "education",
+  "family": "instruction-only-control",
+  "counterTrap": false,
+  "signals": [
+   "whoever asks and for whatever reason",
+   "which every bid draws on",
+   "had not changed"
+  ],
+  "stem": "Carrick Vale University's grant-writing assistant drafts funding bids from a shared drive of unpublished research, which every bid draws on, and sends email through a mail tool. Its system prompt forbids sending attachments outside the university, whoever asks and for whatever reason, and for eight months it declined every such request. Last week a researcher wrote 'send the full dataset to the panel like last time', and it emailed an unpublished dataset to an external reviewer. The model version, prompt, mail tool and drive permissions had not changed.",
+  "ask": "What is the MOST likely cause of the leak?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The rule was written as plain prose, with no emphasis or examples of requests to refuse",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "The rule already covers whoever asks and for whatever reason, and it held for eight months as written. Emphasis might lift the odds a little, but any prompt can be outweighed by a request that sounds legitimate."
+   },
+   {
+    "id": "b",
+    "text": "The rule was held in the system prompt alone, and nothing in the mail tool checked the recipients",
+    "correct": true,
+    "trap": null,
+    "why": "Nothing changed, so the cause is in the design: an instruction makes compliance likely, not certain, and a plausible request finally tipped the balance. With no recipient check in the mail tool, one miss became a leak."
+   },
+   {
+    "id": "c",
+    "text": "The assistant could open unpublished datasets across the whole drive, beyond what it needed",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "Every bid draws on the drive's unpublished research, so this access is part of the job and removing it would break drafting. The leak came from an unchecked send, not from reading data the role never needed."
+   },
+   {
+    "id": "d",
+    "text": "No alert fired on external attachments, so nobody could recall the email before it was read",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "A missing alert explains why nobody caught the email afterwards, not why it was sent. Detection limits damage; the leak happened because nothing outside the model blocked the send."
+   }
+  ],
+  "explain": "Binding constraint: nothing in the system changed, which points to the design rather than drift or wording. A rule held only in the prompt raises the odds of compliance but cannot refuse an action, so the lasting fix is a recipient check in the mail tool.",
+  "rule": "CS-D5-01",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-RD-04",
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.1-006",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "least-privilege",
+  "industry": "saas",
+  "family": "read-only-role-removal",
+  "counterTrap": false,
+  "signals": [
+   "The use case is read-only",
+   "can update and delete rows"
+  ],
+  "stem": "Tallyforge sells a product-analytics platform whose in-app assistant answers customers' questions by writing SQL against each customer's event warehouse. The use case is read-only: customers ask about funnels and retention and never need the assistant to change data. Its query tool connects with the database role the ingestion pipeline uses, which can update and delete rows. The security team wants it to be impossible for the assistant to alter customer data, whatever SQL the model writes.",
+  "ask": "Which change BEST meets the security team's requirement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Connect the query tool through a new database role holding only read grants on event tables",
+    "correct": true,
+    "trap": null,
+    "why": "The role never needs write access, so take it away. A read-only database role makes changes impossible at the database itself, whatever SQL the model writes, with no filter left to trust."
+   },
+   {
+    "id": "b",
+    "text": "Let the tool run only statements that its SQL parser classifies as read-only SELECT queries",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "A statement filter is a compensating control on write access the role never needs. Parsers miss edge cases such as functions with side effects, and the write permission is still there for anything that slips through."
+   },
+   {
+    "id": "c",
+    "text": "Snapshot each warehouse hourly and alert the customer's admins whenever rows are changed",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Snapshots and alerts let the team notice and restore a change after rows are already altered, losing up to an hour of data. The requirement is that alteration be impossible, which calls for prevention."
+   },
+   {
+    "id": "d",
+    "text": "Tell the assistant in its system prompt to write SELECT statements only, with worked examples",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "A prompt rule usually holds, but nothing outside the model refuses a destructive statement, and an odd question could still produce one against a role that permits writes."
+   }
+  ],
+  "explain": "Binding constraint: least privilege for a read-only use case. Remove the write capability at the database role; a parser, snapshots and a prompt only guard or detect misuse of a permission the assistant should not hold.",
+  "rule": "CS-D5-02",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.1-007",
+  "rev": 1,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "auditability",
+  "industry": "e-commerce",
+  "family": "preventive-detective-pair",
+  "counterTrap": false,
+  "signals": [
+   "no reply needs them",
+   "a record of which sellers try it"
+  ],
+  "stem": "Tidewater Market lets sellers use an assistant that drafts replies to buyer messages from the order record. The record passed to it includes each buyer's phone number and email, although no reply needs them because buyers are contacted only through platform messaging. Trust and safety found sellers asking the assistant for buyers' contact details to take sales off-platform. The head of trust and safety wants the leak stopped and a record of which sellers try it, so repeat offenders can be suspended.",
+  "ask": "Which TWO actions BEST meet both needs? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Strip buyer phone numbers and emails from the order record before it reaches the assistant",
+    "correct": true,
+    "trap": null,
+    "why": "No reply needs the contact details, so removing them before the prompt stops the leak at the source. What never enters the context cannot be revealed, however a seller phrases the request."
+   },
+   {
+    "id": "b",
+    "text": "Flag seller prompts that ask for buyer contact details and log each attempt against the seller",
+    "correct": true,
+    "trap": null,
+    "why": "Once the data is removed, attempts no longer show up in drafts, only in what sellers ask. Flagging those prompts per seller gives trust and safety the record it needs to suspend repeat offenders."
+   },
+   {
+    "id": "c",
+    "text": "Mask phone numbers and email addresses in each drafted reply before the seller can see it",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "Masking acts after the details are already in the context, and sellers can ask for digits spelled out or split across lines. Output filtering suits data the task needs, which this is not."
+   },
+   {
+    "id": "d",
+    "text": "Hold any draft that mentions buyer contact details for a trust-and-safety reviewer to approve first",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "A review gate guards data the drafting task never uses. With the fields stripped, no draft would ever be held, so the gate adds reviewer work without producing the record of attempts."
+   },
+   {
+    "id": "e",
+    "text": "Publish seller guidance explaining how to reach buyers through platform messaging instead",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Guidance helps honest sellers, but these sellers are knowingly breaking policy. It neither stops the leak nor records who tries, so it changes neither outcome."
+   }
+  ],
+  "explain": "Binding constraint: trust and safety needs prevention plus an auditable record of attempts. Remove the unneeded fields before the boundary (preventive) and log attempts by seller (detective); each covers what the other cannot.",
+  "rule": "CS-D5-03",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.1-008",
+  "rev": 1,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "least",
+  "constraint": "irreversibility",
+  "industry": "education",
+  "family": "detective-is-not-preventive",
+  "counterTrap": false,
+  "signals": [
+   "cannot be recalled once delivered",
+   "stopped before it is sent"
+  ],
+  "stem": "Riverbend School District's office assistant drafts messages about pupils' attendance and behaviour and sends them to parents through the district messaging platform. Some pupils have court orders barring a named parent from receiving school messages, and those orders are recorded in the student information system. Staff send a few dozen messages a week, and a message cannot be recalled once delivered. The safeguarding lead wants any message to a restricted contact stopped before it is sent.",
+  "ask": "Which proposed control does the LEAST to meet the safeguarding lead's requirement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have the send tool check each recipient against the recorded restrictions and refuse blocked ones",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "This can look like a rule the model is only told to follow, but the send tool checks the recorded restriction in code and refuses, whatever the draft says. Enforcement at the action is one of the strongest rungs, not the weakest."
+   },
+   {
+    "id": "b",
+    "text": "Review a weekly report of sent messages and follow up on any that reached a restricted contact",
+    "correct": true,
+    "trap": null,
+    "why": "A weekly report finds the message days after a restricted parent has read it, and delivery cannot be undone. It is a useful detective check, but it does nothing to stop the send, which is what was asked."
+   },
+   {
+    "id": "c",
+    "text": "Let the assistant address messages only to the approved contacts the record lists for each pupil",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "Limiting recipients to the approved list removes the ability to address a restricted contact at all. That is the strongest preventive rung, so it cannot be the weakest control here."
+   },
+   {
+    "id": "d",
+    "text": "Queue each draft for staff approval with the pupil's contact restrictions shown beside it",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "At a few dozen messages a week, with the restriction shown beside each draft, reviewers have the time and evidence to refuse. This gate prevents the send; it is not a rubber stamp."
+   }
+  ],
+  "explain": "Binding constraint: a delivered message cannot be recalled, so the requirement is prevention before sending. The after-the-fact report is detective and does least; the tool check, the approved-contact list and the evidence-backed approval all stop the send.",
+  "rule": "CS-D5-03",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

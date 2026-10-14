@@ -1,0 +1,502 @@
+[
+ {
+  "id": "P6-6.5-001",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formA",
+  "type": "multi",
+  "select": 3,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "lifecycle-stage",
+  "industry": "media",
+  "family": "pilot-entry-criteria",
+  "counterTrap": false,
+  "signals": [
+   "already holds two years of sub-editors' handling times",
+   "each expect a say in the rollout",
+   "its results can decide the rollout"
+  ],
+  "stem": "After a well-received demo of a proof of concept that rewrites agency court reports into house style, Pellham Press Group's chief digital officer approved an eight-week pilot with 30 sub-editors across its local titles. A decision on rolling it out to every title will follow. The CMS already holds two years of sub-editors' handling times and legal corrections for court reports. The chief digital officer, the editor-in-chief and the group lawyer each expect a say in the rollout, and a published breach of a reporting restriction carries legal exposure.",
+  "ask": "Which THREE should be settled before the pilot starts so that its results can decide the rollout? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Set p95 latency targets, an on-call rota and a tested rollback path for the court-report tool",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "These are production-gate controls. They matter once the pilot has passed and the rollout is approved, but they do nothing to make an eight-week pilot with 30 sub-editors produce a decisive result."
+   },
+   {
+    "id": "b",
+    "text": "Agree in writing the handling-time and correction-rate thresholds that will count as a pass",
+    "correct": true,
+    "trap": null,
+    "why": "The CMS supplies the comparison, but nobody has said what counts as a pass. Thresholds fixed in writing before the pilot stop each party from judging the same results against a bar of its own choosing afterwards."
+   },
+   {
+    "id": "c",
+    "text": "Benchmark three model tiers on last month's court copy and choose the production model before the pilot",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "Choosing the production model now optimises before anyone has agreed what the pilot must beat. The proof of concept is fit to test value, and model choice can follow once the thresholds exist."
+   },
+   {
+    "id": "d",
+    "text": "Set a stop rule that pauses the pilot if a reporting-restriction breach reaches a published story",
+    "correct": true,
+    "trap": null,
+    "why": "The legal exposure means a time saving cannot offset a published restriction breach. Agreeing the guardrail in advance makes that failure a defined pilot outcome rather than an argument after the damage is done."
+   },
+   {
+    "id": "e",
+    "text": "Run a four-week study of sub-editors' current handling times and correction rates before the pilot begins",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "The CMS already holds two years of exactly these figures for court reports. A fresh study delays the pilot without adding anything the comparison lacks; what is missing is the bar, the guardrail and the decider."
+   },
+   {
+    "id": "f",
+    "text": "Confirm which of the three parties makes the go or no-go call and how the other two feed into it",
+    "correct": true,
+    "trap": null,
+    "why": "Three parties expect a say, and none has been named as the decider. Without one owner agreed now, each reads the results against its own concerns and the pilot ends in a debate instead of a decision."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. A pilot proves value only against a pass bar, a guardrail and a decision owner agreed before it starts; the CMS already supplies the baseline, and production controls and model choice belong to later gates.",
+  "rule": "CS-D6-12",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.5-002",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "ownership",
+  "industry": "e-commerce",
+  "family": "post-handoff-ownership-gap",
+  "counterTrap": false,
+  "signals": [
+   "posted to a shared care-operations channel every week since April",
+   "whose remit is keeping the assistant available",
+   "has moved on to other work"
+  ],
+  "stem": "Tidewell Outfitters, an online outdoor-gear retailer, handed its order-support assistant to the customer-care operations team nine months ago, with runbooks, the eval suite and an alert on the resolution threshold agreed at handoff. Since spring, repeat contacts about deliveries have climbed steadily, and the alert has posted to a shared care-operations channel every week since April. Care operations, whose remit is keeping the assistant available, has used the runbooks to resolve two outages. The model version, prompts and carrier integrations are unchanged, and the engineering team that built the assistant has moved on to other work.",
+  "ask": "What is the MOST likely reason the rise in repeat contacts has gone unaddressed?",
+  "options": [
+   {
+    "id": "a",
+    "text": "No one was made accountable at handoff for acting on quality alerts and driving iteration",
+    "correct": true,
+    "trap": null,
+    "why": "The alert fires, the runbooks work and nothing in the stack changed. Care operations keeps the service available and engineering has left, so nobody is charged with turning quality alerts into fixes; better routing alone would only reach someone without that remit."
+   },
+   {
+    "id": "b",
+    "text": "Quality alerts post to a shared channel instead of paging a named on-call responder in care operations",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Paging someone changes who is told, not who must act. Care operations' remit is availability, so a paged responder would acknowledge the alert and still not own fixing delivery answers; what is missing is an owner accountable for quality and iteration."
+   },
+   {
+    "id": "c",
+    "text": "The model's handling of delivery questions has drifted since handoff, beyond what the runbooks cover",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The model version and prompts are unchanged, so drift is not the trigger. Even a real change in quality would not explain why months of weekly alerts produced no response from anyone."
+   },
+   {
+    "id": "d",
+    "text": "The runbooks were written for engineers, so care operations cannot act on the alerts it receives",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "Care operations has already used these runbooks to resolve two outages, so the artefact suits its audience. The gap is that quality work belongs to nobody, not that the documents are unreadable."
+   }
+  ],
+  "explain": "Binding constraint: decision ownership after handoff. Monitoring works only when a named owner is accountable for acting on its signals; with detection, runbooks and the stack intact, and no routing change able to create a remit that does not exist, the missing owner is the cause.",
+  "rule": "CS-D6-13",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.5-003",
+  "rev": 1,
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "irreversibility",
+  "industry": "insurance",
+  "family": "active-harm-rollback-first",
+  "counterTrap": true,
+  "signals": [
+   "three have already withdrawn their claims",
+   "can be restored in minutes",
+   "Full traces of every conversation are retained"
+  ],
+  "stem": "Corliss Mutual's claims-status assistant answers policyholders' questions about open property claims. On Tuesday its owner, the claims digital lead, released a revised system prompt. Since then, monitoring has flagged conversations in which the assistant tells policyholders with covered water-damage claims that their damage is excluded, and three have already withdrawn their claims. The previous prompt version ran for four months inside its agreed error budget and can be restored in minutes. Full traces of every conversation are retained.",
+  "ask": "What is the BEST action for the claims digital lead to take now?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Compare traces of failing and passing conversations to confirm the cause before changing anything",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Diagnosing before changing is the usual rule, but here every hour of investigation lets more policyholders abandon valid claims. Trace analysis is the right second step, once the known-good version is back."
+   },
+   {
+    "id": "b",
+    "text": "Patch the revised prompt with an explicit water-damage coverage rule and redeploy it today",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "A forward fix guesses at a cause nobody has diagnosed and may miss other claim types the revision broke. Restoring the proven version stops the harm without that guess."
+   },
+   {
+    "id": "c",
+    "text": "Roll back to the previous prompt version now and investigate the revised one offline",
+    "correct": true,
+    "trap": null,
+    "why": "Policyholders are being harmed now and a known-good version can be restored in minutes. Mitigating first stops the harm, and because traces are retained the diagnosis loses nothing by coming after the rollback."
+   },
+   {
+    "id": "d",
+    "text": "Tighten the monitoring threshold so each exclusion statement pages the on-call claims analyst",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Paging someone on each exclusion statement improves detection, but the wrong answers keep reaching policyholders. The need here is to stop the harm, which detection alone does not do."
+   }
+  ],
+  "explain": "Binding constraint: active, hard-to-reverse harm with a known-good state available. Observe-first yields when users are being harmed and a rollback exists: mitigate first, then diagnose from the retained traces.",
+  "rule": "CS-D6-13",
+  "ladder": "diagnosis",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.5-004",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "lifecycle-stage",
+  "industry": "education",
+  "family": "failed-pilot-criteria-reset",
+  "counterTrap": false,
+  "signals": [
+   "No success criteria or baseline were agreed before launch",
+   "cannot be compared with earlier years",
+   "a second semester in 24 schools"
+  ],
+  "stem": "Ridgeview Unified School District piloted a maths tutoring assistant in 12 middle schools for one semester. No success criteria or baseline were agreed before launch. Pupils used it heavily; some teachers say it helped and others say it did not, and because the district introduced a new maths assessment this year, pupils' progress cannot be compared with earlier years. The assistant superintendent who sponsored the pilot will make the decision before budgets close, and the vendor has offered a second semester in 24 schools at a discount.",
+  "ask": "What is the BEST recommendation to the assistant superintendent?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Accept the discounted second semester in 24 schools and add end-of-unit tests so progress is measured this time",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "End-of-unit tests add a measure but still no bar to judge it against, and the new assessment leaves no earlier-year comparison. Doubling the schools without criteria repeats the split verdict at twice the scale."
+   },
+   {
+    "id": "b",
+    "text": "Before committing to a second semester, set a maths-progress target and a comparison with non-pilot classes",
+    "correct": true,
+    "trap": null,
+    "why": "The first semester failed as a decision tool because nothing defined success, and the new assessment rules out comparing with earlier years. A target plus concurrent non-pilot classes lets any further semester settle the question she has to decide."
+   },
+   {
+    "id": "c",
+    "text": "Adopt the vendor's standard impact report as the success measure, so results compare with its other districts",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "A vendor's standard report is built around its own product and lets the vendor define success for the district. The value in question is pupils' maths progress, and the sponsor, not the vendor, sets that bar."
+   },
+   {
+    "id": "d",
+    "text": "Commission a review of the first semester's usage logs and teacher interviews to reach a verdict before budgets close",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Logs and interviews describe what happened, but with no agreed target and no comparable earlier scores there is nothing to judge them against. The review would restate the teachers' split opinion, not settle it."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. A pilot that ran without criteria cannot be judged after the fact, so the owner must fix a target and a comparison method before any retry; the discount and the budget deadline do not justify rerunning it without them.",
+  "rule": "CS-D6-12",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-EL-11"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.5-005",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "saas",
+  "family": "rearchitect-proposal-evidence-first",
+  "counterTrap": false,
+  "signals": [
+   "has fallen steadily",
+   "the model version and prompts have not changed",
+   "wants to replace the assistant with a multi-agent design"
+  ],
+  "stem": "Loomwork, a project-management SaaS vendor, launched an in-app help assistant fourteen months ago, and its platform team has owned it since handoff. Over the last two quarters, the share of help sessions resolved without a support ticket has fallen steadily. In that time the model version and prompts have not changed, and Loomwork has shipped a resource-planning module that many customers adopted. The VP of product wants to replace the assistant with a multi-agent design and has asked the principal architect for a recommendation at next month's steering group.",
+  "ask": "What should the principal architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Draft an ADR comparing a multi-agent rebuild with iterating on the current design, for the steering group",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "An ADR is the right record once there is evidence to weigh. Written now, it compares a rebuild with iteration before anyone knows where sessions fail, so the steering group would be deciding on opinion."
+   },
+   {
+    "id": "b",
+    "text": "Rerun the eval suite on a fresh sample of recent sessions and compare the overall score with launch",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The resolution metric already shows the fall, so an overall comparison adds little. An average across every topic can also hide a decline concentrated in one area, such as the new module, which is what decides between iterating and rebuilding."
+   },
+   {
+    "id": "c",
+    "text": "Pull traces of unresolved sessions and break the eval results down by topic to see where the fall sits",
+    "correct": true,
+    "trap": null,
+    "why": "Nobody yet knows where or why sessions fail. Traces and topic-level results show whether the fall is concentrated, for example in resource-planning questions, and that evidence decides whether to iterate on the current design or re-architect."
+   },
+   {
+    "id": "d",
+    "text": "Build a quick multi-agent prototype so the VP can compare it side by side with the live assistant",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "A prototype shows what a rebuild would look like before anyone has established what is failing. Its demo cannot reveal whether the decline is architectural or a gap in what the current assistant covers."
+   }
+  ],
+  "explain": "Binding constraint: evidence. After handoff, iteration starts from traces and per-slice evals, and that evidence decides whether to iterate or re-architect; an overall score cannot locate the fall, and an ADR or prototype comes after the diagnosis.",
+  "rule": "CS-D6-13",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-02",
+   "TIP-EL-11"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.5-006",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "change-scope",
+  "industry": "public-sector",
+  "family": "scope-change-back-to-discovery",
+  "counterTrap": false,
+  "signals": [
+   "issue the determination letter itself",
+   "handle this as the next iteration of the current service"
+  ],
+  "stem": "Aldermoor County Council's housing-benefit assistant has answered residents' questions about eligibility rules for a year. It has a named service owner, meets its service levels, and its monthly evals are stable. The benefits director now wants it to assess each applicant's eligibility from uploaded documents and issue the determination letter itself, with residents appealing through the existing tribunal route. She has asked the architect to handle this as the next iteration of the current service, using its usual release process.",
+  "ask": "What is the BEST next step for the architect?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add eligibility cases to the monthly evals and release the change to one district office before the rest",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "Staged release with extra evals is the right way to iterate within an agreed use case. Issuing determinations is not that: its legal basis, target and owner have never been set, so the evals would test against a bar nobody agreed."
+   },
+   {
+    "id": "b",
+    "text": "Extend the service levels, error budget and incident runbooks so the service can carry determination letters",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Operational coverage matters before any launch, but it belongs to the production gate. Nothing about issuing determinations has been scoped, designed or piloted yet, so extending service levels now prepares to run something undefined."
+   },
+   {
+    "id": "c",
+    "text": "Scope it with the director as a separate service: legal basis, decision owner, baseline, constraints",
+    "correct": true,
+    "trap": null,
+    "why": "Moving from answering questions to issuing determinations changes the use case and its legal effect on residents. That returns the lifecycle to discovery with the director, so the legal basis, owner, baseline and constraints are agreed before anything is built."
+   },
+   {
+    "id": "d",
+    "text": "Decline the extension, since automated benefit decisions carry more legal risk than the council should accept",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "The risk is real, but weighing it is the director's decision once discovery has surfaced the legal constraints. Refusing on her behalf decides for the owner before the evidence exists."
+   }
+  ],
+  "explain": "Binding constraint: what changed is the scope. Iteration improves a system within an agreed use case; turning an information assistant into one that issues determinations is a new use case, so the lifecycle returns to discovery even though the current service is healthy.",
+  "rule": "CS-D6-13",
+  "ladder": "lifecycle",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.5-007",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "lifecycle-stage",
+  "industry": "pharma",
+  "family": "poc-exit-live-traffic-gate",
+  "counterTrap": false,
+  "signals": [
+   "hand-picked by the team",
+   "switched on for live enquiries next month",
+   "Nobody has tested it on live, uncurated traffic"
+  ],
+  "stem": "A triage classifier built by Halvorsen Therapeutics' medical-information team sorts incoming enquiries from healthcare professionals by product and topic, so each reaches the right specialist; adverse-event reports already go to a separate safety intake. As a proof of concept, it correctly routed nearly all of 60 past enquiries hand-picked by the team. The head of medical affairs wants it switched on for live enquiries next month. Nobody has tested it on live, uncurated traffic or agreed what it must achieve against today's handling time and misrouting rate.",
+  "ask": "What should the solutions architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Build an automated eval harness over the 60 enquiries and schedule nightly runs against each change",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "An eval harness is sound practice once success criteria exist. Built now over 60 hand-picked enquiries, it would automate scoring on a curated set against a bar nobody has agreed, so it cannot show value on live traffic."
+   },
+   {
+    "id": "b",
+    "text": "Give the sponsor a fixed cost and timeline for switching on live routing so the budget can be approved",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "A fixed price and date commit to live routing before anyone has agreed what it must achieve. Costing follows the target and the pilot result rather than standing in for them."
+   },
+   {
+    "id": "c",
+    "text": "Agree with the sponsor what a bounded live pilot has to prove against today's figures, then run it",
+    "correct": true,
+    "trap": null,
+    "why": "The proof of concept showed feasibility on curated past enquiries, not value on live work. A bounded pilot judged against targets agreed in advance is the gate between a promising proof of concept and switching it on for every enquiry."
+   },
+   {
+    "id": "d",
+    "text": "Extend the proof of concept to the full enquiry backlog for another month, then decide on its overall accuracy",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "More past enquiries give a bigger accuracy number but still no agreed bar and no live, uncurated traffic. Extending the proof of concept delays the gate it has to pass rather than creating one."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. A proof of concept proves feasibility only; before live use it must pass a pilot on real traffic judged against criteria agreed with the sponsor in advance, and harnesses, costings and longer trials do not substitute for that gate.",
+  "rule": "CS-D6-12",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

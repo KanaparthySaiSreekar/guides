@@ -1,0 +1,13 @@
+{
+  "name": "guides",
+  "private": true,
+  "type": "module",
+  "description": "Offline study guides for certification exams, published with GitHub Pages at /guides/.",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "validate": "node tools/validate.mjs && node tools/validate-guide.mjs && node tools/validate-cards.mjs",
+    "test": "node --test test/engine.test.mjs test/plan.test.mjs test/analytics.test.mjs",
+    "serve": "node tools/serve.mjs docs"
+  }
+}

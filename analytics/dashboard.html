@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>Guides usage</title>
+<style>
+:root{color-scheme:light;--bg:#F3F6FB;--surface:#FFFFFF;--surface-2:#F1F4FA;--text:#15233A;--text-2:#46546A;--text-3:#5B6980;--border:#DCE3EE;--border-strong:#C3CEDF;
+  --accent:#2F5FD0;--accent-soft:#E8EFFD;--on-accent:#fff;--bar:#2F5FD0;--bar-hi:#244EB2;--grid:#E4EAF3;--good:#15704A;--bad:#B3362F;--bad-soft:#FBE9E7;
+  --shadow:0 1px 2px rgba(21,35,58,.05),0 10px 28px -14px rgba(21,35,58,.20);--r:14px;
+  --ui:"Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,"Cascadia Mono",Consolas,monospace}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0B1628;--surface:#111F35;--surface-2:#16263F;--text:#E6EEF9;--text-2:#AAB9CF;--text-3:#8FA0B9;--border:#213659;--border-strong:#304A72;
+  --accent:#7FAEFF;--accent-soft:#18305A;--on-accent:#0A1830;--bar:#5B8FEF;--bar-hi:#7FAEFF;--grid:#1D304D;--good:#58C68E;--bad:#F08A80;--bad-soft:#3A1E24;--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6)}}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 15px/1.5 var(--ui);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p{margin:0}
+h1{font-size:24px;font-weight:600;letter-spacing:-.02em}
+h2{font-size:17px;font-weight:600;letter-spacing:-.01em}
+a{color:var(--accent)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 20px 60px}
+.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:baseline;justify-content:space-between;margin-bottom:20px}
+.top p{color:var(--text-3);font-size:13px}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;font-weight:500;font-size:14px;text-decoration:none;color:var(--text)}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.link{border:0;background:none;padding:0 4px;color:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+.card+.card,.grid+.card,.card+.grid{margin-top:16px}
+.grid>.card{margin-top:0}
+.head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sub{color:var(--text-3);font-size:13px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.tile b{display:block;font-size:28px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.15}
+.tile span{color:var(--text-2);font-size:13px}
+.tile small{display:block;color:var(--text-3);font-size:12px;margin-top:2px}
+.grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.chart{position:relative}
+.chart{min-height:220px;min-width:0}
+.chart svg{display:block;overflow:visible;max-width:100%;height:auto}
+.chart .tick{fill:var(--text-3);font-size:11px;font-variant-numeric:tabular-nums}
+.chart .gl{stroke:var(--grid);stroke-width:1}
+.chart .b{fill:var(--bar)}
+.chart .hit{fill:transparent;cursor:default}
+.chart g.on .b{fill:var(--bar-hi)}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;box-shadow:var(--shadow);padding:8px 10px;font-size:13px;white-space:nowrap;transform:translate(-50%,-100%);display:none;z-index:2}
+.tip strong{font-size:15px;font-variant-numeric:tabular-nums}
+.tip div{color:var(--text-2)}
+.tip .key{display:inline-block;width:12px;height:2px;background:var(--bar);vertical-align:middle;margin-right:6px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--text-2);font-size:12px;letter-spacing:.02em;padding:8px 10px;border-bottom:1px solid var(--border-strong);white-space:nowrap;position:sticky;top:0;background:var(--surface)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr.click{cursor:pointer}
+tbody tr.click:hover{background:var(--surface-2)}
+.scroll{overflow:auto;max-height:560px;margin:0 -18px;border-top:1px solid var(--border)}
+.scroll:last-child{margin-bottom:-18px}
+.scroll table{margin:0;min-width:760px}
+dialog table{min-width:520px}
+dialog .tbl{overflow:auto}
+.who{font-weight:600}
+.unnamed{color:var(--text-3);font-style:italic;font-weight:400}
+.mono{font-family:var(--mono);font-size:12.5px}
+.muted{color:var(--text-2)} .faint{color:var(--text-3)}
+.ok{color:var(--good);font-weight:600} .no{color:var(--bad);font-weight:600}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters select,.filters input{min-height:36px;border:1px solid var(--border-strong);border-radius:10px;background:var(--surface);padding:0 10px;max-width:220px}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-size:12px;color:var(--text-2);white-space:nowrap}
+.bars-mini{display:grid;gap:8px}
+.bars-mini .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:13.5px}
+.bars-mini .track{grid-column:1/-1;height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.bars-mini .fill{height:100%;border-radius:0 3px 3px 0;background:var(--bar)}
+.empty{padding:28px 0;text-align:center;color:var(--text-3)}
+dialog{border:1px solid var(--border-strong);border-radius:16px;background:var(--surface);color:var(--text);padding:0;width:min(860px,calc(100vw - 24px));max-height:calc(100vh - 40px);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(11,22,40,.45)}
+.dlg{padding:20px;display:grid;gap:16px}
+.kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;font-size:13.5px}
+.kv dt{color:var(--text-3)} .kv dd{margin:0;overflow-wrap:anywhere}
+.lock{max-width:420px;margin:12vh auto;display:grid;gap:12px}
+.lock input{min-height:42px;border:1px solid var(--border-strong);border-radius:10px;background:var(--surface);padding:0 12px}
+.err{color:var(--bad);font-size:13px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="faint">Loading…</p></div>
+<div class="tip" id="tip" role="status"></div>
+<dialog id="dlg"></dialog>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+// Builds DOM with textContent only: names and paths come from visitors (?u=…), so nothing here is parsed as HTML.
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (k === 'class') el.className = v;
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat(Infinity)) if (c != null && c !== false) el.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return el;
+}
+const svg = (tag, attrs, ...kids) => { const el = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const [k, v] of Object.entries(attrs || {})) el.setAttribute(k, v); for (const c of kids) el.append(c); return el; };
+
+// ---------- admin key: arrives once as #k=…, then lives in this browser ----------
+const KEY = 'guides-admin-key';
+const store = { get: () => { try { return localStorage.getItem(KEY); } catch { return null; } }, set: v => { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY); } catch { } } };
+const fromHash = /[#&]k=([^&]+)/.exec(location.hash);
+if (fromHash) { store.set(decodeURIComponent(fromHash[1])); history.replaceState(null, '', location.pathname); }
+async function api(path, opt = {}) {
+  const r = await fetch(path, { ...opt, headers: { ...(opt.headers || {}), authorization: 'Bearer ' + (store.get() || '') } });
+  if (r.status === 401) { store.set(null); lock('That key was not accepted.'); throw new Error('unauthorized'); }
+  if (!r.ok) throw new Error((await r.text()).slice(0, 200));
+  return r;
+}
+const get = async p => (await api(p)).json();
+function lock(msg) {
+  const inp = h('input', { type: 'password', 'aria-label': 'Admin key', autocomplete: 'off', placeholder: 'Admin key' });
+  $('#app').replaceChildren(h('form', { class: 'lock card', onsubmit: e => { e.preventDefault(); store.set(inp.value.trim()); boot(); } },
+    h('h1', null, 'Guides usage'), h('p', { class: 'muted' }, 'Paste the admin key, or open the dashboard link that carries it.'),
+    inp, msg ? h('p', { class: 'err' }, msg) : null, h('button', { class: 'btn pri', type: 'submit' }, 'Open')));
+  inp.focus();
+}
+
+// ---------- formatting ----------
+const nf = new Intl.NumberFormat();
+const n = v => nf.format(v || 0);
+const dt = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+const dShort = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
+const when = ms => (ms ? dt.format(new Date(ms)) : '–');
+function ago(ms) {
+  if (!ms) return '–';
+  const s = (Date.now() - ms) / 1000;
+  if (s < 60) return 'just now'; if (s < 3600) return Math.round(s / 60) + ' min ago'; if (s < 86400) return Math.round(s / 3600) + ' h ago';
+  if (s < 86400 * 30) return Math.round(s / 86400) + ' d ago'; return dShort.format(new Date(ms));
+}
+const dur = ms => { ms = Math.round((ms || 0) / 1000); if (ms < 60) return ms + ' s'; const m = Math.round(ms / 60); return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min'; };
+const parse = s => { try { return s ? JSON.parse(s) : {}; } catch { return {}; } };
+function device(ua, ctx) {
+  ua = ua || ''; ctx = typeof ctx === 'string' ? parse(ctx) : (ctx || {});
+  const br = /Edg\//.test(ua) ? 'Edge' : /SamsungBrowser/.test(ua) ? 'Samsung Internet' : /OPR\//.test(ua) ? 'Opera' : /Firefox\//.test(ua) ? 'Firefox' : /CriOS|Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Browser';
+  const os = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android' : /Windows/.test(ua) ? 'Windows' : /Mac OS X/.test(ua) ? (ctx.touch > 1 ? 'iPad' : 'Mac') : /CrOS/.test(ua) ? 'ChromeOS' : /Linux/.test(ua) ? 'Linux' : '';
+  return [br + (os ? ' on ' + os : ''), ctx.model || ''].filter(Boolean).join(' · ');
+}
+const place = r => [r.city, r.region && r.region !== r.city ? r.region : null, r.country].filter(Boolean).join(', ') || '–';
+// A public site draws link scanners and crawlers within hours. Unnamed visits from a headless or scripted browser, or from a
+// cloud-hosting network, are flagged as likely automated; a named device never is.
+const AUTO_UA = /HeadlessChrome|\bbot\b|bot\/|crawl|spider|slurp|Lighthouse|PTST|preview|scanner|python|curl|wget|Go-http|node-fetch|axios/i;
+const AUTO_NET = /Amazon|Google LLC|Google Cloud|Microsoft Corporation|DigitalOcean|OVH|Hetzner|Linode|Akamai|Oracle|Alibaba|Tencent|HostRoyale|M247|Datacamp|Vultr|Choopa|Contabo|Scaleway|Leaseweb|Cloudflare/i;
+const auto = r => !(r.label || r.usr) && (AUTO_UA.test(r.ua || '') || AUTO_NET.test(r.org || ''));
+const whoCell = (label, usr, row) => (label || usr) ? h('span', { class: 'who' }, label || usr)
+  : h('span', null, h('span', { class: 'unnamed' }, 'Unnamed'), row && auto(row) ? [' ', h('span', { class: 'pill', title: 'Headless or scripted browser, or a cloud-hosting network' }, 'likely automated')] : null);
+// Every page that sends events: <guide>/<app>, a guide home (<guide>), or the hub. New guides add a line here.
+const APPS = { 'ccarp/portal': 'CCAR-P Study Portal', 'ccarp/flashcards': 'CCAR-P Flashcards', 'ccarp': 'CCAR-P home', 'gcp-pca/field-guide': 'PCA Field Guide', 'gcp-pca': 'GCP-PCA home', 'hub': 'Hub' };
+const APP = a => APPS[a] || a || '–';
+function what(e) {
+  const d = parse(e.data);
+  switch (e.t) {
+    case 'open': return ['Opened', d.first ? 'first visit on this device' : '', d.standalone ? 'home-screen app' : '', d.ref ? 'from ' + d.ref : ''].filter(Boolean).join(' · ');
+    case 'view': return 'Viewed ' + (e.path || '').replace(/^.*?#/, '#');
+    case 'active': return 'Active for ' + dur(d.ms);
+    case 'session_start': return `Started ${d.label || d.kind || d.mode || 'a session'}${d.n ? ` (${d.n} ${d.app === 'cards' || d.mode === 'cards' ? 'cards' : 'items'})` : ''}`;
+    case 'answer': return h('span', null, h('span', { class: d.ok ? 'ok' : 'no' }, d.ok ? 'Correct' : 'Wrong'), `${d.exam ? ' (exam)' : ''} · ${d.item || ''}${d.domain ? ' · D' + d.domain : ''}${d.ms ? ' · ' + dur(d.ms) : ''}`);
+    case 'card_rate': return h('span', null, h('span', { class: d.got ? 'ok' : 'no' }, d.got ? 'Got it' : 'Again'), ` · ${d.item || ''}${d.deck ? ' · ' + d.deck : ''}`);
+    case 'session_end': return d.total ? `Finished ${d.label || d.kind || 'session'}: ${d.c}/${d.total} (${Math.round(100 * d.c / d.total)}%)${d.ms ? ' in ' + dur(d.ms) : ''}` : `Finished ${d.label || 'session'}${d.seen != null ? `: ${d.seen} seen` : ''}${d.got != null ? `, ${d.got} got it, ${d.again} again` : ''}${d.scored ? `, ${d.ok}/${d.scored} correct` : ''}`;
+    case 'session_abandon': return `Abandoned ${d.label || d.kind || 'session'}`;
+    case 'notice_ok': return 'Acknowledged the usage notice';
+    case 'checklist': return `${d.on ? 'Ticked' : 'Unticked'} ${({ plan: 'study-plan task', syl: 'syllabus objective' })[d.list] || d.list} ${d.item || ''}`;
+    default: return e.t + (e.data ? ' ' + e.data : '');
+  }
+}
+
+// ---------- chart: active devices per day (one series, one axis) ----------
+function chart(days) {
+  const map = new Map(days.map(d => [d.day, d]));
+  const tzo = -new Date().getTimezoneOffset() * 60000, list = [];
+  for (let i = 29; i >= 0; i--) { const k = new Date(Date.now() + tzo - i * 864e5).toISOString().slice(0, 10); list.push(map.get(k) || { day: k, devices: 0, opens: 0, study: 0 }); }
+  const max = Math.max(1, ...list.map(d => d.devices));
+  const step = max <= 5 ? 1 : max <= 10 ? 2 : max <= 25 ? 5 : max <= 50 ? 10 : Math.pow(10, Math.floor(Math.log10(max)));
+  const top = Math.ceil(max / step) * step;
+  const tip = $('#tip'), box = h('div', { class: 'chart' });
+  let lastW = 0;
+  // Drawn at the box's real width (no stretching), and again whenever that width changes.
+  const draw = () => {
+  const W = Math.round(box.clientWidth);
+  if (!W || W === lastW) return;
+  lastW = W;
+  const H = 220, L = 34, B = 24, T = 10, cw = (W - L) / list.length, bw = Math.min(18, cw - 2), y = v => T + (H - T - B) * (1 - v / top);
+  const g = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': `Active devices per day, last 30 days. Peak ${max}. A table of the same numbers follows.` });
+  for (let v = 0; v <= top; v += step) { g.append(svg('line', { class: 'gl', x1: L, x2: W, y1: y(v), y2: y(v) })); const t = svg('text', { class: 'tick', x: L - 6, y: y(v) + 4, 'text-anchor': 'end' }); t.textContent = v; g.append(t); }
+  list.forEach((d, i) => {
+    const x = L + i * cw + (cw - bw) / 2, hgt = H - B - y(d.devices), grp = svg('g', {});
+    // Square at the baseline, 4px rounded data end.
+    if (d.devices) grp.append(svg('path', { class: 'b', d: `M${x},${H - B} V${H - B - hgt + Math.min(4, hgt)} q0,-${Math.min(4, hgt)} ${Math.min(4, hgt)},-${Math.min(4, hgt)} H${x + bw - Math.min(4, hgt)} q${Math.min(4, hgt)},0 ${Math.min(4, hgt)},${Math.min(4, hgt)} V${H - B} Z` }));
+    const hit = svg('rect', { class: 'hit', x: L + i * cw, y: T, width: cw, height: H - T - B });
+    const show = () => {
+      grp.classList.add('on');
+      const r = box.getBoundingClientRect(), sx = r.width / W;
+      tip.replaceChildren(h('strong', null, n(d.devices)), ' ', h('span', null, h('span', { class: 'key' }), d.devices === 1 ? 'device' : 'devices'),
+        h('div', null, `${dShort.format(new Date(d.day + 'T12:00:00'))} · ${n(d.opens)} opens · ${n(d.study)} answers and cards`));
+      tip.style.display = 'block';
+      tip.style.left = (r.left + window.scrollX + (L + i * cw + cw / 2) * sx) + 'px';
+      tip.style.top = (r.top + window.scrollY + y(d.devices) * (r.height / H) - 8) + 'px';
+    };
+    hit.addEventListener('pointerenter', show);
+    hit.addEventListener('pointerleave', () => { grp.classList.remove('on'); tip.style.display = 'none'; });
+    grp.append(hit); g.append(grp);
+    if (i % 7 === 2 || i === list.length - 1) { const t = svg('text', { class: 'tick', x: L + i * cw + cw / 2, y: H - 6, 'text-anchor': 'middle' }); t.textContent = i === list.length - 1 ? 'Today' : dShort.format(new Date(d.day + 'T12:00:00')); g.append(t); }
+  });
+  box.replaceChildren(g);
+  };
+  new ResizeObserver(draw).observe(box);
+  const table = h('table', { class: 'sr' }, h('caption', null, 'Active devices per day'), h('thead', null, h('tr', null, h('th', null, 'Day'), h('th', null, 'Devices'), h('th', null, 'Opens'), h('th', null, 'Answers and cards'))),
+    h('tbody', null, list.map(d => h('tr', null, h('td', null, d.day), h('td', null, d.devices), h('td', null, d.opens), h('td', null, d.study)))));
+  return [box, table];
+}
+
+// ---------- views ----------
+let devices = [], filt = { who: '', t: '', app: '', range: '7' }, lastId = 0, showAuto = false, lastSum = null;
+async function boot() {
+  if (!store.get()) return lock();
+  try {
+    const [sum, dv] = await Promise.all([get('/api/summary?tzo=' + (-new Date().getTimezoneOffset())), get('/api/devices')]);
+    devices = dv.devices;
+    render(sum);
+  } catch (e) { if (e.message !== 'unauthorized') $('#app').replaceChildren(h('p', { class: 'err' }, 'Could not load: ' + e.message)); }
+}
+function render(sum) {
+  lastSum = sum;
+  const T = sum.totals, maxApp = Math.max(1, ...sum.apps.map(a => a.devices));
+  const people = [...new Set(devices.map(d => d.who).filter(Boolean))].sort();
+  const nAuto = devices.filter(auto).length, shown = showAuto ? devices : devices.filter(d => !auto(d));
+  $('#app').replaceChildren(
+    h('div', { class: 'top' }, h('div', null, h('h1', null, 'Guides usage'), h('p', null, 'kanaparthysaisreekar.github.io/guides · times in your time zone')),
+      h('div', { class: 'filters' }, h('button', { class: 'btn', onclick: boot }, 'Refresh'), h('button', { class: 'btn link', onclick: () => { store.set(null); lock(); } }, 'Forget key'))),
+    h('div', { class: 'tiles' },
+      [[T.devices, 'Devices', nAuto ? `all time · ${n(nAuto)} likely automated` : 'all time'], [T.active7, 'Active devices', 'last 7 days'], [T.people, 'Named people', 'from links or labels'],
+       [T.opens7, 'Opens', 'last 7 days'], [T.answers7, 'Questions answered', 'last 7 days'], [T.cards7, 'Cards rated', 'last 7 days']]
+        .map(([v, l, s]) => h('div', { class: 'tile' }, h('b', null, n(v)), h('span', null, l), h('small', null, s)))),
+    h('div', { class: 'grid' },
+      h('section', { class: 'card', 'aria-labelledby': 'c1' }, h('div', { class: 'head' }, h('div', null, h('h2', { id: 'c1' }, 'Active devices per day'), h('p', { class: 'sub' }, 'Last 30 days. Hover a day for opens and study activity.'))), chart(sum.days)),
+      h('section', { class: 'card', 'aria-labelledby': 'c2' }, h('div', { class: 'head' }, h('div', null, h('h2', { id: 'c2' }, 'Apps'), h('p', { class: 'sub' }, 'Devices in the last 30 days'))),
+        sum.apps.length ? h('div', { class: 'bars-mini' }, sum.apps.map(a => h('div', { class: 'row' }, h('span', null, APP(a.app)), h('span', { class: 'muted' }, `${n(a.devices)} devices · ${n(a.opens)} opens`),
+          h('div', { class: 'track' }, h('div', { class: 'fill', style: `width:${Math.max(2, 100 * a.devices / maxApp)}%` }))))) : h('p', { class: 'empty' }, 'No visits yet.'))),
+    h('section', { class: 'card', 'aria-labelledby': 'c3' },
+      h('div', { class: 'head' }, h('div', null, h('h2', { id: 'c3' }, 'People and devices'), h('p', { class: 'sub' }, 'One row per browser. Select a row for its IP history, apps and audit log.')),
+        nAuto ? h('button', { class: 'btn', 'aria-pressed': String(showAuto), onclick: () => { showAuto = !showAuto; render(lastSum); } }, showAuto ? 'Hide likely automated' : `Show ${n(nAuto)} likely automated`) : null),
+      shown.length ? h('div', { class: 'scroll' }, h('table', null,
+        h('thead', null, h('tr', null, ['Who', 'Device', 'Last seen', 'Location', 'Last IP'].map(c => h('th', null, c)), ['Opens', 'Answered', 'Cards', 'Time'].map(c => h('th', { class: 'n' }, c)))),
+        h('tbody', null, shown.map(d => h('tr', { class: 'click', tabindex: 0, onclick: () => openDevice(d.dev), onkeydown: e => { if (e.key === 'Enter') openDevice(d.dev); } },
+          h('td', null, whoCell(d.label, d.usr, d), h('div', { class: 'mono faint' }, d.dev.slice(0, 8))),
+          h('td', null, device(d.ua, d.ctx)),
+          h('td', { title: when(d.last_seen) }, ago(d.last_seen), h('div', { class: 'faint' }, 'first ' + ago(d.first_seen))),
+          h('td', null, place(d), h('div', { class: 'faint' }, d.org || '')),
+          h('td', { class: 'mono' }, d.ip || '–', d.ips > 1 ? h('div', { class: 'faint' }, `${d.ips} IPs`) : null),
+          h('td', { class: 'n' }, n(d.opens)),
+          h('td', { class: 'n' }, n(d.answers), d.answers ? h('div', { class: 'faint' }, Math.round(100 * d.correct / d.answers) + '% right') : null),
+          h('td', { class: 'n' }, n(d.cards)),
+          h('td', { class: 'n' }, dur(d.active_ms))))))) : h('p', { class: 'empty' }, nAuto ? `Only likely automated visits so far (${n(nAuto)}).` : 'No devices yet. They appear here after the first visit.')),
+    h('section', { class: 'card', 'aria-labelledby': 'c4' },
+      h('div', { class: 'head' }, h('div', null, h('h2', { id: 'c4' }, 'Audit log'), h('p', { class: 'sub' }, 'Every event, newest first. IP and location are of the request that delivered it.')),
+        h('div', { class: 'filters' },
+          h('select', { 'aria-label': 'Person', onchange: e => { filt.who = e.target.value; loadLog(); } }, h('option', { value: '' }, 'Everyone'), people.map(p => h('option', { value: p, selected: filt.who === p }, p))),
+          h('select', { 'aria-label': 'Event', onchange: e => { filt.t = e.target.value; loadLog(); } }, [['', 'All events'], ['open', 'Opens'], ['view', 'Page views'], ['session_start', 'Sessions started'], ['session_end', 'Sessions finished'], ['answer', 'Answers'], ['card_rate', 'Cards rated'], ['active', 'Active time']].map(([v, l]) => h('option', { value: v, selected: filt.t === v }, l))),
+          h('select', { 'aria-label': 'App', onchange: e => { filt.app = e.target.value; loadLog(); } }, [['', 'All pages'], ...Object.entries(APPS)].map(([v, l]) => h('option', { value: v, selected: filt.app === v }, l))),
+          h('select', { 'aria-label': 'Period', onchange: e => { filt.range = e.target.value; loadLog(); } }, [['1', 'Last 24 hours'], ['7', 'Last 7 days'], ['30', 'Last 30 days'], ['', 'All time']].map(([v, l]) => h('option', { value: v, selected: filt.range === v }, l))),
+          h('button', { class: 'btn', onclick: exportCsv }, 'Export CSV'))),
+      h('div', { class: 'scroll', id: 'log' }), h('p', { style: 'margin-top:12px;text-align:center' }, h('button', { class: 'btn', id: 'more', onclick: () => loadLog(true), hidden: true }, 'Load older'))));
+  loadLog();
+}
+function q(extra = {}) {
+  const p = new URLSearchParams();
+  if (filt.who) p.set('who', filt.who); if (filt.t) p.set('t', filt.t); if (filt.app) p.set('app', filt.app);
+  if (filt.range) p.set('from', Date.now() - filt.range * 864e5);
+  for (const [k, v] of Object.entries(extra)) if (v) p.set(k, v);
+  return p.toString();
+}
+function logTable(events, dense) {
+  return h('table', null, h('thead', null, h('tr', null, ['Time', dense ? null : 'Who', 'What', 'Page', 'IP', 'Location · network'].filter(Boolean).map(c => h('th', null, c)))),
+    h('tbody', null, events.map(e => h('tr', null,
+      h('td', { title: e.recv - e.at > 120000 ? `Delivered ${when(e.recv)} (recorded offline)` : null }, when(e.at), e.recv - e.at > 120000 ? h('div', { class: 'faint' }, 'sent later') : null),
+      dense ? null : h('td', null, whoCell(e.label, e.usr, e), h('div', { class: 'mono faint' }, e.dev.slice(0, 8))),
+      h('td', null, what(e)),
+      h('td', null, h('span', { class: 'pill' }, APP(e.app))),
+      h('td', { class: 'mono' }, e.ip || '–'),
+      h('td', null, place(e), h('div', { class: 'faint' }, [e.org, e.asn ? 'AS' + e.asn : null].filter(Boolean).join(' · ')))))));
+}
+async function loadLog(more) {
+  const box = $('#log'), btn = $('#more');
+  if (!more) lastId = 0;
+  const { events } = await get('/api/events?' + q({ before: more ? lastId : 0, limit: 100 }));
+  if (events.length) lastId = events[events.length - 1].id;
+  if (!more) box.replaceChildren(events.length ? logTable(events) : h('p', { class: 'empty' }, 'No events match.'));
+  else box.querySelector('tbody').append(...logTable(events).querySelector('tbody').children);
+  btn.hidden = events.length < 100;
+}
+async function exportCsv() {
+  const r = await api('/api/export.csv?' + q());
+  const a = h('a', { href: URL.createObjectURL(await r.blob()), download: (r.headers.get('content-disposition') || '').replace(/.*filename="([^"]+)".*/, '$1') || 'guides-usage.csv' });
+  document.body.append(a); a.click(); a.remove();
+}
+async function openDevice(dev) {
+  const dlg = $('#dlg'), x = await get('/api/devices/' + dev), d = x.device, ctx = parse(d.ctx);
+  const { events } = await get('/api/events?dev=' + dev + '&limit=200');
+  const label = h('input', { value: d.label || '', placeholder: d.usr || 'Name this device', 'aria-label': 'Name', style: 'min-height:36px;border:1px solid var(--border-strong);border-radius:10px;background:var(--surface);padding:0 10px' });
+  const kv = [['Device id', h('span', { class: 'mono' }, d.dev)], ['Name from link', d.usr || '–'], ['Device', device(d.ua, ctx)], ['First seen', when(d.first_seen)], ['Last seen', when(d.last_seen)],
+    ['Last location', `${place(d)}${d.org ? ' · ' + d.org : ''}`], ['Screen', [ctx.screen, ctx.dpr ? `@${ctx.dpr}x` : null, ctx.view ? `window ${ctx.view}` : null].filter(Boolean).join(' ') || '–'],
+    ['System', [ctx.platform, ctx.platformVersion, ctx.mobile ? 'mobile' : null, ctx.standalone ? 'installed app' : null].filter(Boolean).join(' · ') || '–'],
+    ['Language · time zone', [ctx.lang, ctx.tz].filter(Boolean).join(' · ') || '–'], ['User agent', h('span', { class: 'mono' }, d.ua || '–')]];
+  dlg.replaceChildren(h('div', { class: 'dlg' },
+    h('div', { class: 'head' }, h('div', null, h('h2', null, d.label || d.usr || 'Unnamed device'), h('p', { class: 'sub' }, device(d.ua, ctx))), h('button', { class: 'btn', onclick: () => dlg.close() }, 'Close')),
+    h('dl', { class: 'kv' }, kv.map(([k, v]) => [h('dt', null, k), h('dd', null, v)])),
+    h('form', { class: 'filters', onsubmit: async e => { e.preventDefault(); await api('/api/devices/' + dev, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ label: label.value.trim() }) }); dlg.close(); boot(); } },
+      label, h('button', { class: 'btn pri', type: 'submit' }, 'Save name'), h('span', { class: 'sub' }, 'Overrides the name from a link, for this device only.')),
+    h('div', null, h('h3', { style: 'font-size:15px;margin-bottom:6px' }, 'IP addresses'), h('div', { class: 'tbl' }, h('table', null, h('thead', null, h('tr', null, ['IP', 'Location · network', 'First', 'Last'].map(c => h('th', null, c)), h('th', { class: 'n' }, 'Events'))),
+      h('tbody', null, x.ips.map(r => h('tr', null, h('td', { class: 'mono' }, r.ip || '–'), h('td', null, place(r), h('div', { class: 'faint' }, r.org || '')), h('td', null, when(r.first)), h('td', null, when(r.last)), h('td', { class: 'n' }, n(r.n)))))))),
+    h('div', null, h('h3', { style: 'font-size:15px;margin-bottom:6px' }, 'Apps'), h('div', { class: 'tbl' }, h('table', null, h('thead', null, h('tr', null, h('th', null, 'App'), ['Opens', 'Answered', 'Right', 'Cards', 'Sessions'].map(c => h('th', { class: 'n' }, c)), h('th', null, 'Last used'))),
+      h('tbody', null, x.apps.map(a => h('tr', null, h('td', null, APP(a.app)), h('td', { class: 'n' }, n(a.opens)), h('td', { class: 'n' }, n(a.answers)), h('td', { class: 'n' }, a.answers ? Math.round(100 * a.correct / a.answers) + '%' : '–'), h('td', { class: 'n' }, n(a.cards)), h('td', { class: 'n' }, n(a.sessions)), h('td', null, ago(a.last)))))))),
+    h('div', null, h('h3', { style: 'font-size:15px;margin-bottom:6px' }, 'Recent activity'), h('div', { style: 'max-height:340px;overflow:auto' }, events.length ? logTable(events, true) : h('p', { class: 'empty' }, 'No events.'))),
+    h('div', { class: 'filters' }, h('button', { class: 'btn danger', onclick: async () => {
+      if (!confirm('Delete every event and the record for this device? This cannot be undone.')) return;
+      await api('/api/devices/' + dev, { method: 'DELETE' }); dlg.close(); boot();
+    } }, 'Delete this device’s data'), h('span', { class: 'sub' }, 'For erasure requests. New visits from it start a fresh record.'))));
+  dlg.showModal();
+}
+boot();
+</script>
+</body>
+</html>

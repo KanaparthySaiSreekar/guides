@@ -1,0 +1,505 @@
+[
+ {
+  "id": "pattern",
+  "name": "Pattern ladder",
+  "domains": [
+   1,
+   2,
+   7
+  ],
+  "oneLine": "no LLM → augmented call → workflow (chain / route / parallelise / evaluate-optimise) → orchestrator-workers → single agent loop → multi-agent",
+  "question": "What is the least autonomy that meets the task, given what actually varies between requests?",
+  "rungs": [
+   {
+    "step": "Deterministic code, no LLM",
+    "use_when": "The rule can be written down: a lookup, validation, arithmetic or routing on a known field.",
+    "climb_if": "The input is unstructured natural language, or the output needs judgement or generation."
+   },
+   {
+    "step": "Single augmented call (retrieval, tools, structured output)",
+    "use_when": "One request-response cycle answers it: classify, extract, draft or answer from grounded context.",
+    "climb_if": "The task has several known stages that need separate checks, or independent aspects that are better handled separately."
+   },
+   {
+    "step": "Workflow: prompt chaining, routing, parallelisation or evaluator-optimizer, with gates",
+    "use_when": "The path can be listed in advance and you need a fixed order, halt on failure, auditability, or a different treatment per input class. Use a generate-critique loop with a retry cap when clear criteria let feedback measurably improve the output.",
+    "climb_if": "You cannot know the subtasks until runtime."
+   },
+   {
+    "step": "Orchestrator-workers",
+    "use_when": "A central model breaks the job into subtasks it only discovers at runtime, then combines the results, and one component still owns sequencing.",
+    "climb_if": "The number of steps is open-ended and the model must act on feedback from its environment, recovering from errors as it goes."
+   },
+   {
+    "step": "Single agent with scoped tools",
+    "use_when": "Steps emerge at runtime, errors are recoverable, and success can be checked (tests pass, the ticket is resolved), within a bounded tool set and stop conditions.",
+    "climb_if": "The subtasks are genuinely independent and parallel, or they need separate context windows or specialised toolsets. Team or department boundaries do not count."
+   },
+   {
+    "step": "Multi-agent (subagents with isolated context)",
+    "use_when": "Breadth-first work that runs in parallel, such as independent research threads, and would overflow one context. Each subagent receives an explicit handoff (objective, output format, boundaries) and reports through a structured result.",
+    "climb_if": "Nothing further. This is the top rung, so justify it with independence and give each subagent an explicit context handoff."
+   }
+  ],
+  "traps": [
+   "T-AGENTIC",
+   "T-ORGCHART",
+   "T-ENFORCE",
+   "T-MEGATOOL"
+  ]
+ },
+ {
+  "id": "control-strength",
+  "name": "Control-strength ladder",
+  "domains": [
+   5,
+   3,
+   2,
+   7
+  ],
+  "oneLine": "instruction → screening / validation → human approval gate → deterministic enforcement (permission, authz, hook, gate) → remove the capability",
+  "question": "What is the weakest control that is still sufficient for this risk, and does the stem want prevention or detection?",
+  "rungs": [
+   {
+    "step": "Instruction in the system prompt, template or CLAUDE.md",
+    "use_when": "The goal is tone, style, format or a soft preference, and a miss is cheap and reversible.",
+    "climb_if": "The outcome must hold every time, or a miss touches money, identity, regulated data, safety or anything externally visible."
+   },
+   {
+    "step": "Input/output screening and validation (classifiers, schema-constrained output, validators)",
+    "use_when": "Content must conform (valid format, no disallowed content). Screen before the data crosses the boundary, for example de-identify before the API call, not by redacting afterwards.",
+    "climb_if": "The risk is the action itself, not what the text says."
+   },
+   {
+    "step": "Human approval gate before the action",
+    "use_when": "The role needs the action but it is irreversible, externally visible or has a large blast radius, and the reviewer sees the evidence and has the authority and time to refuse.",
+    "climb_if": "The action must never happen whatever the reviewer decides, or approvals have become a rubber stamp."
+   },
+   {
+    "step": "Deterministic enforcement in code: permission deny rules, app-layer authorization with the user's own permissions, a fail-closed hook, a workflow gate",
+    "use_when": "The rule must hold on every request whatever the model says.",
+    "climb_if": "The role never needs the capability at all."
+   },
+   {
+    "step": "Remove the capability (tool, scope, credential, data field)",
+    "use_when": "Least privilege: the role only reads and drafts, or the tool 'might be useful someday'. Pair it with a detective control (audit trail) if the stem also asks for evidence.",
+    "climb_if": "Nothing further. Removal is the strongest control, and nothing can misuse what is absent."
+   }
+  ],
+  "traps": [
+   "T-ENFORCE",
+   "T-REMOVE",
+   "T-DETECT",
+   "T-BOUNDARY",
+   "T-AUTHZ",
+   "T-RUBBERSTAMP"
+  ]
+ },
+ {
+  "id": "hitl-routing",
+  "name": "HITL routing ladder",
+  "domains": [
+   5,
+   1,
+   6
+  ],
+  "oneLine": "automate + monitor → targeted QA sample → risk-routed review on system signals → mandatory pre-action approval (real review) → human decides, AI assists",
+  "question": "Where does a human add real protection, routed by reversibility × blast radius rather than by the model's confidence?",
+  "rungs": [
+   {
+    "step": "Full automation with monitoring and a correction path",
+    "use_when": "The action is reversible and internal, its blast radius is small, and errors show up in metrics quickly.",
+    "climb_if": "Some outputs are irreversible, externally visible, regulated or costly to correct."
+   },
+   {
+    "step": "Targeted QA sampling, stratified by risk and slice, not a random 10%",
+    "use_when": "You need ongoing quality evidence and a feedback loop into the eval set, and nothing is individually high-risk.",
+    "climb_if": "Particular items are high-risk and must be caught before they ship."
+   },
+   {
+    "step": "Risk-routed review triggered by calibrated system signals (validator failures, missing retrieval support, policy flags, amount × reversibility, a new or out-of-distribution case)",
+    "use_when": "Risk varies from item to item and you can detect the risk deterministically. A small irreversible external action outranks a large reversible internal one.",
+    "climb_if": "Every instance of the action is high-stakes, or a regulation requires human sign-off."
+   },
+   {
+    "step": "Mandatory pre-action approval that is a real review",
+    "use_when": "Every action is consequential. Show the reviewer the evidence and a rubric, track review time and override rate, and make sure the reviewer has the authority to reject.",
+    "climb_if": "Accountability or law says a human must make the decision itself."
+   },
+   {
+    "step": "Human decides and AI only assists (drafts, summarises, retrieves)",
+    "use_when": "The decision carries legal or ethical accountability that cannot be delegated, such as a benefit denial or a clinical judgement.",
+    "climb_if": "Nothing further."
+   }
+  ],
+  "traps": [
+   "T-SELFCONF",
+   "T-RUBBERSTAMP",
+   "T-LATER",
+   "T-OWNER",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "integration-mechanism",
+  "name": "Integration-mechanism ladder",
+  "domains": [
+   3,
+   2,
+   1
+  ],
+  "oneLine": "direct API/CLI call in code → tools in the app → Skill (know-how, loaded on trigger) → MCP server (shared capability, scoped + discovered on demand) → agent-to-agent (independent reasoners)",
+  "question": "What is the lightest mechanism that gets this capability to the consumers who need it?",
+  "rungs": [
+   {
+    "step": "Direct API or CLI call in your own code",
+    "use_when": "One fixed pipeline, one consumer, a known call sequence, and no need to reuse it across clients.",
+    "climb_if": "The model must decide when to call it at runtime."
+   },
+   {
+    "step": "Tool definitions inside the one application",
+    "use_when": "A single app's model needs to choose between a few actions, with authorization enforced in the tool handler.",
+    "climb_if": "What must be reused is procedural know-how (steps, templates, domain rules) rather than a connection to a system."
+   },
+   {
+    "step": "Skill: packaged instructions and resources with progressive disclosure",
+    "use_when": "Reusable procedures or domain expertise. Only the metadata loads up front and the body loads when triggered. It connects to no external system.",
+    "climb_if": "Several surfaces, teams or clients need the same live connection to an external system."
+   },
+   {
+    "step": "MCP server",
+    "use_when": "A shared capability over an external system used by several clients (IDE, chat, agents), with per-user authorization and no token passthrough. As the catalogue grows, scope tools per role and load them on demand rather than writing longer descriptions or building a mega-tool.",
+    "climb_if": "The other party is an independently reasoning system, often in another organisation, that must negotiate rather than be called."
+   },
+   {
+    "step": "Agent-to-agent protocol",
+    "use_when": "Two autonomous agents, each owning its own tools, data and policy, cooperate across a trust boundary. Only task messages and results travel between them; neither side exposes its tools, internal data stores or credentials.",
+    "climb_if": "Nothing further. If the other side does not reason independently, go back down to MCP or an API."
+   }
+  ],
+  "traps": [
+   "T-PROTOCOL",
+   "T-AUTHZ",
+   "T-MEGATOOL",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "retrieval",
+  "name": "Retrieval ladder",
+  "domains": [
+   3,
+   2,
+   4
+  ],
+  "oneLine": "system of record for live state → whole corpus in cached context → chunk on unit boundaries + contextual headers → retriever matched to query shape (lexical / semantic / routed hybrid) + metadata filter → re-rank → only then widen k",
+  "question": "Which retrieval fix matches the data shape and query pattern, and is this a precision problem, a boundary problem or a freshness problem?",
+  "rungs": [
+   {
+    "step": "Call the system of record (tool or API) for live state",
+    "use_when": "The answer depends on the current state: claim status, balance, inventory, order state. Indexing it more often only gives you stale data faster.",
+    "climb_if": "The content is reference material (policies, manuals, contracts), not transactional."
+   },
+   {
+    "step": "Put the whole small, stable corpus in context, with the static prefix cached",
+    "use_when": "The corpus is small and rarely changes, and every query may need any part of it.",
+    "climb_if": "The corpus is too big to fit, or recall and cost degrade as it grows."
+   },
+   {
+    "step": "Chunk on semantic unit boundaries (clause, section, row) with contextual headers and metadata",
+    "use_when": "Answers are cut mid-clause, or chunks lose their document and section context.",
+    "climb_if": "The chunks are intact but the wrong ones come back."
+   },
+   {
+    "step": "Match the retriever to the query shape: lexical for identifiers and codes, semantic for concepts, a routed hybrid for mixed traffic; filter on metadata before the search",
+    "use_when": "Exact IDs miss under embeddings, paraphrases miss under keywords, or scope (region, product, date) is known in advance.",
+    "climb_if": "Recall is high but the top results are noisy."
+   },
+   {
+    "step": "Re-rank the candidate set",
+    "use_when": "The relevant passage is in the candidates but ranked too low, so precision is the defect. Check re-ranking against the p95 latency budget.",
+    "climb_if": "Measured recall is genuinely low, which justifies widening k or adding sources. Never do this for a precision defect."
+   }
+  ],
+  "traps": [
+   "T-STUFF",
+   "T-LIVESTATE",
+   "T-LAYER",
+   "T-BIGMODEL",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "diagnosis",
+  "name": "Diagnosis ladder",
+  "domains": [
+   4,
+   3,
+   7
+  ],
+  "oneLine": "pull traces → isolate what changed (use 'unchanged' to eliminate) → retrieval vs grounding → prompt/format → model tier → infra/dependency/config scope",
+  "question": "Which layer did the triggering change actually touch, and what evidence confirms it?",
+  "rungs": [
+   {
+    "step": "Pull traces for failing and passing requests (prompt and model version, retrieved IDs, tool calls and results, outputs)",
+    "use_when": "Any regression. Observe before you change, widen access or fail over. A dashboard or runbook consumes signals; it does not capture them.",
+    "climb_if": "The traces are in hand."
+   },
+   {
+    "step": "Localise to the changed component and eliminate the unchanged ones",
+    "use_when": "The stem names a trigger (document refresh, settings rollout, prompt edit, traffic shift) or says nothing was deployed, which points to an input or traffic drift.",
+    "climb_if": "The changed layer is identified but the failure mode is still unclear."
+   },
+   {
+    "step": "Separate retrieval from grounding",
+    "use_when": "Wrong documents came back: fix chunking, the index or the retriever. The right documents came back but the answer is wrong: fix the prompt, grounding or citations.",
+    "climb_if": "Retrieval and grounding both check out."
+   },
+   {
+    "step": "Prompt or format defect",
+    "use_when": "The failure is uniform across easy and hard items: format drift, a missing instruction or over-forceful wording after an upgrade.",
+    "climb_if": "Failures cluster only on the complex items, even though the inputs are correct."
+   },
+   {
+    "step": "Model-tier mismatch",
+    "use_when": "Correct inputs, a clean prompt that already asks for step-by-step reasoning (or a higher effort setting), and failures only on multi-step reasoning. Measure a higher tier on that slice alone.",
+    "climb_if": "Errors are timeouts, auth failures or configuration issues that would happen without the model."
+   },
+   {
+    "step": "Infrastructure, dependency or configuration scope",
+    "use_when": "One team's MCP server fails, permission is denied after a rollout, or a dependency times out. Check which settings scope won and what actually loaded before you edit config.",
+    "climb_if": "Nothing further."
+   }
+  ],
+  "traps": [
+   "T-OBSERVE",
+   "T-LAYER",
+   "T-LIVESTATE",
+   "T-BIGMODEL",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "cost-latency-lever",
+  "name": "Cost/latency-lever ladder",
+  "domains": [
+   4,
+   2,
+   3,
+   1
+  ],
+  "oneLine": "measure dominant term → remove waste → cache static prefix → batch non-interactive → route easy traffic to a cheaper/faster tier (floor held) → restructure (parallel / async job) ; stream only for perceived wait",
+  "question": "Which term dominates the cost or latency, and which lever moves that term without breaching the accuracy floor?",
+  "rungs": [
+   {
+    "step": "Measure: input vs output tokens, calls per task, per-stage latency, and the costliest requests",
+    "use_when": "Always first. Count what enters the window and where the time goes.",
+    "climb_if": "The dominant term is known."
+   },
+   {
+    "step": "Remove waste: unneeded context, stale tool results, redundant calls",
+    "use_when": "Much of the input is irrelevant to the task. Restructure it rather than cutting context the task needs.",
+    "climb_if": "The remaining input is needed and repeats across requests."
+   },
+   {
+    "step": "Cache the static prefix (tools, then system, then stable context), with per-request values kept out of it",
+    "use_when": "Input dominates and a large identical prefix is resent. Caching does not help when output dominates.",
+    "climb_if": "The work does not need an immediate response."
+   },
+   {
+    "step": "Batch the non-interactive work",
+    "use_when": "Overnight reports, backfills and bulk classification with no user waiting. Never for interactive traffic.",
+    "climb_if": "The traffic is interactive and varies in difficulty."
+   },
+   {
+    "step": "Route easy traffic to a cheaper or faster tier while holding the accuracy floor",
+    "use_when": "Measured slices show a lower tier clears the bar on the easy requests. Keep the harder tier for the slice that needs it.",
+    "climb_if": "Completion time is still over budget."
+   },
+   {
+    "step": "Restructure: parallelise independent steps, or make it asynchronous with a job ID or callback",
+    "use_when": "A synchronous caller has a hard timeout, or sequential steps are independent. Streaming only improves perceived wait and time to first token.",
+    "climb_if": "Nothing further. Go back to the stakeholder with the trade-off."
+   }
+  ],
+  "traps": [
+   "T-LEVER",
+   "T-BLUNTCUT",
+   "T-BIGMODEL",
+   "T-AVGSLA",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "sla-formulation",
+  "name": "SLA-formulation ladder",
+  "domains": [
+   6,
+   1,
+   3
+  ],
+  "oneLine": "baseline + what users feel → p95/p99 latency at peak → accuracy floor with a stated method → error budget + degraded mode → owner, review cadence, renegotiation trigger",
+  "question": "How do you word a commitment that survives peak load and is honest about probabilistic output?",
+  "rungs": [
+   {
+    "step": "Agree the baseline and the experience that matters (time to first token versus completion, what counts as an error)",
+    "use_when": "Before any number is promised.",
+    "climb_if": "The baseline and the measure are agreed."
+   },
+   {
+    "step": "State latency as a percentile (p95 or p99), measured at peak load",
+    "use_when": "Always. Averages hide the tail, and excluding surge days hides exactly when users suffer.",
+    "climb_if": "Latency is defined but quality is not."
+   },
+   {
+    "step": "Set an accuracy or quality floor with a named measurement method and sample",
+    "use_when": "Generative output is probabilistic, so commit to a measured rate on a defined eval, not a deterministic guarantee.",
+    "climb_if": "Breaches and outages have not yet been planned for."
+   },
+   {
+    "step": "Error budget plus degraded-mode behaviour (fallback, queue, human handoff)",
+    "use_when": "Something will fail sometimes. Define in advance what happens and how much failure is tolerated, not a hard maximum per request.",
+    "climb_if": "Ownership and change control are still missing."
+   },
+   {
+    "step": "Owner, review cadence and a renegotiation trigger",
+    "use_when": "The SLA must stay aligned as traffic and scope shift, and user feedback feeds the eval set.",
+    "climb_if": "Nothing further."
+   }
+  ],
+  "traps": [
+   "T-AVGSLA",
+   "T-OVERPROMISE",
+   "T-VIBES",
+   "T-OWNER",
+   "T-AUDIENCE"
+  ]
+ },
+ {
+  "id": "eval-grading",
+  "name": "Eval-grading ladder",
+  "domains": [
+   4,
+   5,
+   7
+  ],
+  "oneLine": "pre-agree metric + threshold + slices → code-based check → rubric LLM judge calibrated to human labels → expert human review ; held-out, refreshed from production, A/B locked in advance",
+  "question": "What is the cheapest grader that is valid for this output, and is the evidence pre-registered, sliced and fresh?",
+  "rungs": [
+   {
+    "step": "Pre-agree the metric, threshold, slices and decision rule (for A/B: sample size, stopping rule, one change per arm)",
+    "use_when": "Before any run. Without this, no score means anything.",
+    "climb_if": "The criteria are locked."
+   },
+   {
+    "step": "Code-based grading: exact match, schema validity, unit tests, regex, numeric tolerance",
+    "use_when": "The output has an objectively checkable form or answer.",
+    "climb_if": "Quality is open-ended (tone, helpfulness, faithfulness)."
+   },
+   {
+    "step": "Rubric LLM judge, calibrated against human labels and rechecked over time",
+    "use_when": "Scale is needed on subjective criteria. Judge scores that rise while complaints rise mean judge drift, so recalibrate. Temperature 0 does not fix a miscalibrated judge.",
+    "climb_if": "The stakes are high, the domain needs expertise, or the judge disagrees with humans on a slice."
+   },
+   {
+    "step": "Expert human review, targeted",
+    "use_when": "Regulated or specialised judgements, calibration sets, and adjudicating disagreements.",
+    "climb_if": "Nothing further. Keep the eval set held-out and never tune on it. Refresh it from production when traffic shifts, and report every subgroup separately."
+   }
+  ],
+  "traps": [
+   "T-VIBES",
+   "T-AGGREGATE",
+   "T-PEEK",
+   "T-SELFCONF",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "lifecycle",
+  "name": "Lifecycle ladder",
+  "domains": [
+   6,
+   1,
+   7
+  ],
+  "oneLine": "discovery (baseline, target, constraints, owner) → design + ADR → POC with exit criteria → pilot with pre-agreed success criteria → production + handoff (runbook, monitoring owner, docs) → monitor → iterate",
+  "question": "Which stage are you in, and what is the FIRST thing that stage requires?",
+  "rungs": [
+   {
+    "step": "Structured discovery: the real job to be done, baseline, target, constraints (legal, data, latency), decision owner",
+    "use_when": "A sponsor asks for 'a chatbot', a failed pilot had no criteria, or a request arrives already carrying a solution.",
+    "climb_if": "Baseline, target, constraints and owner are written down and agreed."
+   },
+   {
+    "step": "Design with recorded trade-offs (ADR including rejected alternatives), framed for each audience",
+    "use_when": "You are choosing a pattern, model, integration or controls, or someone asks how the reasoning will be preserved.",
+    "climb_if": "The design is agreed by the owner."
+   },
+   {
+    "step": "POC on representative data with exit criteria",
+    "use_when": "Feasibility is uncertain.",
+    "climb_if": "The exit criteria are met."
+   },
+   {
+    "step": "Pilot with real users, pre-agreed success criteria, guardrail metrics and a go/no-go owner",
+    "use_when": "Feasibility is proven and value must be shown under real conditions. Do not extend a pilot without changing anything.",
+    "climb_if": "The criteria are met and the decision owner approves."
+   },
+   {
+    "step": "Production and handoff: runbook, a named monitoring owner, documentation, escalation path, SLA",
+    "use_when": "An operating team takes over. A chat channel or contact person is not documentation.",
+    "climb_if": "The system is live."
+   },
+   {
+    "step": "Monitor and iterate: drift alerts on a baseline, feedback into the eval set, one change at a time",
+    "use_when": "The system is in production.",
+    "climb_if": "Scope changes significantly, which sends you back to discovery."
+   }
+  ],
+  "traps": [
+   "T-LATER",
+   "T-SKIPDISC",
+   "T-OWNER",
+   "T-AUDIENCE",
+   "T-OBSERVE"
+  ]
+ },
+ {
+  "id": "config-reach",
+  "name": "Config-reach ladder",
+  "domains": [
+   7
+  ],
+  "oneLine": "user settings → committed project config → managed CLAUDE.md (org-wide guidance) → managed settings with deny rules / fail-closed hooks (non-overridable enforcement)",
+  "question": "How far must this setting reach, and must it be guidance or non-overridable enforcement?",
+  "rungs": [
+   {
+    "step": "User or local settings",
+    "use_when": "Personal preference on one developer's machine.",
+    "climb_if": "The whole team needs consistency on a repo."
+   },
+   {
+    "step": "Project config committed to the repo (settings, CLAUDE.md, MCP config)",
+    "use_when": "Configs drift across a team, and consistency is needed for everyone who works in that repo.",
+    "climb_if": "The rule must cover every repo and machine, including repos that never adopt it."
+   },
+   {
+    "step": "Managed CLAUDE.md for org-wide guidance",
+    "use_when": "The goal is to standardise behaviour and conventions across the organisation, and a miss is acceptable.",
+    "climb_if": "The rule must not be disabled or overridden, or it protects secrets, PHI or the network."
+   },
+   {
+    "step": "Managed settings: `permissions.deny` rules, fail-closed hooks, restricted tools and servers; headless CI runs with an explicit allowlist",
+    "use_when": "The stem says it cannot be disabled on any machine, or a sensitive path must be blocked. Managed settings take precedence over user and project settings.",
+    "climb_if": "Nothing further. If a rollout causes a permission denial, find out which scope won before you widen anything."
+   }
+  ],
+  "traps": [
+   "T-REACH",
+   "T-ENFORCE",
+   "T-REMOVE",
+   "T-OBSERVE"
+  ]
+ }
+]

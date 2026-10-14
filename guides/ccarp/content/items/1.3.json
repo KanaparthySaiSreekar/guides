@@ -1,0 +1,569 @@
+[
+ {
+  "id": "P1-1.3-001",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "auditability",
+  "industry": "energy",
+  "family": "fixed-path-audit-workflow",
+  "counterTrap": false,
+  "signals": [
+   "in a fixed order",
+   "traceable to the specific check and evidence that produced it",
+   "no two firms lay them out alike"
+  ],
+  "stem": "Tidewater Grid Services receives about 300 interconnection requests a month from solar and battery developers. Every request passes the same five checks in a fixed order: completeness, site control, a power-flow screen run in the utility's existing study software, a deposit set by the published tariff, and queue assignment. Developers submit packages in their own formats, and no two firms lay them out alike. The finance sponsor wants the smallest possible build. The state utility commission requires that every rejection be traceable to the specific check and evidence that produced it.",
+  "ask": "Which architecture BEST meets Tidewater's requirements?",
+  "options": [
+   {
+    "id": "a",
+    "text": "An agent given the study software, tariff tables and queue system as tools, planning each review from the package and tracing each tool call",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Tracing records whatever path the agent picked, but the path here is fixed. Letting the model plan it adds run-to-run variance and allows a rejection reached without the defined check, which breaks the per-check trail the commission requires."
+   },
+   {
+    "id": "b",
+    "text": "One augmented call per request whose prompt lists the five checks in order and asks for a cited piece of evidence behind each result",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "This is the smallest build, but a prompt listing the order does not make the order hold, and citations the model reports about its own reasoning are not a record of which check rejected the request."
+   },
+   {
+    "id": "c",
+    "text": "A rules-based pipeline with no model in the loop, in which per-template parsers feed the five checks in order and each check logs its own result",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Deterministic checks that each log a result would satisfy the commission, but per-template parsers assume packages follow known layouts. Here no two firms lay them out alike, so the parsers break before the checks can run."
+   },
+   {
+    "id": "d",
+    "text": "A code-run sequence of the five checks in which Claude extracts the needed fields from each package and each check logs its own result",
+    "correct": true,
+    "trap": null,
+    "why": "The path is fixed and the commission needs each rejection tied to one check and its evidence. Code owns the order and each check records its own result, while Claude handles what rules cannot: reading packages that share no layout."
+   }
+  ],
+  "explain": "Binding constraint: the commission's traceability requirement, which outranks the sponsor's wish for the smallest build. A path known in advance with per-check evidence calls for a code-run workflow, and because packages share no layout, Claude's role is extraction rather than choosing the path.",
+  "rule": "CS-D1-06",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.3-002",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "lifecycle-stage",
+  "industry": "healthcare",
+  "family": "trace-cases-before-pattern",
+  "counterTrap": false,
+  "signals": [
+   "nobody has checked what actually varies between cases",
+   "justify from evidence about real requests"
+  ],
+  "stem": "Alderbrook Health's revenue-cycle director wants to automate prior-authorisation requests for outpatient imaging and has already secured budget for 'an autonomous agent', with a pilot expected this quarter. Coordinators say each request is different every time, though nobody has checked what actually varies between cases. Payer criteria already come from a licensed rules engine. The architecture review board will not approve a level of autonomy the team cannot justify from evidence about real requests.",
+  "ask": "What should the solution architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run a four-week agent pilot on one payer's imaging requests and record where its steps depart from coordinator practice",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "A pilot does generate evidence, but only about an agent the team has already chosen, so it presupposes the autonomy the board wants justified. If real cases follow a path that can be listed, the pilot has built the wrong pattern."
+   },
+   {
+    "id": "b",
+    "text": "Walk through a sample of recent requests with coordinators, recording each step taken and the finding that prompted it",
+    "correct": true,
+    "trap": null,
+    "why": "Step-by-step traces show whether the path can be written down in advance or emerges from each finding, and that inference is what justifies an autonomy level: a listable path means a workflow around the rules engine, an emergent one supports an agent."
+   },
+   {
+    "id": "c",
+    "text": "Assemble a scored evaluation set from past requests and payer decisions so that each candidate design can be measured against an agreed bar",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "An evaluation set drawn from past requests is needed before designs are compared, but it scores outcomes, not the steps coordinators took. It cannot show the board whether the path varies, so it follows the pattern decision."
+   },
+   {
+    "id": "d",
+    "text": "Define the tool permissions and the human approval step required before any request is submitted to a payer",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Permissions and an approval gate before payer submission will be needed, but their shape depends on which pattern is chosen. Designing them now skips the evidence the board has asked for."
+   }
+  ],
+  "explain": "Binding constraint: the project is at the pattern-selection stage, and the board will approve only the autonomy that evidence from real requests justifies. Tracing cases first shows whether the path can be listed in advance, which is the fact that separates a workflow from an agent.",
+  "rule": "CS-D1-06",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.3-003",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "healthcare",
+  "family": "runtime-emergent-investigation-agent",
+  "counterTrap": true,
+  "signals": [
+   "each follow-up query depends on what the last source showed",
+   "Two events of the same category often need entirely different sources",
+   "read-only access"
+  ],
+  "stem": "At Larchmont Children's Hospital, patient-safety analysts investigate unexplained medication events. Each investigation takes its own route: one needs pharmacy dispensing logs, another infusion-pump records, another nursing notes and shift rosters, and each follow-up query depends on what the last source showed. Two events of the same category often need entirely different sources. The proposed assistant would have read-only access to these systems and would produce a draft timeline that a safety officer reviews before anything is filed. The compliance lead would prefer a fixed pipeline because it is easier to explain.",
+  "ask": "Which pattern BEST fits the investigation assistant?",
+  "options": [
+   {
+    "id": "a",
+    "text": "A fixed pipeline that pulls each source for the event in a set order and then asks Claude to assemble the timeline",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "A set order cannot form the follow-up queries that each finding prompts, so the pipeline returns bulk data and loses the thread. Easier explanation does not outweigh a path that cannot be listed in advance."
+   },
+   {
+    "id": "b",
+    "text": "A single agent with read-only tools for each source that chooses its next query from what it has found, within a step budget",
+    "correct": true,
+    "trap": null,
+    "why": "Steps emerge at runtime because each query depends on the last finding, and errors stay recoverable since tools are read-only and a safety officer reviews the draft. That meets the bar for an agent, and the step budget bounds cost."
+   },
+   {
+    "id": "c",
+    "text": "A router that classifies the event by category and runs a predefined sequence of source queries written for that category",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Routing works when category predicts the path, but two events of the same category often need different sources here. The predefined branches assume a regularity the cases do not have."
+   },
+   {
+    "id": "d",
+    "text": "Separate agents for pharmacy, device and nursing data, each seeing only its own department's system, reporting to a coordinator",
+    "correct": false,
+    "trap": "T-ORGCHART",
+    "why": "Department ownership of the systems is not a technical seam. The investigation needs one context that links pump times to rosters to notes, and splitting by department breaks that chain of reasoning."
+   }
+  ],
+  "explain": "Binding constraint: the query path emerges from each finding and cannot be listed in advance, while read-only tools and human review keep errors recoverable. That is exactly the condition that justifies an agent over the compliance lead's preferred fixed pipeline.",
+  "rule": "CS-D1-06",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.3-004",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "banking",
+  "family": "agent-on-fixed-path-diagnosis",
+  "counterTrap": false,
+  "signals": [
+   "have not changed since launch",
+   "re-running a failed file usually produces a correct review",
+   "marks the sequence as mandatory in capitals"
+  ],
+  "stem": "Northgate Commercial Bank uses an agent to prepare annual reviews of small-business credit lines. Credit policy requires the same six checks on each file in a set order, with sanctions screening before any credit analysis. The system prompt already lists the six checks, marks the sequence as mandatory in capitals and repeats it at the end of the prompt. Quality assurance finds that roughly one file in twenty skips a check or screens after the analysis. The model version, system prompt and tool definitions have not changed since launch, the failures are spread evenly across products, branches and file lengths, and re-running a failed file usually produces a correct review.",
+  "ask": "What is the MOST likely cause of the skipped and reordered checks?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The mandatory-sequence wording is not forceful enough, so the model treats the check order as advisory on some files",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "The prompt already uses every emphasis device: a list, capitals and a repeat at the end. The remaining failures come from leaving sequencing to the model, not from weak wording, so firmer phrasing would not remove them."
+   },
+   {
+    "id": "b",
+    "text": "The design leaves the choice and order of checks to the agent, which takes a different path on some runs of the same file",
+    "correct": true,
+    "trap": null,
+    "why": "Unchanged model, prompt and tools, failures spread across products and file lengths, and correct re-runs all point to run-to-run variation in a path the model chooses. A sequence fixed by policy belongs in code-owned workflow steps."
+   },
+   {
+    "id": "c",
+    "text": "The current model tier lacks the reasoning capacity to keep track of a six-step checklist across a long credit file",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The tier is unchanged and the failures do not cluster on longer or more complex files, where a capacity shortfall would concentrate. A larger model would still be choosing the order, so it might lower the rate but could not guarantee the sequence."
+   },
+   {
+    "id": "d",
+    "text": "Some files arrive with incomplete financial statements, which leaves the agent unable to complete each check on its first pass",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "A file missing statements could not yield a correct review on re-run, yet re-runs usually do, so the inputs are not the cause of the skipped and reordered checks."
+   }
+  ],
+  "explain": "Binding constraint: what did not change (model, prompt, tools, inputs and the spread across file lengths), which leaves the pattern itself as the cause. A sequence fixed by policy must be owned by code in a workflow; an agent that chooses its own path will vary from run to run however firmly it is instructed.",
+  "rule": "CS-D1-06",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.3-005",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "determinism",
+  "industry": "logistics",
+  "family": "deterministic-calc-gated-filing",
+  "counterTrap": false,
+  "signals": [
+   "off by even a cent",
+   "cannot be withdrawn",
+   "in that order"
+  ],
+  "stem": "Kestrel Freight Forwarding is designing a customs-entry assistant. For each shipment it must read the supplier's commercial invoice (layouts vary by supplier), propose tariff codes, compute duties from the official tariff schedule, and file the entry with the customs authority, in that order. A duty figure that is off by even a cent triggers a penalty review, and a filed entry cannot be withdrawn, so no entry may be filed until each code has passed validation. The operations director favours one agent that handles each shipment end to end.",
+  "ask": "Which TWO design decisions BEST meet these requirements? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have a second Claude call recompute each duty independently and hold the entry for review whenever the two figures disagree",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Two model calculations that agree raise confidence but can still agree on the same wrong figure, so the arithmetic stays probabilistic. A cent-level penalty needs the duty computed the same way every time, which a second call cannot promise."
+   },
+   {
+    "id": "b",
+    "text": "Give one agent the invoice reader, tariff lookup and filing tools, with an instruction to validate each code before it files",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "This matches the director's preference, but the four stages run in a known order and filing is irreversible. Leaving the order and the validation step to the agent's judgement makes a premature filing unlikely, not impossible."
+   },
+   {
+    "id": "c",
+    "text": "Run the stages as a code-defined workflow that halts before filing unless each tariff code passes validation",
+    "correct": true,
+    "trap": null,
+    "why": "Filing is irreversible, so the order and the halt have to hold on each shipment. A code-owned sequence with a validation gate before filing makes a premature filing impossible rather than merely unlikely."
+   },
+   {
+    "id": "d",
+    "text": "Log each shipment's extracted values, codes and computed duty to an audit trail that the compliance team reviews weekly",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "An audit trail is sound practice and helps compliance spot patterns, but it reviews entries after they are filed. It neither prevents a wrong duty nor stops an entry being filed before its codes pass validation."
+   },
+   {
+    "id": "e",
+    "text": "Compute duties in deterministic code from the tariff schedule, with Claude supplying the extracted invoice values",
+    "correct": true,
+    "trap": null,
+    "why": "Duties have to be exact to the cent each time. Arithmetic over a published schedule belongs in code; Claude's strength here is reading the varied invoice layouts, not guaranteeing a calculation."
+   }
+  ],
+  "explain": "Binding constraint: two outcomes must hold every time, an exact duty and no filing before codes pass validation. Put the calculation in deterministic code and the sequencing and halt in a code-defined workflow, with Claude reading invoices and proposing codes.",
+  "rule": "CS-D1-08",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.3-006",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "next-step",
+  "constraint": "determinism",
+  "industry": "retail",
+  "family": "free-text-classify-then-route",
+  "counterTrap": false,
+  "signals": [
+   "written in customers' own words",
+   "fit none of them or mix two",
+   "without deviation"
+  ],
+  "stem": "Harbor & Pine, a home-goods retailer, receives about 6,000 return requests a week through a free-text box on its website, written in customers' own words. Most requests fall into one of four types (damaged, wrong item, change of mind, warranty), but about 5% fit none of them or mix two. Store policy requires each type to follow its own written handling procedure without deviation, and the returns manager has signed off the four procedures and the success bar. The team is now choosing the design.",
+  "ask": "What is the BEST next step for the returns design?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Send each request to one augmented call whose prompt holds the four procedures, letting it pick and apply the matching one",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "One call is the simplest rung, but it leaves the handling steps to the model on every request. A prompt holding the procedures makes compliance likely, not certain, and policy allows no deviation from them."
+   },
+   {
+    "id": "b",
+    "text": "Give an agent order-history and carrier-tracking tools so that it can investigate each request and decide how to handle it",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "The handling for each type is already written down, so there is no path to discover at runtime. An agent with investigation tools widens discretion over steps that policy has already fixed."
+   },
+   {
+    "id": "c",
+    "text": "Route each request with keyword rules into the four code-defined branches, with no model call, and send any unmatched text to staff",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Keyword rules assume customers name the return type in terms a rule can parse. The text is free-form, so a request such as 'it arrived cracked' or a mixed complaint slips past the rules or lands in the wrong branch."
+   },
+   {
+    "id": "d",
+    "text": "Classify each request with one call into the four types or 'unclear', run that type's code branch, and send 'unclear' to staff",
+    "correct": true,
+    "trap": null,
+    "why": "The variation is known in advance, so this is routing: one classification call reads the free text, code runs the approved procedure for each type, and requests that fit none or mix two go to people."
+   }
+  ],
+  "explain": "Binding constraint: each return type must follow its written procedure without deviation, so the variation can be written down in advance. Known variation is a workflow branch: classify the free text once, run the approved branch in code, and send unclear cases to staff.",
+  "rule": "CS-D1-06",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.3-007",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "least",
+  "constraint": "regulation",
+  "industry": "public-sector",
+  "family": "agent-placement-within-design",
+  "counterTrap": false,
+  "signals": [
+   "Statute lists the verifications each claim must receive",
+   "reproduce exactly how each one was reached",
+   "each next record depends on what the last one showed"
+  ],
+  "stem": "Ridgeview State's Employment Department is redesigning unemployment claim processing to clear a growing backlog. Statute lists the verifications each claim must receive, and because any determination can be appealed, the department must be able to reproduce exactly how each one was reached. A small share of claims are flagged for suspected fraud; reviewing those means following leads across payroll, employer and payment records, where each next record depends on what the last one showed, and an investigator decides what to act on. The programme director wants the flexibility of the fraud tooling applied to routine claims too. The architecture team has proposed four components.",
+  "ask": "Which proposed component is LEAST appropriate for this design?",
+  "options": [
+   {
+    "id": "a",
+    "text": "An agent with read-only tools that decides which employer and wage verifications each routine claim receives, based on its records",
+    "correct": true,
+    "trap": null,
+    "why": "Statute fixes the verifications, so the path for routine claims is known in advance. Letting an agent choose it per claim makes determinations hard to reproduce on appeal, which is where the director's wish for flexibility has to give way."
+   },
+   {
+    "id": "b",
+    "text": "A rules engine, rather than Claude, that applies each statutory eligibility test and then computes the weekly benefit amount",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "This component fits. Statutory tests and benefit arithmetic must come out the same each time and be reproducible on appeal, so deterministic code should own them; instructing Claude to apply them would only make consistency likely."
+   },
+   {
+    "id": "c",
+    "text": "A read-only agent that follows leads across payroll, employer and payment records on flagged claims and reports its findings to an investigator",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "This component fits. On flagged claims each next record depends on the last, so the path emerges at runtime, and read-only tools plus investigator review keep errors recoverable. A fixed pipeline would be the under-built choice here."
+   },
+   {
+    "id": "d",
+    "text": "One augmented call that writes the plain-language explanation for each notice, placed in the statutory template beside the recorded outcome",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This component fits. Appeals require reproducing the determination, not the explanation's wording. The outcome is fixed upstream, so each explanation can be checked against it, and one call tailors plain language to the claimant in a way a fixed template cannot."
+   }
+  ],
+  "explain": "Binding constraint: statute fixes each claim's verifications and appeals require reproducible determinations, which outranks the director's wish for flexibility. A path known in advance belongs in a workflow; an agent fits only where the path emerges at runtime and a person reviews the result, as with the fraud leads.",
+  "rule": "CS-D1-06",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-03",
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.3-008",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "cost",
+  "industry": "pharma",
+  "family": "single-call-grounded-sop-answers",
+  "counterTrap": false,
+  "signals": [
+   "each answer sits in one or two SOP passages",
+   "lowest running cost that meets the citation requirement",
+   "revised versions are released every week"
+  ],
+  "stem": "Corvane Therapeutics' quality-assurance group maintains 900 controlled SOPs in its document management system, and revised versions are released every week. Manufacturing technicians ask questions such as 'what is the maximum hold time for buffer B after preparation?', and each answer sits in one or two SOP passages. The QA director wants each answer to quote and cite the governing SOP version so technicians can check it on the spot. The tool has a modest budget, and the director has asked for the lowest running cost that meets the citation requirement.",
+  "ask": "Which design BEST meets the director's request?",
+  "options": [
+   {
+    "id": "a",
+    "text": "An agent that searches the document system in several rounds, reads whole SOPs and decides for itself when it has enough to answer",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Several search rounds and whole-SOP reads multiply tokens and latency for questions a single retrieval already answers. Autonomy buys nothing when each answer sits in one or two passages."
+   },
+   {
+    "id": "b",
+    "text": "One call per question that retrieves the relevant SOP passages and answers with a quote and a citation to the SOP version",
+    "correct": true,
+    "trap": null,
+    "why": "Each answer lives in one or two passages, so a single retrieval-grounded call can quote and cite the current governing version. That meets the citation requirement at the lowest running cost, with nothing that needs a loop or a second call."
+   },
+   {
+    "id": "c",
+    "text": "A two-step chain that drafts a grounded answer, then has a second call check each quoted sentence against the SOP text before release",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "A verification step earns its cost when a single call misses a measured bar, and nothing here says it does. Each answer already carries a quote technicians can check on the spot, so the second call doubles running cost without a stated need."
+   },
+   {
+    "id": "d",
+    "text": "Load the full SOP library into a cached system prompt so that each question is answered without a separate retrieval step",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Caching a whole corpus suits a small, stable one. Nine hundred SOPs make a very large prefix that each question still pays to read, and weekly revisions keep invalidating it; retrieving one or two passages costs far less."
+   }
+  ],
+  "explain": "Binding constraint: the lowest running cost that still meets the citation requirement. When one augmented call with retrieval can answer and cite, the workflow and agent options are over-engineering, and a large corpus that changes weekly rules out caching it whole.",
+  "rule": "CS-D1-07",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

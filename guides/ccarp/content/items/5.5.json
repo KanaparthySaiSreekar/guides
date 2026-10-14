@@ -1,0 +1,497 @@
+[
+ {
+  "id": "P5-5.5-001",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "ownership",
+  "industry": "legal",
+  "family": "fairness-tradeoff-owner-decision",
+  "counterTrap": false,
+  "signals": [
+   "agreement with senior caseworkers' rankings is 91% overall",
+   "the budget does not cover",
+   "director of casework is accountable"
+  ],
+  "stem": "Harrow Street Law Centre uses Claude to rank incoming legal-aid applications for callback priority, and caseworkers phone the top of the list each morning. A file review found that urgent applications written in the applicant's second language are ranked non-urgent far more often than other urgent ones, even though agreement with senior caseworkers' rankings is 91% overall. The proposed fix, a second caseworker read for those applications, would cost about 25 staff hours a week that the budget does not cover. The director of casework is accountable for intake outcomes and the staffing budget.",
+  "ask": "Which TWO actions should the architect take before any fix goes live? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Measure missed urgent cases across all applications, before and after the second read, against a limit fixed in advance",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Fixing the limit in advance is sound, but an overall count is dominated by first-language applications, just as the 91% agreement hid the gap. Second-language misses could stay high while the pooled figure passes."
+   },
+   {
+    "id": "b",
+    "text": "Measure missed urgent cases for each language group, with and without the second read, on the same applications",
+    "correct": true,
+    "trap": null,
+    "why": "The harm sits in one slice that the 91% average hides. Comparing each language group's missed urgent cases with and without the second read shows how much of the gap the fix actually closes."
+   },
+   {
+    "id": "c",
+    "text": "Free the 25 hours by trimming routine callbacks, and record the reason for the change in the intake decision log",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Trimming routine callbacks may be the right trade, but it moves service away from other clients to cover hours the budget lacks. That choice belongs to the accountable director, and logging it does not make it the architect's."
+   },
+   {
+    "id": "d",
+    "text": "Take the second read's weekly staffing cost and its measured gap reduction to the director for a recorded decision",
+    "correct": true,
+    "trap": null,
+    "why": "The fix spends staff hours the centre has not budgeted, so trading that cost against the fairness gap is the accountable director's call, made on the per-group evidence and recorded, not settled by the architect."
+   },
+   {
+    "id": "e",
+    "text": "Publish a model card for caseworkers setting out the ranking's intended use, its known language gap and its error rates",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A model card is good practice for staff awareness, but documenting the gap changes neither who gets called back nor what the director needs to judge whether the second read is worth its cost."
+   }
+  ],
+  "explain": "Binding constraint: decision ownership. The fix carries an unbudgeted staffing cost, so the architect produces per-group evidence of how far it closes the gap and the accountable director decides and records the trade-off.",
+  "rule": "CS-D5-12",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-13",
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.5-002",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "banking",
+  "family": "circular-label-fairness-evidence",
+  "counterTrap": false,
+  "signals": [
+   "overturned twice as often",
+   "signs off every decline",
+   "measured against underwriters' final decisions"
+  ],
+  "stem": "Appeals data at Tidewell Bank shows that personal-loan top-up declines for applicants over 65 are overturned twice as often as declines for younger applicants. Claude recommends approve or decline on each top-up request, and an underwriter signs off every decline before it is sent. The delivery team reports the recommendations as 94% accurate, measured against underwriters' final decisions. The model risk committee decides next month whether the tool stays in production, and the head of retail credit owns lending risk.",
+  "ask": "Which evidence BEST shows the committee whether the tool treats applicant groups fairly?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Appeal-overturn rates for each age band, set against limits the head of retail credit agreed before the review",
+    "correct": true,
+    "trap": null,
+    "why": "Appeal outcomes show which declines were wrong, independently of the underwriters who signed them off. Rates for each age band, judged against limits the lending risk owner agreed before the review, give the committee a clear pass or fail."
+   },
+   {
+    "id": "b",
+    "text": "The 94% accuracy figure, recomputed on a fresh holdout of last quarter's applications to confirm that it still holds",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Recomputing the average only confirms the headline figure again. It cannot show whether applicants over 65 bear more wrongful declines, which is exactly the slice the appeals data says the average is hiding."
+   },
+   {
+    "id": "c",
+    "text": "Agreement between the tool and underwriters' sign-offs, broken down by age band and set against agreed limits",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Breaking results down by age band is right, but this treats sign-off as an independent label. Underwriters signed off every decline that appeals later overturned, so agreement with them cannot reveal those wrongful declines."
+   },
+   {
+    "id": "d",
+    "text": "A written assurance from the delivery team that the tool has no age bias, since age is excluded from its inputs",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "An assurance is a promise, not evidence. Leaving age out of the inputs does not stop proxies such as pension income or account tenure from carrying it, so the claim of no age bias cannot be backed."
+   }
+  ],
+  "explain": "Binding constraint: evidence quality for a committee decision. Fairness is shown by per-group outcome rates against an independent label (here, appeal outcomes) and limits the accountable owner agreed in advance; agreement with the underwriters who signed off every decline is circular.",
+  "rule": "CS-D5-12",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-13",
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.5-003",
+  "rev": 1,
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "regulation",
+  "industry": "e-commerce",
+  "family": "legal-breach-escalation",
+  "counterTrap": true,
+  "signals": [
+   "Counsel has confirmed in writing",
+   "decided to launch unlabelled",
+   "raised the legal finding with her twice"
+  ],
+  "stem": "Larkspur Market uses Claude to write the review summaries shown on its product pages. Counsel has confirmed in writing that consumer law in its two largest markets requires AI-generated summaries to be labelled as such wherever they appear. The head of e-commerce, the product's accountable owner, has heard that advice, noted that a test showed labels cut conversion slightly, and decided to launch unlabelled on Monday. The architect owns the page templates and has raised the legal finding with her twice.",
+  "ask": "What is the BEST next step for the architect?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Launch as the owner decided and record her written acceptance of the legal risk in the risk register",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Recording risk acceptance is right for a business trade-off, but a confirmed legal breach is not a risk the product owner can accept; the obligation removes the unlabelled option before any conversion trade-off."
+   },
+   {
+    "id": "b",
+    "text": "Add a clause to the site's terms of use stating that review summaries on product pages may be generated by AI",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "A terms-of-use clause makes the information available somewhere, but counsel said labels are needed wherever summaries appear; a shopper reading a product page would still not see that the summary is AI-written."
+   },
+   {
+    "id": "c",
+    "text": "Escalate above the head of e-commerce, to her executive sponsor and the compliance function, before Monday",
+    "correct": true,
+    "trap": null,
+    "why": "An owner decides trade-offs within the law, not whether to breach it. Counsel's written finding makes labelling an obligation, and raising it with her twice has failed, so escalating above her to people with authority over compliance is right."
+   },
+   {
+    "id": "d",
+    "text": "Add the AI labels in the page templates for Monday's release, since the templates are within the architect's remit",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Changing the release on your own authority overrides the owner's decision and leaves the conflict unresolved on record; labelling may be right, but it needs the authority of the compliance function, not a template edit."
+   }
+  ],
+  "explain": "Binding constraint: a confirmed legal obligation. The accountable owner normally decides trade-offs, but escalating above the owner is right when her decision would breach the law and raising it directly has already failed.",
+  "rule": "CS-D5-13",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-12"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.5-004",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "irreversibility",
+  "industry": "manufacturing",
+  "family": "fairness-metric-matches-harm",
+  "counterTrap": false,
+  "signals": [
+   "a missed serious near-miss can precede an injury",
+   "marked serious less often",
+   "many same-day reviews are already false alarms"
+  ],
+  "stem": "Kestrel Components uses Claude to triage near-miss safety reports from its three plants, and reports marked serious get a same-day engineering review. Reports from agency workers, often short and machine-translated, are marked serious less often than those from permanent staff. Agency workers mostly staff the press lines, which carry the highest injury risk, and a missed serious near-miss can precede an injury. Engineers say many same-day reviews are already false alarms. EHS engineers have labelled 2,000 past reports as serious or not, and the EHS director wants a fairness test before rollout to two more plants.",
+  "ask": "Which fairness test is BEST suited to this system?",
+  "options": [
+   {
+    "id": "a",
+    "text": "For each worker group, the share of reports marked serious that engineers confirmed, so that review time is spent well",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes wasted reviews are the harm that matters. False alarms cost engineering time but can be recovered; the gap is agency reports never being marked serious, and precision ignores those missed reports entirely."
+   },
+   {
+    "id": "b",
+    "text": "Across all 2,000 labelled reports, the share of engineer-confirmed serious reports that the triage failed to mark serious",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Measuring misses against the engineers' labels is right, but one pooled rate blends both worker groups. Permanent staff's reports can keep it low while agency reports from the riskiest lines are the ones being missed."
+   },
+   {
+    "id": "c",
+    "text": "For each worker group, an LLM judge's grade of whether a sample of the triage decisions looked reasonable",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A reasonableness grade from an uncalibrated judge has no agreed bar and can carry its own bias. Engineer labels already exist and measure missed serious reports directly, which is the harm here."
+   },
+   {
+    "id": "d",
+    "text": "For each worker group, the share of engineer-confirmed serious reports that the triage failed to mark serious",
+    "correct": true,
+    "trap": null,
+    "why": "A missed serious report on the press lines can precede an injury that cannot be undone. Each group's miss rate against the engineers' labels tests exactly that error, while false alarms cost only review time."
+   }
+  ],
+  "explain": "Binding constraint: irreversibility. A missed serious report can precede an injury, which outweighs the recoverable cost of false alarms, so test each worker group's miss rate against labelled outcomes rather than flag precision or a pooled rate.",
+  "rule": "CS-D5-12",
+  "ladder": "eval-grading",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.5-005",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "lifecycle-stage",
+  "industry": "public-sector",
+  "family": "pre-agree-disparity-thresholds",
+  "counterTrap": false,
+  "signals": [
+   "lists the tenant groups and metrics to report",
+   "cover budget and timeline only",
+   "wants to start the group-level evaluation this week"
+  ],
+  "stem": "Wexcombe County Council will pilot Claude to draft priority scores for social-housing repair requests, and a housing officer approves each score. Its equality duty requires the council to show the pilot does not disadvantage disabled or older tenants. The equalities team holds last year's manual priority outcomes by tenant group, officers have labelled 3,000 test requests, and the director of housing services is accountable for the repairs service. The digital lead wants to start the group-level evaluation this week. The evaluation plan lists the tenant groups and metrics to report, and the project board's terms of reference cover budget and timeline only.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run the group-level evaluation on the 3,000 labelled requests this week and report the gaps it finds to the project board",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "The evaluation is the right next task, but the plan sets no gap that would stop the pilot. Results reported first cannot approve or halt anything, and a limit chosen after seeing the gaps tends to fit the numbers."
+   },
+   {
+    "id": "b",
+    "text": "Take draft gap limits, based on the equalities team's guidance, to the project board for approval before the evaluation starts",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Drafting limits from the equalities guidance and fixing them early are both sound, but the board's remit is budget and timeline. The tolerable gap is a service and equality-risk decision for the director accountable for repairs."
+   },
+   {
+    "id": "c",
+    "text": "Confirm to the equalities team in writing that officer approval of every score means no tenant group can be disadvantaged",
+    "correct": false,
+    "trap": "T-OVERPROMISE",
+    "why": "An officer approving each score is a control, not evidence of equal outcomes, since approvers can pass the same skewed scores. The duty is to show the pilot does not disadvantage tenants, and a written promise shows nothing."
+   },
+   {
+    "id": "d",
+    "text": "Have the director of housing services set, before any results exist, the gap between tenant groups that would stop the pilot",
+    "correct": true,
+    "trap": null,
+    "why": "The plan names groups and metrics but no stop line, and the board has no remit over equality risk. The accountable director setting that line before results exist lets the evaluation decide the pilot honestly."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. A fairness evaluation can gate the pilot only once the accountable owner has set the stop line before results are seen; the board's remit is budget and timeline, running the evaluation comes next, and a written promise proves nothing.",
+  "rule": "CS-D5-12",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-13"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.5-006",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "insurance",
+  "family": "proxy-feature-disparity",
+  "counterTrap": false,
+  "signals": [
+   "have always included the claimant's address",
+   "overall flag rate has barely moved",
+   "have not changed"
+  ],
+  "stem": "Brackenridge Mutual uses Claude to flag home-insurance claims for fraud review. Claim summaries in the prompt have always included the claimant's address, and last month the team added a neighbourhood risk band derived from the postcode. Since then, claims from several inner-city postcodes, where census data shows most residents are from minority ethnic groups and on lower incomes, are flagged three times as often, while the overall flag rate has barely moved. Investigators clear nearly all the extra flags as genuine, and a fraud ring reported in one of those areas is still unconfirmed. The model version, prompt instructions, flag threshold and investigator team have not changed.",
+  "ask": "What is the MOST likely cause of the disparity?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The new band is standing in for residents' ethnicity and income, so flags now follow who lives in those postcodes",
+    "correct": true,
+    "trap": null,
+    "why": "The band is the only change, and the extra flags cluster in postcodes whose residents are mostly minority-ethnic and lower-income and turn out genuine, so the band is carrying those traits into the flag decision."
+   },
+   {
+    "id": "b",
+    "text": "Chance variation concentrated in a few areas, since the overall flag rate across the whole book has barely moved",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "A steady overall rate is what you would expect if flags shifted between areas rather than grew. The average hides the slice, and a threefold jump in specific postcodes that began with the new band is not noise."
+   },
+   {
+    "id": "c",
+    "text": "A real rise in fraud around the reported ring, which the assistant is correctly picking up in those postcodes",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the claims became riskier, but the ring is unconfirmed and sits in one area while the rise spans several postcodes, and investigators clear nearly all the extra flags as genuine."
+   },
+   {
+    "id": "d",
+    "text": "Associations the model has learned between inner-city addresses and fraud, now surfacing in how it reads those claims",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Addresses were always in the summaries and the model version is unchanged, so any learned associations were already present before last month. Only the added band lines up with when the rise began."
+   }
+  ],
+  "explain": "Binding constraint: what changed. With the model, instructions, threshold, investigators and address field unchanged, the new postcode band is the cause, acting as a proxy for residents' ethnicity and income even though neither trait is in the prompt.",
+  "rule": "CS-D5-12",
+  "ladder": "diagnosis",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.5-007",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "audience",
+  "industry": "airline",
+  "family": "disclosure-with-human-route",
+  "counterTrap": false,
+  "signals": [
+   "go back through the same drafting flow",
+   "will know when AI shaped a decision about them",
+   "ask a person to look at it again"
+  ],
+  "stem": "Skyvale Airways uses Claude to draft decisions on delay-compensation claims, and an agent checks each draft for tone and completeness before sending it. Replies to decision messages go back through the same drafting flow and are sent after an agent's check. Nothing in the messages mentions AI, and complaint logs show many passengers assume a person assessed their claim and do not know how to challenge the outcome. The board has approved a customer charter committing that passengers will know when AI shaped a decision about them and can ask a person to look at it again.",
+  "ask": "Which change BEST delivers the charter commitment?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a section on AI-assisted claims handling to the conditions of carriage and to the airline's privacy notice",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "Policy documents make the information available, but a passenger reading their decision will not see it there, and a policy section gives them no route to ask a person to look at the claim again."
+   },
+   {
+    "id": "b",
+    "text": "State in each decision message that AI helped draft it, with a direct link to have a person review the claim",
+    "correct": true,
+    "trap": null,
+    "why": "The charter needs each passenger to learn at the point of decision that AI was involved and to have a real route to a person. An in-message notice with a review link that bypasses the drafting flow delivers both."
+   },
+   {
+    "id": "c",
+    "text": "State in each decision message that AI helped draft it, and invite passengers to reply if they disagree so their claim is reassessed",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "It discloses in context, but it assumes a reply reaches a person. Replies go back through the same AI drafting flow with only a tone and completeness check, so no one looks at the claim again as the charter requires."
+   },
+   {
+    "id": "d",
+    "text": "Require a second agent to approve each AI-drafted decision before it is sent, so that every outcome has human sign-off",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "A second approver may improve accuracy, but passengers would still not know AI shaped the decision or how to challenge it; the charter's gap is disclosure and recourse, not the depth of internal review."
+   }
+  ],
+  "explain": "Binding constraint: the audience is the individual passenger at the point of decision. Transparency needs disclosure in the message plus a route that actually reaches a person; a reply that re-enters the AI drafting flow, a policy page or more internal review falls short.",
+  "rule": "CS-D5-13",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

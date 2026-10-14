@@ -1,0 +1,504 @@
+{
+ "domain": 4,
+ "intro": "Domain 4 tests whether you can trust a number before it drives a decision. Items hand you a score, a latency figure, a cost report, an A/B lead or a dashboard, and ask what is wrong with it, what to measure or what to do FIRST. The binding constraint is usually an evidence condition: a threshold agreed in advance, an accuracy floor, p95 at peak, a slice the aggregate hides, or the variables the stem calls unchanged. Distractors are real techniques applied to bad evidence or at the wrong moment: an uncalibrated judge (T-VIBES), a winner called after peeking (T-PEEK), blaming the model for a retrieval fault (T-LAYER), a lever pulled before measuring (T-LEVER), a dashboard in place of traces (T-OBSERVE). Make the evidence valid, then act on it.",
+ "delta": "Foundations touched this domain through mechanics: few-shot for consistency, schema validation, retry-with-feedback and Batch API limits. What carries over is that valid syntax is not semantic correctness and that batching is for work nobody waits on. Batch field names, window arithmetic, stop_reason handling and exact prices or cache multipliers are low-yield here. New at Professional level: evals as acceptance criteria (thresholds, real-demand datasets, a grading ladder, judge calibration), A/B discipline, diagnosis by layer, cost-per-task optimisation and observability under PII constraints.",
+ "sections": [
+  {
+   "obj": "4.1",
+   "core": [
+    "A **decision-ready metric** fixes four things before the build: the measure, the pass threshold, the sample and the scoring instrument. Without all four, the number cannot gate a release.",
+    "Anchor each metric to an outcome the decision owner cares about. A **proxy metric** such as a judge score or token count earns its place only once shown to move with that outcome. Reference-overlap scores such as ROUGE or BLEU reward matching wording, not faithfulness; grade summaries on factual consistency with the source.",
+    "**Accuracy** is defined per slice (line of business, language, document type), and the release gates on the worst critical slice, not on the overall mean.",
+    "**Latency** is a tail percentile measured at peak, split into time-to-first-token for a person watching and completion time for a caller waiting. Batch work commits to a delivery window instead.",
+    "**Cost** is measured per completed task, including retries, tool turns and human rework, against a measured pre-AI baseline. Cost per request flatters agents that loop. Size it before building: volume times tokens per task times price against the budget, and a measured tool round trip against the latency budget, give a feasibility verdict (feasible, feasible with constraints, not feasible).",
+    "**Safety and security** are separate gates scored on adversarial and red-team sets: PII leakage, injection success, unauthorized tool actions, unsupported claims. On an irreversible path the gate can be zero tolerance: any observed failure blocks the release."
+   ],
+   "worked": {
+    "scenario": "Before Meridian Mutual's home-claims pilot, Dana Okafor asks Tomasz Wiśniewski for the scorecard she will sign as the go/no-go. His draft lists overall routing accuracy, average response time across the day, and one quality score from an LLM judge that also folds in the PII and injection checks. Discovery already measured the pre-AI baseline for misroutes, handling time and cost per claim, and the pilot window includes the autumn storm season.",
+    "ask": "Which revision makes the scorecard fit to decide go/no-go?",
+    "options": [
+     {
+      "text": "Fix thresholds now for routing per claim type, p95 latency at surge peak and cost per claim, plus separate PII and injection gates.",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Keep the blended judge score as the single headline gate at 4.2 out of 5, since one number is easier for Dana to defend to the board.",
+      "correct": false,
+      "trap": "T-AGGREGATE"
+     },
+     {
+      "text": "Keep average response time as the latency gate, but measure it only on non-storm days so surge traffic does not distort the figure.",
+      "correct": false,
+      "trap": "T-AVGSLA"
+     },
+     {
+      "text": "Run the first month of the pilot on live claims, then set each threshold a few points below what the system actually achieved.",
+      "correct": false,
+      "trap": "T-VIBES"
+     }
+    ],
+    "steps": {
+     "constraint": "Dana needs a go/no-go instrument before the pilot, and the stem says a baseline already exists, so thresholds can be fixed now. The storm season makes peak latency part of the bar.",
+     "classify": "Prevention of a bad release decision at the design stage, before any results exist. Eval-grading ladder, first rung: metric, threshold, slices and decision rule agreed in advance.",
+     "eliminate": "The blended score is T-AGGREGATE: strong routing can dilute a PII or injection failure that must gate on its own. The non-storm average is T-AVGSLA: it removes exactly the hours when claimants suffer. Setting thresholds after a month is T-VIBES: a bar chosen after seeing results describes the system; it does not test it.",
+     "choose": "Choose the per-metric thresholds with separate safety and security gates. The runner-up, running the pilot first, confuses a baseline with a bar. Had the stem said no baseline existed, the first step would be measuring the current process, not the new system, and setting thresholds from that."
+    }
+   },
+   "faded": null,
+   "traps": [
+    "T-VIBES",
+    "T-AGGREGATE",
+    "T-AVGSLA"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Gating metric",
+     "text": "A miss on this measure alone blocks the release: a safety or security gate, the accuracy floor on a critical slice, p95 at peak. It carries its own pre-agreed threshold."
+    },
+    "b": {
+     "title": "Tracking metric",
+     "text": "The measure explains movement or guides tuning, but no single value should stop a release: judge-score trends, token counts, cache hit rate."
+    },
+    "decider": "Would the decision owner stop the release if this number alone missed? Then it gates, with its own threshold."
+   },
+   "explain": {
+    "prompt": "Why must safety and security gate separately instead of feeding the overall quality score?",
+    "model": "Averaging lets high-volume, benign cases dilute rare, severe failures. A small injection-success rate barely moves a blended score, yet one successful injection on a write tool can be irreversible. Separate gates with their own thresholds, scored on adversarial sets, let a safety failure block the release on its own."
+   },
+   "bridge": "Foundations taught that schema-valid output is not correct output, and that carries straight into metric design. Foundations prep overweights mechanics such as retry loops; here the question is which number, with which threshold, decides the release."
+  },
+  {
+   "obj": "4.2",
+   "core": [
+    "An **eval set** is sampled from real production demand, stratified by the slices that matter, with adversarial and edge cases added in known proportions. Labels or grades produced by the system under test are circular; model-generated inputs add useful volume only when seeded from real traffic and checked against it. Prefer volume over polish: many cases with slightly noisier automated grading beat a few hand-graded ones. Before launch, seed the set from historical records and cases written by subject-matter experts. Include negative cases where the right answer is to decline or say 'not found', ambiguous cases that should trigger a clarifying question or escalation, and every past failure as a regression case.",
+    "Keep the set **held out** from prompt tuning. Iterating until the test set passes turns it into training data, and the score stops predicting production.",
+    "Version the set and give it a **refresh trigger**. When traffic shifts (a new region, product, language or format), sample fresh cases and score the new segment as its own slice.",
+    "The **grading ladder** picks the cheapest valid grader for each property: code checks where truth is crisp, a rubric LLM judge for open-ended quality, targeted expert review where stakes or specialism demand it. Code checks come in two kinds: exact match against a reference, and property checks (valid JSON, cites a retrieved ID, within length). A rubric that human raters cannot agree on cannot calibrate a judge.",
+    "An **LLM judge** is an instrument. Measure its agreement with human labels before it gates anything and recheck on fresh labels: judge scores rising while complaints or overrides rise means the judge has drifted, so recalibrate before trusting the trend. Averaging repeated runs, or temperature 0 on models that still accept it, makes a judge repeatable, not correct.",
+    "Mixed methods apply per property, not per output: one draft can have its codes exact-matched, its tone judged and its decline rationale reviewed by an expert.",
+    "**Judge design**: a specific rubric with anchored score levels, a constrained verdict (pass or fail, or a small scale) and reasoning before the score. Run the judge in its own context, seeing the output and the criteria but not the generator's rationale, and prefer a different model or version from the generator to limit self-preference. Pin the judge's version so score trends stay comparable.",
+    "**Agent evals** grade the outcome: did the end state match (the booking exists, the record is correct), not whether the agent followed one exact tool-call path, since several paths can be right. Keep trajectory metrics (steps, retries, wrong-tool calls) as diagnostics, grade multi-turn conversations as whole conversations as well as turn by turn, and hold out a split when tuning tool descriptions against the eval."
+   ],
+   "worked": {
+    "scenario": "Tomasz Wiśniewski is designing the eval for Meridian Mutual's adjuster drafts. Each draft carries a loss-cause code and a reserve band that must match ClaimsCore, a claimant-facing explanation, and, for partial declines, a coverage rationale citing a PolicyVault clause. Luis Ferreira can release two senior adjusters for four hours a week each. Aiko Brennan suggests one LLM judge score every field so the harness stays simple.",
+    "ask": "Which grading design should Tomasz adopt?",
+    "options": [
+     {
+      "text": "Exact-match code and reserve band, grade explanations with an adjuster-calibrated judge, and send decline rationales to the seniors.",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Use one LLM judge with a detailed rubric for all four fields, and average three runs per draft so scores stay consistent.",
+      "correct": false,
+      "trap": "T-VIBES"
+     },
+     {
+      "text": "Have the two senior adjusters grade every field of every eval draft, so one trusted human standard applies to all four.",
+      "correct": false,
+      "trap": "T-ASSUME"
+     },
+     {
+      "text": "Score each draft once with a combined rubric covering all four fields, and gate the release on the mean score across all eval drafts.",
+      "correct": false,
+      "trap": "T-AGGREGATE"
+     }
+    ],
+    "steps": {
+     "constraint": "Four fields with different kinds of truth, and only eight expert-hours a week to spend.",
+     "classify": "Detection: designing the measuring instrument at the eval-design stage. Eval-grading ladder: choose the cheapest valid grader per field, not per draft.",
+     "eliminate": "The single averaged judge is T-VIBES: a judge is a worse instrument than code on crisp fields, and averaging runs only makes an uncalibrated judge wrong more consistently. Full expert grading is T-ASSUME: it works only if eight expert-hours a week can cover every field of every eval draft, which the stem never establishes, and it spends experts on fields code checks better. The combined mean is T-AGGREGATE: good prose can hide a wrong reserve band.",
+     "choose": "Choose the per-field ladder. The runner-up, full expert grading, would need an eval set small enough for two adjusters to grade in full, and even then code is the better grader for codes and amounts."
+    }
+   },
+   "faded": {
+    "scenario": "Six months after launch, Meridian Mutual's monthly eval run shows the draft explanation score steady at 4.3 out of 5. Meanwhile the EU subsidiary began taking travel claims in Portuguese, and Luis Ferreira reports adjusters rewriting most Portuguese drafts. The eval set was frozen at launch, and the judge's agreement with adjuster labels was last measured then, on English claims only.",
+    "ask": "What should Tomasz Wiśniewski do FIRST?",
+    "options": [
+     {
+      "text": "Refresh the eval set with a labelled Portuguese travel slice from recent traffic, and recheck the judge's agreement on it.",
+      "correct": true,
+      "trap": null,
+      "why": "It repairs the instrument: the set now contains the failing segment, and the judge is validated where it is being used."
+     },
+     {
+      "text": "Keep the current set and judge; the steady 4.3 shows the Portuguese rewrites reflect adjuster preference, not quality.",
+      "correct": false,
+      "trap": "T-AGGREGATE",
+      "why": "The steady number comes from a set with no Portuguese claims in it, so it says nothing about them."
+     },
+     {
+      "text": "Move EU travel drafts to a more capable model tier now, while the team investigates why adjusters rewrite them.",
+      "correct": false,
+      "trap": "T-BIGMODEL",
+      "why": "No one has located the failing layer, and there is no bar on the new slice to show an upgrade helps."
+     },
+     {
+      "text": "A/B test a Portuguese-specific prompt against the current prompt on live EU traffic, scored by the monthly eval run.",
+      "correct": false,
+      "trap": "T-LATER",
+      "why": "Right later, but the test would be scored by the same stale set and unvalidated judge."
+     }
+    ],
+    "constraint": "(given) A steady aggregate on a frozen set, failures concentrated in a segment the set does not contain, and a judge validated only on English.",
+    "classify": "(given) Detection failure in the eval instrument itself, found at the monitoring and iteration stage. Eval-grading ladder: dataset freshness and judge calibration come before any fix is tested.",
+    "reasoning": "Keeping the set trusts an aggregate that cannot see the failing segment (T-AGGREGATE). The tier move changes the model before anyone knows which layer failed (T-BIGMODEL). The A/B test is the right move once a valid instrument exists (T-LATER). Refreshing the set and rechecking the judge comes first, because every later fix, including that A/B test, will be judged by this set and this judge."
+   },
+   "traps": [
+    "T-VIBES",
+    "T-AGGREGATE",
+    "T-LATER"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Code-based check",
+     "text": "The property has a crisp answer: codes, amounts, schema validity, a citation to a known clause ID. Cheap, deterministic, and no calibration needed."
+    },
+    "b": {
+     "title": "Calibrated rubric judge",
+     "text": "Quality is open-ended (tone, completeness, faithfulness) and volume rules out people, once the judge's agreement with human labels has been measured."
+    },
+    "decider": "Can you write the right answer down in advance? Then code grades it; if not, a validated judge does."
+   },
+   "explain": {
+    "prompt": "Why is an eval set written and labelled by the system under test circular?",
+    "model": "The generator shares the blind spots of the system it is meant to test, so the cases it cannot imagine are the cases it gets wrong. Its labels carry its own errors, so agreement with them measures self-consistency, not correctness. Real demand, sampled and labelled by people, is the only source that contains the failures users actually hit."
+   },
+   "bridge": "Schema validation from Foundations reappears as the code rung of the grading ladder, and few-shot examples reappear as the anchored score examples in a judge rubric. What Foundations prep underweights is provenance: where the cases came from, whether they are held out, and when they were last refreshed."
+  },
+  {
+   "obj": "4.3",
+   "core": [
+    "**Pre-registration** fixes the primary metric, guardrail metrics, sample size and stopping rule before the first result is seen. A rule chosen after peeking manufactures winners.",
+    "Change **one variable per arm**. A bundled variant can beat control without showing which change helped, and a gain from one change can mask a regression from another. Sampling varies run to run, so judge a change on repeated runs over the whole set, never one run, and keep the eval set itself fixed between baseline and candidate. If a bundled test has already run, treat its win as a direction and follow up with ablation arms.",
+    "Iterate in order: pass the offline eval on the held-out set, run the online test under **capped exposure** (a small traffic share or one region), then widen. An automated regression eval runs in CI on every prompt, model or index change, and the full held-out suite gates every release, so a gain on one slice cannot ship while hiding a regression elsewhere. When the full suite is slow, a fast regression subset per change plus the full suite before release is sound tiering.",
+    "**Guardrail metrics** such as PII leakage, severe misroutes or complaint rate stop a test by pre-declared rule, and a pre-registered interim analysis with its own stricter threshold may stop it too. A primary metric that merely looks significant at an unplanned peek is not a reason to stop.",
+    "Randomise at the unit that matters (claim or claimant) and run the arms concurrently, so seasonality or a catastrophe surge cannot pose as a treatment effect.",
+    "Read results by slice and with their uncertainty. An overall winner that loses on a critical slice goes back to the decision owner rather than straight to rollout.",
+    "**Pin model versions, not moving aliases**, and treat a model change like any other release. Anthropic gives at least 60 days' notice before retiring a publicly released model, and requests to a retired model fail; Amazon Bedrock and Google Cloud set their own retirement schedules (Anthropic's dates cover the Claude API, Claude Platform on AWS and Microsoft Foundry), so a Bedrock deployment like Meridian's checks AWS's dates. Migrate before the date: re-tune the prompt for the new model (a prompt tuned for the incumbent handicaps the challenger), run the full regression suite with the migration as the one change under test, then roll out under capped exposure.",
+    "Name each rollout stage by its question. **Shadow mode** runs the candidate on live traffic without serving its output and compares it with the incumbent or with human decisions; it suits replacing a legacy system, widening segment by segment by measured agreement. A **canary** asks 'does it break?': a small share of traffic against the baseline on guardrail metrics, with widening gates and rollback criteria set in advance. An **A/B test** asks 'which is better?' on a pre-registered primary metric. A feature flag or kill switch keeps every stage reversible, and prompts, tools and config move through separate development, staging and production environments."
+   ],
+   "worked": {
+    "scenario": "Tomasz Wiśniewski pre-registered an A/B test for Meridian Mutual's policy answers: clause-boundary against fixed-size chunking, citation correctness as the primary metric, 4,000 questions per arm, and a guardrail that halts the test if unsupported coverage statements exceed an agreed rate. At 900 questions per arm the clause-boundary arm leads by six points, the guardrail is well inside its limit, and Dana Okafor asks to announce the winner at next week's board meeting.",
+    "ask": "What should Tomasz do?",
+    "options": [
+     {
+      "text": "Run to the planned 4,000 per arm and decide on citation correctness, stopping early only if the guardrail fires.",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Stop now and ship clause-boundary chunking, since a six-point lead at 900 questions per arm is unlikely to reverse.",
+      "correct": false,
+      "trap": "T-PEEK"
+     },
+     {
+      "text": "Roll clause-boundary chunking out to every region now and watch citation correctness on the live dashboard.",
+      "correct": false,
+      "trap": "T-LATER"
+     },
+     {
+      "text": "Ask a panel of five adjusters which arm's answers read better, and let their majority verdict settle the test early.",
+      "correct": false,
+      "trap": "T-VIBES"
+     }
+    ],
+    "steps": {
+     "constraint": "The metric, sample size and stopping rule are locked, and the only pre-declared reason to stop early, the guardrail, has not fired.",
+     "classify": "Detection: reading experiment evidence during the online-test stage. Eval-grading ladder, first rung: the decision rule was set in advance and still governs.",
+     "eliminate": "Stopping now is T-PEEK: repeated looks inflate the false-positive rate, and the plan made no provision for an interim decision, so a lead at under a quarter of the sample is exactly what the stopping rule exists to ignore. The all-region rollout is T-LATER: it skips the capped-exposure stage the test belongs to. The adjuster panel is T-VIBES: spot-check preference replaces the agreed instrument.",
+     "choose": "Run to the planned sample. Tomasz can still give Dana something true for the board: the test is on track, the guardrail is clean, and the decision date is known. The runner-up, stopping now, would need the pre-registration to include an interim analysis with a stricter threshold, or the guardrail to have breached."
+    }
+   },
+   "faded": null,
+   "traps": [
+    "T-PEEK",
+    "T-VIBES",
+    "T-LATER"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Stop early",
+     "text": "A pre-declared guardrail (unsupported coverage statements, PII leakage, severe misroutes) breaches its limit. Harm outranks statistical completeness."
+    },
+    "b": {
+     "title": "Run to the planned sample",
+     "text": "Only the primary metric looks good or bad at an interim peek. The stopping rule decides, not the size of the lead."
+    },
+    "decider": "Did a rule written before launch fire? If yes, stop; if the urge to stop came from looking, keep running."
+   },
+   "explain": {
+    "prompt": "Why does one change per arm matter even when every change is expected to help?",
+    "model": "A bundled variant only tells you the package beat control, not which change did it, so you cannot keep the good change and drop the bad one. Changes also interact: a re-ranker gain can mask a prompt regression that surfaces later on one slice. One change per arm makes each decision attributable and each rollback precise."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "4.4",
+   "core": [
+    "Start from the **triggering change** and use what the stem calls unchanged to strike options. A content refresh with model and latency steady points to ingestion, chunking, metadata or the index.",
+    "Score **retrieval separately from generation**. Wrong passages in context is a retrieval fault; the right passages with a contradicting answer is a grounding fault.",
+    "**Hallucination** has two roots. With the right passages in context, fix generation: constrain answers to supplied sources, cite passage IDs, verify claims against the cited text and allow 'not stated'. With the passage missing, fix retrieval, and still allow 'not stated' so the model admits the gap instead of filling it. Useful techniques: extract word-for-word quotes before answering, give explicit permission to say the information is not there, and compare several runs, where disagreement flags a likely fabrication. The Citations feature returns pointers into supplied documents that are guaranteed valid, and cited text does not count as output tokens; it cannot be combined with structured outputs, so chain two calls when you need both.",
+    "A **prompt failure** spreads evenly across easy and hard items, usually after a prompt or template change. A **model mismatch** concentrates on complex items with correct inputs; route only that slice up a tier, gated by evals.",
+    "If nothing was deployed, suspect **input drift** (new claim types, languages, attachment formats) or an upstream dependency, and compare failing with passing traces before naming a cause.",
+    "An answer wrong about current state (claim status, reserves) is a **live-state** fault: read the system of record at request time instead of indexing more often.",
+    "**Error analysis** groups failures by root cause, then ranks the groups by frequency times impact to set the fix order; one memorable failure is not a priority. Onset is a clue: bad from the first turn points to the prompt, grounding or retrieval, while quality that degrades as a session grows points to context load."
+   ],
+   "worked": {
+    "scenario": "Adjusters at Meridian Mutual flag policy answers that say water damage is covered when the cited PolicyVault clause excludes gradual seepage. Aiko Brennan pulls traces for 60 flagged answers. In 55 of them the correct exclusion clause, for the right edition and jurisdiction, is among the top three retrieved chunks. Retrieval recall on the fixed eval has not moved since launch, and no prompt or model version has changed.",
+    "ask": "Which fix targets the failing layer?",
+    "options": [
+     {
+      "text": "Require each coverage statement to cite a retrieved passage, verify it against that text, and allow a 'not stated' answer.",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Raise top-k from five to fifteen so that more exclusion clauses and endorsements reach the model with each question.",
+      "correct": false,
+      "trap": "T-STUFF"
+     },
+     {
+      "text": "Rebuild the PolicyVault index with a newer embedding model and re-chunk the water-damage endorsements by clause.",
+      "correct": false,
+      "trap": "T-LAYER"
+     },
+     {
+      "text": "Move every policy question to the most capable model tier, which reasons more reliably over exclusion wording.",
+      "correct": false,
+      "trap": "T-BIGMODEL"
+     }
+    ],
+    "steps": {
+     "constraint": "Traces show the right clause in context for 55 of 60 failures, and retrieval recall is unchanged.",
+     "classify": "Prevention at the generation layer. Diagnosis ladder, third rung: retrieval is cleared, so the defect is grounding.",
+     "eliminate": "Raising top-k is T-STUFF: the needed clause is already in context, so more chunks add only noise and cost. Rebuilding the index is T-LAYER: it repairs retrieval, the layer the traces just cleared. The top tier is T-BIGMODEL: a grounding defect survives a tier change, and it raises cost on every question with no evidence it clears the bar.",
+     "choose": "Choose the grounding fix. The runner-up, the tier upgrade, would need evals showing the current tier still fails this slice after grounding controls are in place."
+    }
+   },
+   "faded": {
+    "scenario": "Last week Meridian Mutual moved its FNOL triage prompt to a new shared template, a change that shipped without an eval run, and misroutes rose from 3% to 11% overnight. Tomasz Wiśniewski slices the misroutes: the rise is the same on simple single-peril claims as on complex multi-peril ones, and many failing outputs put the line of business in the wrong field. The model version, the routing-guidelines index and the traffic mix are all unchanged.",
+    "ask": "What is the MOST likely cause, and the fix?",
+    "options": [
+     {
+      "text": "A prompt failure from the template change: roll back, then fix the new template and re-run the eval before redeploying.",
+      "correct": true,
+      "trap": null,
+      "why": "The template is the only layer that moved, and a rise spread evenly across difficulty is the prompt-failure signature. The old template is a known-good state, so rolling back stops the harm while the fix goes through the eval gate it skipped."
+     },
+     {
+      "text": "A model mismatch on harder claims: route multi-peril claims to a larger model tier and re-run the triage eval on them.",
+      "correct": false,
+      "trap": "T-BIGMODEL",
+      "why": "Simple claims fail just as often, so capability is not the constraint; a tier gap concentrates on the hardest slice."
+     },
+     {
+      "text": "Retrieval drift in the routing guidelines: rebuild the index, re-embed the guideline documents and re-run the eval.",
+      "correct": false,
+      "trap": "T-LAYER",
+      "why": "The stem says the index is unchanged, so this blames a layer the change never touched."
+     },
+     {
+      "text": "A traffic shift toward harder claims: refresh the eval set from last week's production traffic before changing anything.",
+      "correct": false,
+      "trap": "T-LAYER",
+      "why": "It blames the input layer, and the stem says the traffic mix is unchanged."
+     }
+    ],
+    "constraint": "(given) The template change is the only change, and misroutes rose equally on simple and complex claims.",
+    "classify": "(given) Diagnosis of a quality regression. Diagnosis ladder: the unchanged variables clear retrieval, model and traffic, which leaves the prompt or format rung.",
+    "reasoning": "Strike the index rebuild and the traffic explanation (both T-LAYER): the stem calls the index and the traffic mix unchanged. Strike the tier route (T-BIGMODEL): a capability gap would show on the hard slice, not evenly. The template is the changed layer and the uniform rise is its signature. The old template is known to be good, so roll back first, then fix the new one against the eval before it returns to production."
+   },
+   "traps": [
+    "T-LAYER",
+    "T-BIGMODEL",
+    "T-STUFF",
+    "T-LIVESTATE"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Retrieval fault",
+     "text": "Traces show the needed passage missing from the context or ranked out of it. Fix chunking, metadata filters, the retriever or ingestion."
+    },
+    "b": {
+     "title": "Grounding fault",
+     "text": "The needed passage was in the context and the answer still contradicts it. Constrain to sources, cite passage IDs and verify claims."
+    },
+    "decider": "Was the right passage in the context the model actually saw? The trace answers that, not the symptom."
+   },
+   "explain": {
+    "prompt": "Why do the variables a stem calls 'unchanged' matter more than the symptom?",
+    "model": "Many layers can produce the same symptom, so the symptom alone rarely identifies the cause. A regression has to come from something that changed: a deploy, new data, new traffic or an upstream dependency. Each unchanged variable rules out every option that blames its layer, which usually leaves one candidate: the layer the change touched."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "4.5",
+   "core": [
+    "Find the **dominant term** first: break cost and time per completed task into input tokens, output tokens, turns, retries and per-stage latency. A lever that misses the largest term changes little.",
+    "**Prompt caching** cuts input cost and time-to-first-token on a large identical prefix. The prefix runs tools, then system, then messages, so put stable content first and per-request values after it; a claim ID or timestamp near the top breaks every hit. Output tokens are unaffected, so output-heavy cost falls only with shorter, templated output.",
+    "**Batch processing** trades an immediate response for a lower price and a completion window measured in hours (on the Claude API most batches finish within an hour, but the limit is 24 hours; check the provider's current limit). It suits work nobody waits on whose deadline allows for that window: overnight digests, backfills, bulk classification. It is never the lever for an interactive or SLA-bound path. On the Claude API, batch and caching discounts stack, but cache hits inside a batch are best-effort because requests run concurrently and in any order; the 1-hour cache lifetime helps. On Amazon Bedrock, prompt caching is not supported with batch inference, so a batched job there gets the batch price only. Check eligibility too: Anthropic's docs as of Sep 2026 list its Message Batches API as ineligible for ZDR and HIPAA readiness; on Bedrock or Google Cloud, the cloud provider's own eligibility and BAA apply. Run a small real-data sample before committing a large job.",
+    "Under an **accuracy floor**, prefer levers that leave the model's input unchanged (caching, batching, removing true waste) over trimming required context or downsizing the whole workload.",
+    "**Tier routing** sends a slice to a cheaper tier only when evals on that slice show it clears the bar; the hard slice stays where it is.",
+    "**Streaming** shortens perceived wait, not completion time or cost. A caller with a hard timeout needs shorter output, parallel steps or an async job that returns a job ID.",
+    "**Attribute and isolate** spend with a workspace per use case: each workspace gets its own spend and rate limits and its own line in usage and cost reporting. A separate API key per use case adds attribution in usage reports only; keys carry no limits of their own, and cost reports group by workspace, not key. Batch has its own rate limits, so moving deferrable work there frees headroom for interactive traffic. Plan capacity for peak against your rate limits, ramp traffic gradually because sharp increases can hit acceleration limits, and forecast spend at production volume before launch so the first invoice is not the first signal."
+   ],
+   "worked": {
+    "scenario": "Gerald Hume asks Aiko Brennan to cut cost per claim on Meridian Mutual's adjuster drafting by a quarter without breaching the quality floor that Tomasz Wiśniewski's eval enforces. Each request opens with a header carrying the claim ID and a timestamp, then a 9,000-token policy and style preamble identical for every claim, then about 1,500 tokens of claim detail. Drafts average 700 output tokens and are generated when an adjuster opens the claim. Aiko's breakdown shows input is most of the spend.",
+    "ask": "Which change should Aiko make?",
+    "options": [
+     {
+      "text": "Move the claim ID and timestamp below the preamble, then cache the identical preamble as a stable prefix.",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Trim the 9,000-token preamble to its first third, keeping the policy rules and dropping most of the style guidance.",
+      "correct": false,
+      "trap": "T-BLUNTCUT"
+     },
+     {
+      "text": "Send drafting requests through batch processing to get the lower per-token price on both input and output.",
+      "correct": false,
+      "trap": "T-LEVER"
+     },
+     {
+      "text": "Move all drafting to the smallest model tier, since adjusters review and edit every draft before it is sent.",
+      "correct": false,
+      "trap": "T-BLUNTCUT"
+     }
+    ],
+    "steps": {
+     "constraint": "A cost cut with the quality floor held, a measured breakdown in which input dominates and a large identical preamble makes up most of it, per-request values at the top of the prompt, and an adjuster waiting on every draft.",
+     "classify": "Optimisation of the context layer in production. Cost/latency-lever ladder: the dominant term is a repeated prefix, so the cache rung, once the prompt is reordered.",
+     "eliminate": "Trimming the preamble is T-BLUNTCUT: it deletes context the floor depends on instead of restructuring it. Batching is T-LEVER: it suits work nobody waits on, and the adjuster is waiting. The smallest tier is T-BLUNTCUT: a tier cut with no slice evidence that it clears the floor, justified by an editing step the eval does not measure.",
+     "choose": "Choose the reorder and cache. The runner-up, the smaller tier, could stack with caching later, but only once evals on drafting show it holds the floor."
+    }
+   },
+   "faded": {
+    "scenario": "Every evening Meridian Mutual re-summarises about 3,000 open motor and home claims from the 18:00 snapshot, so adjusters start at 08:00 with a current digest. The job runs as synchronous calls and takes about four hours. Gerald Hume wants its token spend down without weakening digest quality, which Tomasz Wiśniewski's eval gates.",
+    "ask": "Which change BEST cuts spend while the quality gate holds?",
+    "options": [
+     {
+      "text": "Move the job to batch processing, which discounts the whole overnight run without changing what the model reads.",
+      "correct": true,
+      "trap": null,
+      "why": "Nobody waits on individual results, and a job submitted at 18:00 has 14 hours before adjusters start, so the batch price applies to input and output alike and the model reads exactly what it read before. Batch jobs can run to the provider limit (24 hours on the Claude API), so keep a synchronous fallback for anything unfinished by a morning cut-off. On the Claude API a cached shared prefix would stack with the batch discount, but Meridian runs on Bedrock, where batch inference does not support prompt caching."
+     },
+     {
+      "text": "Truncate each claim file to its ten most recent adjuster notes before summarising it.",
+      "correct": false,
+      "trap": "T-BLUNTCUT",
+      "why": "It removes content the digest exists to summarise, and relies on the gate to catch the damage."
+     },
+     {
+      "text": "Stream each summary as it generates so that the overnight run completes sooner.",
+      "correct": false,
+      "trap": "T-LEVER",
+      "why": "Streaming changes perceived wait, which nobody experiences overnight, and cuts no tokens."
+     },
+     {
+      "text": "Switch the job to the smallest model tier, which should handle routine claim summaries well.",
+      "correct": false,
+      "trap": "T-BLUNTCUT",
+      "why": "It downsizes the whole job with no measurement that the smaller tier clears the digest eval."
+     }
+    ],
+    "constraint": "(given) A non-interactive job with a delivery window of many hours and a quality gate.",
+    "classify": "(given) Cost optimisation in production. Cost/latency-lever ladder at the batch rung, which leaves the model's input unchanged.",
+    "reasoning": "Strike truncation and the smallest tier (both T-BLUNTCUT): one cuts the content being summarised, the other changes capability with no slice evidence that it holds the gate. Strike streaming (T-LEVER): it targets a latency nobody feels and leaves spend unchanged. Batching uses the fact the stem states, that nobody waits inside a long window, without touching quality."
+   },
+   "traps": [
+    "T-LEVER",
+    "T-BLUNTCUT",
+    "T-BIGMODEL"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Stream the response",
+     "text": "A person watches the text arrive and the complaint is the blank screen before the first words. Streaming cuts perceived wait; completion time and cost are unchanged."
+    },
+    "b": {
+     "title": "Shorten, parallelise or go async",
+     "text": "A caller or downstream system needs the complete result inside a hard timeout. Cut output length, run independent steps in parallel, or return a job ID and finish asynchronously."
+    },
+    "decider": "Who is waiting: a person reading as text arrives, or a caller that needs the whole result? Streaming helps only the first."
+   },
+   "explain": {
+    "prompt": "Why prefer caching and batching over trimming context when an accuracy floor is fixed?",
+    "model": "Caching and batching change the price or timing of a call, not what the model reads, so quality should hold; a reorder made to enable caching still gets a cheap eval rerun. Trimming context or downsizing the tier changes the input or the capability, so each needs fresh slice evidence that the floor still holds. Levers that leave the input unchanged are low-risk by construction; the others are experiments."
+   },
+   "bridge": "Two Foundations rules carry over as lever rules: batching is for latency-tolerant work, and caching needs a stable prefix. Batch field names, window arithmetic and price multipliers are Foundations recall and low-yield here."
+  },
+  {
+   "obj": "4.6",
+   "core": [
+    "When quality drops, the FIRST step is to pull **traces** of failing and passing requests (prompt and model version, retrieved chunk IDs, tool calls and results, output), joined by correlation ID. Rate, error and latency charts look the same before and after, and if nothing was deployed there is no known-good state to roll back to.",
+    "**Dashboards, alerts and runbooks consume instrumentation**; they are not instrumentation. If a span was never captured, no dashboard can show it.",
+    "**Tail-based sampling** keeps every error, escalation, override and guardrail block, plus a random baseline of normal traffic. Errors-only logging deletes the comparison set; uniform sampling drops most rare failures.",
+    "Minimise **PII at capture**: redact or tokenise before the record is written, keep a light record for every request, and hold heavy payloads behind access control and a retention limit.",
+    "A **drift alert** needs a baseline and a threshold per slice: quality, refusal rate, cost per claim, cache hit rate, p95 at peak. An alert on the global mean misses a failing segment.",
+    "Monitoring is a **detective control**. When the stem asks what prevents a failure, a log or alert is the wrong control type; when it asks how anyone would find out, it is the right one.",
+    "**Leading indicators** warn before users complain: falling retrieval relevance, a rising abstention or no-grounded-answer rate, more iterations per task, a shifting stop-reason mix. Complaints, overrides and churn are lagging. Track both, with leading signals tuned to fire early.",
+    "**Alerts are for action.** Page a named owner only on sustained, user-impacting symptoms such as SLO or error-budget burn; route trends such as cost drift or single ratings to a review queue, so pages stay trusted. Dashboards support diagnosis and detect nothing on their own. Refusals arrive as successful responses, so an alert built on error rates never sees them."
+   ],
+   "worked": {
+    "scenario": "Before go-live, Aiko Brennan is setting the logging policy for Meridian Mutual's claims assistant. Priya Raman requires that health details and claimant identifiers never land in general-access log stores. Tomasz Wiśniewski needs to trace any bad draft back to its prompt version, retrieved chunk IDs and tool calls, and to compare it with good drafts. Volume is about 14,000 claims a month, and Gerald Hume has asked about storage cost.",
+    "ask": "Which logging design meets both requirements?",
+    "options": [
+     {
+      "text": "Redact at capture, log version and correlation IDs for every request, and keep redacted payloads in a restricted store.",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Log raw prompts and outputs to the warehouse, and run a nightly job that redacts health details and claimant identifiers.",
+      "correct": false,
+      "trap": "T-BOUNDARY"
+     },
+     {
+      "text": "Keep full prompt and output records only for requests that error or time out, which cuts both storage and exposure.",
+      "correct": false,
+      "trap": "T-OBSERVE"
+     },
+     {
+      "text": "Instruct Claude in the system prompt never to repeat health details or claimant identifiers, so logged outputs stay clean.",
+      "correct": false,
+      "trap": "T-ENFORCE"
+     }
+    ],
+    "steps": {
+     "constraint": "Two needs bind at once: no health data or identifiers in general-access logs, and request-level traceability with a comparison set of good drafts.",
+     "classify": "Detective control (observability) designed before go-live. The privacy control inside it must act at capture, before data crosses into the log store.",
+     "eliminate": "The nightly scrub is T-BOUNDARY: the data already sits in the warehouse before the job runs. Errors-only records are T-OBSERVE: they drop the passing requests Tomasz compares against, and a bad draft rarely errors. The system-prompt instruction is T-ENFORCE: it cannot guarantee output behaviour, and the prompts themselves carry the health data.",
+     "choose": "Choose redaction at capture with light records for all and gated heavy payloads. The runner-up, errors-only records, would need storage to be the binding constraint, and at 14,000 claims a month light records are cheap."
+    }
+   },
+   "faded": null,
+   "traps": [
+    "T-OBSERVE",
+    "T-BOUNDARY",
+    "T-AGGREGATE",
+    "T-DETECT"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Add instrumentation",
+     "text": "The evidence you need is not being captured: add spans, version and correlation IDs, retrieved chunk IDs, tool arguments and results."
+    },
+    "b": {
+     "title": "Add a dashboard or alert",
+     "text": "The signal is already in the traces, and people need to see it or be paged when it crosses a threshold against a baseline."
+    },
+    "decider": "Does the data exist in the traces yet? If not, no dashboard or runbook can supply it."
+   },
+   "explain": {
+    "prompt": "Why can't request rate, error rate and latency diagnose a quality regression?",
+    "model": "A wrong but fluent answer returns successfully, at normal speed and normal volume, so those metrics look identical before and after. The defect lives in the content: which prompt version ran, which chunks came back, what the tool returned and what the model said. Only traces of failing and passing requests expose that difference."
+   },
+   "bridge": "Foundations stop_reason handling survives as one monitoring rule: refusals and truncations return as successful responses, so error-rate alerts miss them and they need their own signal. The loop mechanics are low-yield; what gets tested is what to capture, keep and redact."
+  }
+ ],
+ "case": "At Meridian Mutual, evaluation starts before any tuning. Dana Okafor and Luis Ferreira sign off thresholds for routing accuracy per line of business, citation correctness, p95 latency during catastrophe surges, cost per claim against the discovery baseline, PII leakage and injection resistance. Tomasz Wiśniewski builds the eval set from stratified real FNOLs plus adversarial and edge slices, holds it out from tuning, versions it and dates its refresh. Codes are exact-matched, explanations are scored by a judge whose agreement with adjuster labels is measured and rechecked, and denial rationales go to senior adjusters. Results are reported per slice. The clause-boundary chunking test was pre-registered with one change per arm and a locked metric, sample size and stopping rule, then rolled out under capped exposure. When quality moves, Aiko Brennan reads traces keyed by claim and correlation ID before changing anything. Gerald Hume's cost target is met by measuring the dominant term per workflow: caching the stable drafting preamble where input dominates, templating drafts where output dominates, and batching overnight re-summarisation. The eval gates every prompt, model and index change in CI."
+}

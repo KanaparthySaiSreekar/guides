@@ -1,0 +1,491 @@
+[
+ {
+  "id": "P1-1.6-001",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "media",
+  "family": "batch-window-sla-cost-average",
+  "counterTrap": true,
+  "signals": [
+   "pick up the full set of drafts when their shift starts at 07:00",
+   "festival weeks double the intake",
+   "p95 per-request latency measured at peak"
+  ],
+  "stem": "Holloway Park Media's streaming service licenses about 400 programme hours a week. Each night one overnight run has Claude draft subtitle files for the day's intake. Subtitlers pick up the full set of drafts when their shift starts at 07:00, correct them, and titles publish at noon; festival weeks double the intake. The head of content operations is funding the work on cost per programme hour against in-house subtitling. The platform team proposes its standard SLA template: p95 per-request latency measured at peak, with a monthly error budget.",
+  "ask": "Which commitment BEST belongs in the value case the head of content operations will sign off?",
+  "options": [
+   {
+    "id": "a",
+    "text": "p95 per-request latency under five seconds at festival-week volume, with a monthly error budget, a retry fallback for failed calls and cost per programme hour",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A per-request percentile assumes someone waits on each call, but subtitlers take the drafts as one set at 07:00. Fast individual calls do not show that a doubled festival intake is finished when the shift starts."
+   },
+   {
+    "id": "b",
+    "text": "Each night's intake drafted by 07:00, festival weeks included, with a stated miss budget, a fallback for late titles and average cost per programme hour",
+    "correct": true,
+    "trap": null,
+    "why": "The drafts are used as one set at 07:00, so the commitment that matters is finishing the batch inside that window at doubled intake, with a miss budget and fallback. An average cost per programme hour measures the pillar the sponsor funds."
+   },
+   {
+    "id": "c",
+    "text": "Each night's intake drafted by 07:00 in standard weeks, with festival weeks excluded as declared peaks and average cost per programme hour",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "Excluding festival weeks removes exactly the nights when the intake doubles and the deadline is most at risk, so the commitment would read as met on the mornings subtitlers are left waiting."
+   },
+   {
+    "id": "d",
+    "text": "At least 400 programme hours drafted per week on a monthly average, with average cost per programme hour against in-house subtitling",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "A monthly throughput average blends festival nights into normal ones and never tests the 07:00 hand-off, so it reads as met on the very nights the doubled intake misses the shift."
+   }
+  ],
+  "explain": "Binding constraint: an overnight batch whose drafts must be ready as a set when subtitlers start at 07:00, with intake doubling in festival weeks. For batch work, commit to completion within the delivery window at peak intake with a miss budget, and report cost as an average per unit; a per-request p95 suits interactive traffic, not this workload.",
+  "rule": "CS-D4-02",
+  "ladder": "sla-formulation",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": "4.1"
+ },
+ {
+  "id": "P1-1.6-002",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "e-commerce",
+  "family": "sla-gate-before-weighted-score",
+  "counterTrap": false,
+  "signals": [
+   "within 3 seconds at p95 under Black Friday traffic",
+   "tops procurement's weighted scorecard",
+   "at 15% more per conversation"
+  ],
+  "stem": "Saltmarsh Outdoor's e-commerce director agreed that the sizing assistant on product pages must return a complete answer within 3 seconds at p95 under Black Friday traffic, because shoppers abandon slow pages. Three designs were load-tested at the projected Black Friday peak, and all three clear the agreed accuracy bar on a held-out eval set. The single-call design is cheapest and tops procurement's weighted scorecard, which gives cost half the weight, but its p95 is 5.4 seconds. The routed design holds 2.4 seconds at 15% more per conversation; the cached-catalogue design holds 1.9 seconds at 40% more.",
+  "ask": "Which design should the architect recommend to BEST align the choice with the agreed value case?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The single-call design, which ranks first on procurement's weighted scorecard with cost carrying half the weight",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "Weighting lets a cost saving buy back an SLA breach the director never agreed to trade. At 5.4 seconds p95 at the projected peak, the design fails the requirement however well it scores."
+   },
+   {
+    "id": "b",
+    "text": "The routed design, whose complete answers stay under 3 seconds at p95 at the Black Friday peak",
+    "correct": true,
+    "trap": null,
+    "why": "The p95-at-peak target is a gate, so the single-call design drops out first. Both survivors clear the accuracy bar, so cost decides between them, and the routed design is the cheaper one that holds the target."
+   },
+   {
+    "id": "c",
+    "text": "The cached-catalogue design, whose complete answers stay under 3 seconds at p95 with the widest margin to spare",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "The routed design already holds the target at the projected peak. Paying 40% more per conversation for extra margin assumes traffic beyond that projection, which the stem does not give, while cost carries half the scorecard weight."
+   },
+   {
+    "id": "d",
+    "text": "The single-call design with streamed output, so that shoppers see the answer begin well inside 3 seconds",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "The agreed measure is time to a complete answer. Streaming improves how the wait feels but does not make the answer finish sooner, so the design still misses p95 at peak."
+   }
+  ],
+  "explain": "Binding constraint: the p95-at-peak latency SLA the director tied to page abandonment. Performance SLAs are elimination gates, so drop any design that misses them, then let cost decide among the designs that pass rather than paying for margin nobody asked for.",
+  "rule": "CS-D1-14",
+  "ladder": "sla-formulation",
+  "tips": [
+   "TIP-RD-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.6-003",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "accuracy-floor",
+  "industry": "insurance",
+  "family": "productivity-per-person-quality-floor",
+  "counterTrap": false,
+  "signals": [
+   "productivity case",
+   "does not show underwriting quality held",
+   "three-month pilot"
+  ],
+  "stem": "Wexcombe Insurance ran a three-month pilot of an assistant that summarises broker submissions for its 12 commercial-property underwriters and drafts referral notes they edit. During the pilot the same team absorbed a new broker panel without hiring or overtime. The COO will ask the board to fund a national rollout on a productivity case. The board's risk chair will reject any productivity figure that does not show underwriting quality held, since faster quoting could simply mean looser referrals. Platform logs record every submission, quote and referral decision, and underwriting audit reviews a sample of quotes each month.",
+  "ask": "Which TWO pieces of evidence BEST support the productivity case the COO will present? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Median handling minutes per submission from the platform logs, against the pre-pilot median for similar submissions",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Minutes per submission is an efficiency measure per unit of work. It assumes the saved minutes turned into more quotes per underwriter, which is exactly what the productivity case has to show directly."
+   },
+   {
+    "id": "b",
+    "text": "Quotes issued per underwriter per week against the pre-pilot baseline, with the same 12 underwriters and contracted hours",
+    "correct": true,
+    "trap": null,
+    "why": "Productivity is measured per person. Output per underwriter against the baseline, with the same people and hours, is the figure that shows the new broker panel was absorbed without extra capacity."
+   },
+   {
+    "id": "c",
+    "text": "Loss ratio on policies quoted during the pilot, against the loss ratio of the prior year's commercial-property book",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Loss ratio is the eventual test of underwriting quality, but claims on policies written in a three-month pilot have barely emerged, so it cannot show quality held until well after the board decides."
+   },
+   {
+    "id": "d",
+    "text": "Referral-error and requote rates on the monthly audit sample, against the same audit measures before the pilot",
+    "correct": true,
+    "trap": null,
+    "why": "The risk chair gates the claim on quality holding. Error rates from the existing audit sample, set against the pre-pilot level, show now that the extra output did not come from looser referrals."
+   },
+   {
+    "id": "e",
+    "text": "Platform uptime and p95 response time during the pilot, showing the assistant stayed available at submission peaks",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Reliability is worth reporting to the rollout team, but it is neither output per underwriter nor evidence that quality held, so it does not change whether the board accepts the case."
+   }
+  ],
+  "explain": "Binding constraint: an accuracy floor, because the risk chair will reject a productivity figure unless quality held. Productivity is output per person against the baseline, and here it must be paired with quality evidence available now, such as audit error rates, rather than loss experience that has not yet developed.",
+  "rule": "CS-D1-13",
+  "ladder": null,
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.6-004",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "education",
+  "family": "per-unit-gain-not-productivity",
+  "counterTrap": false,
+  "signals": [
+   "tutor time per essay",
+   "the faculty still allocates students to tutors at its standard ratio per module"
+  ],
+  "stem": "Oakhurst Online University piloted an assistant that drafts feedback on first-year essays for tutors to edit. The pilot report, built from marking-platform logs of live marking, shows tutor time per essay fell from 22 to 13 minutes in every pilot module, edits included, and it claimed a productivity gain. A term later, the provost's office sees no change in students per tutor. Tutors are on fixed-hour contracts, and the faculty still allocates students to tutors at its standard ratio per module. The platform met its p95 latency target during submission-deadline peaks.",
+  "ask": "What is the MOST likely reason the claimed productivity gain does not appear in the provost's figures?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The time saving was measured on essays the team had used to tune the prompts, so it overstates the result on live marking",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "The figure comes from platform logs of live marking, not from a tuning set, so the measurement is sound. The gap lies in what the figure measures, not in how it was gathered."
+   },
+   {
+    "id": "b",
+    "text": "Slow responses at submission-deadline peaks cancelled the per-essay savings, which an average latency figure would hide",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "The platform met its p95 target at deadline peaks, which is the percentile measure that would expose such slowdowns, so peak latency cannot explain the unchanged ratio."
+   },
+   {
+    "id": "c",
+    "text": "The saving is per essay, and with allocations per tutor unchanged, the freed time could not appear as more students per tutor",
+    "correct": true,
+    "trap": null,
+    "why": "Minutes per essay is an efficiency gain per unit of work. It becomes productivity only when output per person is allowed to rise, through larger allocations or fewer contracted hours, and neither happened here."
+   },
+   {
+    "id": "d",
+    "text": "Savings in some modules were cancelled by slower marking in others, which the pilot-wide average of 13 minutes conceals",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The saving appears in every pilot module, so no slice is hiding a loss. The unchanged ratio follows from the denominator the claim used, not from a hidden subgroup."
+   }
+  ],
+  "explain": "Binding constraint: what changed was time per essay, while tutor contracts and the allocation ratio did not. Gains per unit of work are efficiency; they show up as productivity only when output per person is allowed to rise.",
+  "rule": "CS-D1-13",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.6-005",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "saas",
+  "family": "confirm-prior-work-before-pillar",
+  "counterTrap": false,
+  "signals": [
+   "Support staff recall",
+   "the CFO wants it framed as lower implementation cost per setup"
+  ],
+  "stem": "Lumenfold's payroll platform added an assistant that walks small-business customers through registering for payroll taxes in a new state. Until now, multi-state setup was sold as a paid implementation service, bought mostly by mid-market clients. The CEO wants the board deck to present the launch as a transformation that opens the small-business segment; the CFO wants it framed as lower implementation cost per setup. Support staff recall that some small-business customers got new-state registrations done through tickets before launch. Ticket history and service bookings go back three years.",
+  "ask": "What should the solution architect do FIRST to build the value case?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Review pre-launch tickets and service bookings to establish whether, and how, small-business customers completed these setups",
+    "correct": true,
+    "trap": null,
+    "why": "The pillar turns on one fact a recollection cannot settle: whether this work happened for small businesses before. If it did not, the claim is transformation; if it ran through tickets or the paid service, it is existing work and the case is cost per setup against that baseline."
+   },
+   {
+    "id": "b",
+    "text": "Agree small-business activation and revenue-per-account targets with the CEO as the success measures for her transformation claim",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "These are the right measures if the work is new, but choosing them now adopts the CEO's framing before the records show whether small businesses were already doing these setups."
+   },
+   {
+    "id": "c",
+    "text": "Model implementation cost per setup before and after launch so that the CFO's framing has a baseline to compare against",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A cost-per-setup comparison is right if small businesses were already doing this work, but a recollection of some tickets does not establish that, so the model depends on the records being checked first."
+   },
+   {
+    "id": "d",
+    "text": "Present both framings side by side in the board deck and let the board choose which pillar the launch is measured on",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Passing the disagreement up to the board goes around the two sponsors who own the case, and the pillar is not a preference to vote on: whether the work happened before, which the records can show, decides it."
+   }
+  ],
+  "explain": "Binding constraint: the evidence that decides the pillar is only a staff recollection, while the CEO's and CFO's framings pull in opposite directions. Establish first from the records whether the work happened before, because that fact names the pillar (transformation or cost) and decides which measures come next.",
+  "rule": "CS-D1-13",
+  "ladder": null,
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.6-006",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.6",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "next-step",
+  "constraint": "cost",
+  "industry": "insurance",
+  "family": "cost-per-unit-not-activity",
+  "counterTrap": false,
+  "signals": [
+   "sponsored the project on the cost pillar",
+   "staff review every draft before it is sent",
+   "the pre-launch cost per handled email is on record"
+  ],
+  "stem": "Greyfriars Life's policy-servicing team uses an assistant that drafts replies to customer emails about beneficiaries, address changes and surrender values, and staff review every draft before it is sent. The CFO sponsored the project on the cost pillar and wants a value update before approving a second year. The team's draft update reports that 92% of staff use the assistant weekly and that monthly token spend fell after prompt caching was introduced. Email volumes and staffing are stable, and the pre-launch cost per handled email is on record.",
+  "ask": "What should the architect do NEXT with the draft update?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a monthly average judge score for draft quality, so the CFO can see the replies improving since launch",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A judge-score average with no agreed bar shows a trend, not value, and quality is not the pillar the CFO sponsored; it says nothing about whether each email now costs less to handle."
+   },
+   {
+    "id": "b",
+    "text": "Replace adoption with model spend per handled email, caching savings included, against the pre-launch cost per handled email",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Model spend is only one term of handling cost. Setting it against the old all-in cost per email leaves out the staff review every draft still receives, so the saving it shows is overstated."
+   },
+   {
+    "id": "c",
+    "text": "Add average draft turnaround per email, so the CFO can see that staff now wait less than they did at launch",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Turnaround is a performance figure. Offering it as the saving assumes shorter waits cut handling cost, which only cost per handled email, review time included, can show against the pre-launch figure."
+   },
+   {
+    "id": "d",
+    "text": "Replace adoption and token spend with cost per handled email, review time included, against the pre-launch figure",
+    "correct": true,
+    "trap": null,
+    "why": "The cost pillar is cost per unit of work against the baseline, including the human review every draft receives. Adoption and token spend are activity measures that cannot show whether servicing got cheaper."
+   }
+  ],
+  "explain": "Binding constraint: the sponsor's pillar is cost. Report cost per unit of work against the recorded baseline, including review and rework, rather than adoption, token spend or model spend alone.",
+  "rule": "CS-D1-13",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.6-007",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.6",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "audience",
+  "industry": "airline",
+  "family": "transformation-new-outcome-baseline",
+  "counterTrap": false,
+  "signals": [
+   "nobody contacted the rest",
+   "one-page value case",
+   "built on the pilot's booking records"
+  ],
+  "stem": "Solway Air's operations centre piloted an assistant that, when a flight is cancelled, sends each booked passenger personalised rebooking options they can accept in the app. Before the pilot, agents rebooked only passengers who phoned or reached the airport desk, and nobody contacted the rest; that desk process is unchanged. The chief operating officer must decide whether to fund rollout to all hubs and has asked for a one-page value case built on the pilot's booking records.",
+  "ask": "What should the one-page value case lead with to BEST support the chief operating officer's decision?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Agent minutes per rebooking at the airport desk, compared with last year's figures for disruptions of similar size",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Handle time measures a faster version of the old desk process, which is unchanged. It assumes the value lies in existing work, when the pilot's value is outreach that did not happen before."
+   },
+   {
+    "id": "b",
+    "text": "Satisfaction scores from passengers on cancelled flights, compared with the scores after similar disruptions last year",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Satisfaction has many causes and no agreed bar, and it is not in the booking records the COO asked for. It cannot show how many passengers the offers actually rebooked."
+   },
+   {
+    "id": "c",
+    "text": "The integration design that links cancellations in the reservation system to the passenger messaging service",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "Integration design suits the technical reviewers who approve the build. A COO deciding on funding needs the outcome the pilot produced and its baseline, not how the systems connect."
+   },
+   {
+    "id": "d",
+    "text": "The share of disrupted passengers rebooked via the app offers, against the pre-pilot share rebooked without contacting Solway",
+    "correct": true,
+    "trap": null,
+    "why": "Rebooking passengers nobody used to contact is work that was not happening before, which is transformation. Its evidence is the new outcome against a near-zero baseline, taken from the booking records."
+   }
+  ],
+  "explain": "Binding constraint: the COO needs a one-page funding case for work that did not exist before the pilot. Name that pillar transformation and evidence it with the new outcome from the booking records against its near-zero baseline, not with a faster old process or a sentiment score.",
+  "rule": "CS-D1-13",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-15"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

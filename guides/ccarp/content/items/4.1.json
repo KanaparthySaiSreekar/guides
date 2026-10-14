@@ -1,0 +1,503 @@
+[
+ {
+  "id": "P4-4.1-001",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "irreversibility",
+  "industry": "telecom",
+  "family": "security-gates-before-red-team",
+  "counterTrap": false,
+  "signals": [
+   "cannot be recalled",
+   "a red-team vendor is booked for next week"
+  ],
+  "stem": "Corvid Mobile is adding a SIM-swap tool to its Claude support agent so that customers who lose a phone can move their number without calling. Accuracy, p95 latency and cost-per-contact thresholds were agreed last quarter for the agent's billing flows. SIM-swap fraud is the carrier's costliest account-takeover route, and a completed swap cannot be recalled before the attacker receives the victim's one-time passcodes. The product owner wants swap cases added to the agreed quality eval so that the launch review keeps one scorecard, and a red-team vendor is booked for next week.",
+  "ask": "What should the architect do FIRST to prepare the launch evaluation?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add the swap conversations to the agreed quality eval as a double-weighted slice, so the launch review keeps its single pass threshold",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Weighting the slice still blends swap results into one score, so a few fraudulent swaps can pass inside a healthy overall figure. A swap that cannot be recalled needs a security gate of its own, not a heavier share of the quality average."
+   },
+   {
+    "id": "b",
+    "text": "Scope next week's red team to the swap tool and have the vendor report unauthorized-swap and injection-success rates to the launch review",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "The red team is the right instrument and these are the right rates, but with no bar agreed beforehand the launch review receives figures rather than a decision, and any result can be argued acceptable once it is known."
+   },
+   {
+    "id": "c",
+    "text": "Release the swap tool to 2% of eligible customers first, with a fraud-rate guardrail that halts the rollout as soon as it is breached",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Capped exposure with a guardrail suits harm that can be reversed. Here each unauthorized swap inside the 2% is a completed takeover that cannot be recalled, so the security gate has to be passed on attacks before any live release."
+   },
+   {
+    "id": "d",
+    "text": "Agree with the fraud lead the unauthorized-swap and injection-success rates that block launch, and the attack set that measures them",
+    "correct": true,
+    "trap": null,
+    "why": "A completed swap cannot be recalled, so security needs its own launch gate. Fixing the blocking rates and the attack set with the fraud lead first means next week's red team returns a pass or a fail, not just a list of findings."
+   }
+  ],
+  "explain": "Binding constraint: irreversibility. Because a completed swap cannot be recalled, unauthorized-swap and injection-success rates are separate launch gates measured on adversarial attempts, and their bars must be agreed before the booked red team runs; a weighted quality slice, a bar decided after the report and a capped live rollout all hide the risk or meet it too late.",
+  "rule": "CS-D4-03",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-11"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.1-002",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "evidence",
+  "industry": "legal",
+  "family": "per-field-accuracy-bar",
+  "counterTrap": false,
+  "signals": [
+   "accuracy 'looks good'",
+   "nobody had said beforehand what result would count as good enough",
+   "A missed break date can cost the client its exit option"
+  ],
+  "stem": "Ashgrove Whitlock LLP's real-estate group piloted a Claude tool that extracts break dates, rent-review terms and assignment restrictions from commercial leases for due diligence. Three associates each skimmed ten pilot reports and told the supervising partner that accuracy 'looks good'; nobody had said beforehand what result would count as good enough. A missed break date can cost the client its exit option from a lease. The partner now wants to run the tool across 4,000 leases in a client's portfolio acquisition, and the knowledge team holds lawyer-verified answers for 600 past leases.",
+  "ask": "What should the architect do next?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Agree with the partner a pass mark for each extracted field, strictest for break dates, then score the 600 lawyer-verified leases",
+    "correct": true,
+    "trap": null,
+    "why": "A missed break date can cost the client its exit option, so each field needs its own bar and break dates the strictest one. Agreeing those marks before scoring the verified leases turns 'looks good' into a pass or a fail."
+   },
+   {
+    "id": "b",
+    "text": "Have the three associates check another hundred reports each against a field checklist and give the partner their error counts",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A checklist and a bigger sample improve the review, but nobody has agreed what error count would be good enough, so the partner would still decide on impression, now with more numbers attached."
+   },
+   {
+    "id": "c",
+    "text": "Agree one overall accuracy pass mark with the partner and score all 600 verified leases against it before the portfolio run",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The bar is agreed in advance and the verified leases are the right instrument, but one pooled figure lets accurate rent-review and assignment fields mask missed break dates, the field whose errors cost the client its exit option."
+   },
+   {
+    "id": "d",
+    "text": "Run a timed trial batch at portfolio scale to confirm that extraction fits the diligence timetable before the full run",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Throughput matters for a 4,000-lease deal, but it is a later check. Until accuracy has an agreed bar, a fast trial only shows how quickly unverified extractions would arrive."
+   }
+  ],
+  "explain": "Binding constraint: evidence quality. 'Looks good' from thirty skimmed reports rests on no pre-agreed bar, so the next step is to fix a pass mark per field before scoring the lawyer-verified leases, with break dates held to the strictest bar because a single miss there can cost the client its exit option.",
+  "rule": "CS-D4-01",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-11"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.1-003",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "telecom",
+  "family": "peak-ttft-completion-p95",
+  "counterTrap": false,
+  "signals": [
+   "showed nothing for several seconds",
+   "chat volume triples within minutes",
+   "Replies stream to the customer"
+  ],
+  "stem": "Fernhill Broadband's support chat uses Claude to answer customers during evening outages, when chat volume triples within minutes. Replies stream to the customer as they are generated. Last winter's post-incident review found customers abandoning chats that showed nothing for several seconds, although the monthly dashboard, which averages response time over each full day, reported comfortable figures. The head of digital service must now define the latency metric that both next month's launch gate and the monthly SLA report will use.",
+  "ask": "Which latency metric is BEST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Mean time to first token during the evening and outage peaks, reported monthly against the dashboard target",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "It times the right event at the right moment, but a mean smooths away the slow first tokens in the outage tail, which is how the dashboard reported comfortable figures while customers abandoned chats."
+   },
+   {
+    "id": "b",
+    "text": "One p95 response time pooled across chat, email drafting and the voice bot, measured over all hours of the day",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Pooling channels and hours lets fast off-peak email drafts dilute the evening chat tail, and one response time merges the blank-screen wait with completion, two waits that streamed chat keeps apart."
+   },
+   {
+    "id": "c",
+    "text": "p95 time to first token and p95 time to the completed reply, each measured during the evening and outage peaks",
+    "correct": true,
+    "trap": null,
+    "why": "Customers leave when the screen stays blank at peak, which is the tail of time to first token. Completion still decides when the answer is whole, so both are tracked as p95 figures while volume triples."
+   },
+   {
+    "id": "d",
+    "text": "p95 time to first token and completion at peak, with targets chosen once a month of post-launch data is in",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "The measures are right, but next month's launch gate needs its bar before launch, and last winter's outages already give data to set it from. A target chosen after a month of live data is fitted to whatever happened."
+   }
+  ],
+  "explain": "Binding constraint: the latency SLA for streamed chat at peak. Define latency as p95 at peak, with time to first token (what streamed customers feel) split from completion and targets fixed before the launch gate; a mean or a pooled figure hides the tail where customers abandon.",
+  "rule": "CS-D4-02",
+  "ladder": "sla-formulation",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.1-004",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "regulation",
+  "industry": "energy",
+  "family": "batch-window-and-regulated-slice",
+  "counterTrap": false,
+  "signals": [
+   "prints whatever is ready at 06:00",
+   "about 4% of recipients",
+   "the hardship variant and the overnight schedule are new"
+  ],
+  "stem": "Kilnworth Energy will use Claude overnight to draft payment-plan offers for customers whose winter bills jumped. A mail house prints whatever is ready at 06:00, and offers not ready wait for the next night's print run. Bills are issued up to three working days before the run, and the regulator's code requires each offer to reach the customer within five working days of the bill. Every offer to a household on the hardship register, about 4% of recipients, must carry the regulated hardship terms. The standard offer wording passed its agreed accuracy eval in last month's pilot; the hardship variant and the overnight schedule are new. Finance has approved the cost of twice the forecast volume.",
+  "ask": "Which TWO metrics should decide whether the overnight offer run goes live? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "p95 generation time per offer during the nightly run, tracked against the per-request latency target used for web chat",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A per-request percentile assumes someone waits on each offer, but the mail house takes whatever is ready at 06:00. Quick individual offers do not show that a whole night's run finishes before the cutoff."
+   },
+   {
+    "id": "b",
+    "text": "Offer-accuracy score from a rubric judge calibrated to staff labels, gated at the pilot's pass mark across all recipients",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The standard wording already passed its accuracy eval, and a score pooled across all recipients lets compliant letters to the other 96% mask missing terms for register households, the new 4% slice the code protects."
+   },
+   {
+    "id": "c",
+    "text": "Cost per offer gated against the approved budget, with an alert whenever a night's run exceeds its forecast spend",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Spend tracking is sound practice, but finance has approved the cost of twice the forecast volume, so cost cannot change this go/no-go. The new schedule and the hardship slice can."
+   },
+   {
+    "id": "d",
+    "text": "Share of each night's offers completed before the 06:00 print cutoff, with a pass mark set for every night of the run",
+    "correct": true,
+    "trap": null,
+    "why": "Nobody waits on a single offer; the code sets a delivery window, and with bills issued up to three working days earlier, an offer that misses 06:00 can breach it. Completion before each night's cutoff is the latency measure that decides compliance."
+   },
+   {
+    "id": "e",
+    "text": "Hardship-terms compliance on the register households, scored as a separate slice with its own pass threshold",
+    "correct": true,
+    "trap": null,
+    "why": "Register households are 4% of recipients, so missing hardship terms barely move a pooled score. The hardship variant is new and its terms are a regulatory requirement, so the slice needs its own gate and pass threshold."
+   }
+  ],
+  "explain": "Binding constraint: the regulator's code. For an overnight batch, latency means each night's offers completing before the print cutoff so the five-day window holds, and the new hardship variant is gated on the register slice with its own threshold; the standard wording has already passed and cost is approved.",
+  "rule": "CS-D4-02",
+  "ladder": "sla-formulation",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.1-005",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "manufacturing",
+  "family": "safety-averaged-into-quality",
+  "counterTrap": false,
+  "signals": [
+   "averaged correctness, clarity and safety",
+   "unchanged since launch",
+   "low safety marks on 31 lockout-tagout answers"
+  ],
+  "stem": "Brackenfield Components' maintenance assistant answers technicians' questions from equipment manuals at three plants. Before launch it cleared a 4.3 out of 5 bar on an LLM-judge score that averaged correctness, clarity and safety across 2,000 real technician questions, 140 of them about lockout-tagout. Last week a technician followed an answer that skipped an isolation step listed on the cited manual page. The model version, prompt and manual corpus are unchanged since launch, and rerunning the launch eval reproduces the same score, including low safety marks on 31 lockout-tagout answers.",
+  "ask": "What is the MOST likely reason the launch evaluation did not stop this?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The model's behaviour has drifted since launch, so its answers are now less careful than the ones it was evaluated on",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Model, prompt and corpus are unchanged, and a rerun reproduces the launch results exactly. The unsafe answers were already there at launch, so drift cannot explain why the gate let them through."
+   },
+   {
+    "id": "b",
+    "text": "The judge had not been calibrated against safety engineers' labels, so its safety marks could not be trusted to catch a missing isolation step",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Calibration matters, but the judge did mark 31 lockout-tagout answers low on safety, so it detected the problem. The scoring rule then averaged those marks away, as it would have averaged a better-calibrated judge's marks."
+   },
+   {
+    "id": "c",
+    "text": "Safety was averaged into one quality score, so failures on the lockout-tagout slice never had a gate of their own",
+    "correct": true,
+    "trap": null,
+    "why": "The judge marked 31 of 140 lockout-tagout answers low on safety, yet those marks barely move an average over 2,000 questions and three criteria. Safety needed its own gate on the hazardous slice to stop the launch."
+   },
+   {
+    "id": "d",
+    "text": "The failing question was worded unlike anything in the launch set, so the eval never sampled how technicians actually ask it",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "That rests on a fact nobody has shown, and the launch set did sample this failure: 31 lockout-tagout answers drew low safety marks. The evidence was collected; the blended score diluted it rather than missing it."
+   }
+  ],
+  "explain": "Binding constraint: what changed (nothing). With model, prompt and corpus unchanged and the rerun reproducing low safety marks, the judge did detect the unsafe answers; the metric design hid them by averaging safety into overall quality instead of gating it separately on the lockout-tagout slice.",
+  "rule": "CS-D4-03",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.1-006",
+  "rev": 3,
+  "domain": 4,
+  "obj": "4.1",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "data-shape",
+  "industry": "saas",
+  "family": "per-task-cost-and-latency",
+  "counterTrap": false,
+  "signals": [
+   "between three and fifteen model calls",
+   "some questions end without a chart",
+   "month-end close"
+  ],
+  "stem": "Lumenworks, a SaaS analytics platform, is launching an agent that answers business questions by writing SQL, running it, fixing errors and drawing a chart. One question takes between three and fifteen model calls, failed queries are retried, and some questions end without a chart after repeated failures. The draft launch report shows average cost per model call and average latency per call, both within target. The pricing committee will set a per-seat price from the report, and customers use the agent most during month-end close, when they wait on each chart before moving to the next reconciliation.",
+  "ask": "Which TWO metric definitions should replace the draft cost and latency figures in the launch report? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Mean time from submitting a question to the finished chart, measured during month-end close when usage peaks",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "It measures the right span at the right time, but a mean lets quick three-call questions offset fifteen-call ones with retries, so the slow tail at month-end, where users actually wait, disappears into the average."
+   },
+   {
+    "id": "b",
+    "text": "Cost per question from the model calls on its successful path, leaving out retries of failed SQL as one-off noise",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "It prices the question rather than the call, which is right, but it treats retries as rare noise when some questions fail repeatedly and end with no chart. Each retry is billed like any other call, so the seat price would be set too low."
+   },
+   {
+    "id": "c",
+    "text": "Cost per question asked, summing each model call, tool run and SQL retry, whether or not it ends in a chart",
+    "correct": true,
+    "trap": null,
+    "why": "A question takes three to fifteen calls plus retries, and some end with no chart, so per-call cost understates what a question costs and hides its spread. Seats pay for questions asked, answered or not, so the committee needs this figure to set a price."
+   },
+   {
+    "id": "d",
+    "text": "p95 time from submitting a question to the finished chart, measured during the month-end close peak",
+    "correct": true,
+    "trap": null,
+    "why": "Users wait for the chart, not for any single call, and demand peaks at month-end close. The tail of end-to-end time at that peak, where fifteen-call questions with retries sit, is what the per-call average hides."
+   },
+   {
+    "id": "e",
+    "text": "Prompt-cache hit rate on the shared system prompt and table schemas, tracked across the calls within each question",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Caching can lower both cost and latency here, because the shared prompt is resent on each call, but a hit rate is one input to those figures, not what a question costs or how long users wait at month-end. Its savings already show up in the per-question cost and p95 figures."
+   }
+  ],
+  "explain": "Binding constraint: query shape. One question fans out into many calls and retries, and some end without a chart, so per-call averages mis-measure both cost and latency; define cost per question asked, with retries and unanswered questions included, and p95 end-to-end time at the month-end peak.",
+  "rule": "CS-D4-02",
+  "ladder": "sla-formulation",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.1-007",
+  "rev": 3,
+  "domain": 4,
+  "obj": "4.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "lifecycle-stage",
+  "industry": "telecom",
+  "family": "baseline-before-threshold",
+  "counterTrap": true,
+  "signals": [
+   "a service it has never offered",
+   "only if it beats engineer-led activation",
+   "no engineer-led figures exist yet"
+  ],
+  "stem": "Saltmarsh Telecom is launching eSIM activation for business accounts, a service it has never offered, on a new provisioning platform. The approved business case lets a Claude assistant guide customers' IT admins only if it beats engineer-led activation on resolution rate, handling time and cost per activation, but no engineer-led figures exist yet. For the first month, provisioning engineers will handle every activation while the assistant drafts replies in shadow, logged and never sent. The sponsor wants fixed go-live thresholds in this week's launch plan so the assistant 'has targets to hit'.",
+  "ask": "Which approach to the go-live thresholds is BEST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Measure engineer-led resolution rate, handling time and cost over the first month, then set each go-live threshold from them",
+    "correct": true,
+    "trap": null,
+    "why": "The business case is comparative, and no engineer-led figures exist on the new platform. The first month produces them while the assistant only drafts in shadow, so nothing unchecked reaches customers and each threshold rests on measured rates before go-live."
+   },
+   {
+    "id": "b",
+    "text": "Adopt the human-handled figures from consumer SIM activation as the baseline, and set each go-live threshold against them now",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "It assumes consumer SIM activation predicts business eSIM, but the service, platform and users all differ and nothing shows they behave alike. The engineer-led month measures the real comparator before go-live anyway, so borrowed numbers add false precision and save no time."
+   },
+   {
+    "id": "c",
+    "text": "Set absolute thresholds this week from the activation procedure, chat response norms and token-cost estimates, each with a sample size",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Fixed bars with sample sizes are the usual order, but this business case asks whether the assistant beats engineer-led activation. A bar drawn from the procedure or chat norms cannot answer that, and could pass an assistant slower than engineers or fail one that is faster."
+   },
+   {
+    "id": "d",
+    "text": "Combine resolution, handling time and cost into one weighted score against engineer-led handling, with its target agreed this week",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The business case requires beating engineers on each measure, and one weighted score lets cheaper activations offset a lower resolution rate. Its target would also be fixed this week without the engineer-led figures that the first month is about to produce."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. Thresholds are normally fixed before building, but this business case is comparative and no engineer-led baseline exists on the new platform, so the first month of engineer-led activations (with the assistant in shadow) measures the baseline and each go-live threshold is set from it; borrowed, absolute or composite bars fixed now cannot show the assistant beats engineers.",
+  "rule": "CS-D4-01",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-11"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

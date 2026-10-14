@@ -1,0 +1,11 @@
+# Build products and scratch (rebuilt by `npm run build`)
+dist/
+.cache/
+node_modules/
+
+# Local-only: secrets and reference material
+analytics/.admin-token
+analytics/.dashboard-url
+reference/
+.env
+*.env

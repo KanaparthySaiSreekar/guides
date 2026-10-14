@@ -1,0 +1,503 @@
+[
+ {
+  "id": "P4-4.3-001",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "evidence",
+  "industry": "public-sector",
+  "family": "early-stop-false-winner",
+  "counterTrap": false,
+  "signals": [
+   "on day five",
+   "a four-week run",
+   "most residents use the assistant once a year"
+  ],
+  "stem": "Ostley State's Motor Vehicle Division tested a rewritten system prompt for the Claude assistant that guides residents through online registration renewals. The plan registered completed renewals as the primary metric, a minimum lift of three points and a four-week run. Analysts checked the dashboard daily, and on day five, with the variant nine points ahead, the director approved full rollout. Two months on, the completion rate is back at its old level. The model version, knowledge base, resident mix, error rates and metric definition are unchanged, and most residents use the assistant once a year.",
+  "ask": "What is the MOST likely cause of the vanished lift?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The test was stopped at an early peek, so the day-five lead was chance variation that the full four-week run would have evened out",
+    "correct": true,
+    "trap": null,
+    "why": "Stopping at the first peek that looks good selects a random high point; four weeks were planned because five days cannot separate a real lift from noise. With every other variable unchanged, the lift was never real."
+   },
+   {
+    "id": "b",
+    "text": "The model's behaviour has drifted since rollout, so the rewritten prompt no longer produces the answers that won the test",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The model version is unchanged, and a pinned version does not drift on its own; blaming the model skips the one thing that did differ from the plan, the early stop."
+   },
+   {
+    "id": "c",
+    "text": "A novelty effect lifted completions while the variant was new and faded as residents grew used to the new assistant",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Novelty needs returning users who grow used to a change, but most residents use the assistant once a year, so nearly every session met the variant for the first time."
+   },
+   {
+    "id": "d",
+    "text": "The plan set no pass bar for the lift, so a nine-point lead on the dashboard was read with no threshold to test it against",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "The plan did set a bar, a minimum lift of three points, and nine points cleared it. What failed was when the lead was read: day five of a four-week run, before the sample could separate a real lift from noise."
+   }
+  ],
+  "explain": "Binding constraint: the evidence came from a test stopped on day five of a planned four weeks. Deciding at an early peek produces false winners, so hold to the pre-registered sample size and stopping rule.",
+  "rule": "CS-D4-07",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-11",
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.3-002",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "cost",
+  "industry": "public-sector",
+  "family": "bundled-arms-metric-shopping",
+  "counterTrap": false,
+  "signals": [
+   "until the difference looks meaningful",
+   "whichever of resolution rate, satisfaction and handle time improved most",
+   "only if the test shows the tier itself"
+  ],
+  "stem": "Ferncastle City's 311 team wants to test a new version of the Claude assistant that residents use to report potholes, missed bin collections and noise complaints. Variant B changes the system prompt and also moves from the current mid tier to a larger, costlier tier. The draft plan runs the test until the difference looks meaningful, then reports whichever of resolution rate, satisfaction and handle time improved most. The city's budget office will fund the larger tier only if the test shows the tier itself, not the prompt, produces a gain.",
+  "ask": "Which TWO changes to the draft plan are needed before the test starts? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add an arm that runs the new prompt on the current mid tier, so the tier is what separates it from variant B",
+    "correct": true,
+    "trap": null,
+    "why": "The budget office needs the tier's own effect. Variant B bundles two changes, so an arm with the new prompt on the mid tier leaves the tier as the one difference, and the gap between those arms is what the costlier tier adds."
+   },
+   {
+    "id": "b",
+    "text": "Grade every conversation in both arms with the same LLM judge and a single fixed rubric so scoring stays consistent",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "Consistent scoring is not valid scoring: an unvalidated judge applying the same rubric is wrong the same way in both arms, and it does nothing about the bundled variant or the open-ended stopping plan."
+   },
+   {
+    "id": "c",
+    "text": "Register one primary metric, the sample size and the stopping rule before any results are seen",
+    "correct": true,
+    "trap": null,
+    "why": "Running until it looks meaningful and reporting the best of three metrics is a recipe for a false winner; fixing one primary metric, the sample size and the stopping rule first makes the result defensible."
+   },
+   {
+    "id": "d",
+    "text": "Define the capped rollout and guardrail alerts that will govern promoting the winning variant to residents",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Guarded rollout is the right stage once a variant has won a valid test; defining it now leaves in place the bundled arm and loose metric that make any winner unreliable."
+   },
+   {
+    "id": "e",
+    "text": "Brief the 311 supervisors on the test so they can explain any change in answers that residents notice",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Briefing supervisors is sensible change management, but it does not affect whether the test can attribute a gain to the tier, which is what the budget office's decision rests on."
+   }
+  ],
+  "explain": "Binding constraint: the budget office funds the tier only on evidence of the tier's own effect. Change one variable per arm, and lock the primary metric, sample size and stopping rule before launch.",
+  "rule": "CS-D4-08",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-11",
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.3-003",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "airline",
+  "family": "regulated-guardrail-slice-veto",
+  "counterTrap": false,
+  "signals": [
+   "owed in every language the airline serves",
+   "Portuguese-language chats are well above it",
+   "agent handoffs cost three times as much"
+  ],
+  "stem": "Marisco Air finished a four-week A/B test of a new prompt for the chat assistant that rebooks passengers after cancellations. The plan, registered in advance, named self-service rebooking as the primary metric, with a guardrail limit on chats that omit the passenger's statutory right to care and compensation, a disclosure owed in every language the airline serves. At the planned sample size the variant lifts self-service by six points and its overall omission rate is within the limit, but its Portuguese-language chats are well above it; the current prompt is within the limit in every language. The commercial director wants the variant live before the summer peak, when agent handoffs cost three times as much.",
+  "ask": "What is the BEST recommendation for the commercial director?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Launch the variant for the peak and fix the Portuguese disclosure gap in a follow-up release, since the saving is large",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Weighing peak-season savings against a legal duty treats compliance as a score; every Portuguese-speaking passenger rebooked before the fix risks missing a disclosure the law requires."
+   },
+   {
+    "id": "b",
+    "text": "Extend the test until the Portuguese omission gap is statistically significant before treating the guardrail as breached",
+    "correct": false,
+    "trap": "T-PEEK",
+    "why": "The limit was registered in advance; adding a significance test once the result is known is deciding after peeking, and it keeps Portuguese-speaking passengers exposed to missing disclosures while the team argues with its own rule."
+   },
+   {
+    "id": "c",
+    "text": "Launch the variant, since its overall omission rate is within the guardrail limit that was registered before the test",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The disclosure is owed to every passenger in every language, so the limit binds each language group. The overall rate passes only because other languages dilute a Portuguese breach that the average hides."
+   },
+   {
+    "id": "d",
+    "text": "Keep the current prompt live, fix the variant's Portuguese disclosures and retest with the guardrail limit scored per language",
+    "correct": true,
+    "trap": null,
+    "why": "A statutory disclosure is a gate, not a trade-off, and one language group breaches it, so the peak saving cannot buy the variant through. Fixing the omission and retesting with the limit scored for each language keeps the self-service gain within reach lawfully."
+   }
+  ],
+  "explain": "Binding constraint: the statutory disclosure is owed to every passenger in every language, which outranks the peak-season saving. An overall rate within the limit cannot clear a language group that breaches it, so keep the current prompt, fix the variant and retest with the limit scored per language.",
+  "rule": "CS-D4-07",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-RD-01",
+   "TIP-EL-11"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.3-004",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "irreversibility",
+  "industry": "logistics",
+  "family": "capped-rollout-auto-halt",
+  "counterTrap": false,
+  "signals": [
+   "cannot be recovered that day",
+   "in front of real drivers",
+   "stopped before it affects many rounds"
+  ],
+  "stem": "Quayside Parcel Services has a new prompt for the assistant that re-sequences a driver's remaining stops when a van breaks down or a road closes. The variant has passed the offline evaluation on 600 held-out disruption cases. Drivers follow a new sequence at once, and a bad one causes missed collection windows that cannot be recovered that day. Each depot runs around 60 rounds a day. The operations director asks how to put the variant in front of real drivers so that a harmful version is stopped before it affects many rounds.",
+  "ask": "Which rollout plan BEST meets the operations director's goal?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run a 10/90 test across every depot for four weeks and decide only on the registered on-time metric at the end",
+    "correct": false,
+    "trap": "T-PEEK",
+    "why": "A tenth of rounds is a cap, but with no halt rule a harmful variant keeps missing windows on those rounds for four weeks; holding to the planned run protects the metric, not the customers whose collections are missed."
+   },
+   {
+    "id": "b",
+    "text": "Release it to a few depots first, with duty managers reviewing each day's missed windows before they widen or pull it",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Capping exposure helps, but a daily review acts only after a full day of rounds has followed the variant, and those missed windows cannot be recovered; a human call with no pre-set limit also invites debate."
+   },
+   {
+    "id": "c",
+    "text": "Release it to a few depots first, with pre-declared missed-window limits that halt the rollout automatically",
+    "correct": true,
+    "trap": null,
+    "why": "A few depots bound how many rounds a bad variant can touch, and a limit declared in advance halts it as soon as it is crossed, within the day, instead of waiting for someone to review the damage."
+   },
+   {
+    "id": "d",
+    "text": "Run the variant in shadow at every depot, comparing its sequences with those drivers follow, before any driver sees it",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Shadow scoring assumes a sequence's harm shows without anyone driving it, but missed windows appear only when drivers follow the sequence; it also never puts the variant in front of real drivers, which is what the director asked for."
+   }
+  ],
+  "explain": "Binding constraint: bad sequences cause missed windows that cannot be recovered the same day. After the offline gate, roll out to capped exposure with pre-declared guardrails that stop the rollout automatically, because a manual review acts only after the day's damage is done.",
+  "rule": "CS-D4-08",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.3-005",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "evidence",
+  "industry": "retail",
+  "family": "post-hoc-segment-hypothesis",
+  "counterTrap": false,
+  "signals": [
+   "split the results into 14 segments",
+   "shows no significant difference",
+   "about five weeks"
+  ],
+  "stem": "Ridley & Crane, a hardware retailer, finished a pre-registered A/B test of a new prompt for its product-advice assistant. At the planned sample size, add-to-basket rate, the primary metric, shows no significant difference, and every guardrail held. An analyst then split the results into 14 segments and found the variant six points ahead for mobile shoppers browsing kitchen fittings. The kitchen spring promotion starts in three weeks, and the merchandising lead wants the variant on for that segment by then. A test sized to detect that lift in the segment alone would need about five weeks of its traffic.",
+  "ask": "What should the architect recommend as the next step?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Switch the variant on for mobile kitchen-fittings shoppers, since the test was pre-registered and every guardrail held",
+    "correct": false,
+    "trap": "T-PEEK",
+    "why": "The registration covered the overall primary metric, which was neutral; it did not cover a segment picked after the results came in. Across 14 cuts, one six-point gap is what chance alone tends to produce."
+   },
+   {
+    "id": "b",
+    "text": "Run a three-week test on mobile kitchen-fittings shoppers so a result is in before the promotion, then switch on a winner",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This works only if three weeks of segment traffic can detect the lift, but a properly sized test needs about five; letting the deadline set the sample size invites another false winner."
+   },
+   {
+    "id": "c",
+    "text": "Agree a pass bar for the segment with the merchandising lead, then check the existing kitchen results against it",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A bar agreed after the number is known is not a pre-agreed threshold; checking the same data that produced the finding against it only dresses up the post-hoc result."
+   },
+   {
+    "id": "d",
+    "text": "Keep the current prompt through the promotion and start a test sized for mobile kitchen-fittings shoppers",
+    "correct": true,
+    "trap": null,
+    "why": "A lift found by slicing a neutral test is a hypothesis, so it needs its own properly sized test. The current prompt did no worse overall, so keeping it through the promotion gives up nothing that has been shown."
+   }
+  ],
+  "explain": "Binding constraint: the only evidence is a post-hoc segment from a neutral test, and that outranks the promotion deadline. A sliced-out lift is a hypothesis, so test it at the size it needs rather than the size the calendar allows.",
+  "rule": "CS-D4-07",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-11",
+   "TIP-RD-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.3-006",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "irreversibility",
+  "industry": "insurance",
+  "family": "guardrail-breach-early-stop",
+  "counterTrap": true,
+  "signals": [
+   "in either arm",
+   "three times the stated rate",
+   "treatment they then booked is covered"
+  ],
+  "stem": "Ellwood Pet Insurance is running a 21-day A/B test of a new prompt for the assistant that explains claim decisions to policyholders. The registered plan names first-contact resolution as the primary metric and sets a guardrail limit on coverage misstatements in either arm, measured by the claims QA team's daily sample. On day six the variant leads on resolution by eight points, but QA has found misstatements in it at three times the stated rate, including telling owners that treatment they then booked is covered.",
+  "ask": "What should the test owner do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Keep both arms running to day 21 so that stopping early does not distort the resolution result",
+    "correct": false,
+    "trap": "T-PEEK",
+    "why": "Holding to the planned duration guards against false winners on the primary metric, but this guardrail was declared before the test and has tripped; running on keeps misleading owners for 15 more days."
+   },
+   {
+    "id": "b",
+    "text": "Pull the flagged conversations and trace which part of the new prompt produces the coverage misstatements",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Tracing the cause is the right follow-up, but it can run on logged conversations after the arm is stopped; diagnosing first leaves policyholders exposed to misstatements in the meantime."
+   },
+   {
+    "id": "c",
+    "text": "Stop the variant arm today and send its policyholders back to the current prompt for the rest of the test",
+    "correct": true,
+    "trap": null,
+    "why": "The guardrail was declared before the test and has tripped on real harm: owners are booking treatment on false coverage promises. Stopping this arm early follows the registered plan rather than breaking it, and the evidence stays in the logs."
+   },
+   {
+    "id": "d",
+    "text": "Pool the misstatement rate across both arms and stop the test only if the combined rate exceeds the stated limit",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The plan sets the limit for each arm. Pooling lets the control arm's low rate dilute the variant's threefold breach, so the combined figure could pass while owners keep booking treatment on false promises."
+   }
+  ],
+  "explain": "Binding constraint: owners act on the misstatements, so the harm is ongoing and hard to undo. Early stopping is normally peeking, but a breached pre-declared guardrail is the exception: stop the arm first and diagnose afterwards.",
+  "rule": "CS-D4-07",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.3-007",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "change-scope",
+  "industry": "airline",
+  "family": "confounded-arm-assignment",
+  "counterTrap": false,
+  "signals": [
+   "served the variant in the mobile app",
+   "swung between three and ten points",
+   "To ship quickly"
+  ],
+  "stem": "Larkfield Airways tested a new prompt for its lost-baggage claims assistant. To ship quickly, the feature flag served the variant in the mobile app and kept the current prompt on the website and airport kiosks. The registered metric, sample size and stopping rule were all followed, and the share of claims the baggage desk accepted without asking for more information was eleven points higher for the variant. Before the test, app claims were already accepted more often than web or kiosk claims, by a gap that swung between three and ten points from month to month. The model version, claim form and metric definition did not change.",
+  "ask": "What should the team do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Accept the eleven-point lift, since the registered metric, sample size and stopping rule were all followed",
+    "correct": false,
+    "trap": "T-PEEK",
+    "why": "Pre-registration stops early peeking, but it cannot rescue a comparison whose arms differ in more than one variable; the channel gap that existed before the test could explain most of the lift."
+   },
+   {
+    "id": "b",
+    "text": "Rerun the test with passengers randomly assigned to either prompt within each of the three channels",
+    "correct": true,
+    "trap": null,
+    "why": "The arms differ in two things, prompt and channel, and app claims were ahead before the test began. Random assignment within each channel leaves the prompt as the one difference, so the rerun gives the first result the team can read."
+   },
+   {
+    "id": "c",
+    "text": "Refine the new prompt on the app claims the desk still sent back, so the next version builds on this win",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Refining the prompt is the next iteration once the variant has a real, attributable win; building on the app result now iterates on a lift that may belong to the channel, not the prompt."
+   },
+   {
+    "id": "d",
+    "text": "Subtract the pre-test app-versus-web acceptance gap from the eleven points and credit the prompt with the remainder",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the channel gap held steady during the test, but it swung between three and ten points month to month, so the prompt's share of the eleven points could be one point or eight."
+   }
+  ],
+  "explain": "Binding constraint: the arms differed in channel as well as prompt, and the channel gap was too unstable to subtract. Assignment must be random within the population the variant will serve, so rerun with randomisation inside each channel before trusting or refining the result.",
+  "rule": "CS-D4-08",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

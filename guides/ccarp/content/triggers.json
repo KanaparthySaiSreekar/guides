@@ -1,0 +1,290 @@
+[
+ {
+  "word": "irreversible",
+  "signals": "The action cannot be undone, so it raises the HITL and control rung regardless of transaction size.",
+  "points_to": "hitl-routing",
+  "example": "...the agent can issue refunds, which are irreversible once settled..."
+ },
+ {
+  "word": "externally visible",
+  "signals": "Output reaches customers, regulators or the public, which enlarges the blast radius and calls for a pre-action gate or removal.",
+  "points_to": "hitl-routing",
+  "example": "...drafts are sent to policyholders and are externally visible..."
+ },
+ {
+  "word": "only reads and drafts / never needs",
+  "signals": "Least privilege. Remove the capability the role does not use instead of guarding it.",
+  "points_to": "L2",
+  "example": "...support staff only read tickets and draft replies, but the agent also holds delete and refund tools..."
+ },
+ {
+  "word": "every time / must always / guaranteed",
+  "signals": "The outcome has to be deterministic. A prompt or CLAUDE.md is not enough, so enforce it in code.",
+  "points_to": "L3",
+  "example": "...the PHI scrub must run every time before a file is written..."
+ },
+ {
+  "word": "regulated",
+  "signals": "A legal gate that eliminates options rather than being weighed against cost. Match the right regime.",
+  "points_to": "L1",
+  "example": "...Tarn Bank operates in a regulated market and must retain per-decision evidence..."
+ },
+ {
+  "word": "PHI / patient data",
+  "signals": "HIPAA scope: a BAA with an eligible configuration and minimisation before the call. ZDR alone is not HIPAA.",
+  "points_to": "control-strength",
+  "example": "...Brightwater Clinic's discharge notes contain PHI..."
+ },
+ {
+  "word": "EU customers / full customer profile",
+  "signals": "GDPR minimisation: send only the fields the task needs. Encryption, notices or consent do not minimise the payload.",
+  "points_to": "control-strength",
+  "example": "...Lumen Retail EU injects each shopper's full profile into the prompt..."
+ },
+ {
+  "word": "customer's AWS account / must not leave our cloud",
+  "signals": "Tenancy or residency is the binding constraint. Call Claude through the cloud provider (for example Amazon Bedrock) under the customer's own account, IAM, logging and billing, not an external index or copy. If residency, not just tenancy, is the constraint, use a Region- or geography-bound endpoint or inference profile, and keep every store on the data path in-region. Global cross-Region routing does not guarantee where inference runs.",
+  "points_to": "L1",
+  "example": "...contract data must remain in the customer's AWS account..."
+ },
+ {
+  "word": "shared service account",
+  "signals": "Over-privileged identity. Act with the end user's permissions and enforce authorization outside the model.",
+  "points_to": "control-strength",
+  "example": "...every MCP call runs under one shared service account with admin scope..."
+ },
+ {
+  "word": "retrieved documents / untrusted content / email attachments",
+  "signals": "A prompt-injection path. Limit what tools can do after reading untrusted input, and screen before the boundary. A larger model is not a defence.",
+  "points_to": "control-strength",
+  "example": "...the agent summarises inbound vendor emails and can then call the payments tool..."
+ },
+ {
+  "word": "FIRST",
+  "signals": "Order matters. Pick the earliest correct step, usually discovery or observation, not the eventual fix.",
+  "points_to": "lifecycle",
+  "example": "...what should the architect do FIRST?"
+ },
+ {
+  "word": "BEST",
+  "signals": "Several options are valid; the binding constraint picks one.",
+  "points_to": "L1",
+  "example": "...which approach BEST meets the 800 ms p95 budget?"
+ },
+ {
+  "word": "MOST likely cause",
+  "signals": "A diagnosis item. Start from the triggering change and eliminate the unchanged layers.",
+  "points_to": "diagnosis",
+  "example": "...what is the MOST likely cause of the confident wrong answers?"
+ },
+ {
+  "word": "unchanged",
+  "signals": "An eliminator. Any option blaming the unchanged component is wrong.",
+  "points_to": "L5",
+  "example": "...model version and latency are unchanged since last week..."
+ },
+ {
+  "word": "after a refresh / after the upgrade / after the rollout",
+  "signals": "The trigger names the layer that changed, so diagnose there first.",
+  "points_to": "diagnosis",
+  "example": "...since the policy library was re-indexed, answers cite superseded clauses..."
+ },
+ {
+  "word": "nothing was deployed",
+  "signals": "The inputs or traffic drifted, not the code. Pull traces and refresh the eval set from production.",
+  "points_to": "diagnosis",
+  "example": "...no release went out, yet resolution quality dropped in two regions..."
+ },
+ {
+  "word": "just / only / simply",
+  "signals": "Compressed complexity or a pre-chosen solution. Check scope and constraints before accepting the framing, then pick the simplest pattern that actually works.",
+  "points_to": "L4",
+  "example": "...the GM says they just need a chatbot..."
+ },
+ {
+  "word": "a chatbot / an agent (as the request)",
+  "signals": "The solution arrived before the problem. Reframe in discovery: the job, baseline, target, owner.",
+  "points_to": "lifecycle",
+  "example": "...the sponsor asks the team to build an agent for reservations..."
+ },
+ {
+  "word": "fixed steps / same sequence / audit trail",
+  "signals": "An enumerable path plus auditability means a workflow with gates, not an autonomous agent.",
+  "points_to": "pattern",
+  "example": "...every brief follows the same five sections and each step must be auditable..."
+ },
+ {
+  "word": "independent / in parallel",
+  "signals": "Genuine independence is what justifies subagents or sectioning. It is the counter-trap to 'agentic by default'.",
+  "points_to": "pattern",
+  "example": "...twelve market studies can be researched independently and merged..."
+ },
+ {
+  "word": "each team / each department (as agent split)",
+  "signals": "Org-chart evidence is not architectural evidence. Split by independence or specialisation instead.",
+  "points_to": "pattern",
+  "example": "...one agent per department so each team owns its own agent..."
+ },
+ {
+  "word": "multiple teams / surfaces / clients need the same",
+  "signals": "A shared live capability over an external system, so use an MCP server rather than bespoke integrations. If what they share is know-how that fetches nothing (a procedure, template or rubric), use a versioned Skill or template module instead (CS-D2-12).",
+  "points_to": "integration-mechanism",
+  "example": "...the IDE, the support console and the analytics agent all need catalogue search..."
+ },
+ {
+  "word": "one-off / single pipeline",
+  "signals": "A direct API call. A protocol layer would be over-engineering.",
+  "points_to": "integration-mechanism",
+  "example": "...a one-off nightly script tags last year's claims..."
+ },
+ {
+  "word": "hundreds of tools / catalogue keeps growing / picks the wrong tool",
+  "signals": "Tool bloat. Scope per role and discover progressively, not longer descriptions or a mega-tool.",
+  "points_to": "integration-mechanism",
+  "example": "...the agent now sees 200 tools across nine domains and mis-selects..."
+ },
+ {
+  "word": "live / current / real-time status",
+  "signals": "Live state belongs in the system of record, not the index.",
+  "points_to": "retrieval",
+  "example": "...customers ask for the live status of an open claim..."
+ },
+ {
+  "word": "part number / clause ID / SKU",
+  "signals": "The query is an identifier, so use lexical retrieval or route to hybrid, not embeddings alone.",
+  "points_to": "retrieval",
+  "example": "...agents search by exact clause ID and semantic search misses them..."
+ },
+ {
+  "word": "cut off mid-clause / loses context",
+  "signals": "A unit-boundary defect. Chunk on semantic units and add contextual headers, not more chunks.",
+  "points_to": "retrieval",
+  "example": "...exclusions are split across two chunks and the second is never retrieved..."
+ },
+ {
+  "word": "same system prompt on every request / timestamp at the top",
+  "signals": "Input dominates with a repeated prefix. Cache the static prefix and keep per-request values out of it.",
+  "points_to": "cost-latency-lever",
+  "example": "...an 8,000-token policy block is resent with each call, preceded by the request time..."
+ },
+ {
+  "word": "overnight / nightly / by morning",
+  "signals": "Non-interactive work, so batch it. Streaming does not help.",
+  "points_to": "cost-latency-lever",
+  "example": "...risk summaries are generated overnight for the morning review..."
+ },
+ {
+  "word": "feels slow / users stare at a blank screen",
+  "signals": "A perceived-latency complaint. Streaming helps time to first token, not completion time.",
+  "points_to": "cost-latency-lever",
+  "example": "...agents say the assistant feels slow before any text appears..."
+ },
+ {
+  "word": "synchronous timeout / legacy caller",
+  "signals": "A hard timeout forces a restructure: an async job ID or callback, not a smaller model or truncated context.",
+  "points_to": "cost-latency-lever",
+  "example": "...the mainframe gateway times out after 2 seconds..."
+ },
+ {
+  "word": "without breaching the accuracy floor",
+  "signals": "Only levers that hold quality qualify: measure first, then cache, batch or route on measured slices.",
+  "points_to": "L6",
+  "example": "...cut spend without dropping below the agreed extraction accuracy..."
+ },
+ {
+  "word": "p95 / at peak",
+  "signals": "The SLA must be a tail percentile under peak load plus an error budget.",
+  "points_to": "sla-formulation",
+  "example": "...the p95 must hold during holiday rebooking surges..."
+ },
+ {
+  "word": "average response time / excluding surge days",
+  "signals": "A flawed SLA that hides the tail. Rewrite it as a percentile at peak.",
+  "points_to": "sla-formulation",
+  "example": "...Kestrel Air proposes a 1.2 s average, excluding storm days..."
+ },
+ {
+  "word": "99.9% accurate / guarantee",
+  "signals": "Overpromise. Reframe as a measured end-to-end rate with error handling and HITL, and take it to the owner.",
+  "points_to": "L8",
+  "example": "...the COO wants the contract to guarantee 99.9% correct decisions..."
+ },
+ {
+  "word": "executive / board / sponsor",
+  "signals": "Audience fit: the decision, impact, risk and ask, with a trade-off curve, not an architecture diagram.",
+  "points_to": "L8",
+  "example": "...the architect has ten minutes with the board..."
+ },
+ {
+  "word": "per person / per unit / newly possible",
+  "signals": "Value-pillar denominator. Per unit of work is efficiency, per person is productivity, newly possible is transformation.",
+  "points_to": "L1",
+  "example": "...claims handled per adjuster rose, while cost per claim stayed flat..."
+ },
+ {
+  "word": "pilot",
+  "signals": "Needs pre-agreed success criteria, guardrails and a go/no-go owner. Never extend it without changes.",
+  "points_to": "lifecycle",
+  "example": "...the pilot ended with no agreed success criteria and the sponsor wants to extend it..."
+ },
+ {
+  "word": "handoff / operating team",
+  "signals": "A runbook, a named monitoring owner and real documentation. A chat channel or contact person is not documentation.",
+  "points_to": "lifecycle",
+  "example": "...the build team hands over to Meridian Mutual's platform ops next month..."
+ },
+ {
+  "word": "preserve the reasoning / why we chose",
+  "signals": "An ADR that includes the rejected alternatives, not code comments, a recording or the system prompt.",
+  "points_to": "lifecycle",
+  "example": "...new engineers keep asking why hybrid retrieval was chosen..."
+ },
+ {
+  "word": "model says it is 95% sure / confidence score from the model",
+  "signals": "Self-reported confidence is not a routing signal. Route by reversibility × blast radius using system signals.",
+  "points_to": "hitl-routing",
+  "example": "...escalate only when the model reports confidence below 0.8..."
+ },
+ {
+  "word": "approved in seconds / reviewers sign everything",
+  "signals": "Rubber-stamp review. Redesign the gate with evidence, a rubric and override tracking, then route by risk.",
+  "points_to": "hitl-routing",
+  "example": "...clinicians attest scribe notes in about 4 seconds each..."
+ },
+ {
+  "word": "drift",
+  "signals": "Ask what drifted: the judge (recalibrate against humans), the traffic (refresh the eval set) or the inputs. Model drift is rarely the answer when the model was pinned.",
+  "points_to": "eval-grading",
+  "example": "...judge scores climbed while complaints rose..."
+ },
+ {
+  "word": "overall accuracy is fine",
+  "signals": "The aggregate may hide a failing slice. Evaluate each subgroup, region or product.",
+  "points_to": "eval-grading",
+  "example": "...94% overall, but approval accuracy for thin-file applicants is unreported..."
+ },
+ {
+  "word": "winner after N sessions / early results look good",
+  "signals": "Peeking. The metric, sample size and stopping rule must be locked in advance, with one change per arm.",
+  "points_to": "L7",
+  "example": "...variant B won after 50 sessions, so the PM wants to ship..."
+ },
+ {
+  "word": "cannot be disabled / on any machine",
+  "signals": "Non-overridable reach, so use managed settings. Project config only covers repos that adopt it.",
+  "points_to": "config-reach",
+  "example": "...outbound network tools must be blocked on every developer machine..."
+ },
+ {
+  "word": "CLAUDE.md (as the control)",
+  "signals": "Guidance, not enforcement. If it must hold, use a fail-closed hook or a deny rule.",
+  "points_to": "L3",
+  "example": "...the secrets rule is written only in the project CLAUDE.md..."
+ },
+ {
+  "word": "permission denied after rollout / one team's server failing",
+  "signals": "Observe first. Check which scope won and what loaded before widening access or editing config.",
+  "points_to": "diagnosis",
+  "example": "...since managed settings shipped, one team's MCP server is refused..."
+ }
+]

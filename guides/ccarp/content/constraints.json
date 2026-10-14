@@ -1,0 +1,20 @@
+[
+ {"id":"cost","label":"Cost"},
+ {"id":"latency-sla","label":"Latency / SLA"},
+ {"id":"irreversibility","label":"Irreversibility / blast radius"},
+ {"id":"regulation","label":"Regulation / compliance"},
+ {"id":"audience","label":"Audience"},
+ {"id":"lifecycle-stage","label":"Lifecycle stage"},
+ {"id":"reuse","label":"Reuse across clients or teams"},
+ {"id":"scale","label":"Scale / volume"},
+ {"id":"least-privilege","label":"Least privilege"},
+ {"id":"residency","label":"Data residency"},
+ {"id":"accuracy-floor","label":"Accuracy floor"},
+ {"id":"data-shape","label":"Data shape / query pattern"},
+ {"id":"security-boundary","label":"Security boundary"},
+ {"id":"auditability","label":"Auditability / traceability"},
+ {"id":"determinism","label":"Must happen every time"},
+ {"id":"evidence","label":"Evidence quality"},
+ {"id":"ownership","label":"Decision ownership"},
+ {"id":"change-scope","label":"What changed (diagnosis)"}
+]

@@ -1,0 +1,232 @@
+{
+ "name": "Meridian Mutual: Claims Triage Assistant",
+ "oneLine": "A fictional mid-size insurer brings Claude into claims triage end to end: intake, policy Q&A, live claim status, adjuster drafting, fraud routing and human-owned payment decisions. It runs on Bedrock across the EU and US, sits behind a 2-second mainframe, and comes with a Claude Code rollout to 60 developers.",
+ "company": "Meridian Mutual is a fictional mid-size property-and-casualty insurer that also sells supplementary health cover (hospital cash and dental riders). It has about 2,400 staff, a US head office and an EU subsidiary serving customers in several EU languages. It handles about 14,000 claims a month across motor, home, travel and health. Catastrophe events such as storms and floods multiply first-notice-of-loss (FNOL) volume for days at a time. The company has standardised on AWS and requires customer data to stay in-region: EU data in the EU, US data in the US. Claims are adjudicated on a decades-old mainframe that sits behind a synchronous integration gateway with a hard 2-second timeout. Adjusters work in a case workbench and hold authority limits recorded in the corporate identity provider. Leadership wants shorter FNOL-to-first-contact time, fewer misroutes and lower cost per claim, without automating any decision that regulators or customers would expect a person to make. In parallel, the platform team is rolling Claude Code out to 60 developers across four teams who build and maintain these systems.",
+ "systems": [
+  {
+   "name": "ClaimsCore (legacy claims mainframe)",
+   "role": "System of record for claim status, reserves, coverage decisions and payment instructions. Reached only through a synchronous gateway with a hard 2-second timeout, so all assistant access goes through an async facade that returns a job ID. Live claim state is always read from here, never from an index."
+  },
+  {
+   "name": "PolicyVault",
+   "role": "Versioned repository of policy wordings, endorsements and riders by product, jurisdiction and edition. It is the corpus for retrieval over policy wording. Answers must reflect the edition in force at the date of loss."
+  },
+  {
+   "name": "FNOL channels",
+   "role": "Web form, mobile app, claimant email and contact-centre call transcripts. All of it is untrusted, unstructured input, and some of it carries health information and attachments."
+  },
+  {
+   "name": "policy-search MCP server",
+   "role": "One shared integration that exposes policy search to three consumers: the claims assistant, the contact-centre copilot and underwriting. It validates token audience, acts with the caller's identity and is owned by platform engineering."
+  },
+  {
+   "name": "Claude on Amazon Bedrock",
+   "role": "Inference inside Meridian's own AWS accounts, pinned to in-region or geography-bound endpoints (EU for EU claims, US for US claims) and never global cross-Region routing, which does not guarantee location. On Bedrock the cloud provider is the data processor. Health-claim data relies on AWS's own HIPAA eligibility and BAA, not Anthropic's API HIPAA readiness, and the data-retention setting for each model is checked before anyone assumes zero retention."
+  },
+  {
+   "name": "Sentinel fraud engine",
+   "role": "Rules plus a scoring model run by the investigations unit (SIU). Its calibrated score is one of the system signals that route claims to human review. The assistant can route to SIU but never denies a claim on a fraud signal."
+  },
+  {
+   "name": "Adjuster Workbench",
+   "role": "Case UI where drafts, recommendations and citations land for an adjuster to edit, approve or reject. Its edits and overrides are captured as feedback."
+  },
+  {
+   "name": "Identity provider (SSO/OIDC)",
+   "role": "Source of adjuster identity, role and authority limits. Authorization is enforced at the gateway and in ClaimsCore, not by the model."
+  },
+  {
+   "name": "Payments gateway",
+   "role": "Issues claim payments. No model-facing tool can reach it. Only a human with sufficient authority, acting in the workbench, can release a payment."
+  },
+  {
+   "name": "Observability stack",
+   "role": "Distributed tracing and log store keyed by correlation ID and claim ID. It captures prompt and model versions, retrieved chunk IDs, tool calls and latency per span. Sampling is tail-based: every error, escalation and override is kept, plus a random baseline."
+  },
+  {
+   "name": "Claude Code estate",
+   "role": "60 developers across four teams working in Git repositories with CI. It uses committed project config, centrally deployed managed settings and headless runs in CI."
+  }
+ ],
+ "people": [
+  {
+   "name": "Dana Okafor",
+   "role": "Chief Operating Officer, executive sponsor",
+   "cares_about": "Shorter FNOL-to-first-contact time and better claimant satisfaction, with a story she can defend to the board. She owns success criteria and risk acceptance. She opened with 'an AI claims bot' and '99.9% accurate routing', and she needs the decision and its impact first, not diagrams."
+  },
+  {
+   "name": "Luis Ferreira",
+   "role": "Head of Claims Operations",
+   "cares_about": "Adjuster workload, misroutes that force re-handling, and review queues that are staffed realistically. He owns the claims process and the feedback loop from adjuster overrides. He does not want reviewers turned into rubber stamps or burdened with a 100% review rule that nobody can meet."
+  },
+  {
+   "name": "Priya Raman",
+   "role": "CISO and Head of Compliance",
+   "cares_about": "GDPR (minimisation, residency, data subject rights, no solely automated significant decisions) and health-data obligations (a BAA-covered service, HIPAA-eligible configuration, audit logging, minimum necessary). She also cares about least privilege and about controls that are enforced rather than advisory. She wants an evidence artefact for every obligation, and restrictions that cannot be disabled on any developer machine."
+  },
+  {
+   "name": "Tomasz Wiśniewski",
+   "role": "Data Science Lead",
+   "cares_about": "Eval sets drawn from real production demand, thresholds agreed before building, per-slice and per-group scoring, LLM judges validated against human labels, calibrated fraud and routing signals, and A/B tests whose metric and stopping rule are fixed before anyone looks at results."
+  },
+  {
+   "name": "Aiko Brennan",
+   "role": "Platform Engineering Lead",
+   "cares_about": "The AWS landing zone and Bedrock regions, the async facade over the mainframe, the shared MCP server and its auth, tracing and sampling at scale, and a Claude Code rollout that stays consistent across teams. Before changing anything she wants to see traces."
+  },
+  {
+   "name": "Gerald Hume",
+   "role": "Chief Financial Officer (skeptical)",
+   "cares_about": "Cost per claim against a measured baseline, honest segmented ROI with the method stated, token spend that does not grow faster than claim volume, and cost per transaction written into the SLA. He dismisses seat counts, adoption figures and demo anecdotes as evidence."
+  }
+ ],
+ "constraints": [
+  "The mainframe gateway has a synchronous 2-second timeout that cannot change this fiscal year, so long operations must be accepted, given a job ID and completed asynchronously.",
+  "EU customer data is processed and stored in an EU region and US data in a US region. Inference runs inside Meridian's own AWS accounts.",
+  "Health-claim data may reach only BAA-covered services with HIPAA-eligible configuration and audit logging. PHI is de-identified or withheld wherever a step does not need it.",
+  "GDPR minimisation applies: each call receives only the fields it needs. Encryption or consent does not substitute for minimisation.",
+  "Payments and denials are high-impact and hard to reverse. A named human with sufficient authority makes every denial and every payment above their limit. No model-facing tool can release a payment.",
+  "Claim status must be read live from ClaimsCore at request time. It is never served from a search index.",
+  "Policy answers must cite the policy wording edition in force at the date of loss, for the correct jurisdiction and product.",
+  "Fraud signals route to the investigations unit and never trigger an automatic denial or any disclosure to the claimant.",
+  "The SLA must hold at p95 during catastrophe surges. Averages and 'excluding surge days' clauses are not acceptable.",
+  "The CFO requires cost per claim to beat the measured pre-AI baseline before production expansion.",
+  "Adjusters act within the authority limits recorded in the identity provider. The assistant acts with the calling user's permissions, never through a shared privileged service account.",
+  "The Claude Code rollout must enforce org-wide restrictions that no developer can override locally, while leaving teams free to maintain their own project conventions."
+ ],
+ "by_domain": [
+  {
+   "domain": 1,
+   "title": "Solution Design & Architecture: shape before technology",
+   "story": "Dana asked for \"an AI claims bot\". Discovery found the real job: cut time from first notice of loss to first adjuster contact, and cut misroutes, which cost Luis a re-handle each. You split by problem shape, not by department. FNOL intake is a workflow with a known path (extract, validate against the policy, classify, route), and one augmented call does the extraction. Policy Q&A is a single retrieval-augmented call. Claim status is a deterministic tool call. Only multi-document investigation support earns a bounded, read-only agent, because the steps emerge at runtime and a wrong intermediate step is recoverable. Claude judges unstructured input, ClaimsCore holds facts and entitlement, and people decide payments and denials. Because of the mainframe's 2-second limit, lookups go through an async facade that returns a job ID. Adjuster overrides feed a loop that Luis owns. Framed as an error count, 99.7% routing still means about 42 misroutes a month, so the question becomes which claims they are.",
+   "decisions": [
+    "1.1: Reframe 'claims bot' as the underlying job (contact time, misroutes) with a baseline and target before choosing any model.",
+    "1.3: FNOL intake is a workflow and policy Q&A is an augmented call. An agent is used only for investigation, where the steps emerge at runtime and errors are recoverable.",
+    "1.4: No agent per department. The one read-only investigation agent gets a complete context handoff (claim ID, question, allowed sources).",
+    "1.5: Decompose by dependency: extraction feeds validation, which feeds routing. Independent checks (coverage, fraud signal) run as sections in parallel.",
+    "1.2: The 2-second mainframe limit is handled by an async accept, job ID and callback. The feedback loop runs from adjuster overrides to the eval set, with Luis as the named owner.",
+    "1.6: The value case is efficiency (cost per claim), not seats. The SLA is a gate the design must pass, not a factor to trade away."
+   ]
+  },
+  {
+   "domain": 2,
+   "title": "Models, Prompting & Context: cheapest tier that clears the bar",
+   "story": "Model choice follows measurement, not prestige. A fast tier classifies and extracts FNOL. A mid tier answers policy questions and drafts adjuster notes. The top tier gets only the escalated slice where evals showed reasoning failures: coverage that depends on several interacting riders. Each tier is the cheapest one that clears its accuracy floor, and it is re-checked whenever the model or prompt changes. Every prompt is laid out as a stable prefix (tool definitions, the system prompt, claims-handling guidelines) with the caching breakpoint after it, and per-claim content after that. An early build put the current date at the top of the system prompt and got almost no cache hits, so the date moved into the per-request section. When extraction output drifted in format, few-shot examples and schema-constrained output fixed it. Structured reasoning is used only for coverage explanations, never for routing labels. Jurisdiction and product go in as template variables, not 50 forked prompts. Letter-drafting standards ship as one owned, versioned prompt module with evals, because Agent Skills are not supported on Bedrock.",
+   "decisions": [
+    "2.1: Tiered routing. A fast tier handles the high-volume simple work. Escalation to a higher tier is triggered by measured failure on complex coverage reasoning, not by importance.",
+    "2.5: The static prefix comes first (tools, then system, then guidelines) and the cache breakpoint follows it. Volatile values (date, claim ID) go after the breakpoint.",
+    "2.3: Few-shot examples fix format drift. Structured reasoning is reserved for multi-step coverage logic. Zero-shot is enough for simple labels.",
+    "2.2: The system prompt sets scope and tone only. Anything that must never happen is enforced in code, not in the prompt.",
+    "2.4: The whole claim file is never stuffed into context. Relevant sections are retrieved, and long adjuster sessions use tool-result clearing and compaction instead of truncating required facts.",
+    "2.5: Drafting standards are packaged as a versioned prompt module (know-how; a Skill only where the runtime loads Skills, such as the Agent SDK) and policy search as MCP (an external system). Prompts are versioned artefacts with owners and evals."
+   ]
+  },
+  {
+   "domain": 3,
+   "title": "Integration: residency, one shared capability, and live state from the source",
+   "story": "Inference runs on Bedrock in Meridian's own AWS accounts, pinned to in-region or EU/US geography-bound endpoints: EU claims stay in the EU, US claims in the US. Global cross-Region routing is ruled out because it does not guarantee location. That meets Priya's residency requirement without a new vendor boundary. Three consumers (the claims assistant, the contact-centre copilot and underwriting) need the same policy search, so Aiko builds one MCP server instead of three integrations. A nightly reconciliation job, which has one caller, uses the direct API. Policy wording is chunked on clause boundaries, and each chunk gets a header for product, edition, jurisdiction and effective dates. Metadata filters for the edition in force at the date of loss run before search. Policy numbers and clause IDs go to lexical search, conceptual questions to semantic search, and a re-ranker lifts precision. Claim status never enters the index; it is read live from ClaimsCore. The assistant acts with the adjuster's identity. The MCP server checks the token audience and never passes tokens through. The drafting role has no payment tool. Each trace carries the prompt and model versions, the IDs of retrieved chunks, the tool calls and the claim ID.",
+   "decisions": [
+    "3.7: MCP for policy search because three clients share it at runtime. A direct API for the single-caller nightly job. No agent-to-agent protocol, because no independently reasoning counterpart exists.",
+    "3.2: The assistant acts with the calling adjuster's permissions. Authority limits are enforced at the gateway and in ClaimsCore. No shared service account, token passthrough or tokens in query strings.",
+    "3.1: The drafting role gets read and draft tools only. The payment tool is removed, not just guarded or logged.",
+    "3.5 and 3.6: Chunk on clause and section boundaries with contextual headers. Filter by edition, jurisdiction and product before search. Hybrid routing sends identifiers to lexical and concepts to semantic search. Re-rank when recall is high and precision is low.",
+    "3.8: The internal tool catalogue is scoped per role, with deferred loading or tool search once it grows large. A small, stable set can be loaded up front.",
+    "3.3 and 3.4: Stream drafts for perceived latency and keep re-ranking within the p95 budget. Traces carry versions, retrieved IDs and tool calls. Tail-based sampling keeps every failure and override."
+   ]
+  },
+  {
+   "domain": 4,
+   "title": "Evaluation, Testing & Optimization: thresholds first, slices always",
+   "story": "At Meridian Mutual, evaluation starts before any tuning. Dana Okafor and Luis Ferreira sign off thresholds for routing accuracy per line of business, citation correctness, p95 latency during catastrophe surges, cost per claim against the discovery baseline, PII leakage and injection resistance. Tomasz Wiśniewski builds the eval set from stratified real FNOLs plus adversarial and edge slices, holds it out from tuning, versions it and dates its refresh. Codes are exact-matched, explanations are scored by a judge whose agreement with adjuster labels is measured and rechecked, and denial rationales go to senior adjusters. Results are reported per slice. The clause-boundary chunking test was pre-registered with one change per arm and a locked metric, sample size and stopping rule, then rolled out under capped exposure. When quality moves, Aiko Brennan reads traces keyed by claim and correlation ID before changing anything. Gerald Hume's cost target is met by measuring the dominant term per workflow: caching the stable drafting preamble where input dominates, templating drafts where output dominates, and batching overnight re-summarisation. The eval gates every prompt, model and index change in CI.",
+   "decisions": [
+    "4.1: Metrics cover accuracy, latency (p95 at peak), cost per claim, safety (PII leakage) and security (injection resistance), each with a threshold agreed in advance.",
+    "4.2: The eval set comes from real, stratified traffic plus adversarial and edge slices. It is held out from tuning and refreshed as traffic drifts, and its gold labels and grades never come from the system under test; generated inputs are seeded from and checked against real traffic.",
+    "4.2: The grading ladder runs from exact match for crisp labels, to an LLM judge calibrated against adjuster labels, to human review for denial rationales.",
+    "4.3: A/B tests change one thing per arm, with metric, sample size and stopping rule locked before results are seen. Offline validation comes first, then capped rollout.",
+    "4.4: Diagnose the layer the trigger touched. A content refresh with the model unchanged points to indexing or metadata, not temperature or tier.",
+    "4.5 and 4.6: Measure the dominant cost term before choosing a lever. Output-heavy drafts are shortened by template, and non-interactive re-summarisation moves to batch. Dashboards read from traces; they do not replace them."
+   ]
+  },
+  {
+   "domain": 5,
+   "title": "Governance, Safety & Risk: humans own the irreversible",
+   "story": "The safety stack has layers and fails closed. Claimant emails and uploads are treated as data, never as instructions: fetched text carries no authority and has no outbound path. Output screening blocks PII leaks and unsupported coverage promises. Tool-call authorization sits outside the model. Claude recommends and people decide: every denial, and every payment above an adjuster's authority limit, needs a named human. Low-value, reversible glass claims get sampled review. Review routing uses calibrated system signals (fraud score, retrieval agreement, rule checks), never the model's own stated confidence. Luis tracks time to approve and the rate of unedited approvals, to catch rubber-stamping. Fraud signals route to the investigations unit silently, never to an automatic denial. Priya's compliance map ties each obligation to a control, an owner and evidence. For GDPR: minimisation (only the fields each call needs), EU residency, and no solely automated significant decisions. For health claims: a BAA-covered service, HIPAA-eligible configuration, audit logging, and PHI de-identified wherever it is not needed. ZDR is not treated as HIPAA. Fraud escalation rates are tested per group.",
+   "decisions": [
+    "5.1: Layered, fail-closed guardrails: input screening, output screening, and tool-call authorization outside the model. Each is proven against the failure it targets before launch.",
+    "5.3: HITL is routed by reversibility, blast radius and cost of error, using calibrated system signals. Denials and above-limit payments always go to a human. Low-risk, high-volume paths are sampled.",
+    "5.3: Anti-rubber-stamp measures: monitor approval time and the unedited-approval rate, and require a stated rationale on overrides and denials.",
+    "5.2: Known failure modes (confident wrong coverage statements, injection through attachments) are checked by verification independent of the model.",
+    "5.4: The compliance map links each GDPR and health-data obligation to a control, an owner and an evidence artefact. Minimisation happens before data crosses the boundary. ZDR is not HIPAA.",
+    "5.5: Fraud escalation and routing outcomes are tested per group, claimants are told AI is involved and given a route to a human, and risk acceptance sits with a named business owner."
+   ]
+  },
+  {
+   "domain": 6,
+   "title": "Stakeholder & Lifecycle: baseline, honest SLA, owned handoff",
+   "story": "Discovery produced a baseline before anyone saw a demo: current FNOL-to-contact time, misroute rate, adjuster hours per claim and cost per claim, plus a constraint inventory and a map of decision owners. When Dana asked for \"99.9% accurate routing\", you did not promise it and did not quietly redefine it. You showed an end-to-end trade-off curve with human review on the high-stakes slice and on claims flagged by calibrated system signals, and she chose the operating point. Gerald gets segmented cost per claim against the baseline, with the method stated. The SLA gives p95 latency at peak with catastrophe surges included, an accuracy floor on the agreed eval set with an error budget, cost per transaction, and a remedy. It has no averages and no exclusions. ADRs record the choices of Bedrock, an MCP server for policy search, and an async mainframe facade, each with rejected options and consequences, in version control. The exec brief leads with the decision and impact. The pilot covers home claims in one region against pre-agreed exit criteria. Handoff goes to a named claims-platform owner, with the eval suite, runbooks and prompt inventory.",
+   "decisions": [
+    "6.1: Discovery outputs come before any build: baseline, measurable target, constraint inventory (latency, cost, residency, compliance), data and access map, and decision owners.",
+    "6.2: Reframe the 99.9% request around the end-to-end process and a trade-off curve. The sponsor chooses the operating point, and nobody decides it for her.",
+    "6.3: The SLA has p95 at peak including surges, an accuracy floor with an error budget on the agreed set, cost per transaction and a remedy. It never promises deterministic accuracy.",
+    "6.2: The executive brief leads with decision, impact, risks and the ask, framing trade-offs as cost, risk and cost of reversal. The CFO gets segmented numbers with the method stated.",
+    "6.4: Version-controlled ADRs record context, options, decision and consequences, including rejected alternatives.",
+    "6.5: POC shows feasibility, the pilot shows value against pre-agreed criteria, and production adds SLOs, on-call and rollback. Handoff to a named owner includes evals, runbooks and diagnostics, not a contact person or chat channel."
+   ]
+  },
+  {
+   "domain": 7,
+   "title": "Developer Productivity & Enablement: committed config, managed enforcement, observe first",
+   "story": "Aiko rolls Claude Code out to 60 developers without letting four teams drift. Shared behaviour is committed to each repository. `CLAUDE.md` holds build commands and the patterns for the mainframe facade. `.claude/settings.json` holds the team's permission rules. `.mcp.json` points at the development policy-search server, with secrets passed as `${ENV_VAR}`. Priya's requirement that nobody can read production secrets on any machine goes into managed settings, deployed centrally with `permissions.deny` and backed by the sandbox enabled in managed settings, because Read deny rules do not stop a subprocess that opens files itself. Those settings outrank CLI flags, project settings and user settings. Org-wide coding standards go in a managed `CLAUDE.md`, because they are guidance, not enforcement. A \"never paste PHI\" line that existed only in `CLAUDE.md` became a hook that fails closed. CI review runs headless with `claude -p` and an explicit tool allowlist. When one team's policy-search tool went missing, you checked the MCP server status first and found a dismissed approval, rather than widening permissions. Success is measured as lead time and change-failure rate against a baseline, not as seats or accepted lines.",
+   "decisions": [
+    "7.1: Team-wide behaviour lives in committed project config (`CLAUDE.md`, `.claude/settings.json`, `.mcp.json` with `${ENV_VAR}` secrets). User-level config never propagates.",
+    "7.1: The requirement 'cannot be disabled on any machine' is met with managed settings and `permissions.deny`. Org-wide guidance goes in managed `CLAUDE.md`. Reach is not the same as non-overridable.",
+    "7.1: Precedence runs managed, then CLI arguments, then local project, then shared project, then user. The CISO's rules therefore sit at the managed level.",
+    "7.2: Anything that must happen every time, such as a PHI scrub, is a fail-closed hook or permission rule, not an advisory `CLAUDE.md` line. CI runs headless with `claude -p` and an explicit allowlist.",
+    "7.2: Enablement is measured by outcomes against a baseline (lead time, change-failure rate), not by seats, utilisation or accepted lines.",
+    "7.3: Observe before changing. Check MCP status, logs and traces (slowest span, cache hit rate) before widening access or failing over. Silent failures include dismissed approvals and misspelled hook matchers."
+   ]
+  }
+ ],
+ "build_project": [
+  {
+   "artefact": "1. Policy-wording RAG pipeline",
+   "domains": "D3 (3.5, 3.6, 3.8), D2 (2.4)",
+   "done_when": "Policy wordings are chunked on clause and section boundaries, and every chunk carries a contextual header (product, edition, jurisdiction, effective dates). Metadata filters for edition in force at date of loss, jurisdiction and product run before search. Queries containing policy or clause identifiers route to lexical search and conceptual queries to semantic search, with hybrid scoring for mixed queries. A re-ranker is enabled only once measurements show high recall and low precision. Answers return citations to the passages they used. Claim status is served only by a live ClaimsCore tool call through the async facade, never from the index. A fixed retrieval eval shows recall and precision per product and jurisdiction slice."
+  },
+  {
+   "artefact": "2. Eval harness with thresholds and an A/B test",
+   "domains": "D4 (4.1, 4.2, 4.3, 4.4), D6 (6.3)",
+   "done_when": "Thresholds for routing accuracy per line of business, grounded-answer rate, citation correctness, p95 latency at peak, cost per claim, PII leakage and injection resistance are written down and signed off by Dana and Luis before any tuning. The eval set comes from real, stratified FNOLs plus adversarial and edge slices, is held out from prompt tuning, is versioned, and has a refresh date. Grading uses exact match for codes, an LLM judge whose agreement with adjuster labels is measured and recorded, and human review for denial rationales. Results are reported per slice and per group, never as an aggregate alone. One A/B test (clause-boundary versus fixed-size chunking) was pre-registered with a single change per arm and a locked metric, sample size and stopping rule, then rolled out under a capped-exposure plan. The harness gates every prompt, model and index change in CI."
+  },
+  {
+   "artefact": "3. End-to-end tracing and monitoring",
+   "domains": "D3 (3.4), D4 (4.6), D7 (7.3)",
+   "done_when": "Every request emits a trace keyed by correlation ID and claim ID, with prompt version, model version, retrieved chunk IDs, tool calls with arguments and results, per-span latency, token counts and cache-hit indicators. Tail-based sampling keeps every error, escalation, override and guardrail block, plus a random baseline. Dashboards and alerts read from the traces and cover p95 at peak, cost per claim, cache hit rate and per-slice quality drift. A runbook shows how to localise a regression to retrieval, prompt, model or integration from traces alone, and a drill has been run against a seeded fault."
+  },
+  {
+   "artefact": "4. Guardrails and HITL design",
+   "domains": "D5 (5.1, 5.2, 5.3), D3 (3.1, 3.2)",
+   "done_when": "Input screening treats claimant text and attachments as data, and the injection test set passes. Output screening blocks PII leakage and unsupported coverage statements. Tool-call authorization runs outside the model, and fails closed on any error. The drafting role has no payment or denial tool, and the assistant acts with the adjuster's permissions. A routing table sends every denial and every above-authority payment to a named human, samples low-risk reversible paths, and routes on calibrated system signals rather than model self-confidence. Fraud signals route to SIU without auto-denial or disclosure. Rubber-stamp monitoring (approval time, unedited-approval rate) is live with an alert threshold. Each guardrail has a test proving it catches the failure it targets."
+  },
+  {
+   "artefact": "5. Compliance map",
+   "domains": "D5 (5.4, 5.5), D3 (3.2)",
+   "done_when": "A table maps every obligation to a named control, an owner and an evidence artefact. It covers GDPR minimisation, purpose limitation, EU residency, data subject rights, no solely automated significant decisions, and the health-data BAA, HIPAA-eligible configuration, audit logging and minimum necessary. Each control is placed at or before the point where data crosses the boundary. The map states explicitly that ZDR, encryption and consent are not substitutes for these controls. Per-group outcome tests for routing and fraud escalation are scheduled with a named owner, and AI-use disclosure to claimants includes a route to a human. Priya has reviewed the map and marked every row as evidenced or as a gap with a date."
+  },
+  {
+   "artefact": "6. ADR set and executive stakeholder brief",
+   "domains": "D6 (6.2, 6.4), D1 (1.1, 1.3, 1.6)",
+   "done_when": "Version-controlled ADRs exist for Bedrock in-account regional inference, MCP for shared policy search, the async mainframe facade and the workflow-versus-agent split. Each records context, options, decision and consequences, including rejected alternatives and the cost of reversal. A one-page brief for Dana and Gerald leads with the decision and business impact, then key risks and mitigations, then the ask. It presents cost per claim against the discovery baseline with segments and method stated. It contains no architecture diagram, no vanity metrics and no deterministic accuracy promise."
+  },
+  {
+   "artefact": "7. SLA and pilot-to-production document",
+   "domains": "D6 (6.1, 6.3, 6.5), D1 (1.2, 1.6)",
+   "done_when": "The SLA states p95 latency at peak with catastrophe surges included, an accuracy floor on the named eval set with an error budget, cost per transaction and a remedy. It contains no averages, no exclusions and no per-request hard maximum. The pilot scope (home claims, one region) has exit criteria agreed before launch. The production readiness checklist covers SLOs, on-call, rollback and the feedback-loop owner. The handoff package goes to a named claims-platform owner and includes the eval suite, runbooks, prompt and Skill inventory and diagnostic access. That owner has signed acceptance."
+  },
+  {
+   "artefact": "8. Team Claude Code configuration",
+   "domains": "D7 (7.1, 7.2, 7.3)",
+   "done_when": "Each repository commits a `CLAUDE.md`, a `.claude/settings.json` with team permission rules, and a `.mcp.json` that references secrets only as `${ENV_VAR}`. Managed settings are deployed centrally with `permissions.deny` for production secrets and prohibited network access, the sandbox enabled in managed settings with filesystem and network restrictions for those paths and hosts, and `permissions.disableBypassPermissionsMode` set to \"disable\", and an attempt to override them from project or user config is shown to fail. Org-wide coding standards live in managed `CLAUDE.md`. The PHI rule is a hook that exits with the blocking code on any internal error as well as on a match, with tests showing it blocks both a PHI payload and a simulated hook failure. CI runs headless with `claude -p`, loads only explicitly passed config, and has an explicit tool allowlist. A troubleshooting page covers MCP status, dismissed approvals and hook-matcher checks. Enablement outcomes (lead time, change-failure rate) are baselined before the rollout and reported after it."
+  }
+ ]
+}

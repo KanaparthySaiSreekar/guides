@@ -1,0 +1,429 @@
+[
+ {
+  "id": "P3-3.4-001",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "scale",
+  "industry": "media",
+  "family": "aggregate-alert-masks-slice",
+  "counterTrap": false,
+  "signals": [
+   "2% of volume",
+   "scores a 1% uniform random sample of summaries from 0 to 100",
+   "normally varies by about one point"
+  ],
+  "stem": "Larchmont Press runs a Claude pipeline that summarises about 1.2 million wire and regional articles a day. For quality monitoring, an LLM judge recalibrated against editor labels last month scores a 1% uniform random sample of summaries from 0 to 100 against their sources, and on-call is paged if the daily mean falls three points; the mean normally varies by about one point. Last week the Lisbon desk, 2% of volume, moved to a new wire feed format, and its editors report garbled summaries in about a third of articles. The daily mean dipped 0.3 points. Model and prompt versions are unchanged.",
+  "ask": "What is the MOST likely reason the monitoring did not flag the regression?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Paging keys on a single mean for the whole feed, and a failure inside a 2% slice moves it less than its daily noise",
+    "correct": true,
+    "trap": null,
+    "why": "Garbled summaries are about 0.7% of the total, so a 0.3-point dip on a 0-100 scale means the judge marks them roughly 45 points down, yet the mean stays inside its one-point swing. Only per-desk or per-feed scoring would surface them."
+   },
+   {
+    "id": "b",
+    "text": "At a 1% uniform sample, too few Lisbon summaries reach the judge each day for the failure to register",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes 1% is too thin, but the stem's figures give about 240 Lisbon summaries judged a day, roughly 80 of them garbled. The evidence is in the sample; the traffic-wide mean averages it away."
+   },
+   {
+    "id": "c",
+    "text": "The three-point threshold is too loose, and paging at one point on the same daily mean would have caught it",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "A one-point threshold sits inside the mean's normal daily swing, so it would page on noise and still miss a 0.3-point dip. Tuning the bar on a traffic-wide mean cannot expose a failure confined to a 2% slice."
+   },
+   {
+    "id": "d",
+    "text": "No input-schema check rejects the new wire format, so malformed feed items become summaries rather than errors",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "A schema check might have stopped the garbling, but the ask is why detection stayed silent. The judge scores summary content rather than pipeline errors, so a missing input check does not explain why its scores raised no page."
+   }
+  ],
+  "explain": "Binding constraint: scale, with the regression confined to 2% of 1.2 million daily articles. A single traffic-wide mean dilutes a slice failure below its normal noise, so sampled scores must be reported and alerted per slice (desk, feed, language).",
+  "rule": "CS-D3-10",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.4-002",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.4",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "regulation",
+  "industry": "energy",
+  "family": "regulated-slice-retention",
+  "counterTrap": false,
+  "signals": [
+   "reconstructable in full on request",
+   "roughly 5% of requests",
+   "arrive days later"
+  ],
+  "stem": "Kestrel Grid's outage-triage agent handles about 1.4 million smart-meter alarms and customer reports a day, and about 2% of requests end in a crew dispatch recommendation to a human controller. Finance has funded full payload capture (prompts, retrieved procedures, tool calls, outputs) for roughly 5% of requests. The state utility commission requires any dispatch recommendation to be reconstructable in full on request. Reliability engineers find quality failures mainly through controller overrides and customer callbacks that arrive days later, and those requests return a normal success status.",
+  "ask": "Which TWO decisions BEST meet the commission's rule and the reliability need within budget? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Capture full payloads for a uniform random 5% of requests and score quality on that sample",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "This spends the whole budget yet reconstructs only about one dispatch in twenty, breaching the commission's rule, and a uniform sample thins out the rare failure slices that late callbacks point to."
+   },
+   {
+    "id": "b",
+    "text": "Require a second controller to sign off every dispatch recommendation before a crew is sent",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Sign-off is a preventive control on the dispatch itself; it leaves no record of what the agent saw and recommended, so it neither satisfies reconstruction nor helps engineers find failures."
+   },
+   {
+    "id": "c",
+    "text": "Stream the captured traces into a reliability dashboard with per-region alert thresholds",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A dashboard only displays the telemetry that is kept; it changes neither which dispatches can be reconstructed nor whether late callbacks can be joined to their requests."
+   },
+   {
+    "id": "d",
+    "text": "Keep a light record of every request: correlation ID, prompt and model versions, tool names, outcome",
+    "correct": true,
+    "trap": null,
+    "why": "Overrides and callbacks surface days later; a cheap correlated record of each request, with its versions and tool names, lets engineers join those signals back and localise failures that returned success."
+   },
+   {
+    "id": "e",
+    "text": "Retain the full payload for each request that ends in a dispatch recommendation",
+    "correct": true,
+    "trap": null,
+    "why": "About 2% of requests carry a dispatch, so full payloads for all of them fit inside the funded 5% and meet the commission's reconstruction rule, which no sample can satisfy."
+   }
+  ],
+  "explain": "Binding constraint: the commission's reconstruction rule, which outranks the capture budget. Keep a light correlated record for every request and spend full-payload capture on the regulated slice, not on a uniform sample.",
+  "rule": "CS-D3-10",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.4-003",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "auditability",
+  "industry": "education",
+  "family": "trace-inputs-not-just-outputs",
+  "counterTrap": false,
+  "signals": [
+   "the logs hold only the student's question, the final explanation and its timing",
+   "all three look normal"
+  ],
+  "stem": "Larkfield University's tutoring assistant answers about 400,000 student questions a week. For each question it retrieves course materials, calls a rubric-lookup tool and drafts an explanation. Statistics instructors report that for two weeks, explanations have cited the wrong week's lecture notes. Monitoring records request counts, error rates and latency per course, and all three look normal. When an instructor forwards a bad answer, the logs hold only the student's question, the final explanation and its timing.",
+  "ask": "Which change BEST equips the team to find out why these answers go wrong?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a thumbs-up rating to each explanation and alert when the university-wide weekly approval rate drops",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Statistics is one course among many, so a university-wide approval rate barely moves, and even a falling rate shows only that answers are bad, not which prompt, passage or tool result made them so."
+   },
+   {
+    "id": "b",
+    "text": "Store each answer with its prompt version, retrieved passage IDs and the rubric-lookup tool's returned results",
+    "correct": true,
+    "trap": null,
+    "why": "The logs keep only the question and the output, so nothing ties a bad answer to its inputs. With prompt version, passage IDs and tool results stored per answer, the team can see whether the wrong week entered through retrieval, the rubric tool or the prompt."
+   },
+   {
+    "id": "c",
+    "text": "Log every full explanation together with the lecture notes it cites, searchable by course and week",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Keeping explanations and their citations records the symptom instructors already see. It still omits the prompt version, the passages retrieval returned and the rubric tool's output, so the team cannot tell where the wrong week entered."
+   },
+   {
+    "id": "d",
+    "text": "Add an output check that blocks explanations citing lecture notes outside the current course week",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Blocking off-week citations may hide the symptom, but the ask is to find out why. A preventive filter leaves no evidence of whether the wrong notes came from retrieval, the rubric tool or the prompt."
+   }
+  ],
+  "explain": "Binding constraint: traceability of each answer to the inputs that produced it. Operational metrics and output logs cannot show where a content failure entered, so record the prompt version, retrieved IDs and tool results with every answer before choosing a fix.",
+  "rule": "CS-D3-09",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.4-004",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "lifecycle-stage",
+  "industry": "airline",
+  "family": "instrument-before-dashboards",
+  "counterTrap": false,
+  "signals": [
+   "no shared request identifier",
+   "nobody can follow one passenger's request across components"
+  ],
+  "stem": "Halcyon Airways' rebooking assistant serves disrupted passengers at two pilot hubs and goes network-wide next quarter, rising from about 20,000 to 600,000 requests a day. It calls a fare-rules retriever, a seat-inventory tool and a booking tool. Each service writes its own free-text log with no shared request identifier, so nobody can follow one passenger's request across components. Operations leadership wants a reliability dashboard, paging alerts and an on-call runbook in place before launch.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Centralise each component's free-text log in one searchable store, aligned by timestamp",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A central store makes the logs searchable, but it assumes timestamps can stand in for a request ID. At 600,000 requests a day, concurrent requests interleave, so one passenger's path across the retriever and both tools still cannot be followed."
+   },
+   {
+    "id": "b",
+    "text": "Agree paging thresholds and an on-call rotation with the operations control centre",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Thresholds and rotations are needed before launch, but they depend on per-request and per-component signals that do not exist yet. Set them once traces produce those measures."
+   },
+   {
+    "id": "c",
+    "text": "Emit structured spans from each component that carry one shared correlation ID per request",
+    "correct": true,
+    "trap": null,
+    "why": "A shared correlation ID and structured spans are the prerequisite: only then can a dashboard, alert or runbook follow one passenger's request across the retriever and both tools."
+   },
+   {
+    "id": "d",
+    "text": "Build the reliability dashboard from the existing service logs so leadership can watch trends",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Free-text logs with no shared ID cannot be joined per request, so the dashboard would show per-service counts but never where a rebooking failed. Dashboards consume telemetry; they are not telemetry."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage, since the telemetry the launch items depend on does not exist yet. Instrument first (structured traces with correlation IDs); dashboards, alerts and runbooks consume that telemetry and come after.",
+  "rule": "CS-D3-09",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.4-005",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.4",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "change-scope",
+  "industry": "media",
+  "family": "trace-fields-localise-regression",
+  "counterTrap": false,
+  "signals": [
+   "replaced the billing article set and changed the account-lookup tool's response format",
+   "Model version and system prompt were not changed"
+  ],
+  "stem": "Sablewave, a video-streaming service, runs a viewer-support agent that retrieves help-centre articles, calls an account-lookup tool and drafts a reply. Since Tuesday's release, first-contact resolution has fallen for billing tickets while playback tickets are unaffected. The release replaced the billing article set and changed the account-lookup tool's response format. Model version and system prompt were not changed. Traces currently hold only the ticket text, the final reply and latency.",
+  "ask": "Which TWO changes would BEST let the team localise the regression? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Stamp model version and prompt version tags on every trace",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Version tags are good hygiene, but model and prompt did not change, so these fields would match before and after the release and cannot separate the two suspects."
+   },
+   {
+    "id": "b",
+    "text": "Add a daily LLM-judge reply-quality score averaged across all ticket types",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Averaged with playback's steady quality, billing's drop is diluted, and a score cannot say which component failed. The team already knows billing regressed; it needs to know where."
+   },
+   {
+    "id": "c",
+    "text": "Add a gate that rejects replies quoting charges missing from the lookup response",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Rejecting unsupported charges may protect viewers, but it prevents rather than localises: it cannot show whether the article swap or the format change caused the drop."
+   },
+   {
+    "id": "d",
+    "text": "Record retrieved article IDs, ranks and scores for each billing request",
+    "correct": true,
+    "trap": null,
+    "why": "The billing article set was replaced; IDs, ranks and scores show whether billing tickets now retrieve the right new articles, confirming or ruling out that half of the release."
+   },
+   {
+    "id": "e",
+    "text": "Record the account-lookup call's arguments and raw response per request",
+    "correct": true,
+    "trap": null,
+    "why": "The lookup's response format changed; the raw arguments and responses show whether the agent still reads balances and charges correctly, confirming or ruling out the other half."
+   }
+  ],
+  "explain": "Binding constraint: what changed, namely the billing articles and the lookup's response format, with model and prompt fixed. Capture the retrieved IDs and the tool payloads so each changed component can be confirmed or ruled out.",
+  "rule": "CS-D3-09",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.4-006",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "healthcare",
+  "family": "alias-masks-version-change",
+  "counterTrap": true,
+  "signals": [
+   "the model name the service sends",
+   "When a version field changes",
+   "repointed the alias to a newer release"
+  ],
+  "stem": "Wrenhaven Health's discharge-summary assistant drafts about 9,000 summaries daily. Policy requires all 40 Wrenhaven clinical services to call one shared model alias so safety fixes reach them together. Each trace records three version fields (prompt version, index snapshot, the model name the service sends), retrieved passage IDs and whether clinicians substantially edited the draft. When a version field changes, an alert compares the edit share a week either side and pages on a two-point rise. On 3 March the platform team repointed the alias to a newer release, and two new wards carrying 5% of drafts went live. Over the next fortnight the edit share rose from 8% to 19%, with no page. Prompt, index and retrieval settings are unchanged.",
+  "ask": "What is the MOST likely reason the regression has gone undetected?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The service follows a shared alias instead of pinning a model snapshot, which would have kept the new release out",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Pinning is a preventive fix that Wrenhaven policy rules out for this service, and it explains why the model changed, not why nobody was told. The ask is about detection, and the edit signal sat in every trace."
+   },
+   {
+    "id": "b",
+    "text": "The trace stores the alias name the service sends, which stayed the same when the alias was repointed",
+    "correct": true,
+    "trap": null,
+    "why": "The alert fires only when a version field changes, but the model field holds the alias name, which did not move on 3 March. Recording the release the alias resolved to would have triggered the comparison."
+   },
+   {
+    "id": "c",
+    "text": "The alert pools every ward into one edit share, which dilutes a failure concentrated on the two new wards",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "Pooling cannot hide an eleven-point rise in the pooled share itself, and wards with 5% of drafts could lift it by under five points even if every draft were edited. The rise is broad, and it clears the bar."
+   },
+   {
+    "id": "d",
+    "text": "A two-point bar on a week-either-side comparison is too coarse for a rise that builds gradually over weeks",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the comparison ran and missed a slow rise. Even if the rise was spread evenly over the fortnight, the week after 3 March averages more than two points above the week before, and no version field changed, so the comparison never started."
+   }
+  ],
+  "explain": "Binding constraint: what changed, as the trace recorded it. The alert keys on version-field changes, but the model field held the alias name, which a repoint leaves unchanged; because the ask is why nobody found out, the detective gap (record the resolved release and alert on it) is the answer, and the alias policy rules out pinning as the fix.",
+  "rule": "CS-D3-09",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

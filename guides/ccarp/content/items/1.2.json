@@ -1,0 +1,575 @@
+[
+ {
+  "id": "P1-1.2-001",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "evidence",
+  "industry": "public-sector",
+  "family": "feedback-capture-corrections",
+  "counterTrap": false,
+  "signals": [
+   "stores only the letter as issued",
+   "drafts need less revision each quarter"
+  ],
+  "stem": "Ashcombe District Council's parking services team uses a Claude assistant to draft responses to penalty charge challenges. Challenges arrive through an online form, the assistant retrieves the relevant traffic order and the council's discretion policy and drafts a response, and an appeals officer revises and issues it from the notice-processing system. That system stores only the letter as issued, so each draft is lost once an officer revises it. The head of service will extend the assistant to two neighbouring councils only if the team shows its drafts need less revision each quarter. The service dashboard tracks challenge volumes and response times.",
+  "ask": "What should the architect add to the design NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a revision-rate panel to the service dashboard that a named service lead reviews each quarter",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "A revision rate needs the drafts the design discards, so the panel would have nothing to plot. Even with data, a quarterly chart shows a trend without turning failures into the prompt or eval changes that reduce revision."
+   },
+   {
+    "id": "b",
+    "text": "Have an LLM judge score each draft against the eval rubric and report the quarterly average to the head of service",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "A judge's average is not the revision measure the head of service set, and with no officer revisions kept there is nothing to calibrate the judge against, so its scores cannot show that drafts need less revision."
+   },
+   {
+    "id": "c",
+    "text": "Store each draft beside the letter as issued and route the differences to a named policy lead for the eval set",
+    "correct": true,
+    "trap": null,
+    "why": "Issued letters are the ground truth the design currently throws away. Keeping each draft beside its issued version yields real correction evidence, and a named owner turning the differences into eval cases is what lets revision fall demonstrably each quarter."
+   },
+   {
+    "id": "d",
+    "text": "Run an A/B test of two drafting prompts across the appeals officers before the extension decision",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "An A/B test needs an outcome measure to compare its arms. With drafts discarded there is no revision to score, so the test belongs after the correction signal exists."
+   }
+  ],
+  "explain": "Binding constraint: the extension needs evidence that drafts need less revision, and the design discards the drafts that evidence depends on. A design is end-to-end only when real corrections flow back to a named owner who feeds them into evals.",
+  "rule": "CS-D1-03",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.2-002",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "education",
+  "family": "async-job-legacy-timeout",
+  "counterTrap": false,
+  "signals": [
+   "abandons any call after five seconds",
+   "25 to 40 seconds at p95",
+   "before the lab closes that afternoon"
+  ],
+  "stem": "Calder Vale University wants Claude to give rubric-aligned feedback on engineering lab reports inside its learning platform. The platform's plugin framework, which the vendor controls, calls external services synchronously, waits for one complete response and abandons any call after five seconds. External services can post results to a submission later through the gradebook API. In the pilot, feedback took 25 to 40 seconds at p95, and the faculty board approved its depth, notably its check that each report's conclusions follow from that report's results. Students revise and resubmit their reports before the lab closes that afternoon.",
+  "ask": "Which integration design BEST fits these constraints?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Send each section of a report to its own parallel call and merge the section feedback within five seconds",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Judging whether conclusions follow from the results needs the whole report in one view, and that judgement is what the board approved. Calls that each see one section cut that context to beat the timeout instead of changing how the call works."
+   },
+   {
+    "id": "b",
+    "text": "Reply at once with a pending notice, then post the finished feedback through the gradebook API",
+    "correct": true,
+    "trap": null,
+    "why": "The work takes far longer than the caller will wait, so the call pattern must change, not the work. A pending notice returns inside five seconds, and the gradebook API delivers the approved feedback within minutes, in time to revise."
+   },
+   {
+    "id": "c",
+    "text": "Ask the platform vendor to raise the plugin timeout to sixty seconds for calls from the feedback service",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This works only if the vendor agrees, and the vendor controls the framework and has granted no change. The design cannot rest on a timeout extension that nobody has approved."
+   },
+   {
+    "id": "d",
+    "text": "Queue each submitted report for a lower-cost overnight batch run and post the feedback to the gradebook API",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Batching suits work nobody is waiting for, but students revise and resubmit that same afternoon. Overnight feedback arrives after the lab has closed, so the cheaper lever misses the window the feedback serves."
+   }
+  ],
+  "explain": "Binding constraint: a synchronous caller that abandons calls after five seconds, against work that takes up to 40 seconds. When the caller's timeout is shorter than the work, change the call pattern to an async job with prompt later delivery, rather than cutting the work's context or batching it past when it is needed.",
+  "rule": "CS-D1-05",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.2-003",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "ownership",
+  "industry": "public-sector",
+  "family": "feedback-loop-named-owner",
+  "counterTrap": false,
+  "signals": [
+   "each say another group is responsible",
+   "no prompt, retrieval or eval change has followed"
+  ],
+  "stem": "Pellham State Employment Service runs a Claude assistant that suggests job matches to employment advisors. Advisors accept or override each suggestion, and every override has been written to the data warehouse with a reason code since launch eight months ago. Override rates for construction and care roles have doubled since spring, yet no prompt, retrieval or eval change has followed. The analytics team, the digital product team and the regional advisor managers each say another group is responsible for acting on the override data. The service director sponsors the assistant.",
+  "ask": "What should the architect do FIRST to close the feedback loop?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Build an automated pipeline that turns overridden matches into regression cases in the eval set",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Turning overrides into eval cases is the right mechanism, but with no accountable owner nobody will triage the failures or approve changes, so it belongs after ownership is settled."
+   },
+   {
+    "id": "b",
+    "text": "Agree with the service director which team owns the override signal and what a rising override rate triggers",
+    "correct": true,
+    "trap": null,
+    "why": "The signal already exists; what is missing is an owner who acts on it. Until one team is accountable for the override rate and its triggers, any pipeline or dashboard feeds a loop nobody closes."
+   },
+   {
+    "id": "c",
+    "text": "Publish an override-rate dashboard by occupation and region for the three groups to review each week",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "A dashboard consumes the signal but does not close the loop. Showing the same rising rate to three groups that each disclaim responsibility repeats the current failure."
+   },
+   {
+    "id": "d",
+    "text": "Re-index the vacancy listings every hour so suggestions reflect the openings that are still available",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "Nothing in the stem ties overrides to filled vacancies, so this guesses at a cause. Vacancy status is also live state that belongs in a system-of-record lookup, not a faster index."
+   }
+  ],
+  "explain": "Binding constraint: nobody owns the feedback signal, so nobody acts on it. A loop is closed only when outcomes reach a named owner with agreed actions, so ownership comes before pipelines or dashboards.",
+  "rule": "CS-D1-03",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-02",
+   "TIP-EL-13"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.2-004",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "airline",
+  "family": "live-inventory-under-fee-budget",
+  "counterTrap": false,
+  "signals": [
+   "must be bookable at the moment it is shown",
+   "each live availability query incurs a distribution fee"
+  ],
+  "stem": "Tern Atlantic Airways' disruption assistant offers rebooking options to passengers after cancellations. It reads schedules and seat availability from a reservation-system snapshot refreshed every 30 minutes, because each live availability query incurs a distribution fee and finance has set a fee budget per disruption event. During a recent storm, one offer in five failed at confirmation because the seat had already been sold. The operations director has now ruled that any option shown to a passenger must be bookable at the moment it is shown.",
+  "ask": "Which design BEST satisfies the ruling while respecting the fee budget?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Shortlist flights from the snapshot, then query live availability for the few options about to be shown",
+    "correct": true,
+    "trap": null,
+    "why": "Seat availability changes with every sale, so what is offered must come from the system of record at request time. Limiting live queries to the handful of options being shown meets the ruling at a fraction of the fees."
+   },
+   {
+    "id": "b",
+    "text": "Refresh the availability snapshot every two minutes for as long as a disruption event is declared",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "A faster snapshot is still a copy of live state. Seats sell within minutes in a storm, so some offers stay unbookable, and full refreshes that often may cost more than targeted lookups."
+   },
+   {
+    "id": "c",
+    "text": "Negotiate a flat-fee availability feed with the distribution provider so every lookup can be live",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This removes the tension only if the provider agrees to a flat fee, which nothing in the stem grants. The design would rest on a commercial change that may never happen."
+   },
+   {
+    "id": "d",
+    "text": "Show options from the snapshot and check each seat against live availability when the passenger accepts it",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "The live check runs after a possibly sold seat has already been shown, which is the failure the ruling forbids. The control sits on the wrong side of the passenger."
+   }
+  ],
+  "explain": "Binding constraint: the ruling that every option must be bookable when shown, which gates the fee budget. Live state comes from the system of record at request time, and the budget is respected by limiting which lookups are live, not by staying on a snapshot.",
+  "rule": "CS-D1-04",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-EL-08"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.2-005",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "latency-sla",
+  "industry": "public-sector",
+  "family": "sync-fast-path-async-slow-path",
+  "counterTrap": false,
+  "signals": [
+   "drops any reply that takes over three seconds",
+   "a status answer took under two seconds end to end",
+   "a credit verification alone took 30 to 90 seconds"
+  ],
+  "stem": "Ridgeford State Nursing Board is adding an assistant to its licensee portal. Licensees mostly ask two things: what is my licence status, and can you verify my continuing-education credits? The portal's chat window waits synchronously for one complete reply and drops any reply that takes over three seconds. The assistant reaches the licensing system through its service API; in testing, a status answer took under two seconds end to end, while a credit verification alone took 30 to 90 seconds. The portal can post messages to a licensee's account inbox. Board actions change licence statuses several times a day, and nurses use the answer to decide whether they may work their next shift.",
+  "ask": "Which TWO design choices BEST handle the three-second limit for these questions? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Answer status questions with a request-time call to the licensing system's service API",
+    "correct": true,
+    "trap": null,
+    "why": "Status changes during the day and nurses act on it, so it must come from the system of record at request time. A status answer takes under two seconds end to end, so a synchronous call is both current and inside the limit."
+   },
+   {
+    "id": "b",
+    "text": "Copy licence records into the assistant's index nightly so status answers skip the licensing system",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "A nightly copy removes the wait but can serve yesterday's status to a nurse deciding whether to work, after board actions that change statuses several times a day. That is live state an index should not hold."
+   },
+   {
+    "id": "c",
+    "text": "Stream progress text into the chat window while each credit verification runs to completion",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Streaming helps perceived wait only where partial output is shown. This chat window waits for one complete reply, so a 30 to 90 second verification is still dropped at three seconds."
+   },
+   {
+    "id": "d",
+    "text": "Run each credit verification as a background job and post the result to the licensee's account inbox",
+    "correct": true,
+    "trap": null,
+    "why": "Verification runs ten to thirty times longer than the chat window waits. Replying at once that it has started, then posting the result to the inbox, changes how the call works instead of the work."
+   },
+   {
+    "id": "e",
+    "text": "Alert the portal's operations team whenever the portal drops a reply that exceeds three seconds",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Alerts tell operations about dropped replies after the fact. They do not make verification fit the window or change what licensees receive, so the outcome is unchanged."
+   }
+  ],
+  "explain": "Binding constraint: a chat window that waits synchronously and drops any reply after three seconds. Keep fast live lookups synchronous at request time, and move only the work that exceeds the caller's timeout to a background job with later delivery.",
+  "rule": "CS-D1-05",
+  "ladder": null,
+  "tips": [
+   "TIP-MR-02",
+   "TIP-EL-08"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.2-006",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "ownership",
+  "industry": "insurance",
+  "family": "system-of-record-access-first",
+  "counterTrap": false,
+  "signals": [
+   "decides which systems may call its API",
+   "the only feed in Thornbury's contract with Pennant"
+  ],
+  "stem": "Thornbury Assurance wants its app assistant to answer policyholders' questions about the progress of their home insurance claims. Claim stages, payment dates and outstanding documents live in a claims platform run by Pennant Claims Services, a third-party administrator that owns the platform and decides which systems may call its API. Today the assistant answers from a nightly extract, the only feed in Thornbury's contract with Pennant, and complaints show customers being told a payment was pending after it had been made. The architect proposes calling Pennant's claims API at request time.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Build the claim-status tool against Pennant's published API specification and test it on sample claims",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Building the tool is the right step once access is agreed, but Pennant decides which systems may call its API. Building and testing now spends effort on an integration its owner has not approved and may constrain."
+   },
+   {
+    "id": "b",
+    "text": "Move the claims extract from nightly to hourly so that payments reach the assistant within the hour",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "An hourly copy still lags payments, so customers can still be told a paid claim is pending. Payment status is live state that belongs in a request-time call, and a new feed would need Pennant's agreement as well."
+   },
+   {
+    "id": "c",
+    "text": "Give Pennant a go-live date for request-time calls and share the assistant's expected peak call volumes",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Announcing a date decides on Pennant's behalf. Pennant owns the platform and chooses which systems call its API, so volumes and timing are inputs to an agreement with it, not a notice it receives."
+   },
+   {
+    "id": "d",
+    "text": "Agree with Pennant's integration owner whether, and on what terms, the assistant may call the claims API",
+    "correct": true,
+    "trap": null,
+    "why": "Pennant, not Thornbury, controls access to the system of record, and the contract covers only the extract. Agreeing access, call volumes and response times with its integration owner unblocks the request-time design that everything else depends on."
+   }
+  ],
+  "explain": "Binding constraint: the system of record belongs to a third party that decides who may call it. Live claim status belongs in a request-time call, but the first step is agreeing that access with the owner before building, testing or scheduling it.",
+  "rule": "CS-D1-04",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-02",
+   "TIP-EL-13"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.2-007",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.2",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "evidence",
+  "industry": "e-commerce",
+  "family": "implicit-outcome-signals",
+  "counterTrap": false,
+  "signals": [
+   "fewer than one percent of chats",
+   "most ratings come from customers already complaining about delivery",
+   "trustworthy evidence of which answers are wrong"
+  ],
+  "stem": "Brindle & Co., an online homewares retailer, runs a Claude shopping assistant that answers product questions about dimensions, materials and compatibility. Customers rate answers with a thumbs control on fewer than one percent of chats, and most ratings come from customers already complaining about delivery. Returns are logged against each order with reason codes such as 'not as described'. The merchandising director wants answer quality to improve every quarter and asks the architect for a feedback stage that yields trustworthy evidence of which answers are wrong.",
+  "ask": "Which TWO additions BEST give the feedback stage that evidence? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Join each chat to its later orders and returns so 'not as described' returns flag the answers that preceded them",
+    "correct": true,
+    "trap": null,
+    "why": "Returns coded 'not as described' are real outcomes that arrive whether or not customers rate, so linking them to the preceding answers exposes wrong dimensions or materials at volume without the complaint bias."
+   },
+   {
+    "id": "b",
+    "text": "Have a named catalogue owner review a sample stratified by product category and add failures to the eval set",
+    "correct": true,
+    "trap": null,
+    "why": "Stratified human review gives an unbiased view across categories, and a named owner turning failures into eval cases is what lets quality improve each quarter rather than merely be observed."
+   },
+   {
+    "id": "c",
+    "text": "Stream thumbs ratings to a live dashboard that the merchandising team reviews in its weekly trading meeting",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "A faster view of the same sparse, complaint-skewed ratings still measures delivery anger, not answer accuracy. A dashboard consumes a signal; it cannot repair a biased one."
+   },
+   {
+    "id": "d",
+    "text": "Offer a discount code to customers who rate each answer, so that rating volume becomes large enough to trust",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Incentives raise volume but assume rewarded raters judge answers carefully and represent typical customers, which the stem does not grant. Volume alone does not make a signal trustworthy."
+   },
+   {
+    "id": "e",
+    "text": "Tag each answer with its prompt and model version so that any rating can be traced to its configuration",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Version tags make later attribution easier, but they add no evidence about which answers were wrong. The signal they would be attached to is still sparse and biased."
+   }
+  ],
+  "explain": "Binding constraint: the feedback stage must yield trustworthy evidence, and explicit ratings are sparse and complaint-biased. Close the loop with real outcomes from the order system plus stratified review by a named owner who feeds the eval set.",
+  "rule": "CS-D1-03",
+  "ladder": "hitl-routing",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.2-008",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "education",
+  "family": "reference-refresh-cadence-counter",
+  "counterTrap": true,
+  "signals": [
+   "rebuilt at the start of each term, most recently in January",
+   "publishes amended regulations on the first of each month",
+   "carrying a January effective date"
+  ],
+  "stem": "Whitlow College's student-services assistant answers two kinds of question. Regulation questions, such as resit limits and extension rules, are answered from an index of the academic regulations that is rebuilt at the start of each term, most recently in January. Questions such as how many resits a student has used are answered by a request-time call to the student record system. The registry now publishes amended regulations on the first of each month. Since the March amendment to the resit rules, advisors report wrong answers on whether students may resit again. Traces show retrieved resit passages carrying a January effective date, and the resit counts in those answers are correct. The model and prompt are unchanged.",
+  "ask": "What is the MOST likely cause of the wrong answers?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The index refresh follows the term calendar, so it still holds the resit rules that the March amendment replaced",
+    "correct": true,
+    "trap": null,
+    "why": "Regulations are documents published on a monthly schedule, and the traces show January passages answering questions after the March amendment. The index was built before that amendment existed, so the measured lag is the cause and the refresh should follow publication."
+   },
+   {
+    "id": "b",
+    "text": "Regulations sit in an index when they should come from a request-time call, as the resit counts already do",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "The live-state rule fits data that changes with each transaction, such as resit counts. Regulations change on a published monthly schedule, so they belong in the index; the fault is when the index is refreshed, not where regulations live."
+   },
+   {
+    "id": "c",
+    "text": "Retrieval returns too few passages, so the amended resit rules rank just below the top-k cut-off",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Widening retrieval cannot surface text the index does not hold. The index was last built in January, before the March amendment was published, so the amended rules were never there to rank."
+   },
+   {
+    "id": "d",
+    "text": "The model is applying resit rules from its training data ahead of the regulation passages it retrieves",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The model and prompt are unchanged, and the errors began with the March amendment. The traces show January passages being retrieved, so the model is faithfully applying the outdated rules it was given."
+   }
+  ],
+  "explain": "Binding constraint: what changed is the monthly amendment, while the model, prompt and student-record path stayed sound. Regulations are reference documents published on a schedule, so the live-state rule does not apply: index lag is the cause, and the refresh should follow publication rather than the term calendar.",
+  "rule": "CS-D1-04",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

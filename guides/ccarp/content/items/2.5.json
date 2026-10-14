@@ -1,0 +1,511 @@
+[
+ {
+  "id": "P2-2.5-001",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "banking",
+  "family": "shared-prefix-before-tenant-data",
+  "counterTrap": false,
+  "signals": [
+   "Each prompt opens with the client's credit-file summary",
+   "complete current manual in every request",
+   "only a few requests a day"
+  ],
+  "stem": "Dunmore Savings Bank's relationship-manager assistant answers lending questions about roughly 400 business clients. Each prompt opens with the client's credit-file summary, then the bank's 25,000-token lending policy manual, then the manager's question. Compliance requires the complete current manual in every request so that answers trace to approved text. Prompt caching is enabled, but the hit rate stays low: each client generates only a few requests a day, although total volume across clients is steady. The manual changes quarterly.",
+  "ask": "Which change BEST reduces input cost within the compliance requirement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move the lending manual to the start of the prompt as the cached prefix, with the client's file after it",
+    "correct": true,
+    "trap": null,
+    "why": "The manual is identical for every client but sits behind client-specific text, so each client starts its own prefix. Putting it first lets all traffic share one cached prefix while the full manual stays in every request."
+   },
+   {
+    "id": "b",
+    "text": "Extend the cache lifetime so each client's cached prompt survives the gap between that client's requests",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "A longer lifetime helps only when a client's requests fall inside it, and hundreds of client-specific prefixes each still carry their own copy of the manual. Reordering lets every request share one."
+   },
+   {
+    "id": "c",
+    "text": "Replace the manual with a compliance-approved digest of the lending rules that managers consult most often",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "A digest breaks the requirement that the complete current manual be present in every request, so it is ruled out before any cost saving is weighed."
+   },
+   {
+    "id": "d",
+    "text": "Serve the manual through an MCP server so that each request pulls only the chapters relevant to the question",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Pulling selected chapters also drops the complete manual that compliance requires, and it adds a runtime service for static text that fetches nothing live."
+   }
+  ],
+  "explain": "Binding constraint: regulation requires the complete manual in every request, which rules out digests and partial retrieval. With the content fixed, order it stable-first so the shared manual becomes one cached prefix and client-specific data follows it.",
+  "rule": "CS-D2-10",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-05"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.5-002",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "public-sector",
+  "family": "skill-for-rarely-needed-procedure",
+  "counterTrap": false,
+  "signals": [
+   "about one filing in fifty",
+   "draws on no external system",
+   "miss rules stated late in the long prompt"
+  ],
+  "stem": "Pentland Courts Service gives its civil-registry clerks an assistant that checks incoming filings against court rules. Its system prompt holds the general filing rules plus a 20,000-token procedure for restriction-order filings, which make up about one filing in fifty. The registry revises that procedure twice a year, and it draws on no external system. Clerks report that checks on routine filings now miss rules stated late in the long prompt. The registry wants the full procedure available whenever a restricted filing arrives.",
+  "ask": "Which change BEST fixes the missed rules while keeping the procedure available?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Cache the system prompt, procedure included, so the long prefix is cheaper and quicker to process",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Caching lowers the price and latency of resending the prefix but leaves every token in the window, so the long procedure still crowds the general rules on routine checks."
+   },
+   {
+    "id": "b",
+    "text": "Package the restriction-order procedure as a Skill that loads its full text when a filing is restricted",
+    "correct": true,
+    "trap": null,
+    "why": "Routine filings no longer carry the procedure, so the general rules compete with far less text. The Skill's short description stays loaded and the full procedure arrives when a restricted filing needs it."
+   },
+   {
+    "id": "c",
+    "text": "Condense the procedure into a one-page checklist in the prompt and point clerks to the full text",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "A checklist drops detail the registry wants available for restricted filings and sends clerks back to manual lookup for exactly the cases the assistant should handle."
+   },
+   {
+    "id": "d",
+    "text": "Stand up an MCP server that returns the procedure text to the assistant whenever the model asks for it mid-check",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Loading on request would work, but MCP suits live capabilities that several clients share. Static know-how used by one assistant fits a Skill without running and securing a separate server."
+   }
+  ],
+  "explain": "Binding constraint: data shape, because only one filing in fifty needs the procedure and it fetches nothing live. Rarely needed know-how moves out of always-on context into a Skill that loads on demand; caching changes price, not window occupancy.",
+  "rule": "CS-D2-12",
+  "ladder": "integration-mechanism",
+  "tips": [
+   "TIP-EL-07"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.5-003",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formB",
+  "type": "multi",
+  "select": 3,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "change-scope",
+  "industry": "e-commerce",
+  "family": "volatile-values-before-breakpoint",
+  "counterTrap": false,
+  "signals": [
+   "the single cache breakpoint still sits at the end of the system prompt",
+   "tool definitions are built from an unordered set",
+   "appended to the end of each user message"
+  ],
+  "stem": "Larkspur Home's shopping assistant ran at a high prompt-cache hit rate until Tuesday's release; since then hits are near zero and input cost has tripled. Model, traffic, catalogue policy text and cache settings are unchanged, and the single cache breakpoint still sits at the end of the system prompt. The release made four prompt changes: the system prompt now opens with the shopper's first name and local time; tool definitions are built from an unordered set; a trace ID was added to the system prompt; and an hourly promotions block was appended to the end of each user message.",
+  "ask": "Which THREE changes BEST restore the cache hit rate? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Refresh the hourly promotions block once a day so the user message changes less often",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "The promotions block sits at the end of the user message, after the breakpoint, so how often it changes has no effect on whether the cached prefix matches."
+   },
+   {
+    "id": "b",
+    "text": "Move the shopper's first name and local time out of the system prompt and into the user message",
+    "correct": true,
+    "trap": null,
+    "why": "A name and local time at the very start of the system prompt make each prefix unique, so nothing after them can match. In the user message they sit after the breakpoint."
+   },
+   {
+    "id": "c",
+    "text": "Switch to the longest cache lifetime offered so cached prefixes survive between requests",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Traffic and settings are unchanged, so entries are not expiring; they never match because each prefix is unique. A longer lifetime just keeps unmatchable entries for longer."
+   },
+   {
+    "id": "d",
+    "text": "Emit the tool definitions in one fixed, sorted order when each request is assembled",
+    "correct": true,
+    "trap": null,
+    "why": "Tool definitions are part of the cached prefix, so a different order on each request is a different prefix. A fixed sorted order makes them byte-identical again."
+   },
+   {
+    "id": "e",
+    "text": "Carry the trace ID in request metadata and logs instead of in the system prompt",
+    "correct": true,
+    "trap": null,
+    "why": "A per-request trace ID inside the system prompt changes the prefix on every call. Tracing works as well from request metadata and logs, which leave the prompt untouched."
+   },
+   {
+    "id": "f",
+    "text": "Trim the catalogue policy text so each cache miss costs less to process at the new volume",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "The policy text did not change and is not the cause. Trimming it cuts required content to make each miss cheaper while the misses continue."
+   }
+  ],
+  "explain": "Binding constraint: what changed, since model, traffic, policy text and cache settings did not. Any per-request value or reordering before the breakpoint invalidates the prefix, so move volatile values after it or out of the prompt and make tool order deterministic.",
+  "rule": "CS-D2-11",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.5-004",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "public-sector",
+  "family": "trim-proven-dead-context-before-caching",
+  "counterTrap": true,
+  "signals": [
+   "scored the same with the appendix removed",
+   "can no longer claim or appeal under those schemes",
+   "plans to add prompt caching and then a tier review"
+  ],
+  "stem": "Harrowgate County Council's council-tax helpline assistant sends a 30,000-token system prompt with every call: 18,000 tokens of current guidance plus a 12,000-token appendix on discount schemes abolished three years ago, kept 'for reference'. The finance director wants a lower cost per call, and the team plans to add prompt caching and then a tier review. An evaluation on 900 recent helpline questions scored the same with the appendix removed, and the policy owner confirms residents can no longer claim or appeal under those schemes.",
+  "ask": "What should the team do FIRST to lower the cost per call?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Enable prompt caching on the full 30,000-token system prompt as it stands, ahead of each resident's question",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Caching is the planned next step, but done now it builds the cached prefix around 12,000 tokens the evidence shows are dead, which every cache write and read still bills, and the prefix changes again once they are cut. Remove proven waste first, then cache what ships."
+   },
+   {
+    "id": "b",
+    "text": "Test a smaller model tier on the 900 questions and route routine calls to it if it clears the agreed bar",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A measured smaller tier is a valid later lever, but the tier test should run on the prompt that will ship, after the content nobody needs has gone and caching is in place."
+   },
+   {
+    "id": "c",
+    "text": "Remove the abolished-discount appendix from the system prompt that the helpline sends on each call",
+    "correct": true,
+    "trap": null,
+    "why": "The evaluation on 900 questions and the policy owner both show the appendix is unused, so cutting it is safe here. Doing it first settles the prompt that caching and the tier test will then be built and measured on."
+   },
+   {
+    "id": "d",
+    "text": "Move the appendix into a Skill that loads only when a resident asks about those schemes",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "The option assumes some resident still needs the text, but the policy owner confirms no one can claim or appeal under those schemes, so on-demand loading keeps dead content maintained for no use."
+   }
+  ],
+  "explain": "Binding constraint: evidence, since the evaluation and the policy owner confirm the appendix is unused. Cutting context is right once it is shown to be unnecessary, so remove the proven waste first and then cache the prompt that ships.",
+  "rule": "CS-D2-10",
+  "ladder": "cost-latency-lever",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.5-005",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "ownership",
+  "industry": "insurance",
+  "family": "pinned-versioned-skill-governance",
+  "counterTrap": false,
+  "signals": [
+   "each pastes its own copy",
+   "needs no lookups",
+   "no revision may reach their product until its own regression evals pass"
+  ],
+  "stem": "Corrigan Mutual runs four Claude-based claims products (motor, home, travel and pet), and each pastes its own copy of the special investigations unit's fraud-indicator procedure into its system prompt. The copies have drifted: an audit found the home product missing two indicators added last year. The unit revises the procedure roughly monthly; it is a written list of indicators and needs no lookups. After an analyst edited the motor copy directly and broke a downstream referral parser, the product owners ruled that no revision may reach their product until its own regression evals pass.",
+  "ask": "Which TWO changes BEST give the products one maintained procedure within the product owners' rule? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Serve the procedure from an MCP server that returns the unit's latest eval-passed text on each request",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "One server would end the drift, but serving the unit's latest text on every request cannot honour a product's pinned version, so revisions arrive before that product's evals run. The procedure also fetches nothing live that would justify a server."
+   },
+   {
+    "id": "b",
+    "text": "Cache each product's copy of the procedure in its stable prefix to cut the cost of resending it",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Caching lowers the cost of resending each copy but leaves four drifting copies in place, so the missing indicators and untested edits remain."
+   },
+   {
+    "id": "c",
+    "text": "Publish the procedure as one versioned Skill owned by the unit, with unit evals run on each revision",
+    "correct": true,
+    "trap": null,
+    "why": "One owned, versioned source ends the drift between four hand-kept copies, and the unit's evals catch a bad revision before any product is offered it. Static know-how that needs no lookups fits a Skill rather than a runtime server."
+   },
+   {
+    "id": "d",
+    "text": "Have each product pin a version of the shared procedure and adopt a newer one after its regression evals pass",
+    "correct": true,
+    "trap": null,
+    "why": "Pinning lets each product owner decide when a revision arrives, which is the rule they set. Without it a shared source would push every edit to all four products at once."
+   },
+   {
+    "id": "e",
+    "text": "Record the procedure version applied in each claim's referral log so that later audits can trace it",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Logging the version helps later audits, but it neither removes the drift between copies nor stops an untested revision reaching a product."
+   }
+  ],
+  "explain": "Binding constraint: the product owners decide when a revision reaches their product. Reusable know-how that needs no lookups becomes one owned, eval-gated Skill, and each consumer pins a version and upgrades after its own evals pass; MCP is for capabilities that reach another system at runtime.",
+  "rule": "CS-D2-12",
+  "ladder": "integration-mechanism",
+  "tips": [
+   "TIP-MR-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.5-006",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "cost",
+  "industry": "public-sector",
+  "family": "caching-output-dominated-cost",
+  "counterTrap": false,
+  "signals": [
+   "returns a letter of 2,000 to 3,000 tokens",
+   "94% of requests now hit the cache",
+   "Request volume, the model and the policy text have not changed"
+  ],
+  "stem": "Kelsall Housing Authority's repairs assistant drafts decision letters to tenants. Each request sends a 2,500-token repairs-policy prompt, then the tenant's record and request (a few hundred tokens), and returns a letter of 2,000 to 3,000 tokens. Prompt caching went live six weeks ago: 94% of requests now hit the cache, and time to first token fell as expected. Monthly spend, however, dropped only slightly. Request volume, the model and the policy text have not changed.",
+  "ask": "What is the MOST likely reason spend fell so little?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Cached prefixes are expiring between requests, so most calls pay again to write the cache",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "A 94% hit rate means entries are being read, not rewritten. Expiry would show up as a low hit rate, and a longer lifetime would not change spend here."
+   },
+   {
+    "id": "b",
+    "text": "The tenant records appended after the breakpoint are billed at the full input rate on each call",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "The records are billed at the full input rate, but at a few hundred tokens against a 2,000 to 3,000-token letter priced above input they are a small share of spend. The option assumes an uncached volume the stem does not give."
+   },
+   {
+    "id": "c",
+    "text": "Most of the spend is on the generated letters, which prompt caching does not discount",
+    "correct": true,
+    "trap": null,
+    "why": "Letters of 2,000 to 3,000 tokens rival the whole prompt, and output tokens are priced above input. Caching cannot touch that term, so the next lever is shorter or templated letters."
+   },
+   {
+    "id": "d",
+    "text": "The cached prompt still holds policy sections the letters do not use, and each cached read bills them",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Cached reads cost far less than fresh input, so unused sections in a 2,500-token prefix cannot explain spend that barely moved. Cutting them saves little and risks dropping needed policy."
+   }
+  ],
+  "explain": "Binding constraint: cost, read through its dominant term. Caching discounts the reused input prefix but not output, so when generated letters dominate spend a high hit rate barely moves the bill.",
+  "rule": "CS-D2-10",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-09"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.5-007",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "pharma",
+  "family": "session-document-prefix-caching",
+  "counterTrap": false,
+  "signals": [
+   "20 to 40 follow-up questions within the hour",
+   "retrieved only the best-matching sections failed it",
+   "Answers already stream"
+  ],
+  "stem": "Quenby Biologics' drug-safety physicians use an internal assistant to interrogate clinical study reports. A physician uploads one 180-page report, then asks 20 to 40 follow-up questions within the hour; each question resends a short fixed instruction block, the full report and the new question. Answers already stream and pass the accuracy bar, but a pilot that retrieved only the best-matching sections failed it, because findings cross-reference tables in distant appendices. Physicians complain about the pause before answers begin, and per-question cost is high.",
+  "ask": "Which change BEST cuts the pause and the cost while holding the accuracy bar?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Generate a structured summary of each report at upload and answer the follow-up questions from it",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "A summary compresses away the detailed appendix tables that findings cross-reference, so answers drawn from it would fall below the accuracy bar that the full report currently meets."
+   },
+   {
+    "id": "b",
+    "text": "Keep the instructions and report ahead of each question and cache them as the prefix for follow-ups",
+    "correct": true,
+    "trap": null,
+    "why": "The instructions and report are identical across a session's 20 to 40 questions, so caching them lets each follow-up reuse the prefix, cutting time to first token and input cost while the model still sees the whole report."
+   },
+   {
+    "id": "c",
+    "text": "Register each uploaded report as an MCP resource so follow-up questions refer to it instead of resending it",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Resource content still enters the context on every call, so the model reads the whole report each time and neither the pause nor the input cost falls. It also adds a server for one internal assistant reading uploaded files."
+   },
+   {
+    "id": "d",
+    "text": "Send follow-up questions to a cheaper, faster model tier to shorten the pause and lower per-question cost",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Switching tier without measuring it against the accuracy bar risks failing it, and the dominant cost is the resent report, which a cheaper tier still processes in full."
+   }
+  ],
+  "explain": "Binding constraint: the accuracy floor needs the whole report on every question. Within a session the instructions and report repeat unchanged and follow-ups arrive minutes apart, so caching them as the prefix cuts time to first token and input cost without removing content.",
+  "rule": "CS-D2-10",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-EL-05"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

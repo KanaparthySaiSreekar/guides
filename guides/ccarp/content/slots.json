@@ -1,0 +1,5636 @@
+[
+ {
+  "id": "P1-1.1-001",
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "a",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-SKIPDISC",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P1-1.1-002",
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "banking",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGENTIC",
+   "T-BIGMODEL",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "P1-1.1-003",
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "manufacturing",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-OVERPROMISE",
+   "T-SKIPDISC"
+  ]
+ },
+ {
+  "id": "P1-1.1-004",
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "e-commerce",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-SKIPDISC",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P1-1.1-005",
+  "domain": 1,
+  "obj": "1.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "manufacturing",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-SKIPDISC",
+   "T-AGENTIC",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P1-1.1-006",
+  "domain": 1,
+  "obj": "1.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "industry": "retail",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-AGENTIC",
+   "T-BIGMODEL",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "P1-1.1-007",
+  "domain": 1,
+  "obj": "1.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "energy",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-OVERPROMISE",
+   "T-SKIPDISC"
+  ]
+ },
+ {
+  "id": "P1-1.2-001",
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "public-sector",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LIVESTATE",
+   "T-BOUNDARY",
+   "T-OBSERVE"
+  ]
+ },
+ {
+  "id": "P1-1.2-002",
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "education",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BOUNDARY",
+   "T-OBSERVE",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P1-1.2-003",
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "public-sector",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OBSERVE",
+   "T-ASSUME",
+   "T-LIVESTATE"
+  ]
+ },
+ {
+  "id": "P1-1.2-004",
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "airline",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ASSUME",
+   "T-LIVESTATE",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "P1-1.2-005",
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "public-sector",
+  "key": [
+   "a",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LIVESTATE",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "P1-1.2-006",
+  "domain": 1,
+  "obj": "1.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "insurance",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BOUNDARY",
+   "T-OBSERVE",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P1-1.2-007",
+  "domain": 1,
+  "obj": "1.2",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "e-commerce",
+  "key": [
+   "a",
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-OBSERVE",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P1-1.2-008",
+  "domain": 1,
+  "obj": "1.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "education",
+  "key": [
+   "a"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-ASSUME",
+   "T-LIVESTATE",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "P1-1.3-001",
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "energy",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGENTIC",
+   "T-ENFORCE",
+   "T-ORGCHART"
+  ]
+ },
+ {
+  "id": "P1-1.3-002",
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "healthcare",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ENFORCE",
+   "T-ORGCHART",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P1-1.3-003",
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "healthcare",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-ORGCHART",
+   "T-AGENTIC",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P1-1.3-004",
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "banking",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGENTIC",
+   "T-ENFORCE",
+   "T-ORGCHART"
+  ]
+ },
+ {
+  "id": "P1-1.3-005",
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "logistics",
+  "key": [
+   "c",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-ENFORCE",
+   "T-ORGCHART"
+  ]
+ },
+ {
+  "id": "P1-1.3-006",
+  "domain": 1,
+  "obj": "1.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "next-step",
+  "industry": "retail",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ORGCHART",
+   "T-AGENTIC",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P1-1.3-007",
+  "domain": 1,
+  "obj": "1.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "least",
+  "industry": "public-sector",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGENTIC",
+   "T-ENFORCE",
+   "T-ORGCHART"
+  ]
+ },
+ {
+  "id": "P1-1.3-008",
+  "domain": 1,
+  "obj": "1.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "pharma",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ENFORCE",
+   "T-ORGCHART",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P1-1.4-001",
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "insurance",
+  "key": [
+   "a",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-ORGCHART",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P1-1.4-002",
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "retail",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-AGENTIC",
+   "T-MEGATOOL",
+   "T-PROTOCOL"
+  ]
+ },
+ {
+  "id": "P1-1.4-003",
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "legal",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-MEGATOOL",
+   "T-PROTOCOL",
+   "T-ORGCHART"
+  ]
+ },
+ {
+  "id": "P1-1.4-004",
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "energy",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-PROTOCOL",
+   "T-ORGCHART",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P1-1.4-005",
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "e-commerce",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ORGCHART",
+   "T-AGENTIC",
+   "T-MEGATOOL"
+  ]
+ },
+ {
+  "id": "P1-1.4-006",
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "banking",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGENTIC",
+   "T-MEGATOOL",
+   "T-PROTOCOL"
+  ]
+ },
+ {
+  "id": "P1-1.4-007",
+  "domain": 1,
+  "obj": "1.4",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "saas",
+  "key": [
+   "a",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-MEGATOOL",
+   "T-PROTOCOL"
+  ]
+ },
+ {
+  "id": "P1-1.4-008",
+  "domain": 1,
+  "obj": "1.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "telecom",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-PROTOCOL",
+   "T-ORGCHART",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P1-1.5-001",
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "saas",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGENTIC",
+   "T-STUFF",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P1-1.5-002",
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formB",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "education",
+  "key": [
+   "a",
+   "c",
+   "f"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-STUFF",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P1-1.5-003",
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "retail",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ASSUME",
+   "T-LATER",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P1-1.5-004",
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "airline",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-LATER",
+   "T-AGENTIC",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P1-1.5-005",
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "media",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGENTIC",
+   "T-STUFF",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P1-1.5-006",
+  "domain": 1,
+  "obj": "1.5",
+  "set": "pool",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "logistics",
+  "key": [
+   "a",
+   "c",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-STUFF",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P1-1.5-007",
+  "domain": 1,
+  "obj": "1.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "manufacturing",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ASSUME",
+   "T-LATER",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P1-1.6-001",
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "media",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-AVGSLA",
+   "T-AUDIENCE"
+  ]
+ },
+ {
+  "id": "P1-1.6-002",
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "e-commerce",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AVGSLA",
+   "T-AUDIENCE",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P1-1.6-003",
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "insurance",
+  "key": [
+   "b",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-AUDIENCE",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P1-1.6-004",
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "industry": "education",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-VIBES",
+   "T-OVERPROMISE",
+   "T-AVGSLA"
+  ]
+ },
+ {
+  "id": "P1-1.6-005",
+  "domain": 1,
+  "obj": "1.6",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "saas",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-AVGSLA",
+   "T-AUDIENCE"
+  ]
+ },
+ {
+  "id": "P1-1.6-006",
+  "domain": 1,
+  "obj": "1.6",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "next-step",
+  "industry": "insurance",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AVGSLA",
+   "T-AUDIENCE",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P1-1.6-007",
+  "domain": 1,
+  "obj": "1.6",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "airline",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUDIENCE",
+   "T-VIBES",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "P2-2.1-001",
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "next-step",
+  "industry": "manufacturing",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-BLUNTCUT",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P2-2.1-002",
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "saas",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-LEVER",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P2-2.1-003",
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "media",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LEVER",
+   "T-BIGMODEL",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.1-004",
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "a",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-BIGMODEL",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.1-005",
+  "domain": 2,
+  "obj": "2.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "healthcare",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-LEVER",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P2-2.1-006",
+  "domain": 2,
+  "obj": "2.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "industry": "media",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LEVER",
+   "T-BIGMODEL",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.1-007",
+  "domain": 2,
+  "obj": "2.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "healthcare",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-BLUNTCUT",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P2-2.2-001",
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "pharma",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ENFORCE",
+   "T-BOUNDARY",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.2-002",
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "logistics",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BOUNDARY",
+   "T-BLUNTCUT",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P2-2.2-003",
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "pharma",
+  "key": [
+   "a",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-BLUNTCUT",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P2-2.2-004",
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "pharma",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ENFORCE",
+   "T-BOUNDARY",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.2-005",
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "telecom",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BOUNDARY",
+   "T-BLUNTCUT",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P2-2.2-006",
+  "domain": 2,
+  "obj": "2.2",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "a",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-BLUNTCUT",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P2-2.2-007",
+  "domain": 2,
+  "obj": "2.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "banking",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-ENFORCE",
+   "T-BOUNDARY",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.3-001",
+  "domain": 2,
+  "obj": "2.3",
+  "set": "formA",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "airline",
+  "key": [
+   "b",
+   "c",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-BIGMODEL",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P2-2.3-002",
+  "domain": 2,
+  "obj": "2.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "logistics",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-STUFF",
+   "T-ASSUME",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P2-2.3-003",
+  "domain": 2,
+  "obj": "2.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "energy",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ASSUME",
+   "T-BIGMODEL",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P2-2.3-004",
+  "domain": 2,
+  "obj": "2.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "manufacturing",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-STUFF",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P2-2.3-005",
+  "domain": 2,
+  "obj": "2.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "retail",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-STUFF",
+   "T-ASSUME",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P2-2.3-006",
+  "domain": 2,
+  "obj": "2.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "energy",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ASSUME",
+   "T-BIGMODEL",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P2-2.4-001",
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "telecom",
+  "key": [
+   "d",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-STUFF",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.4-002",
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "legal",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-LEVER",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P2-2.4-003",
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "telecom",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LEVER",
+   "T-STUFF",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.4-004",
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "manufacturing",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-STUFF",
+   "T-BLUNTCUT",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P2-2.4-005",
+  "domain": 2,
+  "obj": "2.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "public-sector",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-LEVER",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P2-2.4-006",
+  "domain": 2,
+  "obj": "2.4",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "e-commerce",
+  "key": [
+   "b",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LEVER",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P2-2.4-007",
+  "domain": 2,
+  "obj": "2.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "education",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-STUFF",
+   "T-BLUNTCUT",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P2-2.5-001",
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "banking",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-PROTOCOL",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P2-2.5-002",
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "public-sector",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-PROTOCOL",
+   "T-LEVER",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.5-003",
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formB",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "e-commerce",
+  "key": [
+   "b",
+   "d",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LEVER",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P2-2.5-004",
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "public-sector",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-PROTOCOL",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P2-2.5-005",
+  "domain": 2,
+  "obj": "2.5",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "insurance",
+  "key": [
+   "c",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-PROTOCOL",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P2-2.5-006",
+  "domain": 2,
+  "obj": "2.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "public-sector",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LEVER",
+   "T-BLUNTCUT",
+   "T-PROTOCOL"
+  ]
+ },
+ {
+  "id": "P2-2.5-007",
+  "domain": 2,
+  "obj": "2.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "pharma",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-PROTOCOL",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P3-3.1-001",
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "education",
+  "key": [
+   "c",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-REMOVE",
+   "T-MEGATOOL"
+  ]
+ },
+ {
+  "id": "P3-3.1-002",
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "energy",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-MEGATOOL",
+   "T-ENFORCE",
+   "T-REMOVE"
+  ]
+ },
+ {
+  "id": "P3-3.1-003",
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "airline",
+  "key": [
+   "b",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-ENFORCE",
+   "T-REMOVE"
+  ]
+ },
+ {
+  "id": "P3-3.1-004",
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "logistics",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-REMOVE",
+   "T-MEGATOOL",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P3-3.1-005",
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "retail",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-MEGATOOL",
+   "T-ENFORCE",
+   "T-REMOVE"
+  ]
+ },
+ {
+  "id": "P3-3.1-006",
+  "domain": 3,
+  "obj": "3.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "saas",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ENFORCE",
+   "T-REMOVE",
+   "T-MEGATOOL"
+  ]
+ },
+ {
+  "id": "P3-3.1-007",
+  "domain": 3,
+  "obj": "3.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "telecom",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-REMOVE",
+   "T-MEGATOOL",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P3-3.2-001",
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "industry": "healthcare",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUTHZ",
+   "T-ENFORCE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P3-3.2-002",
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "insurance",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ENFORCE",
+   "T-DETECT",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "P3-3.2-003",
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "healthcare",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-DETECT",
+   "T-BOUNDARY",
+   "T-AUTHZ"
+  ]
+ },
+ {
+  "id": "P3-3.2-004",
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "banking",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BOUNDARY",
+   "T-AUTHZ",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P3-3.2-005",
+  "domain": 3,
+  "obj": "3.2",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "e-commerce",
+  "key": [
+   "a",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-AUTHZ",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P3-3.2-006",
+  "domain": 3,
+  "obj": "3.2",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "logistics",
+  "key": [
+   "b",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-ENFORCE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P3-3.2-007",
+  "domain": 3,
+  "obj": "3.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "manufacturing",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-DETECT",
+   "T-BOUNDARY",
+   "T-AUTHZ"
+  ]
+ },
+ {
+  "id": "P3-3.3-001",
+  "domain": 3,
+  "obj": "3.3",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "retail",
+  "key": [
+   "b",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LEVER",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P3-3.3-002",
+  "domain": 3,
+  "obj": "3.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "saas",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-AVGSLA",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P3-3.3-003",
+  "domain": 3,
+  "obj": "3.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "legal",
+  "key": [
+   "a"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-AVGSLA",
+   "T-LEVER",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P3-3.3-004",
+  "domain": 3,
+  "obj": "3.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "banking",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LEVER",
+   "T-BIGMODEL",
+   "T-AVGSLA"
+  ]
+ },
+ {
+  "id": "P3-3.3-005",
+  "domain": 3,
+  "obj": "3.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "insurance",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-AVGSLA",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P3-3.3-006",
+  "domain": 3,
+  "obj": "3.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "airline",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AVGSLA",
+   "T-LEVER",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P3-3.4-001",
+  "domain": 3,
+  "obj": "3.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "media",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OBSERVE",
+   "T-AGGREGATE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P3-3.4-002",
+  "domain": 3,
+  "obj": "3.4",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "energy",
+  "key": [
+   "d",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-AGGREGATE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P3-3.4-003",
+  "domain": 3,
+  "obj": "3.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "education",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-DETECT",
+   "T-OBSERVE",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P3-3.4-004",
+  "domain": 3,
+  "obj": "3.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "airline",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OBSERVE",
+   "T-AGGREGATE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P3-3.4-005",
+  "domain": 3,
+  "obj": "3.4",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "media",
+  "key": [
+   "d",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-AGGREGATE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P3-3.4-006",
+  "domain": 3,
+  "obj": "3.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "healthcare",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-DETECT",
+   "T-OBSERVE",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P3-3.5-001",
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "e-commerce",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-STUFF",
+   "T-LIVESTATE",
+   "T-LAYER"
+  ]
+ },
+ {
+  "id": "P3-3.5-002",
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "manufacturing",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LIVESTATE",
+   "T-LAYER",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P3-3.5-003",
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "retail",
+  "key": [
+   "b",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LAYER",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P3-3.5-004",
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "media",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-STUFF",
+   "T-LIVESTATE",
+   "T-LAYER"
+  ]
+ },
+ {
+  "id": "P3-3.5-005",
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "education",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LIVESTATE",
+   "T-LAYER",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P3-3.5-006",
+  "domain": 3,
+  "obj": "3.5",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "c",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LAYER",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P3-3.5-007",
+  "domain": 3,
+  "obj": "3.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "industry": "banking",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-STUFF",
+   "T-LIVESTATE",
+   "T-LAYER"
+  ]
+ },
+ {
+  "id": "P3-3.6-001",
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "industry": "pharma",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-STUFF",
+   "T-BIGMODEL",
+   "T-LIVESTATE"
+  ]
+ },
+ {
+  "id": "P3-3.6-002",
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "insurance",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-LIVESTATE",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P3-3.6-003",
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "saas",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LIVESTATE",
+   "T-STUFF",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P3-3.6-004",
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "saas",
+  "key": [
+   "b",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-STUFF",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P3-3.6-005",
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "legal",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-LIVESTATE",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P3-3.6-006",
+  "domain": 3,
+  "obj": "3.6",
+  "set": "pool",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "retail",
+  "key": [
+   "a",
+   "d",
+   "f"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LIVESTATE",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P3-3.6-007",
+  "domain": 3,
+  "obj": "3.6",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "energy",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-STUFF",
+   "T-BIGMODEL",
+   "T-LIVESTATE"
+  ]
+ },
+ {
+  "id": "P3-3.7-001",
+  "domain": 3,
+  "obj": "3.7",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "logistics",
+  "key": [
+   "a",
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-PROTOCOL",
+   "T-AUTHZ"
+  ]
+ },
+ {
+  "id": "P3-3.7-002",
+  "domain": 3,
+  "obj": "3.7",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "media",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUTHZ",
+   "T-MEGATOOL",
+   "T-PROTOCOL"
+  ]
+ },
+ {
+  "id": "P3-3.7-003",
+  "domain": 3,
+  "obj": "3.7",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "pharma",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-MEGATOOL",
+   "T-PROTOCOL",
+   "T-AUTHZ"
+  ]
+ },
+ {
+  "id": "P3-3.7-004",
+  "domain": 3,
+  "obj": "3.7",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "healthcare",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-PROTOCOL",
+   "T-AUTHZ",
+   "T-MEGATOOL"
+  ]
+ },
+ {
+  "id": "P3-3.7-005",
+  "domain": 3,
+  "obj": "3.7",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "e-commerce",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUTHZ",
+   "T-MEGATOOL",
+   "T-PROTOCOL"
+  ]
+ },
+ {
+  "id": "P3-3.7-006",
+  "domain": 3,
+  "obj": "3.7",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "education",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-MEGATOOL",
+   "T-PROTOCOL",
+   "T-AUTHZ"
+  ]
+ },
+ {
+  "id": "P3-3.8-001",
+  "domain": 3,
+  "obj": "3.8",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "airline",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-MEGATOOL",
+   "T-STUFF",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P3-3.8-002",
+  "domain": 3,
+  "obj": "3.8",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "logistics",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-STUFF",
+   "T-BLUNTCUT",
+   "T-MEGATOOL"
+  ]
+ },
+ {
+  "id": "P3-3.8-003",
+  "domain": 3,
+  "obj": "3.8",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "pharma",
+  "key": [
+   "b",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-BLUNTCUT",
+   "T-MEGATOOL"
+  ]
+ },
+ {
+  "id": "P3-3.8-004",
+  "domain": 3,
+  "obj": "3.8",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "telecom",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-MEGATOOL",
+   "T-STUFF",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P3-3.8-005",
+  "domain": 3,
+  "obj": "3.8",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "public-sector",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-STUFF",
+   "T-BLUNTCUT",
+   "T-MEGATOOL"
+  ]
+ },
+ {
+  "id": "P3-3.8-006",
+  "domain": 3,
+  "obj": "3.8",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "next-step",
+  "industry": "pharma",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-MEGATOOL",
+   "T-STUFF"
+  ]
+ },
+ {
+  "id": "P4-4.1-001",
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "telecom",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-VIBES",
+   "T-AGGREGATE",
+   "T-AVGSLA"
+  ]
+ },
+ {
+  "id": "P4-4.1-002",
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "legal",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGGREGATE",
+   "T-AVGSLA",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P4-4.1-003",
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "telecom",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AVGSLA",
+   "T-VIBES",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P4-4.1-004",
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "energy",
+  "key": [
+   "d",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-VIBES",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P4-4.1-005",
+  "domain": 4,
+  "obj": "4.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "manufacturing",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGGREGATE",
+   "T-AVGSLA",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P4-4.1-006",
+  "domain": 4,
+  "obj": "4.1",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "saas",
+  "key": [
+   "c",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-AVGSLA",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P4-4.1-007",
+  "domain": 4,
+  "obj": "4.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "telecom",
+  "key": [
+   "a"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-VIBES",
+   "T-AGGREGATE",
+   "T-AVGSLA"
+  ]
+ },
+ {
+  "id": "P4-4.2-001",
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formA",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "banking",
+  "key": [
+   "a",
+   "c",
+   "f"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-VIBES",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P4-4.2-002",
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "manufacturing",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGGREGATE",
+   "T-LATER",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P4-4.2-003",
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "e-commerce",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LATER",
+   "T-VIBES",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P4-4.2-004",
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "public-sector",
+  "key": [
+   "b",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-VIBES",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P4-4.2-005",
+  "domain": 4,
+  "obj": "4.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "insurance",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGGREGATE",
+   "T-LATER",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P4-4.2-006",
+  "domain": 4,
+  "obj": "4.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "logistics",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-LATER",
+   "T-VIBES",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P4-4.2-007",
+  "domain": 4,
+  "obj": "4.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "manufacturing",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-VIBES",
+   "T-AGGREGATE",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P4-4.3-001",
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "public-sector",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-PEEK",
+   "T-VIBES",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P4-4.3-002",
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "public-sector",
+  "key": [
+   "a",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-VIBES",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P4-4.3-003",
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "airline",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LATER",
+   "T-PEEK",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P4-4.3-004",
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "logistics",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-PEEK",
+   "T-VIBES",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P4-4.3-005",
+  "domain": 4,
+  "obj": "4.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "retail",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-VIBES",
+   "T-LATER",
+   "T-PEEK"
+  ]
+ },
+ {
+  "id": "P4-4.3-006",
+  "domain": 4,
+  "obj": "4.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "insurance",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-LATER",
+   "T-PEEK",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P4-4.3-007",
+  "domain": 4,
+  "obj": "4.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "airline",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-PEEK",
+   "T-VIBES",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P4-4.4-001",
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "education",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LAYER",
+   "T-BIGMODEL",
+   "T-LIVESTATE"
+  ]
+ },
+ {
+  "id": "P4-4.4-002",
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "industry": "energy",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-LIVESTATE",
+   "T-LAYER"
+  ]
+ },
+ {
+  "id": "P4-4.4-003",
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "healthcare",
+  "key": [
+   "a",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LIVESTATE",
+   "T-LAYER"
+  ]
+ },
+ {
+  "id": "P4-4.4-004",
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "banking",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LAYER",
+   "T-BIGMODEL",
+   "T-LIVESTATE"
+  ]
+ },
+ {
+  "id": "P4-4.4-005",
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "e-commerce",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-LIVESTATE",
+   "T-LAYER"
+  ]
+ },
+ {
+  "id": "P4-4.4-006",
+  "domain": 4,
+  "obj": "4.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "media",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-LIVESTATE",
+   "T-LAYER",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P4-4.4-007",
+  "domain": 4,
+  "obj": "4.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "healthcare",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LAYER",
+   "T-BIGMODEL",
+   "T-LIVESTATE"
+  ]
+ },
+ {
+  "id": "P4-4.5-001",
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "healthcare",
+  "key": [
+   "c",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LEVER",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P4-4.5-002",
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "insurance",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-BIGMODEL",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P4-4.5-003",
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "legal",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BIGMODEL",
+   "T-LEVER",
+   "T-BLUNTCUT"
+  ]
+ },
+ {
+  "id": "P4-4.5-004",
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "banking",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LEVER",
+   "T-BLUNTCUT",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P4-4.5-005",
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "airline",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BLUNTCUT",
+   "T-BIGMODEL",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P4-4.5-006",
+  "domain": 4,
+  "obj": "4.5",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "a",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-BIGMODEL",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "P4-4.5-007",
+  "domain": 4,
+  "obj": "4.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "banking",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-LEVER",
+   "T-BLUNTCUT",
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "P4-4.6-001",
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "retail",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OBSERVE",
+   "T-AGGREGATE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P4-4.6-002",
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "saas",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGGREGATE",
+   "T-DETECT",
+   "T-OBSERVE"
+  ]
+ },
+ {
+  "id": "P4-4.6-003",
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "energy",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-DETECT",
+   "T-OBSERVE",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P4-4.6-004",
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "education",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OBSERVE",
+   "T-AGGREGATE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P4-4.6-005",
+  "domain": 4,
+  "obj": "4.6",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "media",
+  "key": [
+   "a"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-AGGREGATE",
+   "T-DETECT",
+   "T-OBSERVE"
+  ]
+ },
+ {
+  "id": "P4-4.6-006",
+  "domain": 4,
+  "obj": "4.6",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "retail",
+  "key": [
+   "b",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-DETECT",
+   "T-OBSERVE"
+  ]
+ },
+ {
+  "id": "P4-4.6-007",
+  "domain": 4,
+  "obj": "4.6",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "energy",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OBSERVE",
+   "T-AGGREGATE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P5-5.1-001",
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formA",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "media",
+  "key": [
+   "b",
+   "d",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-ENFORCE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P5-5.1-002",
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "e-commerce",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-DETECT",
+   "T-REMOVE",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "P5-5.1-003",
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "retail",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-REMOVE",
+   "T-BOUNDARY",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P5-5.1-004",
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "insurance",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BOUNDARY",
+   "T-ENFORCE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P5-5.1-005",
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "education",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ENFORCE",
+   "T-DETECT",
+   "T-REMOVE"
+  ]
+ },
+ {
+  "id": "P5-5.1-006",
+  "domain": 5,
+  "obj": "5.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "saas",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-DETECT",
+   "T-REMOVE",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "P5-5.1-007",
+  "domain": 5,
+  "obj": "5.1",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "e-commerce",
+  "key": [
+   "a",
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-REMOVE",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "P5-5.1-008",
+  "domain": 5,
+  "obj": "5.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "least",
+  "industry": "education",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BOUNDARY",
+   "T-ENFORCE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "P5-5.2-001",
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "manufacturing",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-ASSUME",
+   "T-SELFCONF"
+  ]
+ },
+ {
+  "id": "P5-5.2-002",
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "pharma",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ASSUME",
+   "T-SELFCONF",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "P5-5.2-003",
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "saas",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-SELFCONF",
+   "T-OVERPROMISE",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P5-5.2-004",
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "media",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-ASSUME",
+   "T-SELFCONF"
+  ]
+ },
+ {
+  "id": "P5-5.2-005",
+  "domain": 5,
+  "obj": "5.2",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "a",
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-ASSUME",
+   "T-SELFCONF"
+  ]
+ },
+ {
+  "id": "P5-5.2-006",
+  "domain": 5,
+  "obj": "5.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "public-sector",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-SELFCONF",
+   "T-OVERPROMISE",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "P5-5.2-007",
+  "domain": 5,
+  "obj": "5.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "pharma",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-ASSUME",
+   "T-SELFCONF"
+  ]
+ },
+ {
+  "id": "P5-5.3-001",
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "logistics",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-SELFCONF",
+   "T-RUBBERSTAMP",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P5-5.3-002",
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "airline",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-RUBBERSTAMP",
+   "T-LATER",
+   "T-SELFCONF"
+  ]
+ },
+ {
+  "id": "P5-5.3-003",
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "pharma",
+  "key": [
+   "c",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LATER",
+   "T-SELFCONF"
+  ]
+ },
+ {
+  "id": "P5-5.3-004",
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "logistics",
+  "key": [
+   "c",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-SELFCONF",
+   "T-RUBBERSTAMP"
+  ]
+ },
+ {
+  "id": "P5-5.3-005",
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "healthcare",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-RUBBERSTAMP",
+   "T-LATER",
+   "T-SELFCONF"
+  ]
+ },
+ {
+  "id": "P5-5.3-006",
+  "domain": 5,
+  "obj": "5.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "pharma",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LATER",
+   "T-SELFCONF",
+   "T-RUBBERSTAMP"
+  ]
+ },
+ {
+  "id": "P5-5.3-007",
+  "domain": 5,
+  "obj": "5.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "saas",
+  "key": [
+   "a"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-SELFCONF",
+   "T-RUBBERSTAMP",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P5-5.3-008",
+  "domain": 5,
+  "obj": "5.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "telecom",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-RUBBERSTAMP",
+   "T-LATER",
+   "T-SELFCONF"
+  ]
+ },
+ {
+  "id": "P5-5.4-001",
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "telecom",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-COMPLY",
+   "T-BOUNDARY",
+   "T-AUTHZ"
+  ]
+ },
+ {
+  "id": "P5-5.4-002",
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "telecom",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-BOUNDARY",
+   "T-AUTHZ",
+   "T-COMPLY"
+  ]
+ },
+ {
+  "id": "P5-5.4-003",
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "manufacturing",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUTHZ",
+   "T-COMPLY",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "P5-5.4-004",
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formC",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "telecom",
+  "key": [
+   "b",
+   "d",
+   "f"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-COMPLY",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "P5-5.4-005",
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "energy",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-BOUNDARY",
+   "T-AUTHZ",
+   "T-COMPLY"
+  ]
+ },
+ {
+  "id": "P5-5.4-006",
+  "domain": 5,
+  "obj": "5.4",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "logistics",
+  "key": [
+   "a",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-AUTHZ",
+   "T-COMPLY"
+  ]
+ },
+ {
+  "id": "P5-5.4-007",
+  "domain": 5,
+  "obj": "5.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "manufacturing",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-COMPLY",
+   "T-BOUNDARY",
+   "T-AUTHZ"
+  ]
+ },
+ {
+  "id": "P5-5.5-001",
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "b",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-AGGREGATE",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P5-5.5-002",
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "banking",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OWNER",
+   "T-OVERPROMISE",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P5-5.5-003",
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "e-commerce",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-AGGREGATE",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P5-5.5-004",
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "manufacturing",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGGREGATE",
+   "T-OWNER",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "P5-5.5-005",
+  "domain": 5,
+  "obj": "5.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "public-sector",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OWNER",
+   "T-OVERPROMISE",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "P5-5.5-006",
+  "domain": 5,
+  "obj": "5.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "insurance",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-AGGREGATE",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P5-5.5-007",
+  "domain": 5,
+  "obj": "5.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "airline",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGGREGATE",
+   "T-OWNER",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "P6-6.1-001",
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "public-sector",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-SKIPDISC",
+   "T-LATER",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P6-6.1-002",
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "education",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LATER",
+   "T-OWNER",
+   "T-SKIPDISC"
+  ]
+ },
+ {
+  "id": "P6-6.1-003",
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "public-sector",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OWNER",
+   "T-SKIPDISC",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P6-6.1-004",
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "airline",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-SKIPDISC",
+   "T-LATER",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P6-6.1-005",
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formC",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "insurance",
+  "key": [
+   "c",
+   "d",
+   "f"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LATER",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P6-6.1-006",
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "industry": "logistics",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OWNER",
+   "T-SKIPDISC",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P6-6.1-007",
+  "domain": 6,
+  "obj": "6.1",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "media",
+  "key": [
+   "a",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-SKIPDISC",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P6-6.1-008",
+  "domain": 6,
+  "obj": "6.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "least",
+  "industry": "healthcare",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-LATER",
+   "T-OWNER",
+   "T-SKIPDISC"
+  ]
+ },
+ {
+  "id": "P6-6.2-001",
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "energy",
+  "key": [
+   "a",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-AUDIENCE",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "P6-6.2-002",
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "healthcare",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-OWNER",
+   "T-AUDIENCE"
+  ]
+ },
+ {
+  "id": "P6-6.2-003",
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "healthcare",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-OWNER",
+   "T-AUDIENCE",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "P6-6.2-004",
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "banking",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUDIENCE",
+   "T-OVERPROMISE",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P6-6.2-005",
+  "domain": 6,
+  "obj": "6.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "retail",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-OWNER",
+   "T-AUDIENCE"
+  ]
+ },
+ {
+  "id": "P6-6.2-006",
+  "domain": 6,
+  "obj": "6.2",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "b",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-OWNER",
+   "T-AUDIENCE"
+  ]
+ },
+ {
+  "id": "P6-6.2-007",
+  "domain": 6,
+  "obj": "6.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "least",
+  "industry": "banking",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUDIENCE",
+   "T-OVERPROMISE",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P6-6.3-001",
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "insurance",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AVGSLA",
+   "T-OVERPROMISE",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P6-6.3-002",
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "retail",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-VIBES",
+   "T-AVGSLA"
+  ]
+ },
+ {
+  "id": "P6-6.3-003",
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "a",
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-VIBES",
+   "T-AVGSLA"
+  ]
+ },
+ {
+  "id": "P6-6.3-004",
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "energy",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AVGSLA",
+   "T-OVERPROMISE",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P6-6.3-005",
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "e-commerce",
+  "key": [
+   "a",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-OVERPROMISE",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P6-6.3-006",
+  "domain": 6,
+  "obj": "6.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "banking",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-VIBES",
+   "T-AVGSLA",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "P6-6.3-007",
+  "domain": 6,
+  "obj": "6.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "retail",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-AVGSLA",
+   "T-OVERPROMISE",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P6-6.3-008",
+  "domain": 6,
+  "obj": "6.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "energy",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OVERPROMISE",
+   "T-VIBES",
+   "T-AVGSLA"
+  ]
+ },
+ {
+  "id": "P6-6.4-001",
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "saas",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUDIENCE",
+   "T-OWNER",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P6-6.4-002",
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "education",
+  "key": [
+   "b",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-OWNER",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P6-6.4-003",
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "next-step",
+  "industry": "retail",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LATER",
+   "T-AUDIENCE",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P6-6.4-004",
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "airline",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUDIENCE",
+   "T-OWNER",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P6-6.4-005",
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "media",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OWNER",
+   "T-LATER",
+   "T-AUDIENCE"
+  ]
+ },
+ {
+  "id": "P6-6.4-006",
+  "domain": 6,
+  "obj": "6.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "e-commerce",
+  "key": [
+   "d"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-LATER",
+   "T-AUDIENCE",
+   "T-OWNER"
+  ]
+ },
+ {
+  "id": "P6-6.4-007",
+  "domain": 6,
+  "obj": "6.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "education",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AUDIENCE",
+   "T-OWNER",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P6-6.5-001",
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formA",
+  "type": "multi",
+  "select": 3,
+  "options": 6,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "media",
+  "key": [
+   "b",
+   "d",
+   "f"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LATER",
+   "T-SKIPDISC"
+  ]
+ },
+ {
+  "id": "P6-6.5-002",
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "e-commerce",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-SKIPDISC",
+   "T-OBSERVE",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P6-6.5-003",
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "insurance",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-OBSERVE",
+   "T-LATER",
+   "T-SKIPDISC"
+  ]
+ },
+ {
+  "id": "P6-6.5-004",
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "education",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LATER",
+   "T-SKIPDISC",
+   "T-OBSERVE"
+  ]
+ },
+ {
+  "id": "P6-6.5-005",
+  "domain": 6,
+  "obj": "6.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "first",
+  "industry": "saas",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-SKIPDISC",
+   "T-OBSERVE",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P6-6.5-006",
+  "domain": 6,
+  "obj": "6.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "public-sector",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OBSERVE",
+   "T-LATER",
+   "T-SKIPDISC"
+  ]
+ },
+ {
+  "id": "P6-6.5-007",
+  "domain": 6,
+  "obj": "6.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "first",
+  "industry": "pharma",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LATER",
+   "T-SKIPDISC",
+   "T-OBSERVE"
+  ]
+ },
+ {
+  "id": "P7-7.1-001",
+  "domain": 7,
+  "obj": "7.1",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "manufacturing",
+  "key": [
+   "b",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-REACH",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P7-7.1-002",
+  "domain": 7,
+  "obj": "7.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "pharma",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-ENFORCE",
+   "T-REMOVE",
+   "T-REACH"
+  ]
+ },
+ {
+  "id": "P7-7.1-003",
+  "domain": 7,
+  "obj": "7.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "saas",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-REMOVE",
+   "T-REACH",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P7-7.1-004",
+  "domain": 7,
+  "obj": "7.1",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "legal",
+  "key": [
+   "c",
+   "e"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-REACH",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P7-7.1-005",
+  "domain": 7,
+  "obj": "7.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "saas",
+  "key": [
+   "a"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-ENFORCE",
+   "T-REMOVE",
+   "T-REACH"
+  ]
+ },
+ {
+  "id": "P7-7.1-006",
+  "domain": 7,
+  "obj": "7.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "next-step",
+  "industry": "telecom",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-REMOVE",
+   "T-REACH",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "P7-7.2-001",
+  "domain": 7,
+  "obj": "7.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "best",
+  "industry": "logistics",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-VIBES",
+   "T-AGENTIC",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P7-7.2-002",
+  "domain": 7,
+  "obj": "7.2",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 3,
+  "archetype": "which-n",
+  "industry": "media",
+  "key": [
+   "a",
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-AGENTIC",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P7-7.2-003",
+  "domain": 7,
+  "obj": "7.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "industry": "healthcare",
+  "key": [
+   "c"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-LATER",
+   "T-VIBES",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P7-7.2-004",
+  "domain": 7,
+  "obj": "7.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "pharma",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-VIBES",
+   "T-AGENTIC",
+   "T-LATER"
+  ]
+ },
+ {
+  "id": "P7-7.2-005",
+  "domain": 7,
+  "obj": "7.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "least",
+  "industry": "logistics",
+  "key": [
+   "d"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-AGENTIC",
+   "T-LATER",
+   "T-VIBES"
+  ]
+ },
+ {
+  "id": "P7-7.2-006",
+  "domain": 7,
+  "obj": "7.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "best",
+  "industry": "manufacturing",
+  "key": [
+   "a"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-LATER",
+   "T-VIBES",
+   "T-AGENTIC"
+  ]
+ },
+ {
+  "id": "P7-7.3-001",
+  "domain": 7,
+  "obj": "7.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 3,
+  "archetype": "first",
+  "industry": "airline",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OBSERVE",
+   "T-LAYER",
+   "T-REACH"
+  ]
+ },
+ {
+  "id": "P7-7.3-002",
+  "domain": 7,
+  "obj": "7.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "next-step",
+  "industry": "pharma",
+  "key": [
+   "b"
+  ],
+  "counterTrap": true,
+  "traps": [
+   "T-LAYER",
+   "T-REACH",
+   "T-OBSERVE"
+  ]
+ },
+ {
+  "id": "P7-7.3-003",
+  "domain": 7,
+  "obj": "7.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "industry": "logistics",
+  "key": [
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-REACH",
+   "T-OBSERVE",
+   "T-LAYER"
+  ]
+ },
+ {
+  "id": "P7-7.3-004",
+  "domain": 7,
+  "obj": "7.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "industry": "telecom",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-OBSERVE",
+   "T-LAYER",
+   "T-REACH"
+  ]
+ },
+ {
+  "id": "P7-7.3-005",
+  "domain": 7,
+  "obj": "7.3",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "options": 5,
+  "diff": 2,
+  "archetype": "which-n",
+  "industry": "insurance",
+  "key": [
+   "b",
+   "c"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-FILLER",
+   "T-LAYER",
+   "T-REACH"
+  ]
+ },
+ {
+  "id": "P7-7.3-006",
+  "domain": 7,
+  "obj": "7.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "options": 4,
+  "diff": 2,
+  "archetype": "best",
+  "industry": "airline",
+  "key": [
+   "b"
+  ],
+  "counterTrap": false,
+  "traps": [
+   "T-REACH",
+   "T-OBSERVE",
+   "T-LAYER"
+  ]
+ }
+]

@@ -1,0 +1,507 @@
+[
+ {
+  "id": "P3-3.6-001",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "constraint": "data-shape",
+  "industry": "pharma",
+  "family": "topk-recall-multipart-comparison",
+  "counterTrap": true,
+  "signals": [
+   "compare storage conditions across all seven formulations",
+   "top four retrieved chunks",
+   "rank fifth, sixth and seventh"
+  ],
+  "stem": "Corvane Therapeutics' medical-information assistant answers pharmacists' questions from approved product monographs, one monograph per formulation, and passes the top four retrieved chunks to the model. Single-formulation questions pass the weekly eval. A new request type asks to compare storage conditions across all seven formulations of one product; those answers cover four formulations and state that no data exist for the rest. Traces reviewed by the medical-information lead show the four retrieved chunks are correct, relevant storage sections, and the other three formulations' storage sections rank fifth, sixth and seventh. Monographs, chunking and the embedding model are unchanged since launch.",
+  "ask": "What is the MOST likely cause of the incomplete comparisons?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The model tier lacks the reasoning capacity to compare seven formulations at once",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The model answered accurately from the four passages it received. No tier can compare formulations whose storage text never reached its context."
+   },
+   {
+    "id": "b",
+    "text": "The index lags the monograph library, so the other formulations' updates are missing",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "The monographs have not changed since launch, and the missing sections appear in the ranking at fifth, sixth and seventh, so they are indexed and current."
+   },
+   {
+    "id": "c",
+    "text": "Ranking precision is poor, so less relevant chunks outrank the missing storage sections",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Every returned chunk is a correct, relevant storage section and single-formulation questions pass, so the ordering is sound and ranking is unchanged. The other sections fall outside only because four slots are fewer than the seven the comparison needs."
+   },
+   {
+    "id": "d",
+    "text": "A retrieval depth of four is smaller than the seven passages each comparison needs",
+    "correct": true,
+    "trap": null,
+    "why": "Each comparison needs one storage passage per formulation, but only four reach the model. The other three rank fifth, sixth and seventh, directly behind four relevant chunks, so the fixed depth caps recall for this new query pattern."
+   }
+  ],
+  "explain": "Binding constraint: the new query pattern needs more passages than the fixed top-k returns. Raising k is usually the context-stuffing trap, but here recall is the measured defect: every returned chunk is relevant and the remaining passages rank directly below the cut-off.",
+  "rule": "CS-D3-14",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.6-002",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "insurance",
+  "family": "prefilter-jurisdiction-edition",
+  "counterTrap": false,
+  "signals": [
+   "in force in the insured's state on the date of loss",
+   "state examiners audit that citation",
+   "shrink index hosting costs"
+  ],
+  "stem": "Halden Mutual's claims assistant helps adjusters in twelve states interpret homeowners policy wording. The index holds every filed edition of each state's policy forms since 2018, because a claim is governed by the edition in force in the insured's state on the date of loss, and state examiners audit that citation on every closed file. Each claim record carries the insured's state and the date of loss. Adjusters report answers quoting a neighbouring state's form, or a newer edition than the one that applies. The infrastructure group has asked the claims-platform architect to shrink index hosting costs this quarter.",
+  "ask": "Which change BEST resolves the wrong-edition citations?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Archive superseded editions to cold storage and index only each state's current policy forms",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Examiners audit the edition in force on the loss date, and that gate removes this option before the cost request is weighed. Claims with earlier loss dates are governed by the superseded editions it takes out of the index."
+   },
+   {
+    "id": "b",
+    "text": "Prefix each chunk with its state and effective dates and instruct the model to cite the governing edition",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Headers let the model see which edition it holds, but neighbouring and newer editions still fill the results, and a citation examiners audit on every file cannot rest on the model choosing correctly each time."
+   },
+   {
+    "id": "c",
+    "text": "Filter by the insured's state and the edition in force on the loss date before similarity search",
+    "correct": true,
+    "trap": null,
+    "why": "The claim record supplies state and loss date before retrieval, so scoping the search to them returns only the governing edition, the citation examiners audit. Every edition stays indexed, and the filter adds no hosting cost."
+   },
+   {
+    "id": "d",
+    "text": "Re-index each state's forms the day a new edition is filed so the latest wording ranks first",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "A newer edition outranking the governing one is part of the defect, because claims with earlier loss dates are governed by older editions. Faster indexing changes neither that nor the neighbouring-state results."
+   }
+  ],
+  "explain": "Binding constraint: regulation requires the edition in force in the insured's state on the loss date, and that gate outranks the hosting-cost request. Scope known before retrieval is applied as a metadata filter ahead of similarity search, not left to the model, to freshness or to deleting editions.",
+  "rule": "CS-D3-15",
+  "ladder": "retrieval",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.6-003",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "evidence",
+  "industry": "saas",
+  "family": "rerank-high-recall-low-precision",
+  "counterTrap": false,
+  "signals": [
+   "in the top five for only 58%",
+   "A trial that sent ten passages lowered answer accuracy",
+   "raised the top-50 figure but not the top-five one"
+  ],
+  "stem": "Tessellate, a project-management SaaS vendor, runs a support assistant over 9,000 help-centre articles and sends the top five retrieved passages to the model. The support-platform lead labelled 400 real tickets with the article that resolves each one. The resolving article appears among the top 50 candidates for 93% of tickets but in the top five for only 58%, and answers are accurate whenever it reaches the model. A trial that sent ten passages lowered answer accuracy. Last spring's move to a larger embedding model raised the top-50 figure but not the top-five one. Writers edit articles daily and the index refreshes nightly, yet misses are spread evenly across articles untouched for a year.",
+  "ask": "What is the BEST next step for the support-platform lead?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Index each help article as one whole passage so its resolving steps arrive together",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Answers are already accurate whenever the resolving article reaches the model, so passage boundaries are not the defect. Whole articles add volume to every slot, which the ten-passage trial showed lowers accuracy."
+   },
+   {
+    "id": "b",
+    "text": "Add a re-ranking stage that rescores the top 50 candidates and sends the best five",
+    "correct": true,
+    "trap": null,
+    "why": "The labelled set shows high recall and low precision: the resolving article is usually retrieved but ranked below the cut-off. Rescoring the existing candidates fixes the order without adding context."
+   },
+   {
+    "id": "c",
+    "text": "Adopt the largest available embedding model so the resolving article ranks higher in the first pass",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The last embedding upgrade lifted recall at 50 but left top-five placement flat, so a bigger first-pass model is not what orders the candidates. Ordering needs a stage that scores each candidate against the ticket."
+   },
+   {
+    "id": "d",
+    "text": "Re-index articles the moment writers publish edits instead of on the nightly schedule",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "Misses are spread evenly across articles untouched for a year, so freshness is not the cause. The articles are indexed and retrieved; they are ranked too low."
+   }
+  ],
+  "explain": "Binding constraint: the evidence shows the resolving article is in the candidate set but ranked below the cut-off, and neither more context nor a larger embedding model moved it up. High recall with low precision calls for re-ranking.",
+  "rule": "CS-D3-14",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-EL-08"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.6-004",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "data-shape",
+  "industry": "saas",
+  "family": "route-identifiers-filter-edition",
+  "counterTrap": false,
+  "signals": [
+   "paste an exact setting key or error code",
+   "reads each admin's edition from their session",
+   "without degrading the conceptual answers"
+  ],
+  "stem": "Quillon's product-AI lead owns the HR platform's in-app assistant, which answers administrators' questions from 6,000 help pages covering its Starter, Growth and Enterprise editions. The assistant reads each admin's edition from their session. Conceptual how-to answers rate well. Two defects remain: admins who paste an exact setting key or error code, such as PAY-2231, get pages about similarly named settings, and Starter admins are told how to use Enterprise-only features. Retrieval is dense-only, and the embedding model and chunking were re-validated last month against the conceptual question set.",
+  "ask": "Which TWO changes BEST fix both defects without degrading the conceptual answers? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Raise the passages retrieved for every question, conceptual ones included, so exact setting pages appear",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Extra passages on every query dilute the conceptual answers that rate well and bring in more similarly named settings, while exact keys still match poorly under embeddings and Enterprise-only pages stay in the results."
+   },
+   {
+    "id": "b",
+    "text": "Add a lexical index and route identifier-shaped queries, such as setting keys, to it",
+    "correct": true,
+    "trap": null,
+    "why": "Setting keys and error codes are exact tokens that embeddings place near similar names. Lexical matching finds the exact page, and routing by shape leaves conceptual questions on the validated dense path."
+   },
+   {
+    "id": "c",
+    "text": "Replace the embedding model with a larger one that separates similarly named settings",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Exact keys are tokens, not meanings, so any embedding model places PAY-2231 near similar keys. Swapping the model validated last month puts the well-rated conceptual answers at risk and leaves Enterprise-only pages in Starter results."
+   },
+   {
+    "id": "d",
+    "text": "Restrict candidates to pages tagged with the admin's edition before similarity search",
+    "correct": true,
+    "trap": null,
+    "why": "The session supplies the admin's edition before retrieval, so filtering on it removes Enterprise-only pages from Starter results outright and leaves conceptual retrieval within each edition unchanged."
+   },
+   {
+    "id": "e",
+    "text": "Log the retrieved page IDs with every answer so wrong answers can be traced to retrieval",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Retrieval logging helps diagnose future defects, but these two are already diagnosed. It changes neither which page an exact key returns nor which edition the results belong to."
+   }
+  ],
+  "explain": "Binding constraint: the query and data shape. Exact identifiers need lexical matching routed by query shape, and scope known in advance (the admin's edition) is applied as a metadata filter before similarity search; both leave the validated conceptual path untouched.",
+  "rule": "CS-D3-13",
+  "ladder": "retrieval",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.6-005",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.6",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "legal",
+  "family": "diagnose-recall-vs-rank-first",
+  "counterTrap": false,
+  "signals": [
+   "Both proposals were costed from the litigators' complaints and answer ratings",
+   "the budget funds one change this quarter",
+   "judgments decades old"
+  ],
+  "stem": "At Carrow & Lisle LLP, the head of knowledge engineering owns a research assistant that runs hybrid retrieval, lexical and dense with rank fusion, over 300,000 judgments and passes the top eight passages to the model. The index is rebuilt weekly from the court feed. Litigators who paste a neutral citation say the cited judgment is often missing from the answer; conceptual research questions still rate well. The failing citations include judgments decades old. The vendor proposes a cross-encoder re-ranker, the platform team proposes sending 40 passages instead of eight, and the budget funds one change this quarter. Both proposals were costed from the litigators' complaints and answer ratings.",
+  "ask": "What should the head of knowledge engineering do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Trace failing citation queries to see whether the cited judgment is retrieved, and at what rank",
+    "correct": true,
+    "trap": null,
+    "why": "If the judgment is retrieved but ranked low, re-ranking fits; if it sits just below eight, more passages might; if it is absent, the lexical path or citation matching is broken and neither proposal helps. The trace decides where the one funded change goes."
+   },
+   {
+    "id": "b",
+    "text": "Fund the vendor's cross-encoder re-ranker and track citation hit rates once it goes live",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "This commits to a remedy before anyone has seen whether the judgment is retrieved at all. If it is absent from the candidates, a re-ranker has nothing to reorder, and the one funded change is spent."
+   },
+   {
+    "id": "c",
+    "text": "Adopt the platform team's 40-passage context so the cited judgment is more likely included",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Forty passages help only if the judgment sits just below the cut-off, which nobody has checked. It adds noise and cost to every query, and a judgment absent from the candidates stays absent."
+   },
+   {
+    "id": "d",
+    "text": "Check the index's newest judgment date against the court feed to rule out an ingestion lag",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "The failing citations include judgments decades old, so how recent the newest indexed judgment is cannot explain them. The check spends the first step on a cause the stem already rules out."
+   }
+  ],
+  "explain": "Binding constraint: evidence. Both proposals rest on complaints and ratings rather than on where the cited judgment sits among the candidates, and only one change is funded, so the retrieval trace that separates a recall or matching defect from a ranking defect comes first.",
+  "rule": "CS-D3-14",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.6-006",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.6",
+  "set": "pool",
+  "type": "multi",
+  "select": 3,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "data-shape",
+  "industry": "retail",
+  "family": "retail-shape-routing-rerank",
+  "counterTrap": false,
+  "signals": [
+   "the coded product is usually absent from the dense candidates",
+   "returns rugs priced well above £100",
+   "among the top 50 dense candidates but rarely in the five shown"
+  ],
+  "stem": "Larkspur Home's digital-commerce architect is piloting a shopping assistant over its 180,000-product catalogue. Pilot logs show three failures. Shoppers who paste a product code from a receipt get lookalike items, and the coded product is usually absent from the dense candidates. A search for grey rugs under £100 returns rugs priced well above £100. For descriptive requests, such as a washable hallway runner, the right rug is usually among the top 50 dense candidates but rarely in the five shown. A trial passing 20 candidates to the model made replies slower and less focused. Retrieval is dense-only over product descriptions, which change weekly and are indexed nightly.",
+  "ask": "Which THREE changes BEST address the three failures? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Route code-shaped queries to exact lexical matching on the product-code field",
+    "correct": true,
+    "trap": null,
+    "why": "Receipt codes are exact identifiers that embeddings map to similar-looking products, and the coded product is usually absent from the dense candidates. An exact match on the code field returns it, and routing by shape leaves descriptive queries on the dense path."
+   },
+   {
+    "id": "b",
+    "text": "Re-index product descriptions hourly so the assistant ranks from the latest catalogue copy",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "Descriptions change weekly and are already indexed nightly, so hourly rebuilds repeat the same rankings. None of the failures is staleness: codes, price limits and ordering fail on current data too."
+   },
+   {
+    "id": "c",
+    "text": "Pass the top 20 dense candidates to the model so the right rug is more often in view",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "The trial already showed twenty candidates make replies slower and less focused. Volume does not fix ordering, and it leaves absent codes absent and over-budget rugs unfiltered."
+   },
+   {
+    "id": "d",
+    "text": "Apply price and colour as structured filters on catalogue fields before similarity search",
+    "correct": true,
+    "trap": null,
+    "why": "A price ceiling and a colour are hard limits on structured fields, not similarity. Filtering on them before the search removes over-budget rugs, which neither re-ranking nor the model can be relied on to drop."
+   },
+   {
+    "id": "e",
+    "text": "Answer in-stock questions from a live inventory lookup at request time rather than the index",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A live lookup is right for availability, but none of the three failures involves stock. It changes neither which product a code returns, the price ceiling, nor where the right rug ranks."
+   },
+   {
+    "id": "f",
+    "text": "Add a cross-encoder re-ranker that rescores the top 50 dense candidates before display",
+    "correct": true,
+    "trap": null,
+    "why": "For descriptive requests the right rug is already among the top 50, so rescoring those candidates lifts it into the five shown. It cannot recover pasted codes whose products are absent from the candidates, so lexical routing is still needed."
+   }
+  ],
+  "explain": "Binding constraint: the shape of each query and datum. Identifiers go to exact lexical matching, hard attribute limits become structured filters before search, and an item retrieved but ranked low calls for re-ranking, which cannot recover a product missing from the candidates.",
+  "rule": "CS-D3-13",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-EL-08"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.6-007",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.6",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "energy",
+  "family": "structured-aggregation-query-tool",
+  "counterTrap": false,
+  "signals": [
+   "one database row per outage",
+   "which ten feeders had the most vegetation-caused outages in 2025",
+   "Questions about one named outage are answered correctly"
+  ],
+  "stem": "Norvale Grid's network-planning team built an assistant over 14 years of outage records for its 1,400 feeders, one database row per outage with feeder ID, cause code, start time and customers affected. Each row was turned into a sentence and embedded. Questions such as 'which ten feeders had the most vegetation-caused outages in 2025?' return confident lists that disagree with the database. Questions about one named outage are answered correctly, and the index was rebuilt from the database last week.",
+  "ask": "Which change BEST fixes the ranking and counting questions?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Embed each feeder's full outage history as one document so a ranking can compare whole histories",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Retrieval still returns only the few histories most similar to the question, not all 1,400 feeders, and the model would then tally outages inside long passages. A top-ten ranking needs a computed count across every feeder."
+   },
+   {
+    "id": "b",
+    "text": "Move to a long-context model tier and supply the full year of outage rows with each question",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Even with every 2025 row in context, the model would be counting thousands of rows by reading, which is error-prone and costly on every question, while the table already supports an exact count."
+   },
+   {
+    "id": "c",
+    "text": "Stream each new outage row into the index as it is recorded so the counts stay current",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "The index was rebuilt last week, single-outage answers are correct and 2025 is a closed year, so the rows are current. Fresher rows do not turn top-k similarity into a count."
+   },
+   {
+    "id": "d",
+    "text": "Give the assistant a tool that runs filtered, aggregated queries against the outage database",
+    "correct": true,
+    "trap": null,
+    "why": "Ranking feeders by outage count is an aggregation over thousands of rows. A filtered database query computes it exactly, while similarity search returns a handful of rows that merely resemble the question."
+   }
+  ],
+  "explain": "Binding constraint: data shape. Ranking and counting questions over structured rows are aggregations, so they go to a query against the database that holds the table; semantic retrieval suits finding individual records or passages.",
+  "rule": "CS-D3-13",
+  "ladder": "retrieval",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

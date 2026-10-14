@@ -1,0 +1,499 @@
+[
+ {
+  "id": "P2-2.2-001",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "pharma",
+  "family": "locked-template-regulated-text",
+  "counterTrap": false,
+  "signals": [
+   "exactly as approved",
+   "any wording change counts as a violation",
+   "send drafts unedited from their phones"
+  ],
+  "stem": "Vantree Pharmaceuticals is rolling out an assistant that drafts follow-up emails from field representatives to prescribing physicians. Every promotional email must carry the Important Safety Information exactly as approved by the medical, legal and regulatory review board; any wording change counts as a violation. In pilot testing, the assistant wrote strong personalised openings but altered the safety text in roughly one draft in forty, usually by merging or softening sentences. Representatives tend to send drafts unedited from their phones between visits.",
+  "ask": "Which design change BEST meets the review board's requirement?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Load the approved safety text into the prompt template as a variable and instruct the model to reproduce it word for word",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "A template variable puts the right wording in front of the model, but the model still retypes it, so merging or softening stays possible. The one-in-forty rate may fall, yet any single altered draft is still a violation."
+   },
+   {
+    "id": "b",
+    "text": "Check every draft's safety text against the approved version in code and warn the representative to fix any mismatch before sending",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "The comparison is exact, but the fix depends on representatives who tend to send drafts unedited from their phones. A warning they tap past lets altered safety text reach physicians, so the check becomes a paper gate."
+   },
+   {
+    "id": "c",
+    "text": "Have the model draft the personalised body alone, and have the application append the approved safety text after it",
+    "correct": true,
+    "trap": null,
+    "why": "The regulated text never passes through the model, so it cannot be merged or softened and nobody has to catch a mismatch. The model writes only the personalised body, which is where variation is acceptable."
+   },
+   {
+    "id": "d",
+    "text": "Replace the safety text in each email with a link to the approved prescribing information, so there is nothing to reproduce",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "The board requires every promotional email to carry the safety information itself. A link removes the required text instead of protecting it, trading compliance for an easier generation task."
+   }
+  ],
+  "explain": "Binding constraint: regulation requires the board-approved safety text verbatim in every email. Text that must never vary is appended by code after generation, so it holds whatever the model writes and whether or not a busy representative reads a warning; prompt variables, warnings and links each leave a gap.",
+  "rule": "CS-D2-04",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.2-002",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "logistics",
+  "family": "removed-code-check-diagnosis",
+  "counterTrap": false,
+  "signals": [
+   "Pilot logs contain occasional dangerous-goods rejections from the legacy API",
+   "Model version, prompt, shipment mix and tool-result sizes are unchanged"
+  ],
+  "stem": "Tarrow Freight's air-cargo booking agent moved from its pilot, which booked through the legacy carrier API, to a new rate-and-book API with lower fees. The system prompt, untouched since the pilot, says lithium-battery consignments must never go on passenger aircraft. The pilot ran four months without a violation; three violations occurred in the first month after cutover. Model version, prompt, shipment mix and tool-result sizes are unchanged. Pilot logs contain occasional dangerous-goods rejections from the legacy API.",
+  "ask": "What is the MOST likely cause of the new violations?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The prompt states the rule once without examples, so the agent treats it as a preference rather than a hard limit",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "A prompt rule was never the control here; the pilot logs show the agent already attempted these bookings, so stronger wording would only lower the odds. The wording is also identical to the pilot's, so it cannot explain the change."
+   },
+   {
+    "id": "b",
+    "text": "The new API returns longer option lists that crowd the context, so the lithium rule loses weight during booking",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The stem states that tool-result sizes are unchanged, so context crowding did not change either. This explanation blames a variable the cutover never touched."
+   },
+   {
+    "id": "c",
+    "text": "The legacy API rejected dangerous-goods bookings on passenger flights, a check the new API does not make",
+    "correct": true,
+    "trap": null,
+    "why": "The legacy rejections show the agent was already attempting such bookings during the pilot and the carrier system stopped them. The new API makes no such check, so the prompt's ordinary miss rate now reaches real bookings."
+   },
+   {
+    "id": "d",
+    "text": "The current tier lacks the reasoning depth to apply the rule across the new API's more complex fare structures",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Model version is unchanged and nothing points to reasoning failures. The pilot logs show the same attempts happening before cutover, when the legacy API caught them."
+   }
+  ],
+  "explain": "Binding constraint: what changed. Only the booking API changed, and the pilot logs show it was silently enforcing the rule. A must-never rule needs a code check such as a tool precondition, not the prompt alone.",
+  "rule": "CS-D2-04",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.2-003",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "regulation",
+  "industry": "pharma",
+  "family": "identifier-boundary-guardrail-pair",
+  "counterTrap": false,
+  "signals": [
+   "must not reach any external service",
+   "the privacy officer must learn of every exception"
+  ],
+  "stem": "Hollis Therapeutics' clinical-operations staff use an assistant to summarise site monitoring visit reports for a Phase III trial. Monitors paste report text that sometimes includes participants' names, dates of birth or hospital record numbers. The trial's data-management plan states that direct identifiers must not reach any external service and that the privacy officer must learn of every exception. All model calls pass through the company's API gateway.",
+  "ask": "Which TWO controls BEST satisfy the data-management plan? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Replace direct identifiers with placeholder tokens in the gateway before each request is forwarded",
+    "correct": true,
+    "trap": null,
+    "why": "This is the preventive control: identifiers are removed at the boundary, before anything leaves for the external API, so the provider never receives them whatever monitors paste."
+   },
+   {
+    "id": "b",
+    "text": "State in the system prompt that pasted identifiers must be ignored and never repeated in any summary",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "By the time the model reads this instruction the identifiers have already been sent. It may keep them out of summaries, but it does nothing to stop them reaching the external service."
+   },
+   {
+    "id": "c",
+    "text": "Redact identifiers from each summary before it is displayed to the clinical-operations team",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "Redacting the output hides identifiers from staff who can already see the source reports, while the prohibited transfer to the external service has already happened."
+   },
+   {
+    "id": "d",
+    "text": "Scan outbound request logs with an independent identifier detector and alert the privacy officer on each hit",
+    "correct": true,
+    "trap": null,
+    "why": "This is the detective control the plan also demands. A separate detector run over what actually left the gateway catches identifiers the tokeniser missed, and it tells the privacy officer about each exception."
+   },
+   {
+    "id": "e",
+    "text": "Retrain site monitors on the plan and add a warning banner above the report paste field",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Training lowers how often identifiers are pasted and is worth doing, but mistakes will still occur, and it neither blocks the transfer nor tells the privacy officer about one."
+   }
+  ],
+  "explain": "Binding constraint: the plan forbids identifiers crossing to an external service and requires every exception to be reported. That needs a preventive control before the boundary plus a detective control that alerts; prompt rules and output redaction act on the wrong side of it.",
+  "rule": "CS-D2-05",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-04",
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.2-004",
+  "rev": 3,
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "reuse",
+  "industry": "pharma",
+  "family": "per-client-template-variables",
+  "counterTrap": false,
+  "signals": [
+   "two copies were missed",
+   "being sent in any request made for another sponsor"
+  ],
+  "stem": "Calloway Clinical, a contract research organisation, drafts patient safety narratives for 14 pharmaceutical sponsors, and each request covers one sponsor's trial. Each sponsor has its own hand-maintained copy of a long system prompt that combines the regulated narrative structure with that sponsor's terminology and confidential product details. When the narrative structure was revised last quarter, two copies were missed and a month of narratives needed rework. Sponsor contracts prohibit one sponsor's product details from being sent in any request made for another sponsor.",
+  "ask": "What should the solutions architect do NEXT to stop the narrative structure drifting across sponsors?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Build one versioned prompt containing every sponsor's section, and add a line naming the requesting sponsor so the model follows only that section",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "One versioned prompt would end the drift, but every request would then carry all 14 sponsors' confidential details. Naming the requesting sponsor only steers which section the model uses; the other sponsors' details have already been sent, which the contracts forbid."
+   },
+   {
+    "id": "b",
+    "text": "Keep the 14 sponsor copies, and diff each one nightly against a versioned master structure, alerting the owner to any mismatch",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "A nightly diff would catch a missed copy within a day rather than a month, but 14 copies would still be edited by hand. It finds drift after it happens instead of removing the duplication that causes it, which is what the ask needs."
+   },
+   {
+    "id": "c",
+    "text": "Build one versioned template for the narrative structure, and insert the requesting sponsor's details from a per-sponsor store at runtime",
+    "correct": true,
+    "trap": null,
+    "why": "One owned, versioned template makes a structure revision a single change for all 14 sponsors, and filling its variables from a per-sponsor store at runtime means each request carries only its own sponsor's details, which keeps the contractual separation."
+   },
+   {
+    "id": "d",
+    "text": "Add a release step in which a second engineer confirms that each of the 14 copies is updated before a structure revision goes live",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "A second engineer's confirmation adds a human check to a process that still has 14 copies to edit by hand. It may catch a miss, but the duplication behind the drift remains, and confirmations of this kind tend to become routine."
+   }
+  ],
+  "explain": "Binding constraint: one regulated narrative structure is reused across 14 sponsors whose contracts keep each sponsor's details out of every other sponsor's requests. Shared structure belongs in one versioned template with only the requesting sponsor's details injected at runtime; a single prompt holding every sponsor's section sends those details regardless of what the model is told, and diffs or sign-offs leave the 14 copies in place.",
+  "rule": "CS-D2-12",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": "2.5"
+ },
+ {
+  "id": "P2-2.2-005",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "ownership",
+  "industry": "telecom",
+  "family": "contradictory-prompt-sections",
+  "counterTrap": false,
+  "signals": [
+   "says every reply must be in English",
+   "only plan names and brand terms need to stay in English"
+  ],
+  "stem": "Tolliver Mobile's customer-care assistant runs on a 5,000-word system prompt that the care, billing and brand teams have each extended over the past year. Care's section says to reply in the language the customer writes in. Brand's section, added later, says every reply must be in English so that plan names stay consistent. A review of 400 Spanish and Polish chats found a third answered in English; those replies were otherwise accurate and on tone. The brand team, which owns its section, confirms that only plan names and brand terms need to stay in English.",
+  "ask": "Which change BEST stops the English replies to Spanish and Polish customers?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Restate care's reply-language rule in capitals and repeat it at both the start and the end of the system prompt",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Emphasis makes the language rule louder but leaves the brand line demanding English, so the model still has to choose between two instructions that cannot both hold. Capitals and repetition do not remove the conflict behind the misses."
+   },
+   {
+    "id": "b",
+    "text": "Reword the brand section's English-only line so that it covers plan names and brand terms, not whole replies",
+    "correct": true,
+    "trap": null,
+    "why": "The misses come from two rules that cannot both be followed. Narrowing the brand line to the scope its owner confirmed removes the conflict, so both teams' real requirements hold together and the model no longer has to pick one."
+   },
+   {
+    "id": "c",
+    "text": "Move the assistant to a more capable tier that follows long system prompts written by several teams more reliably",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The replies are accurate and on tone, so capability is not the gap. A stronger tier meets the same two contradictory instructions and can resolve them either way, because the defect sits in the prompt, not the model."
+   },
+   {
+    "id": "d",
+    "text": "Delete the brand section's English-only line so that care's rule is the one instruction on reply language",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Deleting the line ends the conflict but also drops a requirement the brand team has confirmed still applies, so plan names would start appearing in translation. Rewording keeps that need while removing the contradiction."
+   }
+  ],
+  "explain": "Binding constraint: the brand team, which owns the conflicting line, needs only plan names and brand terms kept in English. Remove a contradiction by rewording the rule to its real scope instead of emphasising one side, upgrading the tier or deleting a requirement that still applies.",
+  "rule": "CS-D2-04",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.2-006",
+  "rev": 2,
+  "domain": 2,
+  "obj": "2.2",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "accuracy-floor",
+  "industry": "legal",
+  "family": "citation-lookup-guardrail-pair",
+  "counterTrap": false,
+  "signals": [
+   "firms subscribe mainly for those citations",
+   "no citation that fails to match an authority in the index may reach a subscriber",
+   "must learn quickly if fabrication rises"
+  ],
+  "stem": "Brackley Legal Research sells litigators an assistant that answers case-law questions with citations drawn from its retrieval index, and firms subscribe mainly for those citations. After a subscriber filed a brief citing an authority the assistant had invented, the general counsel set two requirements: no citation that fails to match an authority in the index may reach a subscriber, and the product team must learn quickly if fabrication rises after an index or model update.",
+  "ask": "Which TWO guardrails BEST meet the general counsel's requirements? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have the model cite index document IDs, and have code look up each ID and withhold any answer with a failed lookup",
+    "correct": true,
+    "trap": null,
+    "why": "A lookup in code gives a hard pass or fail on every citation, whatever the model generates, so an invented authority is stopped before display. Its results are also the signal that monitoring needs."
+   },
+   {
+    "id": "b",
+    "text": "Stop showing citations in answers, and link each answer to the search results it was drawn from instead",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "With no citations, none can be unverifiable, but the feature firms subscribe for disappears. It meets the first requirement by cutting the product's value rather than by checking what is shown."
+   },
+   {
+    "id": "c",
+    "text": "Log every failed citation lookup and alert the product team when the failure rate crosses an agreed threshold",
+    "correct": true,
+    "trap": null,
+    "why": "The second requirement is detection. Failed lookups are counted on live traffic, so a rise after an index or model update appears as an alert rather than as another subscriber's flawed brief."
+   },
+   {
+    "id": "d",
+    "text": "Add a second model call that checks each citation against the retrieved passages and strips any it judges unsupported",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "An uncalibrated model check is itself probabilistic and gives no hard pass or fail, so it can wave an invented authority through. It cannot hold a zero-unverifiable bar, and its verdicts are a weak signal to alert on."
+   },
+   {
+    "id": "e",
+    "text": "Show a notice on every answer reminding subscribers to check each citation before relying on it in a filing",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A notice is sensible alongside real controls, but it shifts the burden to subscribers and neither blocks an invented citation nor tells the product team that fabrication is rising."
+   }
+  ],
+  "explain": "Binding constraint: an accuracy floor of zero citations that fail to match the index, plus fast detection of regressions. A deterministic lookup prevents and alerting on its failures detects; a second model check is probabilistic, and dropping citations removes what subscribers pay for.",
+  "rule": "CS-D2-05",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P2-2.2-007",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "irreversibility",
+  "industry": "banking",
+  "family": "prompt-for-style-counter",
+  "counterTrap": true,
+  "signals": [
+   "cannot override",
+   "an agent reviews and edits every draft before it is sent",
+   "accurate and compliant with disclosure rules"
+  ],
+  "stem": "Pellham Bank's collections team uses an assistant to draft messages to customers in arrears. Payment-plan eligibility and amounts come from the servicing platform's rules engine, which the assistant reads through a tool and cannot override, and an agent reviews and edits every draft before it is sent. A quality audit found the drafts accurate and compliant with disclosure rules, but often curt and full of jargon such as 'delinquent'. The risk team proposes a blocking tone gate.",
+  "ask": "Which change BEST addresses the audit finding?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a blocking gate that rejects drafts failing a tone classifier or containing listed jargon, then regenerates them",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Code enforcement is for outcomes that must hold every time, and those are already enforced by the rules engine. A tone gate adds regeneration loops and false blocks while never teaching the model the register the bank wants."
+   },
+   {
+    "id": "b",
+    "text": "Move drafting to a more capable model tier, since empathy and register tend to improve with model capability",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The drafts are accurate, so capability is not the gap. Nothing tells the current tier what register the bank wants, and a larger tier without that guidance can be just as curt."
+   },
+   {
+    "id": "c",
+    "text": "Add tone guidance, preferred and avoided terms, and two example replies for arrears cases to the system prompt",
+    "correct": true,
+    "trap": null,
+    "why": "Tone is a style requirement where a miss is cheap: every draft is reviewed before sending, and eligibility and amounts are already enforced by the rules engine. Guidance and examples in the prompt fix the cause proportionately."
+   },
+   {
+    "id": "d",
+    "text": "Add a team leader's review of each draft after the agent's edit and before the message goes to the customer",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "A second reviewer adds cost and delay to a path that already has a human check, and agents would still be correcting the same curt drafts instead of receiving better ones."
+   }
+  ],
+  "explain": "Binding constraint: a cheap, recoverable miss, because agents review every draft and the rules engine already enforces what must hold. Tone and terminology belong in the system prompt with examples; a hard gate would be enforcement without a must-hold requirement.",
+  "rule": "CS-D2-04",
+  "ladder": "control-strength",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

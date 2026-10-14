@@ -1,0 +1,11 @@
+{
+ "title": "Study guides",
+ "summary": "Offline study apps for certification exams. Each one opens on a phone or a laptop and keeps working without a connection.",
+ "origin": "https://kanaparthysaisreekar.github.io",
+ "base": "/guides/",
+ "repo": "KanaparthySaiSreekar/guides",
+ "analytics": {
+  "endpoint": "https://guides-audit.kana-hive.workers.dev/e",
+  "dashboard": "https://guides-audit.kana-hive.workers.dev/admin"
+ }
+}

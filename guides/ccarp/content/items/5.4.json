@@ -1,0 +1,507 @@
+[
+ {
+  "id": "P5-5.4-001",
+  "rev": 1,
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "telecom",
+  "family": "gdpr-aggregate-before-prompt",
+  "counterTrap": false,
+  "signals": [
+   "raw call-detail records",
+   "depend only on monthly minutes, data volume and roaming days",
+   "far more personal data than the offer purpose requires"
+  ],
+  "stem": "Kestrel Mobile, an EU mobile operator, gives retention-desk agents a Claude assistant that drafts a save offer when a subscriber calls to cancel. The integration passes six months of the subscriber's raw call-detail records into each prompt, including numbers called, call times and serving cell-tower locations, so the model can judge how heavily the line is used. The offer rules depend only on monthly minutes, data volume and roaming days. The data protection officer has ruled that the prompts carry far more personal data than the offer purpose requires and has blocked the next release.",
+  "ask": "Which change BEST resolves the officer's ruling?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Hash the called numbers and cell-tower IDs in the call-detail records before each request",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Hashed identifiers are pseudonymised, not removed, so the prompt still carries a linkable per-call record of whom the subscriber contacts and where they travel. The payload the officer objected to is just as large."
+   },
+   {
+    "id": "b",
+    "text": "Route the assistant through an EU-bound endpoint so the call records never leave the Union",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Residency controls where the records are processed, not how many are sent. Every call and location record still enters the prompt, so the ruling about excess personal data stands unchanged."
+   },
+   {
+    "id": "c",
+    "text": "Screen each drafted offer and strip any location or contact details before the agent reads it",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "Filtering the offer acts after the call records have already been sent to the model. The officer objected to what enters the prompt, and an output screen leaves that untouched."
+   },
+   {
+    "id": "d",
+    "text": "Send monthly usage totals computed in the billing system instead of the raw call records",
+    "correct": true,
+    "trap": null,
+    "why": "The offer needs only minutes, data and roaming days. Aggregating inside the billing system means numbers called, call times and tower locations never reach the model, which is exactly the reduction the officer asked for."
+   }
+  ],
+  "explain": "Binding constraint: GDPR data minimisation, enforced by the data protection officer. Minimisation means less personal data reaches the model, so derive the totals the purpose needs before the boundary; pseudonymising, residency and output screening do not shrink the payload.",
+  "rule": "CS-D5-10",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.4-002",
+  "rev": 1,
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "regulation",
+  "industry": "telecom",
+  "family": "fedramp-authorised-environment-first",
+  "counterTrap": false,
+  "signals": [
+   "must sit inside a FedRAMP High authorisation boundary",
+   "the commercial account does not",
+   "FIRST"
+  ],
+  "stem": "Corvane Networks, a US carrier, runs the wide-area network for a federal civilian agency under a managed-services contract. Its engineers built a Claude assistant that summarises outage tickets and drafts incident bulletins, tested so far on Corvane's commercial API account with synthetic tickets only. The agency's contract states that any system processing its operational data must sit inside a FedRAMP High authorisation boundary, and the commercial account does not. The agency's programme office wants a pilot on live tickets next quarter.",
+  "ask": "What should Corvane's solution architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move the pilot design onto a hosting environment that is already authorised at FedRAMP High",
+    "correct": true,
+    "trap": null,
+    "why": "The contract gates on where the workload runs. Until the pilot sits inside an authorised boundary no live ticket may be processed, and every later artefact depends on which boundary is chosen."
+   },
+   {
+    "id": "b",
+    "text": "Draft the system security plan that maps each FedRAMP High control to an owner and evidence",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "The plan is needed, but it describes and inherits controls from a specific authorised boundary. Written before that boundary is chosen, it documents an environment the agency cannot accept."
+   },
+   {
+    "id": "c",
+    "text": "Stream prompts and outputs to the agency's SIEM with append-only, tamper-evident audit logging",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Audit evidence will be required during the pilot, but logging a workload on an unauthorised account does not bring it inside the boundary. Configure it once the authorised environment exists."
+   },
+   {
+    "id": "d",
+    "text": "Enable zero data retention on the commercial account and file the vendor's SOC 2 report",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Retention settings and a vendor attestation do not create a FedRAMP High authorisation. The contract names the boundary, and the commercial account stays outside it however little it retains."
+   }
+  ],
+  "explain": "Binding constraint: a contractual FedRAMP High requirement. Authorisation belongs to the hosting environment, so moving onto an already authorised boundary is the gate that the security plan and audit logging then build on.",
+  "rule": "CS-D5-11",
+  "ladder": "lifecycle",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.4-003",
+  "rev": 1,
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "manufacturing",
+  "family": "minimisation-tool-results-gap",
+  "counterTrap": false,
+  "signals": [
+   "have not changed",
+   "added a lookup tool",
+   "about one request in five"
+  ],
+  "stem": "Halvard Axles, an automotive parts maker with plants in Germany and Poland, runs a Claude assistant that helps shift supervisors plan cover for absent workers. Last quarter the data protection officer approved a prompt template carrying only employee ID, skills, certifications and availability. This month's audit of logged requests found home addresses, dates of birth and full absence histories in about one request in five. The template, the model version and supervisors' HR permissions, which already include those fields, have not changed. Two weeks ago the team added a lookup tool so supervisors can ask follow-up questions about a named employee.",
+  "ask": "What is the MOST likely cause of the audit finding?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The prompt template regressed in a recent deployment and lost its approved field list",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The stem says the template has not changed. A template regression would also put extra fields into every request, not into roughly one in five."
+   },
+   {
+    "id": "b",
+    "text": "The lookup tool returns the complete HR record, and its results enter the context unfiltered",
+    "correct": true,
+    "trap": null,
+    "why": "The tool is the only change, and follow-up lookups explain why only some requests are affected. Minimisation was applied to the template but not to tool results, so full records now reach the model."
+   },
+   {
+    "id": "c",
+    "text": "The lookup tool queries HR through a shared service account instead of each supervisor's identity",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "Per-user credentials would return the same fields, because supervisors are already entitled to them. The finding concerns which fields reach the model, not whose records the tool is able to open."
+   },
+   {
+    "id": "d",
+    "text": "The response filter that masks personal data was never extended to cover follow-up answers",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "An output filter acts on what supervisors see after the request has been sent. The audit found the fields in logged requests, which no response filter could have caused or prevented."
+   }
+  ],
+  "explain": "Binding constraint: what changed. With the template, model and permissions unchanged, the new tool is the only path that can add fields, and minimisation has to cover tool results as well as the prompt template.",
+  "rule": "CS-D5-10",
+  "ladder": "diagnosis",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.4-004",
+  "rev": 3,
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formC",
+  "type": "multi",
+  "select": 3,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "regulation",
+  "industry": "telecom",
+  "family": "hipaa-baa-eligible-config-audit",
+  "counterTrap": false,
+  "signals": [
+   "in-house speech-to-text system, running on its own servers",
+   "signed nothing with that provider",
+   "before the first real call transcript is summarised"
+  ],
+  "stem": "Tessaline Communications runs the patient contact centre for a regional hospital network, and each hospital has signed a business associate agreement naming Tessaline as its business associate. Tessaline's in-house speech-to-text system, running on its own servers, transcribes every recorded patient call. The product team wants Claude to summarise those transcripts so care coordinators see each caller's symptoms, medications and callback requests in the hospitals' care-management system. The summaries must name the patient, so de-identification is not an option. The integration will call the model provider's API from Tessaline's own organisation account, and Tessaline has signed nothing with that provider beyond its standard commercial terms.",
+  "ask": "Which THREE must Tessaline have in place before the first real call transcript is summarised? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Enable zero data retention on the account so no call transcript persists at the provider",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Zero retention limits how long Tessaline's transcripts stay at the provider. Sending an identified patient's transcript to a provider with no BAA is already an impermissible disclosure, and HIPAA readiness rests on an agreement and eligible configuration, not on deletion."
+   },
+   {
+    "id": "b",
+    "text": "Sign Tessaline's own business associate agreement with the model provider for this API use",
+    "correct": true,
+    "trap": null,
+    "why": "Tessaline is a business associate passing each caller's transcript to a subcontractor, so it needs its own agreement with the provider. Without it, the first summary request that names a patient is an impermissible disclosure."
+   },
+   {
+    "id": "c",
+    "text": "Rely on the hospitals' signed BAAs, which already name Tessaline as their business associate",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Those agreements bind Tessaline to the hospitals, not the model provider to Tessaline. Passing a caller's transcript on to the provider still needs a subcontractor BAA between Tessaline and the provider, and none exists yet."
+   },
+   {
+    "id": "d",
+    "text": "Run the account as a HIPAA-enabled organisation and limit the build to eligible features",
+    "correct": true,
+    "trap": null,
+    "why": "A signed agreement does not by itself configure the account, and coverage extends to eligible features alone. Enabling the configuration and scoping the build stops a developer from, for example, pushing the day's transcripts through a batch or file-upload feature that the agreement leaves out."
+   },
+   {
+    "id": "e",
+    "text": "Train care coordinators to check each summary against its source transcript before acting",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Checking summaries against transcripts is sound practice for accuracy, but it changes nothing about whether a caller's PHI may lawfully reach the provider, so it does not decide what must exist before the first transcript is sent."
+   },
+   {
+    "id": "f",
+    "text": "Record each request's initiating user or service, case record and timestamp in an audit trail",
+    "correct": true,
+    "trap": null,
+    "why": "HIPAA safeguards require audit controls over who accessed PHI and when, on Tessaline's own systems as well as the provider's. The trail lets Tessaline and the hospitals answer access reviews and investigate incidents involving the summaries."
+   }
+  ],
+  "explain": "Binding constraint: HIPAA, with identified PHI that a business associate passes to a subcontractor. Transcription stays in-house, so the provider is the only new recipient: Tessaline needs its own BAA with it, because the hospitals' BAAs do not flow down, plus a HIPAA-enabled configuration limited to eligible features and audit logging; zero retention substitutes for none of them.",
+  "rule": "CS-D5-09",
+  "ladder": null,
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.4-005",
+  "rev": 1,
+  "domain": 5,
+  "obj": "5.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "energy",
+  "family": "retention-obligation-zdr",
+  "counterTrap": true,
+  "signals": [
+   "no personal data",
+   "no external service retain operational data once a request completes",
+   "cut build effort and token spend"
+  ],
+  "stem": "Solvik Nett, a Nordic transmission grid operator, is piloting a Claude assistant that helps control-room engineers work through substation alarm floods during investigations that last several days. Inputs are SCADA alarm logs and switching sequences with no personal data. A national critical-infrastructure rule, written into Solvik's security policy, requires that no external service retain operational data once a request completes. The platform team favours the provider's server-side conversation storage, which would cut build effort and token spend compared with resending each investigation's history on every turn.",
+  "ask": "Which design is BEST for Solvik's pilot?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Strip substation names and asset identifiers from the alarm logs before they reach the model",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Minimisation fits obligations about personal or identifying data. This rule is about retention, so sanitised logs kept in provider-side threads are still retained operational data, and engineers lose the asset context they need."
+   },
+   {
+    "id": "b",
+    "text": "Use the server-side storage and run a job that deletes each thread from it when the shift ends",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "Deleting threads after a shift means operational data sat at the provider for hours after each request completed. The rule forbids that retention, so cleaning up afterwards is a control applied too late."
+   },
+   {
+    "id": "c",
+    "text": "Use the server-side storage and alert security whenever a thread is opened outside the control room",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Alerting on access detects misuse of stored threads but does nothing to stop the storage itself. The obligation is that the data is not retained, which only a preventive design satisfies."
+   },
+   {
+    "id": "d",
+    "text": "Arrange zero data retention and keep investigation history in Solvik's store, resent each turn",
+    "correct": true,
+    "trap": null,
+    "why": "The rule concerns retention of prompts and outputs, and nothing here is personal data or PHI. Zero retention with client-held history is the matching mechanism, and the extra tokens are the price of clearing a gate."
+   }
+  ],
+  "explain": "Binding constraint: a retention rule on non-personal operational data, which outranks the build and token savings. Zero data retention is a trap when offered as HIPAA or GDPR compliance, but it is the right mechanism when the requirement really is about retaining prompts and outputs.",
+  "rule": "CS-D5-09",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-12"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.4-006",
+  "rev": 1,
+  "domain": 5,
+  "obj": "5.4",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "residency",
+  "industry": "logistics",
+  "family": "eu-residency-plus-evidence",
+  "counterTrap": false,
+  "signals": [
+   "processed only inside the EU",
+   "will ask for proof",
+   "whichever region has spare capacity"
+  ],
+  "stem": "Lindqvist Freight, a Swedish logistics provider, uses a Claude assistant to draft customs declarations from commercial invoices that name consignees and their addresses. A new contract with a German automotive client requires that the client's personal data be processed only inside the EU, and the client's auditor will ask for proof at the first annual review. Today the assistant calls a global endpoint that sends each request to whichever region has spare capacity, and nobody records where requests were served.",
+  "ask": "Which TWO actions BEST meet the obligation and satisfy the auditor? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Switch the assistant from the global endpoint to one that is bound to EU regions",
+    "correct": true,
+    "trap": null,
+    "why": "An endpoint bound to EU regions keeps inference inside the Union, which capacity-based global routing cannot promise; residency also needs every store, log, trace and backup on the path in-region."
+   },
+   {
+    "id": "b",
+    "text": "Hand the auditor the model provider's SOC 2 report and its signed data processing agreement",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "Vendor attestations describe the provider's own controls, not where Lindqvist sent this client's requests. They cannot show that capacity-based routing kept processing inside the EU."
+   },
+   {
+    "id": "c",
+    "text": "Keep the global endpoint and alert compliance whenever a request is served outside the EU",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "An alert fires after the client's data has already been processed outside the Union. Detection cannot stand in for the preventive routing change the obligation requires."
+   },
+   {
+    "id": "d",
+    "text": "Keep a tamper-evident record of each request's serving region, owned by the compliance lead",
+    "correct": true,
+    "trap": null,
+    "why": "The auditor wants proof, not assurances. A per-request record with a named owner is the evidence artefact that shows the obligation held throughout the contract year."
+   },
+   {
+    "id": "e",
+    "text": "Publish an internal policy stating that client personal data is processed only in the EU",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A policy restates the obligation but changes neither where requests run nor what the auditor can verify, so it does not affect the outcome this question asks about."
+   }
+  ],
+  "explain": "Binding constraint: an EU residency obligation that must be proven. Meet it by where the workload runs, with a geography-bound endpoint and an in-region data path, and prove it with an owned evidence record; vendor attestations and after-the-fact alerts do neither.",
+  "rule": "CS-D5-11",
+  "ladder": null,
+  "tips": [
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P5-5.4-007",
+  "rev": 2,
+  "domain": 5,
+  "obj": "5.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "manufacturing",
+  "family": "phi-deidentify-before-boundary",
+  "counterTrap": false,
+  "signals": [
+   "depend only on the wording of the appeal",
+   "no business associate agreement with any model provider or cloud platform",
+   "live this quarter"
+  ],
+  "stem": "Rotherby Aerostructures sponsors a self-insured health plan for its 9,000 employees. Its benefits team reviews claim appeal letters that contain member names, plan numbers, diagnoses and treatment dates, and wants Claude to sort each letter into one of six appeal reasons so it reaches the right reviewer. The categories depend only on the wording of the appeal, not on who the member is, and each letter already carries an internal case ID. Rotherby has no business associate agreement with any model provider or cloud platform, legal expects one to take many months, and the benefits director wants the pilot live this quarter.",
+  "ask": "Which approach BEST lets the pilot proceed within HIPAA?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Sign a BAA with the provider first, then sort the full letters through its eligible features",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A BAA is the right route when the task needs identity, but it assumes the pilot can wait many months when it is due this quarter. Sorting needs only the wording, so identified letters would exceed what the task requires anyway."
+   },
+   {
+    "id": "b",
+    "text": "Constrain the model's reply to the six category codes so no member detail flows back",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "Limiting the reply keeps PHI out of the case system downstream, but each full letter, with names and diagnoses, has already reached a provider that has no BAA. The control acts after the disclosure."
+   },
+   {
+    "id": "c",
+    "text": "Call the model through a service account that can read only the appeals queue",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "A narrowly scoped identity limits which letters the integration can pull from Rotherby's systems. It does nothing about the identified letters it then sends to a provider that has no BAA with the plan."
+   },
+   {
+    "id": "d",
+    "text": "De-identify each letter before it is sent and re-link the category by internal case ID",
+    "correct": true,
+    "trap": null,
+    "why": "Sorting depends only on the appeal wording. Removing names, plan numbers, dates and other identifiers before the call means no PHI reaches a provider without a BAA, and the case ID routes each result back internally."
+   }
+  ],
+  "explain": "Binding constraint: HIPAA with no BAA attainable in the pilot window. When the task does not need identity, de-identify PHI before it crosses the boundary; a BAA suits identified workloads, while reply limits and scoped identities act on the wrong side of the disclosure.",
+  "rule": "CS-D5-09",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

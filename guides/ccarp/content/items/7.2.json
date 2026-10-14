@@ -1,0 +1,429 @@
+[
+ {
+  "id": "P7-7.2-001",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.2",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "logistics",
+  "family": "rollout-outcome-vs-baseline",
+  "counterTrap": false,
+  "signals": [
+   "agreed two measures",
+   "whether the rollout delivered what was agreed"
+  ],
+  "stem": "Wendover Parcel's platform group gave its 140 route-optimisation developers an AI coding assistant six months ago. Before rollout, the engineering director and the CFO agreed two measures, median pull-request cycle time (then 4.2 days) and escaped defects per quarter (then 11), and a target: cycle time down by a fifth with no rise in escaped defects. Licence renewal is due next month, and the CFO has asked the director to show whether the rollout delivered what was agreed.",
+  "ask": "What should the director BEST present to the CFO?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Deployment frequency and change-failure rate since rollout, set beside the six months before it and an industry benchmark",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "These are sound delivery outcomes with a benchmark, but they are not the measures or the target agreed with the CFO. Swapping in new measures and a new bar after rollout cannot show whether the agreed target was met."
+   },
+   {
+    "id": "b",
+    "text": "Cycle time and escaped defects for the squads that use the assistant most, set beside the squads that use it least",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This uses the agreed measures but compares squads with each other, assuming heavy and light users do similar work. The target was set against the pre-rollout values, so a split by usage cannot show whether the group met it."
+   },
+   {
+    "id": "c",
+    "text": "Median pull-request cycle time and escaped defects per quarter now, set beside the pre-rollout values and target",
+    "correct": true,
+    "trap": null,
+    "why": "The director and CFO fixed the measures, their starting values and the target before rollout. Showing today's cycle time and escaped defects against those answers exactly what the CFO asked; the practices that moved them can then explain the result."
+   },
+   {
+    "id": "d",
+    "text": "A projection of next year's savings if the renewal also extends licences to the 60 warehouse-systems developers",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Extending licences is a fair renewal question once the agreed target is shown to be met, but a savings projection presumes that answer. The CFO asked first whether the rollout delivered, so this belongs after that evidence."
+   }
+  ],
+  "explain": "Binding constraint: evidence quality. The measures, their baseline and the target were agreed before rollout, so the director reports those measures against the pre-rollout values and the target, plus what moved them; substitute measures, usage splits or forward projections cannot show that the agreed target was met.",
+  "rule": "CS-D7-04",
+  "ladder": "eval-grading",
+  "tips": [
+   "TIP-EL-11"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.2-002",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.2",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "accuracy-floor",
+  "industry": "media",
+  "family": "ai-first-pass-review-with-floor",
+  "counterTrap": false,
+  "signals": [
+   "drafted in each author's own Claude Code session",
+   "A named senior engineer approves every merge",
+   "only if escaped defects stay at or below this year's rate"
+  ],
+  "stem": "Brindlecast, a streaming-video company, has 50 engineers on its rights-management service, and most changes are drafted in each author's own Claude Code session. CI already runs a linter and a coverage gate. Pull requests wait a median of 2.6 days for a first senior review, and an audit of 400 reviews found that most senior comments flag misleading names, tests that skip the changed behaviour and unchecked null paths across service calls. A named senior engineer approves every merge. The CTO will keep a review change only if escaped defects stay at or below this year's rate.",
+  "ask": "Which TWO actions BEST shorten the wait for first review in a form the CTO will keep? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run a separate Claude reviewer in CI that comments on naming, test relevance and null paths before a senior is assigned",
+    "correct": true,
+    "trap": null,
+    "why": "The audit's comments are enumerable issues that the linter and coverage gate miss, a toil-heavy first pass. A reviewer instance separate from the authoring session clears them before assignment, so seniors start sooner on logic and still approve every merge."
+   },
+   {
+    "id": "b",
+    "text": "Let the CI reviewer approve and merge changes that touch only tests or documentation once every check has passed",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Auto-merging a low-risk change class can suit a team whose policy owner allows it, but here a named senior approves every merge. Handing that approval to the reviewer is the fastest cut, yet it breaks a rule the stem keeps in place."
+   },
+   {
+    "id": "c",
+    "text": "Add a review pass to each author's Claude Code session that checks names, tests and null paths before the pull request opens",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "Most changes are drafted in the author's own session, so a review pass there grades its own work with the same context and blind spots. The audited issues already survive that flow, so they need a reviewer independent of the author."
+   },
+   {
+    "id": "d",
+    "text": "Compare escaped defects per release after switch-on with the rate for this year, starting with the first release reviewed this way",
+    "correct": true,
+    "trap": null,
+    "why": "The CTO keeps the change only if escaped defects stay at or below this year's rate, so the team has to show that comparison. Without it, even a much shorter wait is dropped and the review change does not last."
+   },
+   {
+    "id": "e",
+    "text": "Show the median wait for first senior review on the team's dashboard each week so that everyone sees the queue shrink",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A visible wait trend is good practice and shows progress, but it neither removes the senior comments that cause the wait nor shows that the defect rate held, so it changes nothing the CTO will judge."
+   }
+  ],
+  "explain": "Binding constraint: the CTO's floor on escaped defects, with a named senior approving every merge. Put a reviewer independent of the authoring session on the enumerable first pass the linter misses, and show escaped defects against this year's rate so the change is kept; self-review and auto-merge each lose the independence or the approval the stem keeps.",
+  "rule": "CS-D7-06",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.2-003",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "healthcare",
+  "family": "runtime-emergent-debugging-loop",
+  "counterTrap": true,
+  "signals": [
+   "choosing each from what the last one showed",
+   "ends in a pull request that a human must approve",
+   "The model version, the prompts and the job's read access"
+  ],
+  "stem": "Penhallow Health's integration team runs a fixed three-step Claude pipeline on nightly interface-test failures: read the failing test's log, patch the file named in the stack trace, then rerun that test. Each run ends in a pull request that a human must approve. In the pilot, when most failures were mapping-table errors, it fixed 78% of them. This quarter most failures come from upstream services, and the fix rate is 22%. Traces show each patch landed in the stack-trace file; engineers who fixed the same failures by hand followed imports through two to five further files, choosing each from what the last one showed. The model version, the prompts and the job's read access to every repository have not changed.",
+  "ask": "What is the MOST likely cause of the low fix rate?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The current model tier lacks the multi-step reasoning depth needed to diagnose faults that span several upstream services",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The traces show patches landing in the stack-trace file while the faults sat further upstream, so the model never read the defective code. A stronger tier reasons better over what it reads but cannot fix files the chain never opens."
+   },
+   {
+    "id": "b",
+    "text": "The patch step's prompt carries the test log but none of the upstream services' source, so it lacks the context to see the fault",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "No context bundle can be built in advance, because which upstream files matter is learned only by reading each in turn. Too little context is a symptom of the fixed chain, not its cause."
+   },
+   {
+    "id": "c",
+    "text": "The failures now need a path chosen file by file at runtime, which a fixed chain cannot follow but an agent loop could",
+    "correct": true,
+    "trap": null,
+    "why": "Engineers chose each next file from what the last one showed, so the number and order of steps vary by failure. A fixed chain stops at the stack-trace file; an agent loop fits because steps emerge at runtime and each run still ends in a human-approved pull request."
+   },
+   {
+    "id": "d",
+    "text": "The chain is one fixed step short: it has no step that opens the upstream service's entry file before patching",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "A fourth fixed step suits faults that always sit one file away, but these sat two to five files away and each next file was known only from the last. Any fixed count stops short, so the lowest-rung instinct under-builds here."
+   }
+  ],
+  "explain": "Binding constraint: what changed is the failure class, while model, prompts and access did not. The traces show a path chosen from each file's content, so no fixed chain or extra fixed step can follow it; with every run ending in a human-approved pull request, this is the case where an agent loop is justified and the fixed workflow is the under-built answer.",
+  "rule": "CS-D1-06",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-RD-04",
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": "1.3"
+ },
+ {
+  "id": "P7-7.2-004",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.2",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "least-privilege",
+  "industry": "pharma",
+  "family": "headless-ci-minimal-allowlist",
+  "counterTrap": false,
+  "signals": [
+   "The job's only task is to read the diff and post review comments",
+   "inherits the shared build account's user settings, which allow file edits and git push",
+   "held to exactly what its task requires"
+  ],
+  "stem": "Marrowfield Biosciences' lab-informatics team runs an unattended Claude job in CI on every pull request to its validated sample-tracking system. The job's only task is to read the diff and post review comments. It loads whatever hooks and MCP servers it finds on the runner and in the repository, and it inherits the shared build account's user settings, which allow file edits and git push. The quality-assurance lead wants the job held to exactly what its task requires.",
+  "ask": "What is the BEST change to the job's configuration?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Load only explicitly passed settings, skip auto-loaded hooks and MCP servers, and limit its tools to diff reading and comment posting",
+    "correct": true,
+    "trap": null,
+    "why": "Dropping the inherited settings and cutting the available tools to reading and commenting removes edit and push rather than watching them, and skipping auto-loaded hooks and servers stops the runner or repository widening the job's reach. That is exactly what its task requires."
+   },
+   {
+    "id": "b",
+    "text": "Keep its current permissions, but log every push it attempts and alert the team lead and QA in real time when one occurs",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "Logging and alerting are detective controls on a capability the job never needs. Push stays available to a mistaken or injected instruction, and the alert arrives after the change has reached a branch of the validated system."
+   },
+   {
+    "id": "c",
+    "text": "Pass it a pre-approved tool list that covers only diff reading and comment posting, and deny any other tool call that would prompt",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes a pre-approved list replaces what the job inherits. Allow rules from every loaded settings source combine, so the build account's edit and push rules still apply without a prompt, and runner hooks and MCP servers still load."
+   },
+   {
+    "id": "d",
+    "text": "Push a managed-settings deny on git push to every Claude session in the company, so that no developer or CI runner can override it",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "A managed deny would stop the job pushing, but it blocks every developer's Claude-assisted pushes company-wide and leaves file edits, hooks and MCP servers in place. The need is one job's scope, not a fleet policy."
+   }
+  ],
+  "explain": "Binding constraint: least privilege for a job whose task is read-and-comment. Drop the inherited settings and auto-loaded hooks and servers, and restrict the available tools to that task; a pre-approval list only adds to the edit and push rules the job inherits, while logging or a fleet-wide deny guards or overreaches instead of removing.",
+  "rule": "CS-D7-05",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.2-005",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "least",
+  "constraint": "ownership",
+  "industry": "logistics",
+  "family": "release-approval-stays-human",
+  "counterTrap": false,
+  "signals": [
+   "contractually accountable to key shippers for every production release",
+   "leave that accountability where it is"
+  ],
+  "stem": "Saltmarsh Haulage's platform lead is drafting a plan to bring Claude Code to the team behind its transport-management system, which schedules 900 trucks. The release manager is contractually accountable to key shippers for every production release, and the plan must leave that accountability where it is. The lead wants less engineering toil and a clear record of what Claude touched in each release. Four elements have been proposed for the plan.",
+  "ask": "Which proposed element is LEAST appropriate for the plan?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Engineers use Claude Code interactively to trace scheduling bugs across the codebase, then write and submit each fix themselves",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "This looks like autonomy for its own sake, but tracing a bug is an open-ended path that the engineer steers, and the engineer writes and submits every fix, so toil falls and no release decision moves."
+   },
+   {
+    "id": "b",
+    "text": "A per-release list of the changes Claude drafted or reviewed, attached to each release for the release manager's sign-off",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "This looks like a detective record where a preventive control is wanted, but the plan asks for a record of what Claude touched, and handing it to the accountable manager at sign-off supports that accountability rather than moving it."
+   },
+   {
+    "id": "c",
+    "text": "Auto-merge for dependency patch bumps that pass every test, a change class the release manager approved; releases still need sign-off",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "This looks like handing a decision to automation, but the accountable owner approved the change class and still signs off every production release, so accountability does not move."
+   },
+   {
+    "id": "d",
+    "text": "An approval step in which Claude signs off weekend releases it rates as low risk and passes the rest to the release manager",
+    "correct": true,
+    "trap": null,
+    "why": "Approving releases moves the decision from the accountable release manager to the model, which the plan forbids. Claude's own risk rating decides which releases skip the manager, which is self-grading, not a calibrated signal; at most it could inform the manager's review."
+   }
+  ],
+  "explain": "Binding constraint: decision ownership. The release manager stays accountable for every production release, so Claude may cut toil and record what it touched, and an owner-approved auto-merge class leaves release sign-off in place, but Claude approving releases on its own risk rating moves the decision away from the owner.",
+  "rule": "CS-D7-06",
+  "ladder": "hitl-routing",
+  "tips": [
+   "TIP-EL-13",
+   "TIP-EL-10"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.2-006",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.2",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "lifecycle-stage",
+  "industry": "manufacturing",
+  "family": "baseline-before-expansion",
+  "counterTrap": false,
+  "signals": [
+   "licences are paid from the first day of the quarter",
+   "each own a different robot line with its own release cadence",
+   "history cannot rebuild them"
+  ],
+  "stem": "Grindlow Motors' web-portal teams adopted an AI coding assistant last year without any before-and-after measures, and they say they feel much faster. The VP of engineering now wants the 70 engineers who write firmware for the plant's welding robots to use it, and the licences are paid from the first day of the quarter. Finance approved the spend on condition that the VP shows at the spring budget review that firmware delivery improved. The four firmware squads each own a different robot line with its own release cadence. No firmware delivery metrics are tracked today, and past tickets were closed in bulk, so history cannot rebuild them.",
+  "ask": "What is the BEST way for the VP to proceed?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Record two sprints of firmware lead time and escaped defects, agree the improvement target with finance, then switch on",
+    "correct": true,
+    "trap": null,
+    "why": "The rollout has not started and history cannot rebuild a baseline, so this is the only moment to record one. Each squad is then compared with its own before-state against an agreed target, and two sprints of idle licences cost less than spend finance cannot see proven."
+   },
+   {
+    "id": "b",
+    "text": "Switch on for two of the four squads now and compare their lead time and escaped defects with the other two squads at spring",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A concurrent comparison group looks rigorous, but it assumes the squads do comparable work, and each owns a different robot line with its own release cadence. It also leaves half the paid licences idle for the whole quarter."
+   },
+   {
+    "id": "c",
+    "text": "Switch on for all 70 now and give finance the web-portal teams' reported speed-up as the gain firmware should expect",
+    "correct": false,
+    "trap": "T-VIBES",
+    "why": "The web teams never measured their gain, so the figure is a feeling with no baseline or bar, and portal work differs from robot firmware. Finance asked for proof that firmware delivery improved, which this cannot give."
+   },
+   {
+    "id": "d",
+    "text": "Switch on for all 70 now, agree a lead-time target with finance, and start recording both measures from that same day",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Tracking both measures and agreeing a target are right, and starting at switch-on uses every paid licence, but the numbers would have no before-state. The baseline has to exist before the change, even at the cost of a short delay."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. The rollout has not started and history cannot rebuild a baseline, so recording one and agreeing the target come before switch-on; the idle-licence cost yields to finance's condition, because without each squad's before-state the spring review cannot show improvement.",
+  "rule": "CS-D7-04",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

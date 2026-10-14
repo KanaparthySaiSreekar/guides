@@ -1,0 +1,433 @@
+[
+ {
+  "id": "P7-7.1-001",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "reuse",
+  "industry": "manufacturing",
+  "family": "committed-project-config-drift",
+  "counterTrap": false,
+  "signals": [
+   "same setup for anyone who clones the monorepo",
+   "other product lines follow different conventions",
+   "personal token"
+  ],
+  "stem": "Holmfirth Controls writes PLC firmware for packaging lines in one monorepo shared by five squads. An audit of Claude Code use found each squad had set it up differently: two squads connect Claude to the internal parts-catalogue MCP server and three never did, and new hires keep missing the monorepo's naming and memory-allocation conventions. Holmfirth's other product lines follow different conventions. The squad leads want the same setup for anyone who clones the monorepo, and the catalogue server authenticates each developer with a personal token so that it can log who looked up which part.",
+  "ask": "Which TWO changes BEST give everyone working in the monorepo the same Claude Code setup? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Commit the catalogue server to the project MCP config with a shared service-account token so each clone connects without setup",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "The catalogue authenticates each developer with a personal token; a committed shared token puts a secret in the repository and erases each developer's identity at the catalogue server, which can then no longer log who looked up which part."
+   },
+   {
+    "id": "b",
+    "text": "Commit the naming and memory-allocation conventions to the project CLAUDE.md at the monorepo's root",
+    "correct": true,
+    "trap": null,
+    "why": "Project CLAUDE.md is version-controlled and loads in every session opened in the monorepo, so all five squads and each new hire get the same conventions without touching other product lines."
+   },
+   {
+    "id": "c",
+    "text": "Deploy the conventions and the catalogue server through the organisation's managed configuration on every engineering laptop",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "Managed configuration loads on every laptop whatever repository is open, so it would impose this monorepo's naming and memory-allocation rules on the product lines that follow different conventions."
+   },
+   {
+    "id": "d",
+    "text": "Schedule a quarterly review that compares each squad's Claude Code configuration against a reference setup",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A review finds drift after it has happened but does not give anyone the same setup; once the configuration is committed, there is nothing per squad left to compare."
+   },
+   {
+    "id": "e",
+    "text": "Add the catalogue server to a version-controlled project MCP config that reads each token from an environment variable",
+    "correct": true,
+    "trap": null,
+    "why": "A version-controlled project MCP config gives every clone the same catalogue connection, while the environment-variable reference lets each developer supply a personal token that never enters the repository."
+   }
+  ],
+  "explain": "Binding constraint: one setup reused by five squads in one repository, not across the company. Team-wide behaviour belongs in version-controlled project config, with secrets referenced through environment variables and never committed; user-level copies drift apart at the next change, and managed configuration would impose these conventions on other product lines.",
+  "rule": "CS-D7-02",
+  "ladder": "config-reach",
+  "tips": [
+   "TIP-DM-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.1-002",
+  "rev": 3,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "regulation",
+  "industry": "pharma",
+  "family": "managed-deny-before-rollout",
+  "counterTrap": false,
+  "signals": [
+   "on any workstation, with no team exceptions",
+   "start its pilot this week"
+  ],
+  "stem": "Calverley Biologics will switch on Claude Code next month for 350 engineers across 60 repositories, all on managed macOS and Linux workstations. Several repositories sit beside folders of unblinded clinical-trial data, and the head of GxP quality has ruled that no AI coding tool may read those folders on any workstation, with no team exceptions. Engineering leadership also wants shared conventions and approved MCP servers in every team's repositories, and the biostatistics tooling squad is pressing to start its pilot this week on a single repository to keep the programme on schedule.",
+  "ask": "What should the platform team do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Deploy managed deny rules and a locked sandbox read block (required, no unsandboxed retries, central read paths) for the trial-data folders to every workstation",
+    "correct": true,
+    "trap": null,
+    "why": "The ruling covers every workstation with no exceptions, so the block ships centrally before the first seat. Managed deny rules cannot be loosened by any lower scope, and the sandbox read block holds against project and user read-path additions once managed settings require the sandbox, refuse unsandboxed retries and honour managed read paths alone."
+   },
+   {
+    "id": "b",
+    "text": "Let the pilot squad start this week, with a deny rule and a required sandbox read block for the trial-data folders committed to its own repository's shared settings file",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "However strong the rules, they sit in one repository whose own developers can edit or extend them, while the other 59 repositories and every other workstation stay open; it keeps the schedule by trading away the fleet-wide ruling."
+   },
+   {
+    "id": "c",
+    "text": "Publish a managed CLAUDE.md to every workstation stating that the trial-data folders are off limits to Claude in each session and in every repository",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "It reaches every machine, but CLAUDE.md is context that Claude can overlook, not a control the client enforces; the ruling needs a block on file tools and shell commands that holds whatever the model decides."
+   },
+   {
+    "id": "d",
+    "text": "Commit the shared conventions and approved MCP servers to each team's repositories so that every team starts from the same reviewed configuration on day one",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Committed project config is the right way to standardise teams, but it is convenience work that can follow; the non-negotiable read block has to exist before any engineer starts."
+   }
+  ],
+  "explain": "Binding constraint: a GxP ruling that no workstation may let an AI tool read trial data, which outranks the pilot's schedule. Fleet-wide blocks go into managed settings before any seat is enabled: deny rules that no lower scope can loosen, plus a required sandbox with no unsandboxed fallback and managed-only read paths, because deny rules alone do not stop scripts or shell commands that read files without naming them.",
+  "rule": "CS-D7-01",
+  "ladder": "config-reach",
+  "tips": [
+   "TIP-DM-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.1-003",
+  "rev": 1,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "saas",
+  "family": "fail-open-hook-diagnosis",
+  "counterTrap": false,
+  "signals": [
+   "new standard OS image",
+   "the validation script's own log has no entries from them",
+   "Claude Code version are unchanged"
+  ],
+  "stem": "Quarrybank Analytics protects its production migration folder with a hook, delivered through managed settings, that calls a validation script and blocks Claude Code edits to that folder unless a change ticket is referenced. It held for eight months. Last week IT moved every developer laptop to a new standard OS image, and since then three unticketed migration edits have gone through on re-imaged laptops. The managed settings file, hook definition, protected-path list and Claude Code version are unchanged, other managed rules still apply on those laptops, and the validation script's own log has no entries from them.",
+  "ask": "What is the MOST likely cause of the unblocked edits?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The validation script cannot run on the new image, and the hook was not written to block when its script fails",
+    "correct": true,
+    "trap": null,
+    "why": "The OS image is the only change, and a script that logs nothing on those laptops never ran; a hook whose script fails lets the action proceed unless its author made failures block."
+   },
+   {
+    "id": "b",
+    "text": "Fresh user settings on the new image include allow rules that take precedence over the managed hook",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "Managed settings sit above user scope and an allow rule cannot switch off a hook's block, so fresh user settings on the new image cannot explain edits passing a managed hook."
+   },
+   {
+    "id": "c",
+    "text": "The new image no longer loads the user-level CLAUDE.md file that told Claude to leave the migration folder alone",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "CLAUDE.md is advisory context and was never the control; losing it might make Claude attempt more edits, but a working managed hook would still have blocked each one."
+   },
+   {
+    "id": "d",
+    "text": "A tool-name change in Claude Code means the hook's matcher no longer recognises edits made to the migration folder",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The Claude Code version and hook definition are both unchanged, and the leaks occur only on re-imaged laptops, so a matcher mismatch cannot explain why only the new image lets edits through."
+   }
+  ],
+  "explain": "Binding constraint: what changed, which is only the OS image, while settings, hook, paths and client version stayed fixed. A hook is fail-closed only if it blocks when its own script fails, so policy hooks need tested error handling on every new image.",
+  "rule": "CS-D7-03",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.1-004",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "determinism",
+  "industry": "legal",
+  "family": "deny-rule-plus-failclosed-hook",
+  "counterTrap": false,
+  "signals": [
+   "rather than left to Claude's judgement",
+   "nobody on the team needs Claude to read privileged documents"
+  ],
+  "stem": "Farrow Keane LLP's legal-engineering team builds e-discovery tooling in one repository, with Claude Code enabled for its twelve developers. The repository's CLAUDE.md says Claude must never open the privileged-documents folder and must run the redaction check before any command that uploads test fixtures to the shared evaluation bucket. A privilege audit found two sessions in which Claude read privileged files and one in which it uploaded unredacted fixtures. The general counsel wants both rules enforced by the tooling in every session rather than left to Claude's judgement, and nobody on the team needs Claude to read privileged documents.",
+  "ask": "Which TWO changes BEST meet the general counsel's requirement? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a session-start hook that loads both rules into Claude's context at the beginning of every session in the repository",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "The hook makes sure Claude sees both rules every time, but they remain instructions Claude can overlook, which is what the audit already found; nothing blocks the privileged read or the unredacted upload."
+   },
+   {
+    "id": "b",
+    "text": "Keep access to the privileged folder but have Claude Code ask a developer to confirm before it opens any file there",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "A confirmation prompt guards a capability nobody needs; a developer approving routine prompts can let a privileged file through, so access stays one click away instead of being removed."
+   },
+   {
+    "id": "c",
+    "text": "Add a deny rule and a matching sandbox read restriction for the privileged-documents folder to the committed project settings",
+    "correct": true,
+    "trap": null,
+    "why": "Nobody needs Claude in the privileged folder, so access is removed outright: the client enforces the deny rule on file tools and recognised file commands, and the sandbox covers scripts and other shell reads, whatever CLAUDE.md says."
+   },
+   {
+    "id": "d",
+    "text": "Add a post-tool hook that records every file Claude reads and every upload it runs in the matter audit trail",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "An audit trail helps the next privilege review find incidents, but it records reads and uploads after they happen and prevents neither of them."
+   },
+   {
+    "id": "e",
+    "text": "Add a pre-tool hook that runs the redaction check before each upload and blocks the upload unless the check passes",
+    "correct": true,
+    "trap": null,
+    "why": "Uploads are needed, so they get a guard rather than removal: the harness runs the hook before every upload whatever Claude decides, and when written to block if the check fails or cannot run, no unredacted fixture leaves."
+   }
+  ],
+  "explain": "Binding constraint: both rules must be enforced every time rather than left to Claude, and CLAUDE.md is advisory however it is delivered. Deny the capability nobody needs outright, with a sandbox read restriction covering shell access, and gate the needed upload with a pre-tool hook that blocks unless the check passes.",
+  "rule": "CS-D7-03",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.1-005",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "ownership",
+  "industry": "saas",
+  "family": "team-default-project-scope",
+  "counterTrap": true,
+  "signals": [
+   "No company policy requires these rules",
+   "tune them through ordinary pull requests"
+  ],
+  "stem": "Loftmere's data-platform team, nine engineers who own the invoicing warehouse repository, want Claude Code to ask before any dbt run against the shared warehouse and to run the unit tests without prompting. No company policy requires these rules and no other team uses dbt; the team lead expects to tune them through ordinary pull requests as the pipeline changes. The security group offers to ship them through company-wide managed settings instead, so that no engineer could change them.",
+  "ask": "Which approach BEST fits the data-platform team's needs?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Commit the ask and allow rules to the shared project settings file in the warehouse repository",
+    "correct": true,
+    "trap": null,
+    "why": "These are one team's working defaults with no policy mandate, so version-controlled project settings reach every engineer on the repository, are enforced by the client, and stay tunable through the team's own pull requests."
+   },
+   {
+    "id": "b",
+    "text": "Accept the security group's offer and ship both rules through company-wide managed settings",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "Managed settings suit fleet-wide rules nobody may override; no policy requires that here, and locking the defaults centrally takes tuning away from the team that owns the pipeline."
+   },
+   {
+    "id": "c",
+    "text": "Describe both rules in the repository's CLAUDE.md so that Claude checks in before any dbt run",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "CLAUDE.md shapes behaviour but does not configure permissions, so asking before dbt becomes a suggestion Claude may skip and unit-test runs would still prompt."
+   },
+   {
+    "id": "d",
+    "text": "Allow dbt commands without prompting and alert the team channel whenever Claude runs one against the shared warehouse",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "An alert arrives after the run has already hit the shared warehouse; the team wants a check before each run, which an ask rule gives without stopping the work."
+   }
+  ],
+  "explain": "Binding constraint: decision ownership. These are overridable defaults owned by one team with no policy mandate, which is exactly when committed project settings are right and company-wide managed policy would be overreach.",
+  "rule": "CS-D7-01",
+  "ladder": "config-reach",
+  "tips": [
+   "TIP-DM-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.1-006",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "next-step",
+  "constraint": "scale",
+  "industry": "telecom",
+  "family": "managed-claude-md-org-guidance",
+  "counterTrap": false,
+  "signals": [
+   "shape every Claude Code session they run",
+   "often create without the repository template",
+   "cheap to fix"
+  ],
+  "stem": "Kelderwick Telecom's architecture board has agreed coding standards for network-automation code: structured logging fields, retry and timeout conventions, and no hard-coded element addresses. A pilot that added them to the committed CLAUDE.md of three repositories went well. Kelderwick's 500 network-automation developers work on no other code, and the board now wants the standards to shape every Claude Code session they run, across 45 repositories and new ones that teams often create without the repository template. Misses are caught in code review and are cheap to fix, teams add their own conventions on top, and the network-tool ban is already enforced through managed settings.",
+  "ask": "What is the BEST next step for rolling out the standards?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Commit the pilot's CLAUDE.md section to all 45 repositories and add it to the template for new repositories",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "Committed copies belong to each repository team, which adds its own conventions and can edit or drop the section, so 45 copies drift apart, and repositories created without the template never get it."
+   },
+   {
+    "id": "b",
+    "text": "Publish the standards as a managed CLAUDE.md that loads in every session on each developer machine",
+    "correct": true,
+    "trap": null,
+    "why": "The standards are guidance with cheap misses, so CLAUDE.md is the right mechanism, and a managed copy reaches every session on these developers' machines, new repositories included, while teams keep their own files alongside it."
+   },
+   {
+    "id": "c",
+    "text": "Move the network-tool ban into the managed CLAUDE.md with the standards so every Claude Code rule reaches sessions from one file",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "The ban must hold every time and managed settings enforce it today; moving it into CLAUDE.md turns a client-enforced block into advisory context that Claude can overlook, just to keep the rules in one file."
+   },
+   {
+    "id": "d",
+    "text": "Extend the CI linters so that every pull request in every repository is checked against the standards",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Linters find violations after code is written; the board wants the standards to shape sessions, and review already catches misses, so this adds detection without changing what Claude produces."
+   }
+  ],
+  "explain": "Binding constraint: scale, since guidance must reach every session across 45 repositories and every future one. Standards with cheap misses belong in a managed CLAUDE.md; per-repository copies drift or go missing, and a must-hold rule such as the network-tool ban stays in managed settings.",
+  "rule": "CS-D7-01",
+  "ladder": "config-reach",
+  "tips": [
+   "TIP-DM-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

@@ -1,0 +1,420 @@
+[
+ {
+  "id": "P3-3.7-001",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.7",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "reuse",
+  "industry": "logistics",
+  "family": "mcp-shared-vs-direct-pipeline",
+  "counterTrap": false,
+  "signals": [
+   "all three call the same tracking system at runtime",
+   "in a fixed order"
+  ],
+  "stem": "Tessary Freight's integration architect is planning two Claude integrations. First, shipment-status lookups must be available in the customer-facing chat, the dispatcher desktop assistant and the operations team's coding agents; all three call the same tracking system at runtime, and customers may see only their own shipments. Second, a nightly job owned by the customs team exports the day's closed consignments from the warehouse system, has Claude draft declarations, and files them with the broker's API in a fixed order.",
+  "ask": "Which TWO integration choices BEST fit these needs? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Expose shipment tracking once as an MCP server that the three client surfaces connect to",
+    "correct": true,
+    "trap": null,
+    "why": "Three surfaces need the same live capability at runtime. One MCP server built once gives each client the same tools and absorbs tracking changes in one place instead of three hand-built integrations."
+   },
+   {
+    "id": "b",
+    "text": "Have the nightly job call the warehouse and broker APIs directly from its own pipeline code",
+    "correct": true,
+    "trap": null,
+    "why": "The customs job has one owner, one consumer and a known call sequence with no runtime tool choice. Direct calls in pipeline code are the lightest mechanism and the easiest to test and audit."
+   },
+   {
+    "id": "c",
+    "text": "Wrap the warehouse export and broker filing as MCP tools that the nightly job's model can call",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Nothing in the customs job is reused and its step order is fixed. Letting a model pick MCP tools adds a server, a failure point and nondeterminism to a sequence that code already controls."
+   },
+   {
+    "id": "d",
+    "text": "Run the tracking MCP server under one service account so no client has to handle user sign-in",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "Customers may see only their own shipments. A shared service account removes that per-user boundary and the audit trail, so the server has to act with each caller's own permissions."
+   },
+   {
+    "id": "e",
+    "text": "Add contract tests that catch breaking changes in each new release of the tracking system's API",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Contract tests are sound hygiene, but they do not decide which mechanism each need should use. The three-surface reuse and the fixed nightly sequence still need the right integration choices."
+   }
+  ],
+  "explain": "Binding constraint: reuse. The tracking capability is shared by three surfaces at runtime, so it belongs in one MCP server, while the single-owner nightly job with a fixed sequence stays on direct API calls in code.",
+  "rule": "CS-D3-16",
+  "ladder": "integration-mechanism",
+  "tips": [
+   "TIP-EL-07"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.7-002",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.7",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "security-boundary",
+  "industry": "media",
+  "family": "a2a-cross-company-negotiation",
+  "counterTrap": false,
+  "signals": [
+   "each confidential to their owner",
+   "either side may turn down a proposal or come back with different terms"
+  ],
+  "stem": "Lanternfield Studios licenses film clips to streaming services, and its licensing agent proposes territory, window and fee for each deal through the studio's internal licensing MCP server. Its largest partner, Oriel Stream, runs its own purchasing agent with its own budget rules, and either side may turn down a proposal or come back with different terms. Lanternfield's floor prices and Oriel's budget ceilings are each confidential to their owner, and each company's counsel signs off only its own side's commitments. Oriel has asked to connect its agent to Lanternfield's MCP server so the pilot can start this month.",
+  "ask": "Which integration approach BEST fits the pilot?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Connect Oriel's agent to the licensing MCP server under one shared partner account, instructed to query only clips on offer",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "The licensing server's tools can reach Lanternfield's confidential floor prices. A shared partner account plus an instruction leaves another company's model as the gatekeeper, so nothing enforced at the data owner keeps those prices out of Oriel's reach."
+   },
+   {
+    "id": "b",
+    "text": "Have Lanternfield's agent post each proposal to Oriel's purchasing API and revise its terms after every rejection",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "An API call treats Oriel as a function that accepts or rejects. Oriel's agent reasons from its own budget rules and replies with terms of its own, which blind resubmissions cannot read or answer, so no real negotiation takes place."
+   },
+   {
+    "id": "c",
+    "text": "Give both agents a shared deal workspace that strips each side's price limits before the other agent reads them",
+    "correct": false,
+    "trap": "T-BOUNDARY",
+    "why": "Each side's confidential limits would enter the shared space before the filter runs, so the control acts after the data has already crossed. Filtering is an extra layer behind an upstream control, not a substitute for one."
+   },
+   {
+    "id": "d",
+    "text": "Connect the two agents peer to peer over an agent-to-agent protocol, with each negotiating from its own side",
+    "correct": true,
+    "trap": null,
+    "why": "Oriel's agent reasons independently and each side's limits stay confidential. Agent-to-agent messaging lets just the proposals and replies cross, so each company keeps its tools, data, credentials and counsel sign-off on its own side."
+   }
+  ],
+  "explain": "Binding constraint: the security boundary between two companies whose price limits stay confidential to their owner and whose agents reason and sign off independently. Agent-to-agent messaging fits because only negotiation messages cross, while tools, data and credentials stay on each side.",
+  "rule": "CS-D3-17",
+  "ladder": "integration-mechanism",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.7-003",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.7",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "pharma",
+  "family": "skill-for-shared-know-how",
+  "counterTrap": false,
+  "signals": [
+   "draws on no live system",
+   "needs only two or three of its chapters",
+   "so context is tight"
+  ],
+  "stem": "Veridane Therapeutics has three medical-writing teams drafting clinical study report sections on one Claude deployment. Each team pastes its own summary of the company's 90-page writing standard into prompts, and drafts now differ between teams. The standard is revised twice a year and draws on no live system, a typical task needs only two or three of its chapters, and sessions already carry long study listings, so context is tight. The platform team proposes an MCP server, noting that the company already serves capabilities shared across teams over MCP.",
+  "ask": "Which approach BEST gives the three teams one consistent version of the standard?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Build the platform team's MCP server so that any team's session can request the chapters it needs",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Sharing across teams is not by itself a reason for MCP: a server earns its hosting, authentication and uptime cost when clients need a live connection to a system or its data. The standard fetches nothing live, so a Skill carries it without that work."
+   },
+   {
+    "id": "b",
+    "text": "Package the standard as a Skill whose relevant chapters load when a drafting task calls for them",
+    "correct": true,
+    "trap": null,
+    "why": "What the teams share is procedural know-how that fetches nothing. A Skill packages it once for all three teams, keeps a short description in context and loads the needed chapters on trigger, with no service to run."
+   },
+   {
+    "id": "c",
+    "text": "Put the full standard in a shared, cached system prompt that every team's drafting session starts with",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Caching cuts the cost of repeating 90 pages, but each session still carries every chapter beside long study listings in an already tight context, diluting attention with material the task does not use."
+   },
+   {
+    "id": "d",
+    "text": "Stand up a standards agent that answers each drafting session's questions over agent-to-agent messaging",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Agent-to-agent messaging suits an independent reasoner across an ownership boundary. A standards agent would only hand back fixed text, adding a second model, latency and a paraphrasing layer that can reintroduce the very differences between teams."
+   }
+  ],
+  "explain": "Binding constraint: the data shape. The shared asset is static know-how that fetches nothing, so it belongs in a Skill that loads on trigger; MCP is for a live system several clients share, and always-on loading crowds an already tight context.",
+  "rule": "CS-D3-16",
+  "ladder": "integration-mechanism",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.7-004",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.7",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "healthcare",
+  "family": "mcp-required-by-packaged-host",
+  "counterTrap": true,
+  "signals": [
+   "can be extended only by connecting MCP servers",
+   "even when a clinician asks for it by name",
+   "the ward is still the tool's only consumer"
+  ],
+  "stem": "Kestrel Valley Health's ward assistant was an in-house app whose own code executed a medication-history tool, querying the pharmacy system's API under each clinician's sign-in. In August the hospital replaced it with an off-the-shelf desktop assistant that ships with dozens of built-in tools and can be extended only by connecting MCP servers; the team carried the tool definition and handler code across unchanged. Since then the assistant answers medication questions from general knowledge and never attempts the lookup, even when a clinician asks for it by name. Model version, prompt, pharmacy API and sign-in flow are unchanged, and the ward is still the tool's only consumer.",
+  "ask": "What is the MOST likely cause of the missing lookups?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The lookup is lost among the client's dozens of built-in tools, so its description needs sharpening before the model picks it",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "Confusion among many tools produces occasional or misdirected calls, yet the assistant has never attempted this lookup, even when asked for it by name. An unchanged description that worked before cannot explain a total absence."
+   },
+   {
+    "id": "b",
+    "text": "The packaged client cannot run Kestrel's handler code, so even this single-ward lookup has to be served over MCP",
+    "correct": true,
+    "trap": null,
+    "why": "The one change is the host. A direct tool runs when the host's own code executes each call, and a packaged client cannot run Kestrel's handler. It takes capabilities over MCP, which justifies a server even for a single consumer."
+   },
+   {
+    "id": "c",
+    "text": "The client's model withholds patient lookups until told each user's ward, so the prompt should list every clinician's access",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "The prompt is unchanged from when lookups worked, and a withheld lookup would read as a refusal, not a general answer. Listing ward access in the prompt would also make the model the gatekeeper for patient records."
+   },
+   {
+    "id": "d",
+    "text": "The handler was never registered as a direct tool, which stays the right mechanism for a lookup with only one consumer",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "One consumer usually argues for a direct call, but a direct tool needs host code to execute it. This packaged client is extended only by connecting MCP servers, so there is no direct slot for the handler to be registered in."
+   }
+  ],
+  "explain": "Binding constraint: what changed is the host, and the new off-the-shelf client takes added capabilities only over MCP. That is the condition under which MCP is right even for a single consumer; the unchanged model, prompt, definition, API and sign-in rule out the other layers.",
+  "rule": "CS-D3-16",
+  "ladder": "integration-mechanism",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.7-005",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.7",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "reuse",
+  "industry": "e-commerce",
+  "family": "promote-direct-integration-to-mcp",
+  "counterTrap": false,
+  "signals": [
+   "need the same check at runtime",
+   "whose backend is written in Kotlin",
+   "already disagreed with the original on two return windows"
+  ],
+  "stem": "Corvid Home's returns-eligibility check lives inside its web chat assistant as a TypeScript integration with the returns service, and it reads the signed-in customer's order history. This quarter two more assistants need the same check at runtime: the mobile shopping assistant, whose backend is written in Kotlin, and an in-store kiosk assistant that runs on a Python service. The mobile team has begun porting the integration, and in testing its port already disagreed with the original on two return windows.",
+  "ask": "What should the integration architect do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move the eligibility check into one MCP server that the chat, mobile and kiosk assistants each connect to",
+    "correct": true,
+    "trap": null,
+    "why": "Three assistants on three stacks now need the same live check. One MCP server gives each of them the same tool backed by one implementation, so no port can drift from the original and fixes land in one place."
+   },
+   {
+    "id": "b",
+    "text": "Publish the chat integration as a versioned SDK that the mobile and kiosk teams import and pin to a release",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "A TypeScript SDK runs in neither the Kotlin backend nor the Python kiosk service without further ports, so packaging still leaves separate copies of the logic in separate runtimes when the need is one capability shared at runtime."
+   },
+   {
+    "id": "c",
+    "text": "Stand up an MCP server that passes each assistant's signed-in customer token straight through to the returns service",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "The check reads each customer's order history, so the returns service must enforce access with tokens issued for it. Forwarding a token meant for another client defeats audience checks; the server should obtain its own delegated token per customer."
+   },
+   {
+    "id": "d",
+    "text": "Finish the Kotlin port and have the chat and mobile teams share one suite of return-window test cases",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Shared tests catch drift after it appears, but the logic would still live in two codebases, with a third port due for the Python kiosk. Three clients needing the check at runtime call for one shared implementation."
+   }
+  ],
+  "explain": "Binding constraint: reuse. Three assistants on different stacks need the same check at runtime, so it moves into one MCP server rather than being ported, packaged as a library or kept in agreement by tests.",
+  "rule": "CS-D3-16",
+  "ladder": "integration-mechanism",
+  "tips": [
+   "TIP-EL-07"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.7-006",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.7",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "lifecycle-stage",
+  "industry": "education",
+  "family": "pilot-before-shared-platform",
+  "counterTrap": false,
+  "signals": [
+   "has not yet met its agreed accuracy target",
+   "might want the same capability next year"
+  ],
+  "stem": "Fairholm College's student-services team is six weeks into a pilot in which a chat assistant answers enrolment questions by calling the student information system through a direct integration that acts with each student's own sign-in. The pilot has not yet met its agreed accuracy target. Two other departments say they might want the same capability next year, and the platform group proposes building a college-wide SIS MCP server now so that nothing has to be rebuilt later.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Build the SIS MCP server now and move the pilot onto it before the next scheduled pilot review",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A shared server is right once reuse is confirmed, but building it now spends platform effort on a capability that may fail its pilot, and it changes the integration in the middle of the evaluation."
+   },
+   {
+    "id": "b",
+    "text": "Agree per-role SIS scopes with the identity team for the shared server the departments will use",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Per-role scopes matter when a shared server is designed, but no second department has committed yet, so defining its roles now runs ahead of the decision that work depends on."
+   },
+   {
+    "id": "c",
+    "text": "Complete the pilot on the current direct integration, then revisit MCP once a second team commits",
+    "correct": true,
+    "trap": null,
+    "why": "The capability has one consumer, is still unproven, and the other demand is speculative. Finishing the pilot first means any shared server is designed around a validated capability and a real second consumer."
+   },
+   {
+    "id": "d",
+    "text": "Move the pilot to one read-only SIS service account so the future shared server is simpler to secure",
+    "correct": false,
+    "trap": "T-AUTHZ",
+    "why": "Enrolment records are per student, so one service account would remove the per-user boundary the pilot already enforces. Simplifying a future server does not justify weakening today's authorization."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. With one consumer and an unfinished pilot, the direct integration stays; an MCP server becomes the right mechanism once the capability is proven and a second consumer commits.",
+  "rule": "CS-D3-16",
+  "ladder": "integration-mechanism",
+  "tips": [
+   "TIP-EL-07"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

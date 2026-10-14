@@ -1,0 +1,813 @@
+{
+ "version": "CCAR-P Exam Guide v1.0 (effective July 2026)",
+ "examCode": "CCAR-P",
+ "items": 63,
+ "minutes": 120,
+ "passScaled": 720,
+ "scale": [
+  100,
+  1000
+ ],
+ "numberingNote": "Objective numbers 1.1–7.3 are a study convention; the official guide lists objectives as unnumbered bullets.",
+ "domains": [
+  {
+   "n": 1,
+   "name": "Solution Design & Architecture",
+   "short": "Solution Design & Architecture",
+   "weight": 17,
+   "formQuota": 11,
+   "formMulti": 2,
+   "objectives": [
+    {
+     "id": "1.1",
+     "text": "Translate business problems into Claude-based AI solutions",
+     "short": "Translate business problems into Claude solutions",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Sponsor asks for 'a chatbot': BEST first framing of the underlying job",
+      "Map a pain point to no-AI / augmented call / workflow",
+      "Which success measure proves the solution solved the stated problem"
+     ],
+     "traps": [
+      "T-SKIPDISC",
+      "T-AGENTIC",
+      "T-BIGMODEL",
+      "T-OVERPROMISE"
+     ]
+    },
+    {
+     "id": "1.2",
+     "text": "Design end-to-end architectures (input → processing → output → feedback loops)",
+     "short": "End-to-end architectures (input→processing→output→feedback)",
+     "total": 8,
+     "forms": 6,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Which missing component closes the feedback loop",
+      "Select TWO components the design needs for the stated constraint",
+      "A 2s legacy timeout calls for an async job or callback pattern"
+     ],
+     "traps": [
+      "T-LIVESTATE",
+      "T-BOUNDARY",
+      "T-OBSERVE",
+      "T-ASSUME"
+     ]
+    },
+    {
+     "id": "1.3",
+     "text": "Select appropriate architectural patterns (workflow, agentic, augmented LLM)",
+     "short": "Select patterns: workflow, agentic, augmented LLM",
+     "total": 8,
+     "forms": 6,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Fixed path plus audit trail: workflow vs agent",
+      "One-step task: augmented call is enough",
+      "Counter-trap: runtime-emergent steps with recoverable errors justify an agent"
+     ],
+     "traps": [
+      "T-AGENTIC",
+      "T-ENFORCE",
+      "T-ORGCHART"
+     ]
+    },
+    {
+     "id": "1.4",
+     "text": "Design multi-agent systems and orchestration strategies",
+     "short": "Multi-agent systems & orchestration",
+     "total": 8,
+     "forms": 6,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Orchestrator-workers vs a single agent with tools",
+      "Context handoff: what the subagent must receive",
+      "Counter-trap: independent parallel research justifies subagents"
+     ],
+     "traps": [
+      "T-ORGCHART",
+      "T-AGENTIC",
+      "T-MEGATOOL",
+      "T-PROTOCOL"
+     ]
+    },
+    {
+     "id": "1.5",
+     "text": "Apply decomposition techniques for complex problem solving",
+     "short": "Decomposition techniques",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Chaining vs sectioning vs routing for independent aspects",
+      "Split by dependency and independence, not by team",
+      "Select TWO decomposition steps that fix the observed failure"
+     ],
+     "traps": [
+      "T-AGENTIC",
+      "T-STUFF",
+      "T-ASSUME",
+      "T-LATER"
+     ]
+    },
+    {
+     "id": "1.6",
+     "text": "Align solutions to business value pillars (efficiency, transformation, productivity, cost, performance SLAs)",
+     "short": "Align to value pillars (efficiency, transformation, productivity, cost, performance SLAs)",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "'Per person' vs 'per unit': which pillar the evidence supports",
+      "Which metric evidences transformation rather than efficiency",
+      "Performance SLA framed as a pillar for an executive sponsor"
+     ],
+     "traps": [
+      "T-OVERPROMISE",
+      "T-AVGSLA",
+      "T-AUDIENCE",
+      "T-VIBES"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "name": "Claude Models, Prompting & Context Engineering",
+   "short": "Models, Prompting & Context",
+   "weight": 13,
+   "formQuota": 8,
+   "formMulti": 2,
+   "objectives": [
+    {
+     "id": "2.1",
+     "text": "Select appropriate Claude models based on trade-offs",
+     "short": "Model selection trade-offs",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Tier routing by task complexity under a cost ceiling",
+      "p95 latency SLA vs reasoning depth",
+      "Counter-trap: failures only on complex reasoning justify a higher tier"
+     ],
+     "traps": [
+      "T-BIGMODEL",
+      "T-BLUNTCUT",
+      "T-LEVER"
+     ]
+    },
+    {
+     "id": "2.2",
+     "text": "Design system prompts, templates, and guardrails",
+     "short": "System prompts, templates & guardrails",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "What belongs in the system prompt vs in code enforcement",
+      "Template variables vs hard-coded per-customer prompts",
+      "Select TWO guardrails: preventive + detective"
+     ],
+     "traps": [
+      "T-ENFORCE",
+      "T-BOUNDARY",
+      "T-BLUNTCUT"
+     ]
+    },
+    {
+     "id": "2.3",
+     "text": "Apply prompt engineering techniques (zero-shot, few-shot, chain-of-thought)",
+     "short": "Prompt techniques (zero-shot, few-shot, CoT)",
+     "total": 6,
+     "forms": 4,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Format drift calls for few-shot examples",
+      "Multi-step arithmetic or logic errors call for structured reasoning",
+      "Zero-shot is enough: do not add examples that bias the output"
+     ],
+     "traps": [
+      "T-BIGMODEL",
+      "T-STUFF",
+      "T-ASSUME"
+     ]
+    },
+    {
+     "id": "2.4",
+     "text": "Optimize context windows and manage token usage",
+     "short": "Optimize context windows & token usage",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Cost and recall degrade together: reduce what enters the context",
+      "Long sessions: compaction or summarisation vs truncation",
+      "Select TWO: tool-result clearing plus relevance filtering"
+     ],
+     "traps": [
+      "T-STUFF",
+      "T-BLUNTCUT",
+      "T-LEVER"
+     ]
+    },
+    {
+     "id": "2.5",
+     "text": "Implement prompt reuse strategies (caching, modular prompts, Skills)",
+     "short": "Prompt reuse: caching, modular prompts, Skills",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Static prefix first, then caching",
+      "A timestamp before the breakpoint breaks cache hits",
+      "Skill vs MCP vs shared prompt module for reusable know-how"
+     ],
+     "traps": [
+      "T-BLUNTCUT",
+      "T-PROTOCOL",
+      "T-LEVER"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "name": "Integration",
+   "short": "Integration",
+   "weight": 19,
+   "formQuota": 12,
+   "formMulti": 3,
+   "objectives": [
+    {
+     "id": "3.1",
+     "text": "Evaluate tool/agent configuration for capability bloat",
+     "short": "Capability bloat in tool/agent configuration",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "The role only reads and drafts: remove the write tools",
+      "200 tools and wrong picks: scope per role",
+      "Select TWO fixes for mis-selection without a mega-tool"
+     ],
+     "traps": [
+      "T-REMOVE",
+      "T-MEGATOOL",
+      "T-ENFORCE"
+     ]
+    },
+    {
+     "id": "3.2",
+     "text": "Analyze authentication and authorization requirements to identify security gaps",
+     "short": "Authentication/authorization gaps",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Shared service account: act with the user's permissions",
+      "External rollout: where authorization must be enforced",
+      "Select TWO: preventive authz plus detective audit"
+     ],
+     "traps": [
+      "T-AUTHZ",
+      "T-ENFORCE",
+      "T-DETECT",
+      "T-BOUNDARY"
+     ]
+    },
+    {
+     "id": "3.3",
+     "text": "Evaluate accuracy-latency trade-offs and justify configuration decisions",
+     "short": "Accuracy-latency trade-offs",
+     "total": 6,
+     "forms": 4,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Streaming vs completion time",
+      "Re-rank cost vs a p95 budget",
+      "Route easy queries to a fast tier and keep the accuracy floor"
+     ],
+     "traps": [
+      "T-LEVER",
+      "T-BIGMODEL",
+      "T-AVGSLA"
+     ]
+    },
+    {
+     "id": "3.4",
+     "text": "Analyze observability challenges and select monitoring strategies at scale",
+     "short": "Observability at scale",
+     "total": 6,
+     "forms": 4,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "What a trace must capture (prompt and model version, retrieved ids, tool calls)",
+      "Sampling strategy at 1M requests/day without losing failures",
+      "Select TWO signals that let the team localise a regression"
+     ],
+     "traps": [
+      "T-OBSERVE",
+      "T-AGGREGATE",
+      "T-DETECT"
+     ]
+    },
+    {
+     "id": "3.5",
+     "text": "Design a RAG pipeline with appropriate chunking and indexing strategies",
+     "short": "RAG chunking & indexing",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Clause cut mid-chunk: chunk on unit boundaries",
+      "Chunks lose context: add contextual headers or metadata",
+      "Live claim status belongs in the system of record, not the index"
+     ],
+     "traps": [
+      "T-STUFF",
+      "T-LIVESTATE",
+      "T-LAYER"
+     ]
+    },
+    {
+     "id": "3.6",
+     "text": "Apply retrieval strategies matched to data shape and query pattern",
+     "short": "Retrieval strategies by data shape and query pattern",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Identifiers go lexical, concepts go semantic, mixed traffic is routed hybrid",
+      "High recall but low precision: re-rank",
+      "Select TWO: filter before search plus routing by query shape"
+     ],
+     "traps": [
+      "T-STUFF",
+      "T-BIGMODEL",
+      "T-LIVESTATE"
+     ]
+    },
+    {
+     "id": "3.7",
+     "text": "Evaluate connection protocols and select the appropriate integration mechanism (MCP, API/CLI, agent-to-agent)",
+     "short": "Connection protocols: MCP, API/CLI, agent-to-agent",
+     "total": 6,
+     "forms": 4,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Three surfaces need the same capability: MCP",
+      "A one-off fixed pipeline: direct API",
+      "Cross-organisation negotiation between independently reasoning systems: agent-to-agent"
+     ],
+     "traps": [
+      "T-PROTOCOL",
+      "T-AUTHZ",
+      "T-MEGATOOL"
+     ]
+    },
+    {
+     "id": "3.8",
+     "text": "Evaluate progressive discovery vs. monolithic context strategy",
+     "short": "Progressive discovery vs monolithic context",
+     "total": 6,
+     "forms": 4,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Large tool catalogue: deferred loading or tool search",
+      "Skills: metadata first, body loaded on trigger",
+      "Counter-trap: a small, stable catalogue is fine loaded up front"
+     ],
+     "traps": [
+      "T-MEGATOOL",
+      "T-STUFF",
+      "T-BLUNTCUT"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "name": "Evaluation, Testing & Optimization",
+   "short": "Evaluation, Testing & Optimization",
+   "weight": 16,
+   "formQuota": 10,
+   "formMulti": 2,
+   "objectives": [
+    {
+     "id": "4.1",
+     "text": "Define evaluation metrics (accuracy, latency, cost, safety, security)",
+     "short": "Evaluation metrics (accuracy, latency, cost, safety, security)",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Pick a metric set with pre-agreed thresholds",
+      "Security and safety metrics for an agent with tool access",
+      "Select TWO metrics that decide the go/no-go"
+     ],
+     "traps": [
+      "T-VIBES",
+      "T-AGGREGATE",
+      "T-AVGSLA"
+     ]
+    },
+    {
+     "id": "4.2",
+     "text": "Design evaluation datasets and test frameworks using mixed methodologies",
+     "short": "Eval datasets & mixed-method frameworks",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Judge score up while complaints rise: recalibrate against human labels",
+      "Eval steady while regional errors rise: refresh the set and add a slice",
+      "Grading ladder: code check, then rubric judge, then expert review"
+     ],
+     "traps": [
+      "T-VIBES",
+      "T-AGGREGATE",
+      "T-LATER"
+     ]
+    },
+    {
+     "id": "4.3",
+     "text": "Conduct A/B testing and iterative improvements",
+     "short": "A/B testing & iteration",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "'Winner after 50 sessions': pre-registered stopping rule",
+      "One change per arm",
+      "Guardrail metrics that stop a rollout"
+     ],
+     "traps": [
+      "T-PEEK",
+      "T-VIBES",
+      "T-LATER"
+     ]
+    },
+    {
+     "id": "4.4",
+     "text": "Diagnose system issues (prompt failure, hallucinations, model mismatch)",
+     "short": "Diagnose issues: prompt failure, hallucination, model mismatch",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "After a doc refresh, model and latency unchanged: MOST likely cause",
+      "Right docs, wrong answer (grounding) vs wrong docs (retrieval)",
+      "Fails only on complex items (tier) vs fails uniformly (prompt)"
+     ],
+     "traps": [
+      "T-LAYER",
+      "T-BIGMODEL",
+      "T-LIVESTATE"
+     ]
+    },
+    {
+     "id": "4.5",
+     "text": "Optimize token usage, latency, and cost-performance trade-offs",
+     "short": "Optimize tokens, latency, cost-performance",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Measure the dominant term first",
+      "Overnight reports: Batch API",
+      "Select TWO levers that cut cost without breaching the accuracy floor"
+     ],
+     "traps": [
+      "T-LEVER",
+      "T-BLUNTCUT",
+      "T-BIGMODEL"
+     ]
+    },
+    {
+     "id": "4.6",
+     "text": "Monitor system performance using logging and observability tools",
+     "short": "Monitor with logging/observability",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Drift alert design with a baseline and thresholds",
+      "What to log under PII constraints",
+      "Nothing was deployed but quality dropped: FIRST step"
+     ],
+     "traps": [
+      "T-OBSERVE",
+      "T-AGGREGATE",
+      "T-DETECT"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "name": "Governance, Safety & Risk Management",
+   "short": "Governance, Safety & Risk",
+   "weight": 14,
+   "formQuota": 9,
+   "formMulti": 2,
+   "objectives": [
+    {
+     "id": "5.1",
+     "text": "Implement guardrails and safety controls",
+     "short": "Guardrails & safety controls",
+     "total": 8,
+     "forms": 6,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Control-strength ladder: pick the strongest sufficient rung",
+      "Input and output screening vs tool removal",
+      "Select TWO: preventive + detective pairing"
+     ],
+     "traps": [
+      "T-ENFORCE",
+      "T-DETECT",
+      "T-REMOVE",
+      "T-BOUNDARY"
+     ]
+    },
+    {
+     "id": "5.2",
+     "text": "Identify risks, limitations, and failure modes of LLM systems",
+     "short": "Risks, limitations, failure modes",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Prompt injection via retrieved documents",
+      "Failure-mode analysis before a pilot",
+      "Graceful fallback when a dependency fails"
+     ],
+     "traps": [
+      "T-OVERPROMISE",
+      "T-ASSUME",
+      "T-SELFCONF"
+     ]
+    },
+    {
+     "id": "5.3",
+     "text": "Apply human-in-the-loop validation strategies",
+     "short": "Human-in-the-loop validation",
+     "total": 8,
+     "forms": 6,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Route review by reversibility × blast radius",
+      "'Model says 95% sure' is not a trigger",
+      "4-second approvals: fix the rubber stamp"
+     ],
+     "traps": [
+      "T-SELFCONF",
+      "T-RUBBERSTAMP",
+      "T-LATER"
+     ]
+    },
+    {
+     "id": "5.4",
+     "text": "Ensure compliance with regulations (e.g., GDPR, HIPAA, FedRAMP)",
+     "short": "Compliance: GDPR, HIPAA, FedRAMP",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "PHI workload: BAA and eligible configuration, not ZDR alone",
+      "EU full customer profiles: minimise the payload",
+      "Select TWO: data-residency control plus evidence artefact"
+     ],
+     "traps": [
+      "T-COMPLY",
+      "T-BOUNDARY",
+      "T-AUTHZ"
+     ]
+    },
+    {
+     "id": "5.5",
+     "text": "Address ethical AI considerations (bias, fairness, transparency)",
+     "short": "Ethics: bias, fairness, transparency",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Aggregate fine, subgroup failing: slice evaluation",
+      "AI disclosure to end users",
+      "A fairness trade-off decided by the accountable owner"
+     ],
+     "traps": [
+      "T-AGGREGATE",
+      "T-OWNER",
+      "T-OVERPROMISE"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "name": "Stakeholder Communication & Lifecycle Management",
+   "short": "Stakeholder & Lifecycle",
+   "weight": 14,
+   "formQuota": 9,
+   "formMulti": 2,
+   "objectives": [
+    {
+     "id": "6.1",
+     "text": "Conduct structured discovery and requirement gathering",
+     "short": "Structured discovery",
+     "total": 8,
+     "forms": 6,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "FIRST discovery output: baseline, target, constraints, owner",
+      "Hidden constraint surfaced by the right question",
+      "Select TWO discovery artefacts before any build"
+     ],
+     "traps": [
+      "T-SKIPDISC",
+      "T-LATER",
+      "T-OWNER"
+     ]
+    },
+    {
+     "id": "6.2",
+     "text": "Communicate architectural decisions and trade-offs",
+     "short": "Communicate decisions & trade-offs",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "Exec wants 99.9%: reframe with a trade-off curve",
+      "Board briefing: decision, impact, risk, ask",
+      "Select TWO actions when the accuracy bar is missed"
+     ],
+     "traps": [
+      "T-AUDIENCE",
+      "T-OVERPROMISE",
+      "T-OWNER"
+     ]
+    },
+    {
+     "id": "6.3",
+     "text": "Manage stakeholder feedback loops and expectation alignment (including SLAs)",
+     "short": "Feedback loops & expectations incl. SLAs",
+     "total": 8,
+     "forms": 6,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "SLA formulation: p95 at peak, accuracy floor, error budget",
+      "User feedback channel feeding the eval set",
+      "Select TWO SLA clauses that survive peak season"
+     ],
+     "traps": [
+      "T-AVGSLA",
+      "T-OVERPROMISE",
+      "T-VIBES"
+     ]
+    },
+    {
+     "id": "6.4",
+     "text": "Document architectures and provide implementation guidance",
+     "short": "Document architectures & implementation guidance",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Preserve the reasoning: ADR",
+      "Handoff package for the operating team",
+      "A chat channel or contact person is not documentation"
+     ],
+     "traps": [
+      "T-AUDIENCE",
+      "T-OWNER",
+      "T-LATER"
+     ]
+    },
+    {
+     "id": "6.5",
+     "text": "Support lifecycle phases (discovery, design, handoff, monitoring, iteration)",
+     "short": "Lifecycle phases: discovery, design, handoff, monitoring, iteration",
+     "total": 7,
+     "forms": 5,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "POC vs pilot vs production exit criteria",
+      "Failed pilot with no criteria: define criteria before retrying",
+      "What happens after handoff: monitoring ownership"
+     ],
+     "traps": [
+      "T-LATER",
+      "T-SKIPDISC",
+      "T-OBSERVE"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 7,
+   "name": "Developer Productivity & Operational Enablement",
+   "short": "Developer Productivity & Enablement",
+   "weight": 7,
+   "formQuota": 4,
+   "formMulti": 1,
+   "objectives": [
+    {
+     "id": "7.1",
+     "text": "Configure Claude tools and environments for teams (e.g., Claude Code)",
+     "short": "Configure Claude tools/environments for teams (e.g. Claude Code)",
+     "total": 6,
+     "forms": 4,
+     "pool": 2,
+     "multi": 2,
+     "archetypes": [
+      "'Cannot be disabled on any machine': managed settings",
+      "Configs drift across teams: committed project config",
+      "Select TWO: a fail-closed hook plus a deny rule for a sensitive path"
+     ],
+     "traps": [
+      "T-REACH",
+      "T-ENFORCE",
+      "T-REMOVE"
+     ]
+    },
+    {
+     "id": "7.2",
+     "text": "Improve developer workflows using AI-assisted tooling",
+     "short": "Improve developer workflows with AI tooling",
+     "total": 6,
+     "forms": 4,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "Prove the rollout worked: outcome vs baseline, not seats",
+      "Headless CI run with an allowlist",
+      "Where AI assistance fits in the review workflow"
+     ],
+     "traps": [
+      "T-VIBES",
+      "T-AGENTIC",
+      "T-LATER"
+     ]
+    },
+    {
+     "id": "7.3",
+     "text": "Support debugging and operational issue resolution",
+     "short": "Debugging & operational issue resolution",
+     "total": 6,
+     "forms": 4,
+     "pool": 2,
+     "multi": 1,
+     "archetypes": [
+      "MCP server failing for one team: FIRST diagnostic",
+      "Permission-denied after a settings rollout: which scope wins",
+      "Pull traces before widening access or failing over"
+     ],
+     "traps": [
+      "T-OBSERVE",
+      "T-LAYER",
+      "T-REACH"
+     ]
+    }
+   ]
+  }
+ ]
+}

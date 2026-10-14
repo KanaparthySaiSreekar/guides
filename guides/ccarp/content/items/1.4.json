@@ -1,0 +1,570 @@
+[
+ {
+  "id": "P1-1.4-001",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "auditability",
+  "industry": "insurance",
+  "family": "parallel-evidence-central-gate",
+  "counterTrap": false,
+  "signals": [
+   "a decision within 45 minutes",
+   "none depends on another",
+   "no payment is released before the fraud screen passes"
+  ],
+  "stem": "After a regional hailstorm, Harrowgate Mutual expects 20,000 home claims and has promised each policyholder a decision within 45 minutes. Every claim needs a roof-photo assessment, a policy-wording check and a hail-report pull; each takes up to 25 minutes, mostly waiting on outside services, and none depends on another. The state regulator requires that no payment is released before the fraud screen passes, and that each claim keeps one audit trail showing its steps in order. A vendor proposes chaining intake, adjusting, fraud and finance agents, with the policy check at intake, photo assessment at adjusting and hail pull at fraud, each passing the claim on when it judges its part done.",
+  "ask": "Which TWO design choices BEST meet the 45-minute promise and the regulator's requirements? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run each claim's three evidence tasks as parallel workers that return structured findings for the claim",
+    "correct": true,
+    "trap": null,
+    "why": "Run in sequence, three tasks of up to 25 minutes each break the 45-minute promise. Because none depends on another, parallel workers finish in the time of the slowest task, a speed-up that leaves the regulator's ordering untouched."
+   },
+   {
+    "id": "b",
+    "text": "Keep the vendor's four department agents, and have each one append its actions to a shared log for the claim",
+    "correct": false,
+    "trap": "T-ORGCHART",
+    "why": "Department lines are not technical seams here. The shared log records what happened, but the chain puts the three evidence tasks in three successive departments, up to 75 minutes end to end, and each agent still decides when to hand on."
+   },
+   {
+    "id": "c",
+    "text": "Have one orchestrator own each claim's step order, with a code gate that holds any payment until the fraud screen has passed",
+    "correct": true,
+    "trap": null,
+    "why": "The regulator's ordering and single-trail rules have to hold on every claim. One orchestrator that sequences the steps in code and blocks payment until the screen passes enforces both, which agents judging when they are done cannot."
+   },
+   {
+    "id": "d",
+    "text": "Have an orchestrator start evidence tasks, fraud screen and payment together, and claw back payments whose screen fails",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Starting payment alongside the screen would meet the 45 minutes, but the regulator requires payment to wait for the screen. A clawback only detects and reverses the breach after the money has gone, so the ordering rule is still broken."
+   },
+   {
+    "id": "e",
+    "text": "Give the claims director a live view of queue depth and time to decision for each claim during the surge",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A live view helps the director watch the surge, but it neither shortens the evidence work nor enforces fraud-before-payment ordering, so it changes neither outcome the stem sets."
+   }
+  ],
+  "explain": "Binding constraint: the regulator's fixed order and single audit trail per claim, which gates the 45-minute promise. Speed may come only from running the independent evidence tasks in parallel while one orchestrator keeps the sequence and holds payment for the fraud screen; paying early and clawing back trades the gating rule for speed.",
+  "rule": "CS-D1-09",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.4-002",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "scale",
+  "industry": "retail",
+  "family": "independent-research-subagents",
+  "counterTrap": true,
+  "signals": [
+   "No brand's findings depend on another's",
+   "only becomes clear as it digs",
+   "prefer a single agent unless the work is shown to be independent"
+  ],
+  "stem": "Larchmont Home's category managers get a competitor brief every Monday at 07:00 covering 36 rival brands. One research agent works through the brands in turn, searching press releases, marketplace listings and price trackers; which sources matter for a brand only becomes clear as it digs. Runs now take nine hours and miss the deadline, and traces show the context filling up, so the last dozen brands get two-line summaries. No brand's findings depend on another's. The platform guideline says to prefer a single agent unless the work is shown to be independent, and the token budget allows a larger run.",
+  "ask": "What should the architect recommend NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Keep one research agent and have it compress each brand's findings into a short note before it starts on the next brand",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Compressing findings stops one context overflowing by cutting detail the brief needs, and the brands still run one after another, so a nine-hour run still misses 07:00. The work needs restructuring, not trimming."
+   },
+   {
+    "id": "b",
+    "text": "Connect the agent to the press, marketplace and price-tracker sources through a shared MCP server to cut its turns",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "MCP pays off when several clients share a capability, and turn count is not the defect here. The one agent still works through 36 brands in a single context, so the run stays long and the tail brands stay thin."
+   },
+   {
+    "id": "c",
+    "text": "Have a lead agent hand groups of brands to parallel research subagents and assemble the brief from their findings",
+    "correct": true,
+    "trap": null,
+    "why": "The brands are independent and each one's sources emerge as it is researched, which meets the guideline's exception. Parallel subagents with isolated contexts recover the deadline, and no single context has to hold 36 brands."
+   },
+   {
+    "id": "d",
+    "text": "Run the brands in parallel through a fixed prompt chain that queries the same five sources and returns one record per brand",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Parallel runs would fix the time and the context, but a fixed chain assumes every brand needs the same five sources, and the stem says the useful sources only become clear as the research proceeds."
+   }
+  ],
+  "explain": "Binding constraint: 36 independent research threads, whose paths emerge at runtime, overflow one context and one night. That meets the guideline's own exception, so a lead agent with parallel subagents is justified; compressing findings, changing the integration or fixing the source list leaves the deadline, the overflow or the coverage unsolved.",
+  "rule": "CS-D1-09",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.4-003",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "legal",
+  "family": "subagent-scope-partition",
+  "counterTrap": false,
+  "signals": [
+   "filed under both business unit and counterparty",
+   "Subagent prompts, tools and model are unchanged"
+  ],
+  "stem": "Ashdown Pryce LLP runs due-diligence reviews with a lead agent that splits each client's data room by folder and hands each folder to a parallel review subagent. Last month one client restructured its data room so that contracts are now filed under both business unit and counterparty. Since then, the lead's reports list some contracts twice with conflicting risk ratings. Subagent prompts, tools and model are unchanged, and spot checks show each subagent's findings are accurate for the contracts it read.",
+  "ask": "What is the MOST likely cause of the conflicting entries?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The subagents have no agent-to-agent channel, so they cannot tell one another which contracts they have already rated",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Parallel reviewers are meant to be independent, with the lead owning who reviews what. The peer channel was just as absent when reports were clean, so it cannot explain a fault that began with the restructure."
+   },
+   {
+    "id": "b",
+    "text": "The lead's folder split no longer divides the contracts into separate sets, so two subagents now review the same contract",
+    "correct": true,
+    "trap": null,
+    "why": "Only the data room changed. Filing each contract under both business unit and counterparty puts it in two folders, so the split stops being a clean partition: two subagents rate the same contract from different context, and the lead never reconciles them."
+   },
+   {
+    "id": "c",
+    "text": "The work is split by folder rather than practice area, so no specialist subagent owns each contract type end to end",
+    "correct": false,
+    "trap": "T-ORGCHART",
+    "why": "A practice-area split mirrors the firm's structure but was never the design. The folder split produced clean reports before the restructure, so the choice of split dimension is not what changed."
+   },
+   {
+    "id": "d",
+    "text": "The subagents carry overlapping document tools and pick a different one in each folder, so their ratings diverge",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The tool layer is the same as when reports were clean, and each subagent's findings check out, so it cannot explain a fault that began with the restructure. Tool confusion would give wrong findings, not accurate ones listed twice."
+   }
+  ],
+  "explain": "Binding constraint: only the data-room structure changed, and each subagent's work is accurate. The fault is in the lead's allocation: parallel subagents know nothing of each other's assignments, so the lead must hand each one a scope that does not overlap any other.",
+  "rule": "CS-D1-10",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.4-004",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "energy",
+  "family": "agent-or-tool-boundary",
+  "counterTrap": false,
+  "signals": [
+   "a deterministic model that returns hourly wind speeds",
+   "wrap the service as a peer forecast agent"
+  ],
+  "stem": "Northfen Renewables is building an assistant that plans maintenance outage windows across its 30 wind sites. One planning agent reads turbine fault logs and technician notes, which vary widely, and proposes windows for a supervisor to approve. It also needs wind forecasts from the meteorology team's service, a deterministic model that returns hourly wind speeds for a site and date range. The meteorology team offers to wrap the service as a peer forecast agent that the planner would converse with over an agent-to-agent protocol.",
+  "ask": "Which design BEST gives the planner the forecasts it needs?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Accept the meteorology team's offer, and agree a typed message schema for the planner's requests to their forecast agent",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Agent-to-agent suits an independent reasoner across an ownership boundary. The other side here is a deterministic function, so even a typed conversation adds latency, cost and paraphrase risk to what should be a lookup."
+   },
+   {
+    "id": "b",
+    "text": "Give the meteorology team its own Claude agent that interprets the forecasts and passes its conclusions to the planner",
+    "correct": false,
+    "trap": "T-ORGCHART",
+    "why": "Team ownership of the data is not a technical seam. An interpreting agent would paraphrase exact numbers and add a second context to evaluate, while the planner already does the reasoning the task needs."
+   },
+   {
+    "id": "c",
+    "text": "Give the planning agent a forecast tool that calls the service with a site and date range and returns hourly speeds",
+    "correct": true,
+    "trap": null,
+    "why": "The forecast side computes rather than reasons, so a tool call hands the planner exact hourly figures with no second agent to prompt, secure or evaluate. The reasoning stays in the planner, where the varied logs are read."
+   },
+   {
+    "id": "d",
+    "text": "Load every site's hourly forecast for the coming fortnight into the planner's context at the start of each session",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Thirty sites of hourly figures would crowd the fault logs in context with dates and sites the plan never touches, and the snapshot ages during the session. A call for the site and dates in question returns only what is needed."
+   }
+  ],
+  "explain": "Binding constraint: the forecast service is a deterministic function with fixed inputs and outputs. A capability that computes rather than reasons becomes a tool the existing agent calls on demand; a second agent or an agent-to-agent link is justified only for an independent reasoner, and preloading every forecast floods the context.",
+  "rule": "CS-D1-09",
+  "ladder": "integration-mechanism",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.4-005",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "e-commerce",
+  "family": "cross-area-tickets-single-agent",
+  "counterTrap": false,
+  "signals": [
+   "most tickets touch at least two of those areas",
+   "so that each team owns its own agent"
+  ],
+  "stem": "Kestrel Market's seller-support assistant is one agent with nine tools covering fees, listings and payouts. It resolves most seller questions, traces show it choosing the right tool in nearly every case, and its context stays well within limits. Most tickets touch at least two of those areas, such as a fee dispute on a suspended listing. The support director proposes rebuilding it as three agents, one each for the fees, listings and payouts teams, so that each team owns its own agent.",
+  "ask": "What is the BEST architecture decision?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Rebuild it as fee, listing and payout agents behind a router, so that each support team owns and tunes its own agent",
+    "correct": false,
+    "trap": "T-ORGCHART",
+    "why": "Team ownership is not a technical seam. With most tickets crossing areas, the router must pick one owner, and the rest of the ticket needs a handoff that can drop context the single agent already holds."
+   },
+   {
+    "id": "b",
+    "text": "Add a planner agent that breaks each ticket into parts at runtime and spawns a specialist subagent for each part",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Runtime decomposition suits work whose subtasks cannot be known in advance. These tickets draw on a known set of nine tools that one agent already selects correctly, so a planner adds cost and failure points."
+   },
+   {
+    "id": "c",
+    "text": "Keep the single agent with its nine tools, and let each team review changes to the tools in its own area",
+    "correct": true,
+    "trap": null,
+    "why": "Traces show no tool confusion or context strain, and most tickets span two areas, so one context handles each ticket whole. Team review of its own tools meets the ownership aim without mid-ticket handoffs or a split audit trail."
+   },
+   {
+    "id": "d",
+    "text": "Keep one agent, but load just the fee, listing or payout tool set that matches each ticket's main area",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Loading one area's tools works only if a ticket stays in one area, and most touch two. The agent already picks correctly from nine tools, so trimming the set removes tools that a fee dispute on a suspended listing needs."
+   }
+  ],
+  "explain": "Binding constraint: most tickets cross the fee, listing and payout areas, and one agent already handles them without tool confusion. Add agents only for real independence or specialisation; ownership can be met by who reviews the tools, not by splitting the agent.",
+  "rule": "CS-D1-09",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.4-006",
+  "rev": 3,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "banking",
+  "family": "handoff-explicit-brief",
+  "counterTrap": false,
+  "signals": [
+   "Each request sets its own reporting currency, fiscal year end and covenant definitions",
+   "a one-line task"
+  ],
+  "stem": "Thornbury Bank's credit-memo system has a coordinator agent that reads a relationship manager's request and delegates each borrower entity's financial analysis to a subagent. Each request sets its own reporting currency, fiscal year end and covenant definitions. Subagent analyses keep coming back in local currency, on calendar years and with a different leverage formula, so the coordinator spends turns correcting them. The coordinator's own context holds the right conventions, and each subagent is started fresh with only a one-line task such as 'analyse the Dutch subsidiary'.",
+  "ask": "Which change BEST fixes the subagent analyses?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Open an agent-to-agent channel so a subagent can ask the coordinator about the bank's conventions when unsure",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "Agents can message one another, but a subagent handed a one-line task assumes defaults and does not know which conventions it is missing, so it rarely asks. The coordinator already holds the facts and can send them up front."
+   },
+   {
+    "id": "b",
+    "text": "Add the bank's reporting conventions and covenant formulas to the analysis subagent's standing system prompt",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A standing prompt is the same for every request, while currency, fiscal year end and covenant definitions change with each one. It could carry a fixed house formula but not the per-request settings that are going wrong."
+   },
+   {
+    "id": "c",
+    "text": "Put the request's currency, fiscal year end, covenant definitions and output format into each subagent's task brief",
+    "correct": true,
+    "trap": null,
+    "why": "A delegated subagent starts without the coordinator's conversation; only what the brief carries reaches it. Because the conventions vary by request, they have to travel in each brief with the goal and return format, rather than leaving the subagent to guess."
+   },
+   {
+    "id": "d",
+    "text": "Have the coordinator check each returned analysis against the request's conventions and send back any that fail",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "A check on return catches the wrong currency or year end, but each subagent still starts without the conventions, so the coordinator keeps spending turns sending work back, which is the cost the stem describes."
+   }
+  ],
+  "explain": "Binding constraint: the conventions differ per request and live only in the coordinator's context. A non-forked subagent does not see the coordinator's conversation, so each handoff must carry the goal, constraints, required facts and return format; checking returns or answering questions on demand leaves the gap in place.",
+  "rule": "CS-D1-10",
+  "ladder": "pattern",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.4-007",
+  "rev": 3,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "scale",
+  "industry": "saas",
+  "family": "worker-tool-scope-compact-return",
+  "counterTrap": false,
+  "signals": [
+   "grown from 40 to 400 accounts",
+   "loads every tool definition up front",
+   "return long narrative write-ups"
+  ],
+  "stem": "Quillstack, a SaaS analytics vendor, reviews renewal risk with a lead agent that starts one subagent per enterprise account to read its support tickets, product usage and contract terms, then ranks the accounts. Over a year the run has grown from 40 to 400 accounts, and the platform catalogue from 25 to 70 tools as teams added integrations. The runtime loads every tool definition up front, so each subagent carries all 70 and now often picks a similar-sounding usage tool the billing team added. The lead's context overflows because subagents return long narrative write-ups that it reads in full before ranking.",
+  "ask": "Which TWO changes BEST restore the run at its new scale? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Give each account subagent just the ticket, usage and contract tools that its task brief calls for",
+    "correct": true,
+    "trap": null,
+    "why": "Wrong picks grew as the catalogue each subagent carries grew. Scoping each subagent to the few tools its account review uses takes the billing team's look-alike usage tool out of reach and shrinks every subagent's loaded definitions."
+   },
+   {
+    "id": "b",
+    "text": "Rewrite the 70 tool descriptions with when-to-use guidance and worked examples for the usage tools",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "Clearer descriptions help at any size, but with 70 look-alike-prone tools loaded into every subagent, the confusion and the context load come from how much each one sees; rewording leaves both in place, and the lead still overflows."
+   },
+   {
+    "id": "c",
+    "text": "Serve the 70 tools as one standard catalogue from a shared MCP server that each subagent loads in full",
+    "correct": false,
+    "trap": "T-PROTOCOL",
+    "why": "MCP standardises how tools are exposed but not which tools each subagent is given; every subagent still loads all 70, so the look-alike usage tool stays in reach, and the lead's overflow is untouched."
+   },
+   {
+    "id": "d",
+    "text": "Have each subagent return a compact structured risk record with evidence links rather than a narrative write-up",
+    "correct": true,
+    "trap": null,
+    "why": "The lead needs comparable facts, not prose. A fixed record per account keeps 400 results within the lead's context and lets it rank every account on the same fields."
+   },
+   {
+    "id": "e",
+    "text": "Cache the shared prompt prefix and tool definitions that each of the 400 subagent runs starts with",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Caching the shared prefix cuts cost and latency across 400 subagent starts, but each subagent still sees all 70 tools and the lead still reads 400 narratives, so neither failure changes."
+   }
+  ],
+  "explain": "Binding constraint: scale on two fronts, ten times the accounts and a catalogue nearly three times larger, with every definition loaded up front. Give each worker the smallest tool set its brief needs and require compact structured returns, so neither the workers' nor the lead's context is flooded.",
+  "rule": "CS-D1-10",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.4-008",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "telecom",
+  "family": "planner-proposal-traces-first",
+  "counterTrap": false,
+  "signals": [
+   "Nobody has yet examined why the other 29% of incidents fail",
+   "one per fault hypothesis",
+   "traces of those runs are stored"
+  ],
+  "stem": "Corriemoor Networks runs a single troubleshooting agent in its network operations centre, with tools for radio, core and transport diagnostics. On a held-out set of 400 past incidents it resolves 71%, against an agreed target of 85%. The architecture board proposes replacing it with a planner agent that spawns parallel diagnostic subagents, one per fault hypothesis, as a peer operator does. Nobody has yet examined why the other 29% of incidents fail, although traces of those runs are stored.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Adopt the planner design now, with one diagnostic subagent per fault hypothesis just as the peer operator runs it",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "A planner with parallel subagents earns its cost only when paths emerge at runtime or one context cannot hold the work. Nothing yet shows either, and a peer operator's results say nothing about why these incidents fail."
+   },
+   {
+    "id": "b",
+    "text": "Define the brief each hypothesis subagent will get and the findings format it will return to the planner",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Briefs and return formats are essential once a planner design is chosen, but writing them now presumes a redesign that the failing traces have not yet justified."
+   },
+   {
+    "id": "c",
+    "text": "Pilot the planner design on one region's live incidents and compare its resolution rate with the current agent's",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "A pilot acts on a redesign before anyone has looked at why runs fail. It spends a region's live incidents testing a guess that the stored traces could confirm or rule out now, at no risk to operations."
+   },
+   {
+    "id": "d",
+    "text": "Sort the 116 failed incidents by the step at which each stored trace shows the agent's diagnosis going wrong",
+    "correct": true,
+    "trap": null,
+    "why": "The traces already exist. Classifying where the failed runs break, whether tool choice, context size or reasoning across domains, shows what the 29% need and whether a planner design, a simpler change or neither is justified."
+   }
+  ],
+  "explain": "Binding constraint: there is no evidence yet about why incidents fail, although the traces are stored. Read the failing traces first, and add a planner with parallel subagents only if they show paths that emerge at runtime or context one agent cannot hold.",
+  "rule": "CS-D1-09",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

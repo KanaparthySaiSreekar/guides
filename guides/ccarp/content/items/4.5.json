@@ -1,0 +1,507 @@
+[
+ {
+  "id": "P4-4.5-001",
+  "rev": 3,
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "accuracy-floor",
+  "industry": "healthcare",
+  "family": "two-stream-batch-and-prefix-cache",
+  "counterTrap": false,
+  "signals": [
+   "wait at the bedside for the answer",
+   "within five working days",
+   "identical every time"
+  ],
+  "stem": "Thornmere Hospitals' clinical informatics lead must bring two Claude workloads, each about a fifth over its budget line, back within budget. Through morning rounds, pharmacists across the wards send a question every minute or so and wait at the bedside for the answer; each request carries the 30,000-token dosing guide, identical every time, then that patient's medication record, under 2,000 tokens. Answers run to a few sentences. A nightly job, run under its own API organisation, screens newly published drug-safety notices, which contain no patient data; the medicines committee reviews its findings within five working days. The chief pharmacist's accuracy floor covers both workloads, and every smaller tier fell below it in last month's evals.",
+  "ask": "Which TWO changes BEST bring both workloads within budget while holding the accuracy floor? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Route the ward-round questions through the batch interface to earn its discount on that workload",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Pharmacists wait at the bedside for each answer, and batch processing makes no promise about when a single request completes, so the discount would be paid for with the ward-round workflow."
+   },
+   {
+    "id": "b",
+    "text": "Move the nightly screening to the smallest tier, since nobody waits on its findings",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Every smaller tier fell below the chief pharmacist's floor last month, and that floor covers the screening too, so this saving breaches the gate however little the timing matters."
+   },
+   {
+    "id": "c",
+    "text": "Submit each night's screening requests as one batch job instead of individual calls",
+    "correct": true,
+    "trap": null,
+    "why": "The committee reviews within five working days and the notices hold no patient data, so this workload can leave the synchronous path. Batch processing lowers its price while the model reads exactly the same notices."
+   },
+   {
+    "id": "d",
+    "text": "Give each workload a spend alert that fires when it passes 80% of its budget line",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Spend alerts surface an overrun sooner, which is sound governance, but they lower the cost of no request in either workload, so neither returns within its budget line."
+   },
+   {
+    "id": "e",
+    "text": "Cache the dosing guide as a stable prefix placed ahead of each patient's record",
+    "correct": true,
+    "trap": null,
+    "why": "The 30,000-token guide is resent unchanged with questions arriving every minute or so, and it dwarfs the short record and answer, so caching it cuts the dominant cost of that workload while the model reads the same guide."
+   }
+  ],
+  "explain": "Binding constraint: the accuracy floor covers both workloads and no smaller tier meets it, so only levers that leave what the model reads unchanged remain. Batch the patient-free screening that nobody waits on, and cache the unchanged dosing guide that busy ward rounds resend.",
+  "rule": "CS-D4-13",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-09",
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.5-002",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "insurance",
+  "family": "latency-breakdown-before-lever",
+  "counterTrap": false,
+  "signals": [
+   "The only timing data is the API gateway's end-to-end duration",
+   "three proposals ready"
+  ],
+  "stem": "Galloway Mutual's broker desk uses a Claude agent that answers brokers' coverage questions by calling policy-administration, rating and claims-history tools, often over several turns. Brokers stay on the phone with a client while it works, and complaints about slow answers have doubled since two tools were added in the spring. The only timing data is the API gateway's end-to-end duration for each request. The platform team has three proposals ready, each with a test plan: stream the answer, move the agent to a smaller and faster tier, or move it to a more capable tier that should need fewer tool turns.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Trace a sample of slow broker requests, timing each model turn, tool call and output stage separately",
+    "correct": true,
+    "trap": null,
+    "why": "An end-to-end duration cannot show whether tool calls, extra turns or long outputs dominate the wait. A per-step breakdown names the dominant term, which tells the team which proposal, if any, targets it."
+   },
+   {
+    "id": "b",
+    "text": "Pilot streaming with one group of brokers and compare their complaint rate against the rest",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "A pilot measures how brokers feel about one lever, not where the time goes. If most of the wait sits in tool calls before the answer starts, streaming barely helps, and the pilot spends weeks finding that out."
+   },
+   {
+    "id": "c",
+    "text": "Shadow-run the smaller tier on a week of questions and score its answers against a labelled set",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "A shadow run checks whether the smaller tier's answers hold up, but if the new tools are the slow part, a faster model barely moves the wait. It tests a lever before anyone has located the time."
+   },
+   {
+    "id": "d",
+    "text": "Replay a week of questions on the more capable tier and count how many tool turns each one needs",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Fewer turns matter only if extra turns cause the delay, and nobody knows that yet. A per-step trace of today's agent would show it sooner, without paying a larger tier's price for a week of replays."
+   }
+  ],
+  "explain": "Binding constraint: the only evidence is an end-to-end duration. Locate the time per step before testing any lever; the pilot, shadow run and replay each test a proposal aimed at a term nobody has measured.",
+  "rule": "CS-D4-12",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-09"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.5-003",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "legal",
+  "family": "edits-not-full-document-output",
+  "counterTrap": false,
+  "signals": [
+   "only after the complete response arrives",
+   "output generation taking most of the time",
+   "about one clause in ten"
+  ],
+  "stem": "Stonecroft Harland LLP's contract team uses a Claude add-in in its document editor to redline supplier agreements against the firm's negotiation playbook. The add-in returns the whole agreement, typically 25 pages, with its edits marked, and the editor can insert tracked changes only after the complete response arrives. Associates have been promised finished redlines within 30 seconds; p95 is 95 seconds. Traces show time to first token under 3 seconds, output generation taking most of the time, and edits touching about one clause in ten. Clause risk often turns on definitions and cross-references elsewhere in the agreement.",
+  "ask": "Which change BEST gets finished redlines within the promised time?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Stream the marked-up agreement into the editor so associates see edits as they are generated",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "The editor inserts tracked changes only once the full response has arrived, so streaming shortens no part of the wait for a finished redline. It helps perceived wait, which is not the promise."
+   },
+   {
+    "id": "b",
+    "text": "Split the agreement into sections and redline them in parallel calls, then merge the results",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Each call would see only its own section, yet clause risk turns on definitions and cross-references elsewhere, so the split removes context the redline depends on while unchanged text is still regenerated."
+   },
+   {
+    "id": "c",
+    "text": "Have the model return just the changed clauses as structured edits that the add-in applies",
+    "correct": true,
+    "trap": null,
+    "why": "Output generation dominates and about nine clauses in ten are copied back unchanged. Returning only the edits removes that waste, so completion time falls sharply while the model still reads the whole agreement."
+   },
+   {
+    "id": "d",
+    "text": "Cache the playbook and agreement text as a prefix so that repeat redlines of a draft start faster",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Time to first token is already under 3 seconds and generation dominates, so faster prompt processing trims a term that is not the problem; the 95-second wait is almost all output."
+   }
+  ],
+  "explain": "Binding constraint: a completion-time promise on a response the editor can use only when complete. Output tokens dominate, so remove the waste in them by returning edits rather than the unchanged document; streaming and caching target terms that are not the wait.",
+  "rule": "CS-D4-12",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-09"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.5-004",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "evidence",
+  "industry": "banking",
+  "family": "retry-driven-cost-schema-output",
+  "counterTrap": false,
+  "signals": [
+   "these resends are 45% of spend",
+   "Responses that parse on the first attempt",
+   "a small share of input"
+  ],
+  "stem": "Redhaven Bank's small-business lending team runs a Claude pipeline that extracts 40 fields from each applicant's financial statements into JSON for the credit-decision engine. When the engine rejects a response as malformed or missing a required field, the pipeline resends the entire request. A per-application cost breakdown finished this week shows these resends are 45% of spend. Responses that parse on the first attempt match the credit team's labelled set within its accuracy bar. Statement text is unique to each applicant, and the 2,000-token extraction instructions are a small share of input.",
+  "ask": "What should the architect do NEXT to cut cost per application?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Cache the extraction instructions as a prefix shared by every application's request",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "The instructions are a small share of input and statement text cannot be reused across applicants, so caching trims a minor term while the resends, 45% of spend, continue."
+   },
+   {
+    "id": "b",
+    "text": "Move extraction to a more capable tier, which keeps to the required JSON format more reliably",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Malformed output is a structural defect that a larger tier may reduce but not remove, and every call, first attempts included, would be priced higher. Constraining the format fixes it on the current tier."
+   },
+   {
+    "id": "c",
+    "text": "Send only the balance sheet and income statement pages rather than the full statements",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Fields such as covenants and contingent liabilities often sit in the notes, so trimming risks the accuracy bar, and shorter input does nothing about why responses fail to parse."
+   },
+   {
+    "id": "d",
+    "text": "Constrain responses to the 40-field schema with structured output at generation time",
+    "correct": true,
+    "trap": null,
+    "why": "Resends are the dominant cost term and stem from format, not content. Schema-constrained output returns parseable JSON with every required field, so the resends stop while the extraction the bar approved stays the same."
+   }
+  ],
+  "explain": "Binding constraint: the cost breakdown names resends of malformed responses as the dominant term. Pull the lever that removes that term, schema-constrained output, rather than caching a minor term, upsizing or trimming inputs.",
+  "rule": "CS-D4-12",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-09"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.5-005",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "airline",
+  "family": "parallel-independent-checks-under-floor",
+  "counterTrap": false,
+  "signals": [
+   "made one after another",
+   "none uses another's result",
+   "fell below it on duty limits and rest"
+  ],
+  "stem": "Before a Tarnholm Airways crew scheduler confirms a reassignment during disruption, a Claude service checks the proposed pairing in three separate calls made one after another: flight-duty limits, minimum rest and type-rating currency. Each call reads the same pairing record and returns a verdict with reasons; none uses another's result, and the scheduler can confirm only once all three have returned. Peak p95 is 14 seconds against an 8-second target, and the calls take similar time, mostly spent generating. The flight-safety office's accuracy floor is fixed, and the smallest tier, about twice as fast, fell below it on duty limits and rest but held it on type ratings.",
+  "ask": "Which change BEST brings the checks within the target?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move all three checks to the smallest tier, which returned its verdicts about twice as fast",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Halving generation time would meet the target, but the smallest tier fell below the flight-safety floor on duty limits and rest, and that floor gates any latency gain."
+   },
+   {
+    "id": "b",
+    "text": "Run the three checks as concurrent calls and let the scheduler confirm when the last verdict returns",
+    "correct": true,
+    "trap": null,
+    "why": "The checks are independent yet run one after another, so running them side by side cuts the wait to roughly the slowest single check, about a third of today's, with no change to any model, prompt or verdict."
+   },
+   {
+    "id": "c",
+    "text": "Move the type-rating check to the smallest tier, where it held the floor, and keep the others",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "The smallest tier held the floor on type ratings, but that check is only a third of a chain that runs end to end; halving it leaves roughly 12 seconds, still well over the target."
+   },
+   {
+    "id": "d",
+    "text": "Combine the three checks into a single call that returns all three verdicts together",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "One call still generates all three verdicts and their reasons in sequence, so generation, the dominant term, takes about as long as three calls in a row; only per-call overhead falls, and the prompts the safety floor was measured on change."
+   }
+  ],
+  "explain": "Binding constraint: the fixed flight-safety accuracy floor, which keeps the duty-limit and rest checks off the faster tier. Independent calls made one after another can run concurrently, which meets the target without changing anything the model reads.",
+  "rule": "CS-D4-13",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-RD-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.5-006",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.5",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "accuracy-floor",
+  "industry": "legal",
+  "family": "reasoning-effort-by-slice-plus-cache",
+  "counterTrap": false,
+  "signals": [
+   "opens every request",
+   "lookups hold the partners' accuracy bar at low effort",
+   "analyses fall below it unless effort stays high"
+  ],
+  "stem": "Pardoe Whitlock LLP runs a regulatory helpdesk where compliance officers at its financial-services clients type questions and wait for answers, tagging each as a rule lookup, such as when a filing is due, or an analysis weighing several rules against a client's facts. Lookups are 70% of volume. Questions arrive every few seconds through the working day. Every request runs at high reasoning effort. Metering splits cost roughly evenly between input, mostly the same 15,000-token rulebook guide that opens every request, and output, mostly reasoning tokens; visible answers average 150 words. On the firm's labelled set, lookups hold the partners' accuracy bar at low effort, while analyses fall below it unless effort stays high.",
+  "ask": "Which TWO changes BEST cut cost and waiting time while holding the partners' bar? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run rule lookups at low reasoning effort and keep analyses at high effort",
+    "correct": true,
+    "trap": null,
+    "why": "Reasoning tokens drive the output half of cost and much of the wait. Lookups, tagged by the officers and 70% of volume, were measured holding the bar at low effort, so cutting effort there saves where the evidence says it is safe."
+   },
+   {
+    "id": "b",
+    "text": "Cap visible answers at 100 words and give every reply a fixed answer template",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Reasoning tokens, not the 150-word answers, dominate output cost and the wait, so capping visible text misses the dominant term and risks clipping multi-rule analyses."
+   },
+   {
+    "id": "c",
+    "text": "Move analyses to a more capable tier so they hold the bar at low reasoning effort",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Nothing shows a larger tier clears the partners' bar on analyses at low effort, and it raises the per-token price on the costliest requests; the measured saving is lowering effort on lookups."
+   },
+   {
+    "id": "d",
+    "text": "Report cost and waiting time by question type to the partners in a monthly review",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "A monthly breakdown by question type shows the partners where spend and waiting time go, which is sound governance, but it changes no request, so cost and waiting time stay where they are."
+   },
+   {
+    "id": "e",
+    "text": "Put the rulebook guide at the start of each request and mark it for prompt caching",
+    "correct": true,
+    "trap": null,
+    "why": "The 15,000-token guide opens every request unchanged and makes up most of the input half of cost, so caching it cuts that half and time to first token without changing what the model reads."
+   }
+  ],
+  "explain": "Binding constraint: the partners' bar, measured per question type, which allows lower effort only on lookups. That trims reasoning tokens where the evidence says it is safe, and caching the shared rulebook guide trims the input half without changing what the model reads.",
+  "rule": "CS-D4-13",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-05",
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.5-007",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "banking",
+  "family": "downsized-tier-loops-on-multi-hop",
+  "counterTrap": true,
+  "signals": [
+   "still close in about four tool turns",
+   "which finished them within the limit before",
+   "still hit the limit on those alerts"
+  ],
+  "stem": "To cut cost, Fenmoor Bank moved its anti-money-laundering triage agent, which gathers account data through tools before recommending whether to close or escalate an alert, from the mid tier to the smallest tier. Six weeks later, cost per triaged alert is 25% higher. Single-account alerts still close in about four tool turns. Alerts needing funds traced through chains of linked accounts now run to the turn limit and are rerun on the mid tier, which finished them within the limit before. A replay with a prompt rewritten for the smallest tier, spelling out each fund-tracing step, still hit the limit on those alerts. Production prompts, tools, turn limit and alert mix are unchanged, and cache hit rates recovered within days.",
+  "ask": "What is the MOST likely cause of the higher cost per triaged alert?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The switch reset the prompt cache, so the agent's long instruction prefix is billed at the full input rate",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Cache hit rates recovered within days, yet the rise persists six weeks later and sits in linked-account alerts rather than spreading across every call as a cache miss would."
+   },
+   {
+    "id": "b",
+    "text": "The prompt was tuned on the mid tier and now under-specifies the triage task for the smallest tier",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "A replay with a prompt rewritten for the smallest tier, spelling out each fund-tracing step, still hit the limit on linked-account alerts, so wording is ruled out and the gap sits in the tier."
+   },
+   {
+    "id": "c",
+    "text": "The smallest tier lacks the multi-hop reasoning that linked-account alerts need, so they loop and rerun",
+    "correct": true,
+    "trap": null,
+    "why": "Only the reasoning-heavy slice degrades, a prompt rewrite did not recover it, and the mid tier finished it before. Loops to the limit plus mid-tier reruns cost more than the cheaper tokens save."
+   },
+   {
+    "id": "d",
+    "text": "The turn limit is set too low for linked-account alerts, so it cuts them off before they finish",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "The limit is unchanged and the mid tier finished the same alerts inside it, so the limit is where the loops end, not why they happen; raising it would only pay for longer loops."
+   }
+  ],
+  "explain": "Binding constraint: only the tier changed, failures sit only in the reasoning-heavy slice, and a prompt rewritten for the smaller tier did not recover them. Here blaming the model tier is right: judge cost per completed task, not per token, and route the multi-hop slice back to the tier that clears it.",
+  "rule": "CS-D4-12",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

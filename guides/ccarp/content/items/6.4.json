@@ -1,0 +1,486 @@
+[
+ {
+  "id": "P6-6.4-001",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "audience",
+  "industry": "saas",
+  "family": "adr-preserve-rationale",
+  "counterTrap": false,
+  "signals": [
+   "see what was weighed and what would have to change",
+   "moves to another division in six weeks"
+  ],
+  "stem": "Fernhollow Software runs a Claude-based assistant that drafts replies to billing disputes for its subscription customers. After a month of debate with security and product, the principal architect chose a fixed two-step workflow over an autonomous agent because every refund recommendation must be reproducible for finance audits. The architect moves to another division in six weeks. Product managers have already reopened the 'why not an agent?' question twice, and the engineering director wants anyone revisiting it next year to see what was weighed and what would have to change before reopening it.",
+  "ask": "Which artefact BEST meets the engineering director's goal?",
+  "options": [
+   {
+    "id": "a",
+    "text": "An architecture document in the team wiki that describes each workflow step, its data flows and how it keeps refunds reproducible",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "It explains how the workflow meets the audit need, but not which alternatives were weighed, why the agent lost or what would change the answer, so next year's readers would still have to reconstruct the debate."
+   },
+   {
+    "id": "b",
+    "text": "A won't-do resolution on the product backlog's agent request, with the rationale attached, so the question stops being reopened",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Closing the request to stop product reopening it decides a product question for its owners; the director wants future revisits to be informed, not prevented, and ticket history is not a durable record."
+   },
+   {
+    "id": "c",
+    "text": "A six-month evaluation comparing the workflow's audit outcomes with a prototype agent run on the same set of billing disputes",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A comparison would be useful evidence for a later revisit, but it reports in six months; the reasoning from this month's debate has to be captured while the architect and the people who argued it are still here."
+   },
+   {
+    "id": "d",
+    "text": "A version-controlled decision record of the context, the alternatives, why each lost and the conditions that would justify revisiting it",
+    "correct": true,
+    "trap": null,
+    "why": "The director wants next year's readers to see the reasoning: what was weighed, why the agent lost and what would reopen the question. A versioned record states exactly that and outlasts the architect's move."
+   }
+  ],
+  "explain": "Binding constraint: next year's readers need the reasoning after the architect has gone. Preserving why a decision was made calls for a version-controlled ADR with context, alternatives, why each lost and the conditions for revisiting; a design document, a closed ticket or a later study does not carry the 'why'.",
+  "rule": "CS-D6-10",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-EL-15"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.4-002",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "ownership",
+  "industry": "education",
+  "family": "handoff-pack-and-owner",
+  "counterTrap": false,
+  "signals": [
+   "nobody could tell whether a wrong answer came from bad catalogue data or from the prompt",
+   "no one on the team has operated an LLM system"
+  ],
+  "stem": "Kestrel Valley Community College hired a consultancy to build a Claude-based advising assistant that answers students' course-planning questions from the catalogue and degree rules; it went live this term. The consultancy's architect leaves when the contract ends in three weeks, and the college's student-systems team will run the assistant from then on. Their lead warns that no one on the team has operated an LLM system, and that after the previous vendor left, nobody could tell whether a wrong answer came from bad catalogue data or from the prompt.",
+  "ask": "Which TWO actions BEST prepare the team to run the assistant on its own? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Refresh the architecture document so it matches the final design, the data sources and the component versions at the point of handover",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "An accurate architecture document is worth having, but it describes how the assistant is built, not how to tell a catalogue fault from a prompt fault, so the diagnosis gap the lead described remains."
+   },
+   {
+    "id": "b",
+    "text": "Hand over the eval suite, the prompt inventory and runbooks keyed by symptom, with access to the per-request traces",
+    "correct": true,
+    "trap": null,
+    "why": "The team's past failure was not knowing whether data or prompt caused a wrong answer. Traces show what was retrieved and sent, and the evals, prompt inventory and runbooks let them test either cause without the architect."
+   },
+   {
+    "id": "c",
+    "text": "Set the accuracy level below which the team must switch the assistant off, and write that trigger into each of the runbooks",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "The switch-off threshold is a risk decision for the college's accountable owner. The architect can propose options with their trade-offs, but fixing the bar on the college's behalf is not the architect's call."
+   },
+   {
+    "id": "d",
+    "text": "Name an owner on the team for live wrong-answer reports, who triages them with the architect checking each diagnosis until the contract ends",
+    "correct": true,
+    "trap": null,
+    "why": "Artefacts alone do not build operating experience. An owner who has already sorted real wrong answers into data or prompt faults, with the architect checking, leaves the team able to diagnose once the contract ends."
+   },
+   {
+    "id": "e",
+    "text": "Plan the first improvement cycle with the team, ranking the prompt and retrieval fixes that student feedback has raised so far",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Iteration planning belongs after the team can run and diagnose the system, and it does nothing in the three weeks left to close the team's data-versus-prompt diagnosis gap."
+   }
+  ],
+  "explain": "Binding constraint: the student-systems team becomes the sole owner and has never operated an LLM system. A handoff must survive the architect's absence, so transfer the diagnostic artefacts and have a named owner practise real diagnosis before the contract ends (one technical action, one people action).",
+  "rule": "CS-D6-11",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-MR-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.4-003",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "lifecycle-stage",
+  "industry": "retail",
+  "family": "handover-channel-request",
+  "counterTrap": false,
+  "signals": [
+   "ten days before the holiday code freeze",
+   "Just keep an eye on our incident channel if anything breaks"
+  ],
+  "stem": "Harlow & Vine, a department-store chain, is handing its Claude-based store-associate assistant to the retail-systems team. The architect rolls off next Friday, ten days before the holiday code freeze, and starts on another client's programme. The runbooks, eval suite and prompt inventory are finished and reviewed, and the team's on-call engineer is the named owner. The retail-systems lead, whose team is stretched preparing for the freeze, asks to cancel the three planned handover sessions: 'Just keep an eye on our incident channel if anything breaks, and we will read the documents in January.'",
+  "ask": "What should the architect do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Agree to act as part-time second line in the incident channel through the freeze, since the owning team has asked for exactly that",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "A channel suits live coordination, but here it makes the architect the documentation. Part-time cover still leaves an on-call engineer who has never opened the runbooks escalating instead of resolving, while another client competes for the architect's time."
+   },
+   {
+    "id": "b",
+    "text": "Escalate to the sponsor that the retail-systems team is declining the handover, and ask the sponsor to make the sessions mandatory",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "The lead owns how the team takes over, and no legal or safety obligation is being breached. Escalating around them before offering a lighter handover that fits their time overrides their call."
+   },
+   {
+    "id": "c",
+    "text": "Hand over on schedule and run a blameless review of the team's first real incident to close any gaps in the runbooks",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Post-incident reviews come after incidents, but the first real one would likely land during the freeze, with an unrehearsed on-call engineer and no architect, which is the failure the handover exists to prevent."
+   },
+   {
+    "id": "d",
+    "text": "Offer the lead one 30-minute drill before rolling off in which the on-call engineer resolves a seeded failure from the runbook",
+    "correct": true,
+    "trap": null,
+    "why": "It fits the lead's time constraint instead of overriding it: half an hour costs the stretched team little, and the owner will have resolved a failure alone from the runbook before the architect leaves and the freeze begins."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. The handoff closes next Friday when the architect rolls off, and the owning team is stretched before the freeze. The next step is to offer the owner a lighter handover that still has the on-call engineer resolve a failure unaided, not a channel, an escalation or a later review.",
+  "rule": "CS-D6-11",
+  "ladder": "lifecycle",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.4-004",
+  "rev": 1,
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "auditability",
+  "industry": "airline",
+  "family": "prompt-inventory-before-handoff",
+  "counterTrap": false,
+  "signals": [
+   "directly in production about a dozen times, with no change log",
+   "a handoff pack its engineers can operate from"
+  ],
+  "stem": "Altamar Airways uses a Claude-based assistant that drafts rebooking offers for airport agents during flight disruptions. Its launch documentation was written nine months ago. Since then the vendor team has edited the system prompt and tool descriptions directly in production about a dozen times, with no change log, to keep up with new fare rules. Altamar's platform team takes ownership next quarter and has asked the architect for a handoff pack its engineers can operate from.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Inventory the prompts, tool descriptions and settings running in production, then compare them against the launch documents",
+    "correct": true,
+    "trap": null,
+    "why": "Every later artefact depends on knowing what is actually running. After a dozen unlogged edits the launch documents describe a system that no longer exists, so the real configuration must be captured first."
+   },
+   {
+    "id": "b",
+    "text": "Rewrite the runbooks so each disruption-day symptom maps to its likely cause and the recovery step the platform team takes",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Symptom-based runbooks belong in the pack, but written now they would describe the launch configuration rather than the edited one in production, and would mislead engineers on a disruption day."
+   },
+   {
+    "id": "c",
+    "text": "Brief the platform team's leadership on the assistant's business value, its incident history and the open risks they inherit",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "Leadership may want a risk summary, but the request is for a pack engineers operate from; a briefing gives them nothing to diagnose or recover the assistant with."
+   },
+   {
+    "id": "d",
+    "text": "Have the vendor restore production to the documented launch configuration so that the existing documents are accurate again",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "The edits handle live fare rules. Reverting them so the documents become true decides a business trade-off for Altamar's owner and could break rebooking offers during disruptions."
+   }
+  ],
+  "explain": "Binding constraint: production has drifted from the documents through unlogged edits, so nothing is traceable. Capture and version what is actually running first; runbooks, briefings and any decision to revert come after.",
+  "rule": "CS-D6-11",
+  "ladder": "lifecycle",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.4-005",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "media",
+  "family": "symptom-runbooks-restore-target",
+  "counterTrap": false,
+  "signals": [
+   "restoration target for the pipeline is 30 minutes at any hour",
+   "trying to work out which component was at fault"
+  ],
+  "stem": "Quillstone Media's newsroom relies on a Claude-based pipeline that drafts the summaries in breaking-news push alerts. The platform team took over its operation last month with a 40-page architecture document describing every component. The newsroom's agreed restoration target for the pipeline is 30 minutes at any hour. During Saturday night's incident, when summaries began dropping source attribution, the on-call engineer spent two hours in the document trying to work out which component was at fault, before a former build-team member, reached at home, fixed it in minutes.",
+  "ask": "Which change BEST lets the on-call engineers meet the restoration target?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add a troubleshooting section to each component chapter of the architecture document, listing that component's failure modes and fixes",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "Fixes filed under components still assume the engineer knows which component is at fault. On Saturday the symptom was obvious but the component was not, and that search is where the two hours went."
+   },
+   {
+    "id": "b",
+    "text": "Note in the on-call guide that overnight incidents work to a two-hour restoration target until the runbooks are rebuilt",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "The 30-minute target at any hour is the newsroom's agreed target; relaxing it for nights, even temporarily, redefines the bar for the owner instead of bringing them the gap and the options."
+   },
+   {
+    "id": "c",
+    "text": "Write runbooks organised by observable symptom, each giving the likely causes, the checks to run and the recovery step",
+    "correct": true,
+    "trap": null,
+    "why": "At night the engineer starts from what they see, not from a component. Symptom-first runbooks go straight from dropped attribution to checks and a fix, which is what a 30-minute target at any hour needs."
+   },
+   {
+    "id": "d",
+    "text": "Run a blameless review of Saturday's incident and put the documentation rework on next quarter's platform roadmap",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A blameless review is sound practice, but deferring the documentation fix to next quarter leaves every incident until then on the same two-hour path against a 30-minute target."
+   }
+  ],
+  "explain": "Binding constraint: a 30-minute restoration target at any hour. The engineer starts from a symptom without knowing the component, so operating documentation must be runbooks organised by symptom, cause and action; component-organised fixes, a relaxed target or a deferred rework do not meet it.",
+  "rule": "CS-D6-11",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.4-006",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "audience",
+  "industry": "e-commerce",
+  "family": "security-review-architecture-diagram",
+  "counterTrap": true,
+  "signals": [
+   "signs off every launch from the design document",
+   "own the threat model"
+  ],
+  "stem": "Brightcart, an online homeware retailer, is about to launch a Claude-based returns assistant that reads customers' delivery addresses and calls its order-management API with a service token. Brightcart's security engineering team signs off every launch from the design document in the architecture repository; its reviewers own the threat model for systems holding customer personal data and service tokens. To save time, the engineering manager proposes attaching the one-page launch brief that the steering committee has already approved. The architect is deciding what the design document needs for sign-off.",
+  "ask": "Which artefact BEST prepares the design document for security engineering's sign-off?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The one-page launch brief the steering committee approved, covering the business case, the main risks and their mitigations",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "The brief suits the steering committee deciding on value, but security engineering signs off the design itself, and a summary of risks gives the owners of the threat model nothing to assess."
+   },
+   {
+    "id": "b",
+    "text": "The incident runbook for a suspected data leak, with the steps to revoke the order-API token and notify affected customers",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A leak-response runbook belongs in the handoff pack for operating the live assistant; it shows recovery from a breach, not the design the reviewers must judge before launch to prevent one."
+   },
+   {
+    "id": "c",
+    "text": "A statement of the residual risks the delivery team has already reviewed and accepted, for reviewers to note at sign-off",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Accepting residual risk is the call of the reviewers who own the threat model. Presenting risks as already accepted by the delivery team takes that decision from them instead of giving them the design to judge."
+   },
+   {
+    "id": "d",
+    "text": "A diagram of each hop that customer addresses and the order-API token take, marking where each crosses Brightcart's network edge",
+    "correct": true,
+    "trap": null,
+    "why": "Reviewers who own the threat model for personal data and service tokens need to see where addresses and the token travel and where they leave the network. For a technical sign-off audience this detail is the right artefact, not excess."
+   }
+  ],
+  "explain": "Binding constraint: the audience is security engineers who sign off the design and own its threat model. Implementation detail is usually wrong for decision-makers, but for technical sign-off reviewers a diagram of where personal data and credentials cross the network edge is exactly the right artefact.",
+  "rule": "CS-D6-05",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-15"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": "6.2"
+ },
+ {
+  "id": "P6-6.4-007",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "education",
+  "family": "adr-missing-rejected-alternatives",
+  "counterTrap": false,
+  "signals": [
+   "lists one consequence, about four hours a week of approvals",
+   "The model, the data and the academic board's approval process are unchanged"
+  ],
+  "stem": "Brookmere Online Academy's tutoring assistant suggested quiz grades for teachers to approve, a design its original architects chose over automatic grading after a pilot in which parents disputed grades nobody could explain. Two years after handoff, the platform team switched to automatic grading to save teacher time, and parent disputes returned. Before deciding, the team read the decision log: its entry gives teacher workload as the context, states the decision and lists one consequence, about four hours a week of approvals. The model, the data and the academic board's approval process are unchanged.",
+  "ask": "What is the MOST likely reason the team chose a design the pilot had already ruled out?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The handoff relied on written records instead of walkthroughs with the original architects, so their tacit context never reached the team",
+    "correct": false,
+    "trap": "T-AUDIENCE",
+    "why": "Walkthroughs help at handoff, but two years on, the architects' memory is not a durable source. The team did consult the written record before deciding; what failed was what the record left out."
+   },
+   {
+    "id": "b",
+    "text": "The academic board approved the switch without first getting sign-off from the architects who made the original decision",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "After handoff the academic board owns such decisions and followed its usual process. Requiring the departed architects' sign-off would hand decision rights to people who no longer own the system."
+   },
+   {
+    "id": "c",
+    "text": "The log entry never recorded that automatic grading had been piloted and dropped, or the parent disputes that ended it",
+    "correct": true,
+    "trap": null,
+    "why": "The team read the log and saw workload and the cost of approvals. With no record of the pilot and the disputes that ended automatic grading, the switch looked like a pure saving rather than a known failure."
+   },
+   {
+    "id": "d",
+    "text": "The team rolled automatic grading out to every course at once instead of piloting it on a few courses and tracking disputes",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A staged pilot would have caught the disputes before they spread, but that gate comes after the choice. It explains how far the damage reached, not why a design already ruled out was chosen again."
+   }
+  ],
+  "explain": "Binding constraint: what changed. The log was read and the model, data and approval process are unchanged, so the cause lies in the record's content. An ADR must keep rejected alternatives and the evidence against them; a consequence recorded without its alternative reads as pure cost.",
+  "rule": "CS-D6-10",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-15"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

@@ -1,0 +1,506 @@
+[
+ {
+  "id": "P3-3.5-001",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "latency-sla",
+  "industry": "e-commerce",
+  "family": "incremental-publish-reindex",
+  "counterTrap": true,
+  "signals": [
+   "fee changes apply to sellers from the moment they are published",
+   "takes about 20 hours",
+   "a page edited since the last rebuild"
+  ],
+  "stem": "Tidewell Market's seller-help assistant answers merchants' fee and listing-policy questions from a vector index of about 900 policy pages. The policy team edits a few pages every Tuesday, and fee changes apply to sellers from the moment they are published. A monthly batch job rebuilds the index; a full rebuild re-embeds every page and takes about 20 hours. Traces of 40 disputed answers show each one quoting the old wording of a page edited since the last rebuild, while answers drawn from unedited pages are rated accurate. Chunking, the embedding model and the prompt are unchanged since launch.",
+  "ask": "What should the platform architect change FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Answer fee and policy questions through a live lookup in the content system instead of the index",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This treats slow-changing policy pages as live transactional state and assumes the content system can search 900 pages by meaning. Policy text belongs in the index, which only needs to be current when each edit is published."
+   },
+   {
+    "id": "b",
+    "text": "Move the full rebuild from monthly to weekly and start it as soon as Tuesday's edits are published",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "A weekly rebuild shortens the wait before re-indexing starts, but the 20-hour run itself then dominates the lag. Fee changes apply on publication, so sellers would still be quoted superseded fees for about a day after every Tuesday."
+   },
+   {
+    "id": "c",
+    "text": "Alert the policy team whenever a page's indexed copy trails its published version by an hour",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A lag alert is worth adding once incremental indexing exists, to catch regressions. The lag is already measured in the traces, so an alert now reports a defect nobody has fixed while sellers keep receiving superseded fees."
+   },
+   {
+    "id": "d",
+    "text": "Switch to incremental indexing that re-embeds each edited page as soon as it is published",
+    "correct": true,
+    "trap": null,
+    "why": "Policy pages are scheduled document changes and the traces make index lag the measured cause, so re-indexing is right here. Re-embedding the few edited pages on publication, and replacing their old chunks, takes minutes rather than a 20-hour rebuild, so fee answers are current when a change applies."
+   }
+  ],
+  "explain": "Binding constraint: fee changes apply the moment they are published, which a 20-hour full rebuild cannot match on any schedule. Policy pages are document-style content changing on a schedule with index lag as the measured cause, so re-indexing is right here, made incremental and triggered by each publication.",
+  "rule": "CS-D3-12",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.5-002",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "manufacturing",
+  "family": "live-status-system-of-record",
+  "counterTrap": false,
+  "signals": [
+   "current lockout and work-order status",
+   "as a separate record",
+   "a newer lockout record for that press was already in the index"
+  ],
+  "stem": "Forgewell Castings runs a maintenance copilot for plant technicians. A typical question, such as whether press 7 can restart after a hydraulic fault, needs restart steps from the standard operating procedures and the press's current lockout and work-order status. Every four hours the maintenance system exports each lockout, release and work-order update as a separate record into the vector index that holds the procedures. Technicians report answers calling a press clear when a lockout was applied twenty minutes earlier, and another citing last week's release record although a newer lockout record for that press was already in the index. Procedure answers are rated accurate.",
+  "ask": "Which design change BEST resolves the incorrect clearance answers?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Serve lockout and work-order status through a maintenance-system lookup per question instead of the index",
+    "correct": true,
+    "trap": null,
+    "why": "Clearance depends on one current fact that changes with each transaction, and the index holds a pile of lockout and release records that similarity cannot order by time. Reading status from the system of record per question gives the live state, composed with the retrieved restart steps."
+   },
+   {
+    "id": "b",
+    "text": "Replace the four-hour export with change-data capture that updates the index seconds after each change",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "Faster capture closes the four-hour gap but keeps safety state as a heap of indexed records, and similarity search already surfaced last week's release over a newer lockout. A copy chosen by resemblance cannot say which record is current."
+   },
+   {
+    "id": "c",
+    "text": "Re-chunk the procedures by machine and fault code so each restart step carries its equipment context",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Procedure answers are already rated accurate, so re-chunking changes a layer that works. Lockout status stays as stale and as ambiguous as before, and presses under lockout would still be reported clear."
+   },
+   {
+    "id": "d",
+    "text": "Filter retrieval to the named press and pass its full lockout history to the model with the procedure",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "More history seems to guarantee the latest record is in context, but a lockout applied after the last export is missing from all of it, and the model is left inferring current state from a sequence of records."
+   }
+  ],
+  "explain": "Binding constraint: the data shape. Lockout and work-order status is transactional state recorded as a stream of separate records, so it comes from the system of record at question time, while slow-changing procedures stay in the index and the answer composes both.",
+  "rule": "CS-D3-12",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-EL-08"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.5-003",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "data-shape",
+  "industry": "retail",
+  "family": "subheading-chunks-category-context",
+  "counterTrap": false,
+  "signals": [
+   "the same subheadings",
+   "every 300 tokens regardless of headings",
+   "no category named in it"
+  ],
+  "stem": "Copperfield Goods gives store associates an assistant that answers from its 600-page returns and warranty handbook. Each product category has a section with the same subheadings, such as Return window and Warranty claims, and each subheading states a rule followed by its exceptions. Ingestion splits the text every 300 tokens regardless of headings. Traces of wrong answers show two patterns: a retrieved chunk stating a 90-day window, with no category named in it, applied to an electronics question; and answers that give a rule but omit exceptions that begin in the following chunk. The embedding model and prompt have not changed since launch.",
+  "ask": "Which TWO changes BEST fix both failure patterns? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Raise chunk overlap to half a chunk and pass the top fifteen chunks to the model",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Arbitrary overlap and extra volume fix neither defect. Cuts still fall at arbitrary points, and the extra chunks carry no category either, so the model sees more ambiguous rules rather than the right one."
+   },
+   {
+    "id": "b",
+    "text": "Split the handbook on its subheadings so each rule is indexed together with its exceptions",
+    "correct": true,
+    "trap": null,
+    "why": "The missing exceptions are a boundary defect: fixed 300-token cuts separate a rule from the exceptions that follow it. Splitting on the handbook's own subheadings keeps each rule and its exceptions in one retrievable unit."
+   },
+   {
+    "id": "c",
+    "text": "Prefix each chunk with its product category and section path before it is embedded",
+    "correct": true,
+    "trap": null,
+    "why": "Identical subheadings across categories make a bare chunk ambiguous. Prefixing category and section path lets the retriever match the right category and lets the model tell the electronics window from the furniture one."
+   },
+   {
+    "id": "d",
+    "text": "Constrain the model to quote the retrieved rule verbatim and cite the chunk it came from",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The traces show the retrieved text itself is ambiguous or incomplete. Quoting it faithfully repeats a rule with no category and no exceptions; grounding fixes help only when the right passage was retrieved."
+   },
+   {
+    "id": "e",
+    "text": "Log the retrieved chunk IDs with every answer so associates can flag wrong rules for review",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Logging helps find bad answers after they are given, but it changes neither the chunk boundaries nor the missing category, so both failure patterns continue."
+   }
+  ],
+  "explain": "Binding constraint: the handbook's shape, with the same subheadings repeated under every category. Chunk on the corpus's own units and attach the section context a chunk loses when it stands alone.",
+  "rule": "CS-D3-11",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-EL-08"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.5-004",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "media",
+  "family": "format-change-speaker-boundaries",
+  "counterTrap": false,
+  "signals": [
+   "a single file per episode",
+   "named only when a segment begins",
+   "fixed 500-token chunker"
+  ],
+  "stem": "Northlight Audio's research assistant lets producers search 8,000 hours of podcast transcripts. Last month the ingestion team replaced short per-segment transcript files, each opening with a header naming the guest, with a single file per episode in which a guest is named only when a segment begins. Since then, answers often attribute quotes to the wrong guest. The fixed 500-token chunker, retrieval settings, embedding model, prompt and generation model are unchanged, and a full re-index completed after the switch, with results showing only the new files.",
+  "ask": "What is the MOST likely cause of the misattributed quotes?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Chunks of the whole-episode files now start mid-segment, leaving many quotes without the guest's name",
+    "correct": true,
+    "trap": null,
+    "why": "The format is the only change. The unchanged fixed-size chunker used to cut short files that each opened with the guest header; in whole-episode files most chunks begin mid-segment, so quotes are embedded and returned with no guest attached."
+   },
+   {
+    "id": "b",
+    "text": "The retriever's top-k is too small to return both a quote and the chunk that names its guest",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Retrieval settings did not move and served the old files well. More chunks might occasionally include a name, but the defect is that quotes and names now sit in different chunks."
+   },
+   {
+    "id": "c",
+    "text": "The index is still serving stale transcripts because re-indexing lagged behind the new ingestion",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "The stem rules this out: a full re-index finished after the switch and results show only the new files. Staleness cannot explain a matching failure on current content."
+   },
+   {
+    "id": "d",
+    "text": "The generation model has drifted and now confuses speakers in long episodes with several guests",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The generation model is unchanged and the errors began with the ingestion change. The model can only attribute a quote using names present in the chunks it receives."
+   }
+  ],
+  "explain": "Binding constraint: what changed. Only the transcript format changed, so suspect how the unchanged fixed-size chunker now cuts the new files; the fix is to chunk on segment boundaries and carry the guest's name as context.",
+  "rule": "CS-D3-11",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.5-005",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "data-shape",
+  "industry": "education",
+  "family": "table-row-chunk-granularity",
+  "counterTrap": false,
+  "signals": [
+   "run across many pages",
+   "the header row appears once",
+   "as bare cells"
+  ],
+  "stem": "Kestrel State University's advising assistant answers degree-planning questions from the course catalogue. Prerequisites sit in tables of several hundred rows that run across many pages, with columns for course, prerequisite, corequisite and minimum grade; the header row appears once, at the top of each table. Students report errors such as being told a corequisite must be completed first. In each of 60 failing traces, the retrieved chunk holds the correct course row as bare cells, ENGR 210 | ENGR 105 | MATH 140 | C, with no column labels. The index matches the current catalogue edition.",
+  "ask": "What should the team do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Chunk each prerequisite table row by row, repeating the table title and column headers in each row chunk",
+    "correct": true,
+    "trap": null,
+    "why": "Each question concerns one course, and bare cells mean nothing without their labels. Row-sized chunks that repeat the title and headers keep matching precise and tell the model which column is a prerequisite and which a corequisite."
+   },
+   {
+    "id": "b",
+    "text": "Return the chunks on either side of each hit so the header row is more likely to reach the model",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "The header row appears once, at the top of a table that runs for many pages, so neighbouring chunks rarely contain it. Widening the window adds unrelated course rows rather than the labels the model needs."
+   },
+   {
+    "id": "c",
+    "text": "Index each prerequisite table as a single chunk so that no row is ever separated from its header row",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "A table of several hundred rows across many pages makes one oversized chunk: it exceeds a workable chunk size, its embedding blurs hundreds of courses together, and a question about one course drags in every other row."
+   },
+   {
+    "id": "d",
+    "text": "Add an ingestion test that fails any table chunk lacking column labels before an edition goes live",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "An ingestion check is worth adding once the chunker keeps headers, so next term's edition cannot regress. Run now, it simply fails the current tables while students keep receiving wrong prerequisite answers."
+   }
+  ],
+  "explain": "Binding constraint: the data shape, long multi-page tables whose header appears once, queried one course at a time. Chunk at row granularity with the title and headers repeated in each chunk; widening the window cannot reach a distant header, and a whole-table chunk is too large to match one row.",
+  "rule": "CS-D3-11",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-EL-08"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.5-006",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.5",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "data-shape",
+  "industry": "legal",
+  "family": "ingestion-field-extraction-portfolio",
+  "counterTrap": false,
+  "signals": [
+   "which agreements with EU counterparties contain uncapped indemnities",
+   "no system records their counterparties' regions or indemnity terms",
+   "a fixed top ten passages per question"
+  ],
+  "stem": "Ferris Lang LLP's contract assistant indexes 12,000 executed agreements as 800-token passages for its transactional lawyers. The agreements exist only as signed documents; no system records their counterparties' regions or indemnity terms. Clause questions, such as what the liability cap in one supplier agreement says, are answered well. Portfolio questions, such as which agreements with EU counterparties contain uncapped indemnities, return a handful of examples and miss most qualifying agreements. Traces show the retrieved clauses are cleanly chunked and relevant, and the assistant passes a fixed top ten passages per question to the model.",
+  "ask": "Which TWO changes BEST make portfolio answers complete without degrading clause answers? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Raise top-k to 200 for portfolio questions and let the model tally the matching agreements",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Raising k fits when a question needs a known, small number of passages, such as one per formulation. Here any number of the 12,000 agreements may qualify, so no fixed k is complete, and tallying hundreds of passages invites counting errors."
+   },
+   {
+    "id": "b",
+    "text": "Require every portfolio answer to cite the agreement and clause behind each entry it lists",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Citations make each listed agreement checkable, which lawyers value, but they add none of the agreements the top ten never returned. The list stays short and lawyers still have to find the rest by hand."
+   },
+   {
+    "id": "c",
+    "text": "Extract governing law, counterparty region and indemnity cap into structured fields at ingestion",
+    "correct": true,
+    "trap": null,
+    "why": "No system records these terms, so there is nothing to filter on. Extracting the deciding attributes from each agreement once at ingestion turns an open-ended enumeration into an exhaustive query over structured fields."
+   },
+   {
+    "id": "d",
+    "text": "Add a re-ranking stage over the top fifty passages before the model composes its answer",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Ranking is not at fault: the traces show the retrieved clauses are relevant. The defect is a fixed-size result set for a question with an open-ended answer, and re-ranking fifty candidates still hands the model a short list."
+   },
+   {
+    "id": "e",
+    "text": "Route portfolio questions to a structured query and keep clause questions on passage retrieval",
+    "correct": true,
+    "trap": null,
+    "why": "Enumerations and clause lookups need different retrieval paths. Routing sends portfolio questions to the field query, which returns every match, while clause questions keep the passage retrieval that already answers them well."
+   }
+  ],
+  "explain": "Binding constraint: the query pattern over unstructured agreements. Portfolio questions are exhaustive filters, so the indexing decision is to extract the deciding clause attributes into structured fields at ingestion, then route those questions to a query over them while clause questions stay on passage retrieval.",
+  "rule": "CS-D3-11",
+  "ladder": "retrieval",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": "3.6"
+ },
+ {
+  "id": "P3-3.5-007",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "constraint": "data-shape",
+  "industry": "banking",
+  "family": "summary-only-index-detail-loss",
+  "counterTrap": false,
+  "signals": [
+   "indexing those summaries",
+   "the cash-withdrawal amount that needs a second signature",
+   "the right policy's summary retrieved every time"
+  ],
+  "stem": "Ashgrove Savings built a policy assistant for branch staff by generating a one-paragraph summary of each of its 2,400 policy documents and indexing those summaries; the model answers from the summaries it retrieves. Broad questions, such as what the dormant-account policy covers, are rated accurate. Specific ones, such as the cash-withdrawal amount that needs a second signature, get vague answers or a reply that the policy does not say. Traces show the right policy's summary retrieved every time. No policy has changed since the summaries were generated, and the prompt and models are unchanged since launch.",
+  "ask": "What is the MOST likely cause of the vague answers?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Summary embeddings match policy topics well but fail to match the numeric thresholds staff ask about",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Matching is not the problem: traces show the right policy's summary retrieved every time. The fault is what the retrieved unit contains, so embeddings that handle numbers better would find the same summary with the same missing limit."
+   },
+   {
+    "id": "b",
+    "text": "The prompt lets the model paraphrase, so it rounds off the exact limits in the summaries it receives",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the exact limits are in the retrieved summaries. Replies that the policy does not say suggest the figure is absent, and no prompt wording can make the model quote a number it was never given."
+   },
+   {
+    "id": "c",
+    "text": "The model tier is too small to work out precise limits from the condensed wording of each summary",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Broad answers from the same model are rated accurate, and the model reads only summaries. No tier can state a withdrawal threshold that is absent from every passage it receives, so a larger model would give the same reply."
+   },
+   {
+    "id": "d",
+    "text": "A one-paragraph summary keeps each policy's scope but drops the thresholds that specific questions need",
+    "correct": true,
+    "trap": null,
+    "why": "The index was built for overview questions: the right summary is retrieved, but a paragraph-long digest leaves out figures such as signature thresholds. Specific questions need the policy's own passages indexed, with summaries kept to locate the right document."
+   }
+  ],
+  "explain": "Binding constraint: the query pattern. Staff ask specific threshold questions, but the index holds one summary per policy, a unit suited to overview questions; index the policy passages themselves (summaries can still locate the right document) so the details those questions need can be retrieved.",
+  "rule": "CS-D3-11",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-EL-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

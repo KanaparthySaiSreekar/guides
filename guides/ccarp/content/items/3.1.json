@@ -1,0 +1,504 @@
+[
+ {
+  "id": "P3-3.1-001",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "least-privilege",
+  "industry": "education",
+  "family": "scope-and-dedupe-grown-catalogue",
+  "counterTrap": false,
+  "signals": [
+   "Students only look things up and submit requests",
+   "three course-search tools that different teams built to do the same job"
+  ],
+  "stem": "Larkfield College's student help chat launched with 12 tools. Over three terms the admissions, housing and registrar teams each added their own, and it now loads 70. Trace review shows most wrong-tool calls fall among three course-search tools that different teams built to do the same job, and last week the agent ran the registrar's staff-only enrolment override for a student. Students only look things up and submit requests; staff work in a separate portal. The model and system prompt have not changed.",
+  "ask": "Which TWO changes BEST address both the wrong-tool calls and the override incident? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Split the catalogue into admissions, housing and registrar agents the chat routes between",
+    "correct": false,
+    "trap": "T-ORGCHART",
+    "why": "Splitting along team lines keeps the override in the registrar agent, still reachable from a student chat, and spreads the three course-search tools across agents, so the wrong pick moves into routing instead of going away."
+   },
+   {
+    "id": "b",
+    "text": "Load the 70 tools through tool search so only matching definitions reach the model",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Tool search helps a large catalogue, but it assumes the search can tell tools apart. A course query still surfaces all three look-alike search tools, and the override stays discoverable in a student chat."
+   },
+   {
+    "id": "c",
+    "text": "Limit the student chat's toolset to the lookup and request-submission tools that students use",
+    "correct": true,
+    "trap": null,
+    "why": "Students only look things up and submit requests, so staff-only tools such as the enrolment override have no place in their chat. Removing them ends that incident class and shrinks the catalogue the model chooses from."
+   },
+   {
+    "id": "d",
+    "text": "Keep one of the three course-search tools and retire the other two from the chat",
+    "correct": true,
+    "trap": null,
+    "why": "The three course-search tools do the same job, so they are true duplicates, and role scoping keeps all three because students do search courses. Keeping one removes the ambiguity behind most wrong-tool calls."
+   },
+   {
+    "id": "e",
+    "text": "Require each team to pass a tool-selection eval before it adds another tool to the chat",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "An eval gate is sound governance that slows future growth, but it changes neither the three duplicates already loaded nor the override the agent can still call today."
+   }
+  ],
+  "explain": "Binding constraint: students only look things up and submit requests. Scope the chat to that role's tools and retire true duplicates; team-by-team agents and on-demand loading leave the override reachable and the duplicates competing.",
+  "rule": "CS-D3-02",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-01",
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.1-002",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "energy",
+  "family": "over-broad-server-connection-diagnosis",
+  "counterTrap": false,
+  "signals": [
+   "which exposes 48 tools",
+   "so the agent could read work-order history",
+   "The model version, system prompt and six tool descriptions are unchanged"
+  ],
+  "stem": "Stormhaven Power's outage-desk agent used six tools for a year to read grid alarms, look up assets and draft crew dispatch notes, and chose among them reliably. Two weeks ago the platform team connected the company's shared maintenance MCP server, which exposes 48 tools, so the agent could read work-order history. Since then its picks among the original six have slipped and it has twice closed open work orders. Traces show each call reached the tool the agent named. The model version, system prompt and six tool descriptions are unchanged.",
+  "ask": "What is the MOST likely cause of both new problems?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The unchanged system prompt never tells the agent that closing work orders is outside its remit",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "The prompt is unchanged and was adequate while the agent held no close actions. A remit rule would make closures less likely but not impossible, and it says nothing about the slipping picks among the six."
+   },
+   {
+    "id": "b",
+    "text": "Maintenance tool names collide with the six originals, so the client routes calls to the wrong tool",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Name collisions are a real risk when a server joins, but traces show each call reached the tool the agent named. The wrong choices are the model's own, so the dispatch layer is not what broke."
+   },
+   {
+    "id": "c",
+    "text": "The agent now picks from every maintenance-server tool, close actions included, beside its six",
+    "correct": true,
+    "trap": null,
+    "why": "The connection is the only change, and it explains both symptoms: dozens of new tools now compete with the six, and the agent holds close actions that its read-only need never required."
+   },
+   {
+    "id": "d",
+    "text": "The server's close tool skips the supervisor confirmation that the work-order app applies",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "A missing confirmation explains how a closure went through, not why an outage-desk agent holds a close action at all, and it cannot account for the slipping picks among the original six."
+   }
+  ],
+  "explain": "Binding constraint: what changed. Model, prompt and descriptions are unchanged and traces clear the dispatch layer, so the one new variable is a connection that exposed the whole server's tools, which explains both the selection drift and the unwanted writes.",
+  "rule": "CS-D3-02",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.1-003",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "determinism",
+  "industry": "airline",
+  "family": "no-path-write-tools-and-passthrough",
+  "counterTrap": false,
+  "signals": [
+   "no path to altering a published roster",
+   "accepts any endpoint and method"
+  ],
+  "stem": "Aldermoor Airways gives crew planners an assistant that reads rosters, checks duty-time rules and drafts swap proposals. It was generated from the crew system's full SDK, so beside its read tools it carries publish_roster and cancel_pairing, plus a generic crew_api_request tool that accepts any endpoint and method, which the build team used for ad hoc lookups. Publishing is reserved for duty managers in the rostering console. After an audit finding, the safety office requires that the assistant have no path to altering a published roster.",
+  "ask": "Which TWO changes BEST meet the safety office's requirement? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Mark publish_roster and cancel_pairing as duty-manager-only in their tool descriptions",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "A description label is an instruction the model reads, so it makes a publish call less likely but not impossible. The safety office asked for no path, and a label does nothing about the passthrough."
+   },
+   {
+    "id": "b",
+    "text": "Remove the publish_roster and cancel_pairing tools from the planners' assistant",
+    "correct": true,
+    "trap": null,
+    "why": "Publishing is reserved for duty managers in the console, so these tools are pure exposure for planners. Removing them takes away the direct path, which no label, prompt or reviewer can be relied on to block."
+   },
+   {
+    "id": "c",
+    "text": "Pin the assistant to the current crew SDK release so later releases add no tools",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Pinning stops future SDK releases adding tools, which is sound hygiene, but the current release already carries publish_roster, cancel_pairing and the passthrough, so every existing path stays open."
+   },
+   {
+    "id": "d",
+    "text": "Write every tool call the assistant makes to the rostering audit log for review",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "An audit log is the right detective layer once prevention exists, but the safety office asked for no path, and a log leaves both the named write tools and the passthrough open."
+   },
+   {
+    "id": "e",
+    "text": "Replace the generic crew_api_request tool with named, read-only lookup tools",
+    "correct": true,
+    "trap": null,
+    "why": "A tool that accepts any endpoint and method is a second route to the publish API even after the named write tools are gone. Named read-only lookups cover the reads it served and close that route."
+   }
+  ],
+  "explain": "Binding constraint: the outcome must hold every time (no path to altering a published roster). Remove the write tools and the open-ended passthrough; description labels, audit logs and SDK pinning each leave a path in place.",
+  "rule": "CS-D3-03",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-03",
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.1-004",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "scale",
+  "industry": "logistics",
+  "family": "small-catalogue-overlapping-pair",
+  "counterTrap": true,
+  "signals": [
+   "same seven tools for a year",
+   "no new tools are planned",
+   "Both descriptions read"
+  ],
+  "stem": "Harrowgate Freight's dock-scheduling agent has used the same seven tools for a year, and no new tools are planned. A new evaluation finds that nearly every misfire is the agent calling reschedule_slot when a dispatcher wanted move_booking. Both descriptions read 'change when a truck is booked', although reschedule_slot shifts the time at the same dock and move_booking transfers the booking to another site. Every other tool choice scores well.",
+  "ask": "Which change BEST fixes the misfires?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Merge the two into one change_booking tool with a mode parameter, keeping the shared description",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "Grouping operations on one resource can be sound design, but this keeps the wording that causes the misfire: the model now picks reschedule or move through a parameter described only as 'change when a truck is booked', so the same ambiguous choice moves into an argument, and a working seven-tool interface is rebuilt for no gain."
+   },
+   {
+    "id": "b",
+    "text": "Move the agent to a higher model tier that infers a dispatcher's intent more reliably",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "No tier can reliably tell apart two tools whose descriptions say the same thing. The defect sits in the definitions, and it survives any upgrade while adding cost."
+   },
+   {
+    "id": "c",
+    "text": "Load the scheduling tools through tool search so fewer definitions compete up front",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Deferred loading targets a large or growing catalogue; below about ten tools, standard loading is the better fit. With seven stable tools, both scheduling definitions still load for any scheduling request, so the identical wording still decides the pick."
+   },
+   {
+    "id": "d",
+    "text": "Rewrite both descriptions to state what each one changes and when to prefer it",
+    "correct": true,
+    "trap": null,
+    "why": "With seven stable tools and one overlapping pair, the defect is two identical descriptions. A targeted rewrite of that pair fixes the misfire at its source, which the large-catalogue remedies do not."
+   }
+  ],
+  "explain": "Binding constraint: a small, stable catalogue whose misfires come from one overlapping pair. That meets the mega-tool trap's exception, so a targeted rewrite of those two descriptions is the fix rather than merging, discovery or a bigger tier.",
+  "rule": "CS-D3-02",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.1-005",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "security-boundary",
+  "industry": "retail",
+  "family": "subagent-inherited-write-tools",
+  "counterTrap": false,
+  "signals": [
+   "which anyone can post",
+   "inherits the orchestrator's full toolset",
+   "needs only to read reviews and return summaries"
+  ],
+  "stem": "Brambleton Outfitters' merchandising orchestrator hands a review-digest subagent thousands of public product reviews each day, which anyone can post, and gets back recurring themes. To save setup time, the subagent inherits the orchestrator's full toolset, including update_price and publish_promotion. In a red-team exercise, text planted in a review steered the subagent into attempting an update_price call. Merchandisers set prices through the orchestrator, and the digest job needs only to read reviews and return summaries.",
+  "ask": "Which change BEST closes this exposure?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Give the digest subagent its own toolset limited to the tools that read reviews",
+    "correct": true,
+    "trap": null,
+    "why": "Anyone can post a review, so planted text will keep reaching this subagent, and its job needs no pricing or promotion tools. Without them, a successful injection has no write action left to reach."
+   },
+   {
+    "id": "b",
+    "text": "Wrap each review in labelled, JSON-encoded blocks that mark it as untrusted content",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Labelling untrusted text is recommended practice and lowers the odds of injection, but it relies on the model honouring the label. While the subagent holds update_price, text written to beat the label can still reach it."
+   },
+   {
+    "id": "c",
+    "text": "Have the orchestrator reject any price change outside merchandiser-approved bounds",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "Bounds checks are the right guard for an agent whose job includes pricing. The digest job never prices, so the check keeps an unneeded write path open, and a steered call inside the bounds still changes a live price."
+   },
+   {
+    "id": "d",
+    "text": "Screen each review with a small classifier model and drop any that carry instructions",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "A classifier detects many planted instructions, but detection is probabilistic. Any review that slips past it still meets a subagent holding update_price and publish_promotion, so the exposure stays open."
+   }
+  ],
+  "explain": "Binding constraint: untrusted public text crosses into a subagent that holds write tools its task never uses. Give it only the tools its task requires; labels, screens and bounds checks lower the odds but leave the capability reachable.",
+  "rule": "CS-D3-01",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.1-006",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "least-privilege",
+  "industry": "saas",
+  "family": "speculative-tool-for-later",
+  "counterTrap": false,
+  "signals": [
+   "so it can answer billing questions later",
+   "No current ticket category uses it",
+   "who have no plans to route them to the copilot"
+  ],
+  "stem": "Quillstack sells a product-analytics platform. Its support copilot drafts tier-1 ticket replies from product docs and each customer's workspace settings, using read-only tools. A developer recently added a run_sql tool connected to the production warehouse, which holds every customer's usage and billing data, 'so it can answer billing questions later'. No current ticket category uses it, and billing tickets still go to the finance team, who have no plans to route them to the copilot.",
+  "ask": "Which change BEST reduces the risk the new tool introduces?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Keep run_sql configured but switched off until billing tickets move to the copilot",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Switching it off assumes billing tickets will move to the copilot, a routing change finance has no plans for. Meanwhile a dormant tool wired to the production warehouse is one config change from cross-customer exposure."
+   },
+   {
+    "id": "b",
+    "text": "Remove the run_sql tool and its warehouse connection from the copilot",
+    "correct": true,
+    "trap": null,
+    "why": "No ticket category the copilot handles needs warehouse access, so the tool adds cross-customer exposure and nothing else. Removing it leaves nothing to misuse, and billing access can be designed properly if that work ever moves here."
+   },
+   {
+    "id": "c",
+    "text": "Restrict run_sql to read-only queries with a row cap and timeout",
+    "correct": false,
+    "trap": "T-REMOVE",
+    "why": "Read-only limits are the right guard for a role that genuinely needs SQL. This role does not, and a read-only query can still return other customers' data."
+   },
+   {
+    "id": "d",
+    "text": "Swap run_sql for a narrower billing-lookup tool now so it is ready when billing arrives",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A scoped billing tool is the right design if billing ever moves here, but no current ticket needs it, so building it now still adds unneeded warehouse reach to a copilot that drafts tier-1 replies."
+   }
+  ],
+  "explain": "Binding constraint: least privilege, since no current task needs the tool. A capability added for later is removed now, not kept dormant, guarded or rebuilt in advance; design it when a real task arrives.",
+  "rule": "CS-D3-01",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.1-007",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "telecom",
+  "family": "inventory-role-needs-before-pruning",
+  "counterTrap": false,
+  "signals": [
+   "Nobody has mapped which tools each on-call role needs",
+   "used only during rare major outages",
+   "FIRST"
+  ],
+  "stem": "Tellwyn Mobile's network-operations assistant has grown to 95 tools over two years as teams added integrations, and on-call engineers report slower, less reliable tool choices. The platform lead wants to cut it down. Nobody has mapped which tools each on-call role needs, several tool owners have moved teams, and a few restoration tools are used only during rare major outages.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Give each on-call role its own scoped toolset and retire the shared catalogue",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Role-scoped toolsets are the right destination, but they cannot be drawn until someone knows which tools each role needs. Scoping first risks stripping tools a role depends on."
+   },
+   {
+    "id": "b",
+    "text": "Rewrite the descriptions of the tools that engineers most often see confused",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "Sharper descriptions help a small set with one ambiguous pair. With 95 tools the competition comes from catalogue size, and rewording leaves every tool in front of every role."
+   },
+   {
+    "id": "c",
+    "text": "Delete every tool that has not been called at least once in the last ninety days",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Call frequency is not need. The restoration tools used only in rare major outages would be deleted, removing capability a role requires exactly when it matters most."
+   },
+   {
+    "id": "d",
+    "text": "Map the tools each on-call role's tasks require, from runbooks and past call traces",
+    "correct": true,
+    "trap": null,
+    "why": "Nobody knows what each role needs, so any pruning now is guesswork. Mapping tasks to tools, with runbooks covering the rare outage work, is the evidence the later scoping and removal depend on."
+   }
+  ],
+  "explain": "Binding constraint: there is no evidence of what each role needs. Evaluate before pruning: map role tasks to tools first, then scope per role and remove what no role requires.",
+  "rule": "CS-D3-02",
+  "ladder": null,
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

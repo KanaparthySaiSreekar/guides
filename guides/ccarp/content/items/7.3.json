@@ -1,0 +1,426 @@
+[
+ {
+  "id": "P7-7.3-001",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "change-scope",
+  "industry": "airline",
+  "family": "mcp-one-squad-loaded-state",
+  "counterTrap": false,
+  "signals": [
+   "newly imaged laptops",
+   "lists no roster tools",
+   "The server version, the roster database, the managed settings and the model are unchanged"
+  ],
+  "stem": "Braemor Airways' crew-scheduling platform has five squads in one monorepo, which commits a project MCP server that lets Claude Code query the crew-roster test database. The disruption-recovery squad, onboarded last week on newly imaged laptops, reports that Claude Code lists no roster tools at all in their sessions, while the other four squads on the same commit query the database normally. The server version, the roster database, the managed settings and the model are unchanged. The squad must ship a winter-schedule fix by Friday, and its lead wants the server pushed through managed policy so it cannot go missing again.",
+  "ask": "What should the platform architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Push the roster server through managed MCP configuration so it loads in every developer's session at startup",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "Fleet-wide policy for one squad's local fault is overreach, and it changes configuration before anyone knows the cause. If the new laptop image lacks a variable the server needs, the managed copy fails on those laptops too, and Friday slips."
+   },
+   {
+    "id": "b",
+    "text": "Open an affected session's MCP server list and check its approval state, startup error and environment variables",
+    "correct": true,
+    "trap": null,
+    "why": "Only the squad's laptops differ, and a server that exposes no tools was either never approved or never started. That session's server list shows which, with the error, in minutes; a dismissed approval or a missing variable fails silently and appears only there."
+   },
+   {
+    "id": "c",
+    "text": "Pull the roster database's connection logs for refused logins from the squad's new accounts and laptops",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Database logs are a sensible follow-up if the session shows the server failing to authenticate, but they test one guess. The session's own server status shows first whether the server was approved, started or refused, and it costs minutes."
+   },
+   {
+    "id": "d",
+    "text": "Reinstall Claude Code and clear its local configuration on the squad's laptops, then have each developer reconnect",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Reinstalling changes the machines before anyone has looked, and clearing local configuration wipes the approval state and variables that would show the cause. If the image itself is at fault, the reinstall fixes nothing before Friday."
+   }
+  ],
+  "explain": "Binding constraint: what changed. The commit, server, database, managed policy and model are shared with four working squads, so only the squad's newly imaged laptops differ; first observe what their sessions actually loaded (approval state, startup error, environment variables) before changing policy, reinstalling or chasing one downstream hypothesis.",
+  "rule": "CS-D7-07",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.3-002",
+  "rev": 1,
+  "domain": 7,
+  "obj": "7.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "irreversibility",
+  "industry": "pharma",
+  "family": "rollback-first-active-harm",
+  "counterTrap": true,
+  "signals": [
+   "sites are already receiving erroneous data-query notices",
+   "Template v8 ran cleanly for four months"
+  ],
+  "stem": "Linscott Biopharma runs a nightly headless Claude Code job that regenerates data-validation scripts for a phase III trial and commits them to a branch the morning ETL loads automatically. Last night was the first run on pipeline template v9, which changed how the job loads project configuration. This morning the ETL flagged 30% of site uploads as invalid, and the trial's data manager confirms sites are already receiving erroneous data-query notices. Template v8 ran cleanly for four months; the repository, model version and upload formats are unchanged.",
+  "ask": "What should the platform lead do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Pull last night's full job trace and compare it with a v8 run before changing the pipeline",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Comparing traces is the right diagnosis, but doing it first leaves invalid scripts live while more sites receive wrong queries; the logs are kept, so the comparison can follow the rollback."
+   },
+   {
+    "id": "b",
+    "text": "Revert the job to template v8 and restore the validation scripts from its last clean run",
+    "correct": true,
+    "trap": null,
+    "why": "Sites are being harmed now and v8 is a known-good state, so mitigation comes before diagnosis. Reverting stops the faulty scripts reaching the ETL, and last night's v9 logs stay available to diagnose afterwards."
+   },
+   {
+    "id": "c",
+    "text": "Tighten the job's prompt so the generated rules follow the upload specification more closely",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The repository, model and formats are unchanged and v8 produced clean scripts from the same prompt; the template is the trigger, so editing the prompt targets a layer that did not change and leaves the harm running."
+   },
+   {
+    "id": "d",
+    "text": "Lock how the job loads its configuration in managed settings so later templates cannot alter it",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "Fleet-level policy is heavy machinery for one CI job's template, and as a preventive step it does nothing about the invalid scripts the ETL is already applying to site uploads this morning."
+   }
+  ],
+  "explain": "Binding constraint: active harm with a known-good state. When users are being harmed and a clean prior version exists, mitigate first by rolling back, then diagnose from the saved logs; observe-before-changing applies when nobody is being hurt.",
+  "rule": "CS-D7-07",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.3-003",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "logistics",
+  "family": "managed-deny-outranks-project-allow",
+  "counterTrap": false,
+  "signals": [
+   "IT pushed a managed-settings update to every developer laptop",
+   "The project settings file, the command and the model version are unchanged",
+   "nobody on the squad has edited their personal settings"
+  ],
+  "stem": "Wendlebury Logistics' route-planning squad commits a project settings file that allows Claude Code to run the squad's `make simulate` command against a sandbox depot model. On Monday, IT pushed a managed-settings update to every developer laptop to restrict commands that can reach production systems. Since Monday, Claude Code has returned a permission denial for `make simulate` to every developer on the squad. The project settings file, the command and the model version are unchanged, and nobody on the squad has edited their personal settings.",
+  "ask": "What is the MOST likely cause of the denials?",
+  "options": [
+   {
+    "id": "a",
+    "text": "A broad deny pattern in the committed project settings matches the command and is checked before its allow",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "A project deny would beat the allow, but the project file is unchanged and permitted the command until Monday, so any pattern in it would have blocked the command earlier. The only scope that changed is the managed one."
+   },
+   {
+    "id": "b",
+    "text": "A managed CLAUDE.md shipped with the update tells Claude not to run simulations against depot models",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "CLAUDE.md is advisory context: it can make Claude reluctant to run a command, but it cannot produce a permission denial. A denied tool call comes from a permission rule, and the managed settings are what changed on Monday."
+   },
+   {
+    "id": "c",
+    "text": "A deny pattern in the managed settings matches the command and is checked before the project allow",
+    "correct": true,
+    "trap": null,
+    "why": "The managed push is the only change, and the denials began on every laptop at once. Deny rules are evaluated before allow rules across all scopes and nothing below managed can override them, so the committed allow cannot win."
+   },
+   {
+    "id": "d",
+    "text": "A deny pattern in each developer's user settings matches the command and is checked before the project allow",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A user-level deny would also beat the project allow, but it needs someone to have edited personal settings, which the stem rules out, and it cannot explain denials that started on every laptop on the same day."
+   }
+  ],
+  "explain": "Binding constraint: what changed. A deny at any scope beats an allow, so several scopes could in principle cause this; the managed push is the only change and it hit every laptop at once, so the managed deny is the cause and the fix goes to the owner of the managed policy.",
+  "rule": "CS-D7-08",
+  "ladder": "config-reach",
+  "tips": [
+   "TIP-DM-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.3-004",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "evidence",
+  "industry": "telecom",
+  "family": "hook-matcher-silent-gap",
+  "counterTrap": false,
+  "signals": [
+   "never invoked on the edits",
+   "blocking, on every shell command that touched the directory"
+  ],
+  "stem": "Ardvale Telecom's core-network squad committed a project hook meant to stop Claude Code changing any file in the router-configuration directory and to log each decision. A code review has since found three Claude-made edits to router configuration files. Session debug logs show the hook invoked, and blocking, on every shell command that touched the directory, but never invoked on the edits. The hook script, its exit codes, the managed settings and the developers' own settings have not changed since the hook was added.",
+  "ask": "What is the MOST likely cause of the three edits?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The script fails on file-edit payloads and exits with a non-blocking error, so those edits go through",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A non-blocking error is a real fail-open risk, but it needs the hook to have run. The logs show it was never invoked on the edits, so the way the script handles its own errors cannot explain them."
+   },
+   {
+    "id": "b",
+    "text": "The hook's matcher selects the shell tool but not the file-editing tools, so it does not run on edits",
+    "correct": true,
+    "trap": null,
+    "why": "A hook runs only for the tool calls its matcher selects. It ran and blocked on every shell command yet never ran on an edit, under unchanged settings: the signature of a matcher that leaves out the edit tools, a silent gap only logs reveal."
+   },
+   {
+    "id": "c",
+    "text": "The hook's matcher name is misspelled, so Claude Code skips the hook on every tool call in the session",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A matcher misspelled as a whole matches no tool, so the hook would never run at all. The logs show it ran and blocked on every shell command, so the matcher does select something; a misspelled or wrongly cased edit-tool name inside it is just one way the matcher leaves out the edits, which is the matcher-scope gap."
+   },
+   {
+    "id": "d",
+    "text": "Developers' personal allow rules for edits in that directory take precedence over the committed project hook",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "The developers' settings have not changed, and an allow rule does not stop a hook being invoked. The hook ran on shell commands under those same settings, so what separates blocked from unblocked calls is the tool type, not a rule scope."
+   }
+  ],
+  "explain": "Binding constraint: the evidence in the session logs. A hook that runs and blocks for one class of tool calls but is never invoked for another points to the scope of its matcher, not to its exit codes, a matcher that matches nothing, or permission scopes; silent gaps like this surface only in what actually ran.",
+  "rule": "CS-D7-07",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.3-005",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.3",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "change-scope",
+  "industry": "insurance",
+  "family": "access-denied-trace-then-owner",
+  "counterTrap": false,
+  "signals": [
+   "migrated its permission model on Monday",
+   "which is keeping pace",
+   "The agent code, prompts, model and service identity are unchanged"
+  ],
+  "stem": "Thornlea Assurance's claims squad runs an agent that reads claim files through the records team's document MCP server under the agent's own service identity. Since the records team migrated its permission model on Monday, about a fifth of claims fail with 'access denied' and fall back to the manual queue, which is keeping pace. The agent code, prompts, model and service identity are unchanged. The squad lead asks the platform architect to give the service identity the records system's admin role so claims flow again.",
+  "ask": "Which TWO actions should the platform architect take? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Grant the service identity the records system's admin role until the records team's migration has settled",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Widening access before seeing which call is refused hides the evidence and breaks least privilege, and nothing forces it: the manual queue is keeping pace, so there is time to diagnose first."
+   },
+   {
+    "id": "b",
+    "text": "Pull traces of refused and successful calls to compare the identity, scopes and documents requested",
+    "correct": true,
+    "trap": null,
+    "why": "Observing comes before widening access: comparing refused with successful calls shows which scope and which documents the migrated model now refuses, turning 'a fifth of claims' into a specific mapping error someone can fix."
+   },
+   {
+    "id": "c",
+    "text": "Ask the records team to correct the migrated permission mapping for the document types being refused",
+    "correct": true,
+    "trap": null,
+    "why": "The only change sits in the records team's permission model, which the claims squad does not own. The fix belongs with the team that made the change, backed by trace evidence of which documents are being refused."
+   },
+   {
+    "id": "d",
+    "text": "Compare the agent's prompts and outputs on refused and successful claims to see where its behaviour diverges",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Prompts, code and model are unchanged, and the refusals come from the records server, not the agent's reasoning. Comparing outputs studies an untouched layer and cannot show which permission the migration withdrew."
+   },
+   {
+    "id": "e",
+    "text": "Tell the claims handlers that the migration is behind the fallback and how long the manual queue may run",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Keeping handlers informed is reasonable, but the queue is already keeping pace, and the message neither identifies the refused scopes nor corrects the mapping, so it does not change the outcome here."
+   }
+  ],
+  "explain": "Binding constraint: what changed. The only change is the records team's permission migration and nobody is being harmed while the manual queue keeps pace, so pull traces before widening access, then take the evidence to the owner of the changed layer.",
+  "rule": "CS-D7-07",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P7-7.3-006",
+  "rev": 2,
+  "domain": 7,
+  "obj": "7.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "evidence",
+  "industry": "airline",
+  "family": "support-ticket-session-snapshot",
+  "counterTrap": false,
+  "signals": [
+   "which settings, server approvals and hooks were actually in effect on their machine",
+   "the model version is pinned fleet-wide"
+  ],
+  "stem": "Corsway Air's developer-platform team fields about 60 Claude Code support tickets a month from 11 squads, mostly 'tool denied', 'MCP server missing' or 'hook did not run'. Median time to resolve is nine days, and triage notes show most of that time goes on back-and-forth with reporters to establish which settings, server approvals and hooks were actually in effect on their machine. The squads work in different repos under the same managed settings, and the model version is pinned fleet-wide. The platform lead wants the one change that cuts resolution time the most.",
+  "ask": "Which change BEST meets the platform lead's goal?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Build a fleet dashboard of permission denials, MCP connection failures and hook errors, broken down by squad and repo",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "A dashboard consumes aggregate signals; it shows which squads have trouble but not what one failing machine had in effect, so triage would still chase the reporter before acting on any ticket."
+   },
+   {
+    "id": "b",
+    "text": "Have the ticket form capture the failing session's settings sources, matched rules, server status and hook activity",
+    "correct": true,
+    "trap": null,
+    "why": "The delay is missing evidence about what each machine had in effect. Capturing settings sources, the matching rule, server status and hook activity when the ticket is filed lets triage start from the facts these failures reveal only there."
+   },
+   {
+    "id": "c",
+    "text": "Have the ticket form attach the reporter's repo commit and the Claude Code settings files committed in it",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Committed files show only the shared project scope. Local and user settings, dismissed server approvals and missing environment variables live on the machine, so triage would still have to ask the reporter what was in effect."
+   },
+   {
+    "id": "d",
+    "text": "Have the ticket form attach the full session transcript, including each of Claude's replies and its stated reasoning",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "These failures sit in what the harness loaded, not in what the model said. With the model pinned, a transcript rarely shows which scope's rule matched, whether a server was approved or whether a hook was ever invoked."
+   }
+  ],
+  "explain": "Binding constraint: evidence quality. Tool denials, missing servers and silent hooks are diagnosed from the configuration a session actually loaded on the machine, so capture that when the ticket is filed rather than aggregating signals, collecting only committed files or reading the conversation.",
+  "rule": "CS-D7-07",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

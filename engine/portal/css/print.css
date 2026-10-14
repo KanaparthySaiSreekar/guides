@@ -1,0 +1,51 @@
+@media print{
+  @page{size:auto;margin:8mm}
+  :root:not([data-x]),:root[data-theme]{color-scheme:light;--bg:#fff;--surface:#fff;--surface-2:#f2f2f2;--surface-3:#e6e6e6;--text:#000;--text-2:#222;--text-3:#444;--border:#bbb;--border-strong:#888;--accent:#1d3f60;--accent-soft:#e8eef5;--trap:#4a2d6b;--trap-soft:#f1ecf7;--good:#1f5c38;--bad:#8c2a23;--warn:#6b4f08;--warn-soft:#f6efda;--d1:#3D6A9C;--d2:#2E7F79;--d3:#6E56A0;--d4:#95681A;--d5:#A04545;--d6:#4B7738;--d7:#5E5E5E;--scale:.62}
+  html,body{background:#fff!important;color:#000!important}
+  .rail,.tabs,.topbar,.cs-bar,.noprint,#toast,.banner,.rfoot,.rhead{display:none!important}
+  .shell{display:block!important}
+  .content{padding:0!important;max-width:none!important}
+  a{color:inherit;text-decoration:none}
+  body.runner-active .content{display:none!important}
+  .printonly{display:block!important}
+  /* cheat sheet: two dense columns, blocks never split */
+  body.printing-cheat .cs-grid{display:block;column-count:2;column-gap:6mm}
+  body.printing-cheat .cs-block{break-inside:avoid;page-break-inside:avoid;margin:0 0 3mm;padding:2.2mm 2.8mm;border-radius:2mm}
+  body.printing-cheat .cs-block.xprint,body.printing-cheat .csrow.xprint{display:none!important}
+  body.printing-cheat .pagehead p{display:none}
+  body.printing-cheat .pagehead{display:none!important}
+  body.printing-cheat .csrow{grid-template-columns:1fr 1.1fr .95fr;gap:1.4mm;padding:.55mm 0}
+  body.printing-cheat .csrow>div::before{content:none!important}
+  body.printing-cheat .csrow .u,body.printing-cheat .csrow .miss{display:none}
+  body.printing-cheat .cs-block>h3{font-size:8.6pt;margin-bottom:1mm}
+  body.printing-cheat .alg li,body.printing-cheat .law,body.printing-cheat .antidotes,body.printing-cheat .oneline,body.printing-cheat .cs-block p,body.printing-cheat .cs-block li{font-size:7.2pt;line-height:1.3}
+  body.printing-cheat .law{padding:.6mm 1.6mm}
+  body.printing-cheat .laws{grid-template-columns:1fr;gap:1mm}
+  body.printing-cheat .antidotes{grid-template-columns:1fr;gap:0}
+  body.printing-cheat .antidotes .code{min-width:22mm;font-size:6.6pt}
+  body.printing-cheat .alg li::before{width:3.4mm;height:3.4mm;font-size:6pt}
+  body.printing-cheat .printfoot{display:block!important;font-size:6.5pt;color:#444;margin-top:2mm}
+  body.printing-cheat .cs-grid{font-size:6.2pt;line-height:1.2}
+  body.printing-cheat .cs-grid *:not(h3):not(h3 *){font-size:inherit!important;line-height:inherit}
+  body.printing-cheat .cs-grid h3{font-size:8.2pt!important}
+  body.printing-cheat .cs-block{padding:1.3mm 2mm;margin:0 0 1.8mm}
+  body.printing-cheat .cs-grid ul,body.printing-cheat .cs-grid ol{margin:.5mm 0;padding-left:3.5mm}
+  body.printing-cheat .cs-grid li+li{margin-top:.3mm}
+  body.printing-cheat .stack-sm>*+*{margin-top:.4mm}
+  body.printing-cheat .alg li{gap:1.5mm}
+  body.printing-cheat .ladder-strip>div{padding:.3mm 0!important}
+  body.printing-cheat .badge{font-size:5.8pt!important;padding:0 1mm}
+  body.printing-cheat .pagehead{margin-bottom:2mm}
+  body.printing-cheat .alg-rest,body.printing-cheat li.xprint{display:none}
+  body.printing-cheat .alg li{align-items:center}
+  body.printing-cheat .alg{gap:.5mm}
+  body.printing-cheat .cs-block{box-shadow:none}
+  body.printing-cheat .cs-block>h3 svg{display:none}
+  body.printing-cheat .laws{gap:0}
+  body.printing-cheat .law{padding:.4mm 0!important}
+  body.printing-cheat .csrow .n .code{padding:0 .8mm}
+  body.printing-cheat .csrow{padding:.45mm 0!important}
+  body.printing-cheat .csrow.hit{box-shadow:none}
+  body.printing-cheat .cs-block.dl::before{width:1mm}
+}
+.printonly,.printfoot{display:none}

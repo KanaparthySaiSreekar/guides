@@ -1,0 +1,663 @@
+[
+ {
+  "id": "FB-41",
+  "rev": 1,
+  "domain": 7,
+  "obj": "7.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "reuse",
+  "industry": "manufacturing",
+  "family": "user-scope-vs-project-config",
+  "counterTrap": false,
+  "signals": [
+   "must hold on every run",
+   "reach every clone"
+  ],
+  "stem": "Norrvik Automation's platform lead kept the team's Claude Code conventions in her own `~/.claude/CLAUDE.md`: test commands, naming rules and a line telling Claude never to read `.env` files. New hires who clone the repository report that Claude ignores the conventions, and one session opened a `.env` file while debugging. The security lead says the `.env` ban must hold on every run for everyone working in this repository. The conventions need to reach every clone and change through pull-request review. Everyone starts Claude Code from the repository root, and nothing is required for other repositories.",
+  "ask": "Which change BEST meets both requirements?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add an `@~/.claude/CLAUDE.md` import line to a committed project CLAUDE.md so that each clone pulls in her file",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Imports exist and load at launch, but `~` resolves to each reader's own home directory, so teammates import their own file or nothing. Even where it resolves, the imported `.env` line is still advisory context that cannot stop a read."
+   },
+   {
+    "id": "b",
+    "text": "Commit the conventions as project CLAUDE.md and put a `Read(**/.env)` deny rule in `.claude/settings.local.json`",
+    "correct": false,
+    "trap": "T-REACH",
+    "why": "The conventions half is right, but local settings are personal: `.claude/settings.local.json` applies to one person in one project and Claude Code keeps it out of git. The deny rule never reaches a clone or passes through review, so teammates can still open `.env`."
+   },
+   {
+    "id": "c",
+    "text": "Move the conventions and the `.env` rule into a committed project CLAUDE.md that loads for every clone",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "This fixes reach for the conventions, which is correct, but CLAUDE.md is context, not enforcement. A rule that must hold on every run needs a permission rule or hook that blocks the read whatever Claude decides."
+   },
+   {
+    "id": "d",
+    "text": "Commit the conventions as project CLAUDE.md and put a `Read(**/.env)` deny rule in `.claude/settings.json`",
+    "correct": true,
+    "trap": null,
+    "why": "Project CLAUDE.md is version-controlled, loads for every clone and changes through review, which suits conventions. A `Read(**/.env)` deny rule in the shared, committed `.claude/settings.json` blocks any `.env` under the repository for Claude's file tools and commands such as `cat`, whatever Claude decides, and enabling the sandbox extends the block to every sandboxed shell process."
+   }
+  ],
+  "explain": "Binding constraints: the conventions must reach every clone and the `.env` ban must hold on every run. Both belong in committed project files, CLAUDE.md for conventions and `.claude/settings.json` for the deny rule, because user and local scope never propagate; a must-hold rule needs a permission rule or hook because CLAUDE.md is advisory. Managed settings would be needed only if the ban had to be non-overridable on every machine.",
+  "rule": "CS-D7-02",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 41
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-47",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.3",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "airline",
+  "family": "few-shot-context-dependent-dates",
+  "counterTrap": false,
+  "signals": [
+   "meaning depends on context",
+   "Two rewrites of the prose instruction changed nothing"
+  ],
+  "stem": "Aldermoor Air, a regional airline, runs a production prompt that reads customer rebooking emails and fills a `travel_date` field in `YYYY-MM-DD` for its reservation system. Emails say things like 'next Friday', 'the 3rd' or '03/04', from both UK and US customers, and the prompt passes in each email's sent date and the sender's country. Output is inconsistent: some dates are ISO, some are `MM/DD/YYYY`, and a few return 'next Friday' unchanged. The team ruled out a regex or date library because the meaning depends on context. Two rewrites of the prose instruction changed nothing.",
+  "ask": "Which change is MOST likely to make the output consistent?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move the prompt to the largest model tier so its stronger reasoning follows the date instruction more reliably",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Nothing shows a capability gap: the model reads the emails and fails on an underspecified target. A bigger tier costs more per email and still has to guess how '03/04' from a UK sender should be written."
+   },
+   {
+    "id": "b",
+    "text": "Add three to five varied email-to-date examples, with relative and locale-ambiguous phrases and ISO output",
+    "correct": true,
+    "trap": null,
+    "why": "Examples show the exact target where prose leaves room to guess: 'next Friday' resolved from the sent date, '03/04' read day-first for a UK sender. Three to five diverse examples is the usual range for fixing format and structure."
+   },
+   {
+    "id": "c",
+    "text": "Restate the ISO rule in capitals at both the start and the end of the prompt, marked clearly as mandatory",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Emphasis tells the model the rule matters, which it already knows. It does not show how to resolve a relative phrase or a locale-ambiguous date, so the same inconsistent guesses continue."
+   },
+   {
+    "id": "d",
+    "text": "Paste the ISO 8601 standard and reference tables of national date orders and relative-date terms into the prompt",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "More reference text adds tokens without demonstrating the transformation. The model already knows ISO 8601, what 'next Friday' means and that UK senders write the day first; what it lacks is a worked picture of how this team maps each kind of phrase to the field."
+   }
+  ],
+  "explain": "Binding constraint: the input is context-dependent free text, so a deterministic parser is out and the defect is an underspecified output. Few-shot examples fix format and structure where prose has failed; a schema could force the YYYY-MM-DD shape, but only examples show how to resolve 'next Friday' or '03/04' for this sender. Capitals, repetition, reference dumps and bigger tiers do not resolve the ambiguity.",
+  "rule": "CS-D2-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 47
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-55",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.2",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "accuracy-floor",
+  "industry": "healthcare",
+  "family": "explicit-criteria-false-positives",
+  "counterTrap": false,
+  "signals": [
+   "only report high-confidence findings",
+   "labelled by the security team"
+  ],
+  "stem": "Veltmoor Health's CI pipeline runs a Claude security review prompt on every pull request. It flags 60% of PRs for 'potential vulnerabilities', and nearly all flags land on input-validation patterns the security team has approved as acceptable. Developers now skip the reports. Adding 'only report high-confidence findings' to the prompt had no measurable effect. While the team decides what to do, the security category has already been switched to non-blocking, and a set of 200 PRs labelled by the security team is available.",
+  "ask": "What is the BEST next step?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Spell out reportable versus approved patterns with code examples of each, then re-measure on the labelled PRs",
+    "correct": true,
+    "trap": null,
+    "why": "'High confidence' names no boundary. Explicit criteria with contrasting examples tell the model what counts as a positive, and the 200 labelled PRs show whether the false-positive rate really fell before blocking is restored."
+   },
+   {
+    "id": "b",
+    "text": "Have Claude score its confidence in each finding and pick the cutoff that best matches the 200 labelled PRs",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "Tuning the cutoff on labelled data still thresholds the model's own scores, and it is confident about the approved patterns because nobody has told it they are approved, as the failed 'high-confidence' line showed. A cutoff low enough to drop them also drops real findings."
+   },
+   {
+    "id": "c",
+    "text": "Move the security review to a larger model tier whose stronger judgement should separate real flaws from approved code",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The model is not short of reasoning; it has never been told which patterns the team approves. A larger tier costs more per PR and still has no definition of acceptable to work from."
+   },
+   {
+    "id": "d",
+    "text": "Delete the security category from the review prompt so developers see only the style and logic findings they trust",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Cutting the category ends the noise and also ends the security review the pipeline exists to provide. The failure is imprecise criteria, which can be fixed without removing required coverage."
+   }
+  ],
+  "explain": "Binding constraint: precision on a check developers must trust, with labelled data available to prove it. A system prompt steers only as well as it defines its target, so replace vague qualifiers with explicit reportable-versus-acceptable criteria and examples, then measure against the labelled set before restoring blocking.",
+  "rule": "CS-D2-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 55
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-58",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.3",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "audience",
+  "industry": "saas",
+  "family": "few-shot-review-comment-format",
+  "counterTrap": false,
+  "signals": [
+   "already lists the four required fields in detail",
+   "formatting still varies"
+  ],
+  "stem": "Quillstack, a SaaS vendor, runs Claude Code in CI to post review comments on pull requests. The system prompt already lists the four required fields in detail (file path, line number, issue, suggested fix), yet formatting still varies: some comments are bullet lists with every field, others are prose paragraphs, and some give a vague summary with no line number. The content is usually accurate. Developers want every comment in one scannable layout so they can act on it quickly.",
+  "ask": "Which change is MOST likely to produce the consistent layout?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Restate the four-field list in capitals at the end of the prompt and label it as the mandatory format",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "The field list is already in the prompt, so repeating it louder adds emphasis but no information. The model still has to guess what a finished comment looks like, and the variation continues."
+   },
+   {
+    "id": "b",
+    "text": "Add `--output-format json` to the CI command so each review comment comes back in the same field structure",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "That flag wraps the run's final result and metadata in a JSON envelope; the comment text inside is still whatever prose the model wrote. Only the separate `--json-schema` flag constrains structure, and this option does not use it."
+   },
+   {
+    "id": "c",
+    "text": "Add three to five complete example comments in the target layout, each covering a different kind of issue",
+    "correct": true,
+    "trap": null,
+    "why": "Worked examples show the exact layout, field order and level of detail across issue types, which a field list alone has not conveyed. Format drift with correct content is the classic case for few-shot examples, and three to five varied examples is the usual range."
+   },
+   {
+    "id": "d",
+    "text": "Ask Claude to re-read each comment against the field list and rewrite any that miss a field before it is posted",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "The checker works from the same field list that has not produced consistency, so it inherits the same unclear picture of the target, and it adds a second pass per comment. Examples fix the cause at generation."
+   }
+  ],
+  "explain": "Binding constraint: the audience needs one actionable layout, and a detailed field list has already failed to deliver it. When content is right but format drifts, few-shot examples are the technique that fixes format and structure; louder instructions, output envelopes and self-checks do not show the target.",
+  "rule": "CS-D2-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 58
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-59",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.3",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "legal",
+  "family": "few-shot-ambiguous-boundary-cases",
+  "counterTrap": false,
+  "signals": [
+   "could fit two",
+   "all clean single-category clauses",
+   "can explain why"
+  ],
+  "stem": "Kessendale Legal uses Claude to classify contract clauses into a fixed taxonomy for a due-diligence tool. An eval on 400 labelled clauses shows 97% accuracy on clauses that fit one category but about 60% on clauses that could fit two, such as a termination clause that also contains force majeure language. The category definitions in the prompt are accurate, and the current few-shot examples are all clean single-category clauses. Associates reviewing the misclassified clauses agree on the right category and can explain why. New contracts keep producing category pairings that no fixed example set will cover.",
+  "ask": "Which change BEST targets the failing slice?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Add more clean single-category examples so the model sees each category's core pattern more sharply",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "More of what already works reinforces the 97% slice. Clean examples never show a clause straddling two categories, so the model still has no pattern for the cases that are failing."
+   },
+   {
+    "id": "b",
+    "text": "Add clauses that span two categories as new examples, each one labelled with its correct category only",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Boundary examples are the right slice, but this assumes a bare label conveys the deciding factor. The model sees which category a straddling clause went to, not why, so the new pairings the stem expects are still guessed."
+   },
+   {
+    "id": "c",
+    "text": "Add a confidence field and route clauses the model rates as unsure to associates, leaving the prompt unchanged",
+    "correct": false,
+    "trap": "T-SELFCONF",
+    "why": "Human review is a sound safeguard, but a self-rated field is uncalibrated and the prompt never improves. The associates' explanations, the signal that would teach the model, go unused."
+   },
+   {
+    "id": "d",
+    "text": "Add worked examples of clauses that span two categories, each showing the reasoning for the one chosen",
+    "correct": true,
+    "trap": null,
+    "why": "The failing slice is boundary cases, so the examples must be boundary cases. Showing the associates' reasoning teaches the feature that decides the category, which carries over to pairings the examples do not cover, and the 400-clause eval, kept separate from the examples, can confirm the slice improves."
+   }
+  ],
+  "explain": "Binding constraint: the accuracy gap sits in one slice, clauses that fit two categories, and new pairings keep appearing. Examples should cover the cases that fail, with the reasoning that resolves them; clean examples, bare labels or self-rated routing leave the model's judgement on unseen boundary clauses unchanged.",
+  "rule": "CS-D2-06",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 59
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-61",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.2",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "determinism",
+  "industry": "retail",
+  "family": "structured-outputs-json-validity",
+  "counterTrap": false,
+  "signals": [
+   "needs every response to parse",
+   "nothing is being cut off"
+  ],
+  "stem": "Orlenvik Home, an online furniture retailer, extracts product attributes from supplier spec sheets. The prompt asks Claude to return JSON inside a code block, and about 3% of responses break the downstream parser with missing commas or unescaped quotes. Each failure needs manual reprocessing. Responses end well under the max_tokens limit, so nothing is being cut off. The catalogue team needs every response to parse, because the loader rejects a whole batch when one record is malformed.",
+  "ask": "What is the MOST reliable way to stop the parse failures?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Validate each response with a JSON parser and re-run the prompt up to three times whenever parsing fails",
+    "correct": false,
+    "trap": "T-DETECT",
+    "why": "Retries catch failures after they happen, adding latency and cost, and a record can still fail every attempt. They lower the rate without removing the cause, which is unconstrained generation of free-text JSON."
+   },
+   {
+    "id": "b",
+    "text": "Use structured outputs: a JSON schema in `output_config.format`, or `strict: true` on the extraction tool",
+    "correct": true,
+    "trap": null,
+    "why": "With a JSON schema in `output_config.format` or `strict: true` on the tool, constrained decoding keeps responses schema-valid, so parsing stops being probabilistic. Refusals and max_tokens stops remain separate `stop_reason` checks."
+   },
+   {
+    "id": "c",
+    "text": "Tell Claude in the system prompt that the response must be valid JSON and to check its syntax before replying",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "An instruction raises the odds of valid output but cannot make it hold every time, and the stem needs every record to parse. Self-checking is still the same unconstrained generation the errors came from."
+   },
+   {
+    "id": "d",
+    "text": "Run a regex repair step that fixes missing commas and unescaped quotes before the output reaches the parser",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the malformations follow a few repeatable patterns. Real JSON breakage is open-ended, a regex can corrupt valid strings, and each new error shape needs another rule."
+   }
+  ],
+  "explain": "Binding constraint: every response must parse, so validity has to be enforced by the decoder, not requested of the model. Structured outputs (a JSON-schema output format or strict tool use) constrain generation to the schema; prompt instructions, retries and regex repair only lower the failure rate.",
+  "rule": "CS-D2-04",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 61
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-63",
+  "rev": 1,
+  "domain": 5,
+  "obj": "5.1",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "irreversibility",
+  "industry": "public-sector",
+  "family": "validation-retry-with-feedback",
+  "counterTrap": false,
+  "signals": [
+   "source totals are correct",
+   "no invoice that fails it may post"
+  ],
+  "stem": "Marrowby County's accounts payable pipeline extracts invoices with strict tool use, and extractions that pass validation post to the payment system automatically. About 8% fail a business-rule check: the line items do not sum to `total_amount`. Spot checks confirm the source totals are correct; the errors come from misread line items, and the documents are complete and legible. The controller wants the check to stay a real control: no invoice that fails it may post, and staff time should go only where automation cannot fix the record.",
+  "ask": "Which retry design BEST fits these requirements?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Retry each failing invoice up to three times with the same prompt and keep the first result that reconciles",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the misread is random, but the same document and prompt tend to reproduce the same misread, so blind retries rarely converge. Nothing tells the model what failed, and each attempt spends calls without adding information."
+   },
+   {
+    "id": "b",
+    "text": "Send every invoice that fails the check straight to accounts payable staff for manual keying, with no retry",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Human review belongs in the design, as the fallback once feedback retries fail. Sending the whole 8% straight to staff spends their time on records the model could correct from a specific error message."
+   },
+   {
+    "id": "c",
+    "text": "Re-extract given the failed result and exact mismatch, re-run the check, and route to staff after two misses",
+    "correct": true,
+    "trap": null,
+    "why": "The data is present, so naming the discrepancy ('line items sum to X, total is Y') sends the model back to the document to find the misread line. Each retry must pass the same check before it posts, and the bounded retry hands persistent failures to people."
+   },
+   {
+    "id": "d",
+    "text": "Overwrite `total_amount` with the sum of the extracted line items and let the invoice post with no flag raised",
+    "correct": false,
+    "trap": "T-RUBBERSTAMP",
+    "why": "The source totals are the correct values and the line items are the misread part, so this replaces a right number with a wrong one. The check can then never fail, which turns the control into a paper gate."
+   }
+  ],
+  "explain": "Binding constraint: no invoice that fails the check may post, so the check must refuse the record until it is fixed. Retry by re-extracting with the specific error as feedback while the invoice stays blocked, re-run the same check on each attempt, and fail closed to human review after a bounded number of tries; never coerce values so that the check passes.",
+  "rule": "CS-D5-01",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 63
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-66",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "accuracy-floor",
+  "industry": "media",
+  "family": "independent-review-instance",
+  "counterTrap": false,
+  "signals": [
+   "in the same conversation",
+   "an engineer reviewing the modules afterwards"
+  ],
+  "stem": "Quenby Stream's code-generation pipeline asks Claude to write a service module from a spec and then, in the same conversation, to review that module for bugs before a human approves the merge. The reviews usually return 'no significant issues' with a few style notes. Over the last month QA has traced six production defects to logic errors in these modules, and an engineer reviewing the modules afterwards found most of them within minutes. Modules average about 300 lines.",
+  "ask": "What is the MOST likely cause, and which change addresses it?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The context is overloaded; generate modules in smaller chunks so the review step has less code to hold at once",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "A 300-line module is small for current context windows, and nothing in the stem points to length. The engineer caught the errors without the generation context, which implicates shared reasoning, not volume."
+   },
+   {
+    "id": "b",
+    "text": "The reviewer shares the generator's reasoning; give the code and spec to a separate instance with no history",
+    "correct": true,
+    "trap": null,
+    "why": "A reviewer that carries the generation context tends to confirm its own choices. A fresh instance that sees only the code and spec reads it the way the engineer did, which is why it catches what self-review misses."
+   },
+   {
+    "id": "c",
+    "text": "Reviews lack specialist depth; add security, style and logic reviewer agents, one per owning team, in the same thread",
+    "correct": false,
+    "trap": "T-ORGCHART",
+    "why": "Splitting by team adds agents without adding independence. Every reviewer still sits in the conversation that wrote the code, so each inherits the assumptions that let the logic errors through."
+   },
+   {
+    "id": "d",
+    "text": "The review model is too weak; keep the review in the same conversation but run it on a larger model tier",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Nothing shows a capability gap: an engineer found the errors within minutes. A larger model reviewing inside the same conversation still carries the reasoning that produced the bugs, so it tends to confirm them."
+   }
+  ],
+  "explain": "Binding constraint: the review must be independent of the reasoning that produced the code. Self-review in the generating context tends to confirm its own decisions, so a second instance given only the code and spec is a justified split, whereas per-team agents or a bigger tier in the same context are not.",
+  "rule": "CS-D1-09",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 66
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-67",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "first",
+  "constraint": "change-scope",
+  "industry": "banking",
+  "family": "absent-source-data-diagnosis",
+  "counterTrap": false,
+  "signals": [
+   "before scheduling further retries",
+   "the prompt and model have not changed"
+  ],
+  "stem": "Tallisford Lending extracts fields from loan summaries into its underwriting system. In this month's batch, the `guarantor_address` field comes back null on every record. Each summary has already been retried three times with the original document and the validation error in the prompt, and the value is still null. Other fields in the same summaries extract correctly, and the prompt and model have not changed since last month's batch, which extracted guarantor addresses without trouble.",
+  "ask": "What should the team investigate FIRST, before scheduling further retries?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Whether the validation error message sent with each retry names the `guarantor_address` field correctly",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the retry feedback is the fault, but the first pass returned null before any error was sent, and a correctly worded error cannot produce a value that is not in the document. It examines the retry, not why the field is empty."
+   },
+   {
+    "id": "b",
+    "text": "Whether a larger model tier has the reasoning capacity to locate the field that the current tier keeps missing",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The same model extracted this field last month and still extracts every other field in these summaries. The model layer did not change, so it is the least likely place for the fault."
+   },
+   {
+    "id": "c",
+    "text": "Whether making `guarantor_address` optional in the schema would let these summaries pass validation downstream",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A nullable field may well be part of the eventual fix, but doing it first skips the question of where the address actually is, and underwriting would silently receive incomplete records."
+   },
+   {
+    "id": "d",
+    "text": "Whether this batch's summaries actually contain a guarantor address, or whether their layout has changed",
+    "correct": true,
+    "trap": null,
+    "why": "Retries help only when the answer is in the input. If the new summaries now point to a separate exhibit, the fix is to retrieve that exhibit and allow a documented null; if the layout moved the address, the prompt needs to show where it now sits."
+   }
+  ],
+  "explain": "Binding constraint: diagnose what changed before trying more. With the prompt and model unchanged and other fields fine, the likeliest fault is that this batch's documents lack the value, so confirm presence first; if it lives in an exhibit, retrieve the exhibit and make the field nullable rather than retrying.",
+  "rule": "CS-D4-09",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 67
+  },
+  "status": "verified",
+  "verify": []
+ },
+ {
+  "id": "FB-69",
+  "rev": 1,
+  "domain": 2,
+  "obj": "2.4",
+  "set": "bridge",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "cost",
+  "industry": "telecom",
+  "family": "persistent-case-facts-block",
+  "counterTrap": false,
+  "signals": [
+   "folded into a running summary that is rewritten",
+   "without dropping the cost control"
+  ],
+  "stem": "Veyrand Mobile's support agent handles billing disputes that often run past 20 turns. To control cost, turns older than 10 are folded into a running summary that is rewritten as the chat grows. Early in one chat, a customer said they were charged $847.50 on 3 March for a plan they cancelled on 28 February. By turn 16 the agent refers only to 'the overcharge from last month', quotes no amount, and the customer disputes its account of the case. The budget for each conversation is fixed.",
+  "ask": "Which change BEST prevents this without dropping the cost control?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Keep amounts, dates and account IDs in a structured case-facts block re-sent each turn, outside the summary",
+    "correct": true,
+    "trap": null,
+    "why": "Transactional facts extracted once and carried verbatim on each turn cannot be paraphrased away by the running summary. The block is small, so the cost control on older turns stays in place."
+   },
+   {
+    "id": "b",
+    "text": "Instruct the summariser to copy every amount, date and account ID verbatim into its running summary",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Each rewrite re-summarises the summary, so the instruction raises the odds of keeping '$847.50 on 3 March' but cannot guarantee it, and nothing gives those values a fixed slot. A facts block extracted once and re-sent unchanged cannot drift."
+   },
+   {
+    "id": "c",
+    "text": "Move the agent to a larger tier with a bigger context window and stop summarising the conversation history",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The window did not lose the figure; the summary did. Dropping summarisation would keep it, but at exactly the cost the team set out to control, and a larger tier also raises the price per token."
+   },
+   {
+    "id": "d",
+    "text": "Instruct the agent to re-read the whole conversation carefully before it replies to each new customer message",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes the early turns are still in context. They have been folded into the summary, so there is nothing verbatim to re-read, and the instruction cannot recover the amount."
+   }
+  ],
+  "explain": "Binding constraint: the cost control stays, so older turns will keep being summarised. Precise transactional facts belong in a structured block re-sent every turn, because summaries paraphrase numbers and dates; a verbatim instruction to the summariser, a bigger window or a re-read instruction does not protect them.",
+  "rule": "CS-D2-09",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "bridge",
+   "ref": "claudeCheatSheet 1.html practice set (CCAR-F), rewritten",
+   "origId": 69
+  },
+  "status": "verified",
+  "verify": []
+ }
+]

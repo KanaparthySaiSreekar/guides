@@ -1,0 +1,966 @@
+{
+  "domain": 1,
+  "cards": [
+    {
+      "id": "C1.1-01",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "define",
+      "front": "When a request arrives as a solution ('a bot', 'an agent'), what becomes its success measure?",
+      "back": "**The sponsor's own metric for the job to be done, measured against its baseline.** The job to be done is the outcome the request should move; model accuracy, adoption and output volume are only proxies for it.",
+      "src": [
+        "core:0",
+        "cheat:CS-D1-01"
+      ]
+    },
+    {
+      "id": "C1.1-02",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "apply",
+      "front": "You could build the sponsor's literal ask or the job to be done you found behind it. Which do you build?",
+      "back": "**Neither yet: take the evidence back to the sponsor.** Quietly building either version decides on the owner's behalf (trap: T-OWNER, Deciding for the Owner).",
+      "src": [
+        "core:0",
+        "trap:T-OWNER"
+      ]
+    },
+    {
+      "id": "C1.1-03",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "recall",
+      "front": "Name the five discovery outputs that must exist before any design option can be compared.",
+      "back": "**A written baseline, a numeric target, a constraint inventory (latency, cost, residency, regulation), a data and access map and a named decision owner.** Until they exist, no design option can be shown to be better than another, so building first is T-SKIPDISC (Build Before Agreeing).",
+      "src": [
+        "core:1",
+        "cheat:CS-D1-01",
+        "trap:T-SKIPDISC"
+      ]
+    },
+    {
+      "id": "C1.1-04",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "apply",
+      "front": "Discovery outputs are signed off and unchanged, yet the go decision stalls on whether Claude can handle the real data. What is the next step?",
+      "back": "**A feasibility prototype (a POC) on a sample of the real data, with exit criteria.** With the discovery outputs agreed, the open question is feasibility and more discovery cannot answer it, so building is now the next step: the case where T-SKIPDISC (Build Before Agreeing) does not apply.",
+      "src": [
+        "core:1",
+        "cheat:CS-D1-01",
+        "trap:T-SKIPDISC"
+      ]
+    },
+    {
+      "id": "C1.1-05",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "apply",
+      "front": "A pilot beat its accuracy bar and full-volume go-live is next. What do you do with the accuracy rate before deciding how to go live?",
+      "back": "**Multiply the error rate (one minus accuracy) out at real volume, then ask which cases make up that count and what each one costs.** A correctable address change and a misrouted injury claim need different architectures; accepting the headline rate as the success measure is T-AGGREGATE (Average Hides Slice).",
+      "src": [
+        "core:2",
+        "cheat:CS-D1-02",
+        "trap:T-AGGREGATE"
+      ]
+    },
+    {
+      "id": "C1.1-06",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "apply",
+      "front": "A sponsor wants their headline accuracy rate promised as a guarantee. What do you commit to instead?",
+      "back": "**A measured rate with a handling path for each failure class.** Model output is probabilistic, so promising the sponsor's headline rate as a guarantee is T-OVERPROMISE (Reassuring Guarantee).",
+      "src": [
+        "core:2",
+        "trap:T-OVERPROMISE"
+      ]
+    },
+    {
+      "id": "C1.1-07",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "recall",
+      "front": "Under the delegation boundary, what does each of the three owners (Claude, deterministic systems, people) own?",
+      "back": "**Claude owns judgement over unstructured input, deterministic systems own facts, calculations and entitlements, and people own decisions that carry accountability.** Each part of the work gets exactly one owner.",
+      "src": [
+        "core:3"
+      ]
+    },
+    {
+      "id": "C1.1-08",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "distinguish",
+      "front": "When drawing the delegation boundary, what should place human review, and what must never place it?",
+      "back": "**The cost and reversibility of an error place it; the model's self-reported confidence never does.** A self-rating is not a calibrated routing signal (trap: T-SELFCONF, Model Grades Itself). Blast radius and regulatory exposure complete the consequence factors that route review.",
+      "src": [
+        "core:3",
+        "trap:T-SELFCONF"
+      ]
+    },
+    {
+      "id": "C1.1-09",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "apply",
+      "front": "A regulation requires a named, accountable person to decide each case, and most cases are small. What role does Claude take?",
+      "back": "**Claude assists by gathering and summarising the evidence, and the named person decides every case.** Decisions that carry accountability belong to people, and a regulatory obligation is a gate, so letting Claude decide the small cases fails however much it saves (trap: T-COMPLY, Legality on Scorecard).",
+      "src": [
+        "core:3",
+        "trap:T-COMPLY"
+      ]
+    },
+    {
+      "id": "C1.1-10",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "apply",
+      "front": "Discovery shows the rule can be written down (a lookup, a threshold, routing on a known field). What should be built?",
+      "back": "**Code, with no AI.** Code is cheaper and more reliable when the rule can be written down, and discovery that concludes this has done its job: the no-AI outcome is legitimate.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C1.1-11",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "apply",
+      "front": "Apart from a rule that can be written down, when is the no-AI outcome the right conclusion?",
+      "back": "**When output must be guaranteed correct and there is no way to verify it** (by rule, reference or reviewer) before it acts. Model output is probabilistic, so without that check the guarantee cannot be met, and discovery that concludes this has done its job.",
+      "src": [
+        "core:4",
+        "trap:T-OVERPROMISE"
+      ]
+    },
+    {
+      "id": "C1.1-12",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "define",
+      "front": "A broad mandate is scoped to a thin vertical slice. Which assumption should the slice test first?",
+      "back": "**The riskiest assumption.** A thin vertical slice is one end-to-end workflow with an outcome metric, chosen to test the riskiest assumption first and built to extend.",
+      "src": [
+        "core:5"
+      ]
+    },
+    {
+      "id": "C1.1-13",
+      "d": 1,
+      "obj": "1.1",
+      "kind": "apply",
+      "front": "Two data sources both claim to be authoritative. How is the conflict resolved?",
+      "back": "**The data owners name the system of record, as a scoping decision.** The model cannot reconcile competing sources reliably at request time, so the conflict is settled during scoping rather than left to runtime.",
+      "src": [
+        "core:5"
+      ]
+    },
+    {
+      "id": "C1.2-01",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "recall",
+      "front": "Name the four stages of an end-to-end architecture and what each one covers.",
+      "back": "**Input** (sources, trust, minimisation), **processing** (pattern, tools, retrieval), **output** (where it lands, who acts) and **feedback** (what flows back, and to whom). Items often describe three and ask which one is missing.",
+      "src": [
+        "core:0"
+      ]
+    },
+    {
+      "id": "C1.2-02",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "recall",
+      "front": "What three things make a feedback loop closed?",
+      "back": "It **captures real outcomes and human corrections** (edits, overrides, reopened cases), **routes them to a named owner** with authority to change the system, and **turns them into labelled eval cases** that gate the next change.",
+      "src": [
+        "core:1",
+        "cheat:CS-D1-03"
+      ]
+    },
+    {
+      "id": "C1.2-03",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "why",
+      "front": "Why does an alert on a weekly quality dashboard not complete the feedback stage?",
+      "back": "It has **no captured corrections, no owner who acts and no path into evals**. A loop closes only when corrections reach a named owner with authority to change the system; a dashboard alone as the feedback stage is T-OBSERVE (Fix Before Seeing).",
+      "src": [
+        "core:1",
+        "cheat:CS-D1-03",
+        "trap:T-OBSERVE"
+      ]
+    },
+    {
+      "id": "C1.2-04",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "apply",
+      "front": "Human overrides are already logged, but three teams each say another should act on them. What closes the feedback loop first?",
+      "back": "**Agreeing a named owner with authority to change the system.** The signal already exists; until someone owns it, a pipeline that turns overrides into eval cases has nobody to act on it (T-LATER) and a dashboard for all three teams repeats the failure (T-OBSERVE).",
+      "src": [
+        "core:1",
+        "cheat:CS-D1-03",
+        "trap:T-LATER",
+        "trap:T-OBSERVE"
+      ]
+    },
+    {
+      "id": "C1.2-05",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "apply",
+      "front": "Answers must reflect current claim status, reserves or balances. Where should that data come from?",
+      "back": "**From the system of record, through a tool at request time.** Retrieval is for knowledge that changes on a schedule, and faster re-indexing never fixes a live-state design error (trap: T-LIVESTATE, Indexing Live State).",
+      "src": [
+        "core:2",
+        "cheat:CS-D1-04",
+        "trap:T-LIVESTATE"
+      ]
+    },
+    {
+      "id": "C1.2-06",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "apply",
+      "front": "Regulations amended monthly are answered from an index rebuilt only each term, and traces show superseded passages. What is the fix?",
+      "back": "**Refresh the index when each new version is published.** Regulations are knowledge that changes on a schedule, so they belong in retrieval and the measured lag is the cause; moving them to a live tool call misapplies the live-state rule (this is the rightWhen of T-LIVESTATE).",
+      "src": [
+        "core:2",
+        "cheat:CS-D1-04",
+        "trap:T-LIVESTATE"
+      ]
+    },
+    {
+      "id": "C1.2-07",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "apply",
+      "front": "A caller's timeout is shorter than the work takes. What is the architectural fix?",
+      "back": "**An async boundary**: accept the request, return a job ID and deliver by callback or polling. Downsizing the model or trimming required context to beat the clock gives up quality the sponsor never agreed to lose (trap: T-BLUNTCUT, Blunt Cut), and streaming changes only perceived wait, not completion time.",
+      "src": [
+        "core:3",
+        "cheat:CS-D1-05",
+        "trap:T-BLUNTCUT"
+      ]
+    },
+    {
+      "id": "C1.2-08",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "recall",
+      "front": "Name the two input-edge controls that act before data enters the prompt.",
+      "back": "**Minimise and redact at intake, and treat claimant text and attachments as data, never as instructions.** Both apply at the input edge, before anything reaches the prompt.",
+      "src": [
+        "core:4",
+        "trap:T-BOUNDARY"
+      ]
+    },
+    {
+      "id": "C1.2-09",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "why",
+      "front": "Why can an output filter not substitute for minimising and redacting at intake?",
+      "back": "An output filter **cannot undo data that has already crossed** into the prompt. The control has to sit before the boundary; scrubbing afterwards instead is T-BOUNDARY (Control After Crossing).",
+      "src": [
+        "core:4",
+        "trap:T-BOUNDARY"
+      ]
+    },
+    {
+      "id": "C1.2-10",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "recall",
+      "front": "When many teams call the model, which concerns does a central LLM gateway hold in one place?",
+      "back": "**Authentication, per-team quotas and budgets, logging, routing, model-version pinning and redaction**, with the provider behind an adapter so moving between the Claude API, Bedrock, Google Cloud or Foundry stays cheap. With one team, one app and one provider, controls in that app's own code are simpler.",
+      "src": [
+        "core:5",
+        "cheat:CS-D1-15"
+      ]
+    },
+    {
+      "id": "C1.2-11",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "why",
+      "front": "A control must cover every prompt leaving the network, custom apps included. Why does it belong at the gateway rather than in a Claude Code hook?",
+      "back": "**Claude Code hooks run only in Claude Code and Agent SDK sessions**, so they never see a custom app's calls. The central gateway is the one egress point for every model call, so only there does the control cover every prompt; a single custom app could carry it in its own code.",
+      "src": [
+        "core:5"
+      ]
+    },
+    {
+      "id": "C1.2-12",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "why",
+      "front": "Why does a side-effecting tool call such as a refund need an idempotency key?",
+      "back": "So that **a retry after a timeout or unknown outcome cannot act twice**. Telling the agent in its prompt never to retry is no guarantee (trap: T-ENFORCE, Instruction as Guarantee).",
+      "src": [
+        "core:6",
+        "cheat:CS-D1-16",
+        "trap:T-ENFORCE"
+      ]
+    },
+    {
+      "id": "C1.2-13",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "distinguish",
+      "front": "Which errors should be retried with backoff, and which should never be retried?",
+      "back": "**Retry transient errors** (429 with `retry-after`, 5xx, 529 overloaded) with jittered exponential backoff and a cap. **Do not retry** validation errors or a spend-cap 429, which carries no `retry-after`.",
+      "src": [
+        "core:6",
+        "cheat:CS-D1-16"
+      ]
+    },
+    {
+      "id": "C1.2-14",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "apply",
+      "front": "Under overload, how should deferrable work and interactive requests be handled?",
+      "back": "**Queue deferrable work and shed interactive load with a clear message**, rather than letting retries amplify the overload. Retries still apply only to transient errors, with jittered backoff and a cap.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C1.2-15",
+      "d": 1,
+      "obj": "1.2",
+      "kind": "apply",
+      "front": "Where should records that fail validation go?",
+      "back": "**To a quarantine queue with an owner**, never dropped silently. Watch the rejection rate as well: a rising rate is an early sign of an upstream change.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C1.3-01",
+      "d": 1,
+      "obj": "1.3",
+      "kind": "apply",
+      "front": "When is a single augmented LLM call enough, making both the workflow and the agent options over-engineering?",
+      "back": "**When one request and response does the job** (classify, extract, answer with citations). An augmented LLM is one model call enhanced with retrieval, tools or memory, often returning structured output; climbing higher is T-AGENTIC (Agentic by Default).",
+      "src": [
+        "core:0",
+        "cheat:CS-D1-07",
+        "trap:T-AGENTIC"
+      ]
+    },
+    {
+      "id": "C1.3-02",
+      "d": 1,
+      "obj": "1.3",
+      "kind": "recall",
+      "front": "Once the path can be written down in advance, which four needs point to a workflow?",
+      "back": "**Fixed order, halt on failure, per-step validation or an audit trail.** A workflow keeps the sequence in code with gates between steps, so the path is never left to the model.",
+      "src": [
+        "core:1",
+        "cheat:CS-D1-06"
+      ]
+    },
+    {
+      "id": "C1.3-03",
+      "d": 1,
+      "obj": "1.3",
+      "kind": "apply",
+      "front": "How should a workflow handle variation between requests that can be listed ahead of time?",
+      "back": "**As a branch in the workflow**, not a reason for autonomy. Only a path that cannot be listed in advance, with recoverable errors, moves the design up to an agent.",
+      "src": [
+        "core:1",
+        "trap:T-AGENTIC"
+      ]
+    },
+    {
+      "id": "C1.3-04",
+      "d": 1,
+      "obj": "1.3",
+      "kind": "recall",
+      "front": "What two conditions must both hold before an agent is justified?",
+      "back": "**The steps cannot be listed in advance, and a wrong intermediate step is acceptable and recoverable.** Difficulty or messy input alone never qualifies: messy input needs a model inside a workflow step, not a model-chosen path.",
+      "src": [
+        "core:2",
+        "cheat:CS-D1-06"
+      ]
+    },
+    {
+      "id": "C1.3-05",
+      "d": 1,
+      "obj": "1.3",
+      "kind": "apply",
+      "front": "Staff insist every case is different, but nobody has checked what varies. What must you establish before approving an agent?",
+      "back": "**Whether the steps can be listed in advance**, judged from real cases: what actually varies between two requests, and whether each next step depends on what the last one found. A listable path is a workflow; only a path that emerges at runtime, with recoverable errors, earns an agent (trap: T-AGENTIC).",
+      "src": [
+        "core:2",
+        "trap:T-AGENTIC"
+      ]
+    },
+    {
+      "id": "C1.3-06",
+      "d": 1,
+      "obj": "1.3",
+      "kind": "recall",
+      "front": "Which parts of a solution stay in the deterministic core, whatever pattern is chosen?",
+      "back": "**Eligibility, payout arithmetic, authority limits and anything regulators check.** They stay in code or the system of record, while Claude handles judgement over unstructured input.",
+      "src": [
+        "core:3",
+        "cheat:CS-D1-08"
+      ]
+    },
+    {
+      "id": "C1.3-07",
+      "d": 1,
+      "obj": "1.3",
+      "kind": "why",
+      "front": "Why does stricter prompt wording fail to make payout arithmetic come out the same every time?",
+      "back": "**Stricter wording does not make a model deterministic.** Payout arithmetic is part of the deterministic core, so it stays in code or the system of record whatever the pattern; a larger model does not fix it either (trap: T-ENFORCE, Instruction as Guarantee).",
+      "src": [
+        "core:3",
+        "cheat:CS-D1-08",
+        "trap:T-ENFORCE"
+      ]
+    },
+    {
+      "id": "C1.3-08",
+      "d": 1,
+      "obj": "1.3",
+      "kind": "distinguish",
+      "front": "When is a fixed workflow the under-built answer?",
+      "back": "**In open-ended investigation, where each result decides the next query.** This is the counter-trap, the case where T-AGENTIC (Agentic by Default) does not apply: the path emerges at runtime, so a bounded agent is the right design.",
+      "src": [
+        "core:4",
+        "trap:T-AGENTIC"
+      ]
+    },
+    {
+      "id": "C1.3-09",
+      "d": 1,
+      "obj": "1.3",
+      "kind": "recall",
+      "front": "Name the three bounds that contain an agent used for open-ended investigation.",
+      "back": "**Scoped read-only tools, a step limit and a human who acts on its output.** Those bounds contain its autonomy by what it cannot do, not by what it is told to do.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C1.4-01",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "define",
+      "front": "What is the orchestrator-workers pattern?",
+      "back": "**A lead model decides the split from the input, dispatches workers and synthesises their structured results.** With subagents as workers, each in an isolated context, it suits breadth-first work whose threads are independent, exploratory and too large for one context.",
+      "src": [
+        "core:0",
+        "cheat:CS-D1-09"
+      ]
+    },
+    {
+      "id": "C1.4-02",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "distinguish",
+      "front": "Several independent threads can run in parallel. What decides between code-run parallel sections and subagents?",
+      "back": "**Whether each thread is one call with a split fixed in advance (sectioning in code) or its own exploratory, multi-step work too large for one context (subagents).** Subagents earn their extra cost only when every thread needs its own search.",
+      "src": [
+        "core:0",
+        "cheat:CS-D1-09"
+      ]
+    },
+    {
+      "id": "C1.4-03",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "recall",
+      "front": "In hub and spoke, which four responsibilities does the coordinator own?",
+      "back": "**Routing, sequencing, error handling and aggregation.** Subagents never hand work to one another: peer-to-peer handoffs remove the one place where order and failure are managed.",
+      "src": [
+        "core:1"
+      ]
+    },
+    {
+      "id": "C1.4-04",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "recall",
+      "front": "What five things must an explicit handoff to a subagent carry?",
+      "back": "**The goal, constraints, required facts, allowed sources and return schema.** A subagent starts in a fresh context and sees none of the coordinator's history, so assuming it knows is T-ASSUME (Unstated Assumption); the schema also makes each return checkable.",
+      "src": [
+        "core:2",
+        "cheat:CS-D1-10",
+        "trap:T-ASSUME"
+      ]
+    },
+    {
+      "id": "C1.4-05",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "distinguish",
+      "front": "A Claude Code subagent needs a standing repo convention and this request's facts. How does each reach it?",
+      "back": "**The standing convention can live in `CLAUDE.md`, which Claude Code subagents load; the request's facts must travel in the handoff.** Only a fork inherits the coordinator's conversation, and a standing file is the same for every request, so it cannot carry facts that change per request.",
+      "src": [
+        "core:2",
+        "cheat:CS-D1-10"
+      ]
+    },
+    {
+      "id": "C1.4-06",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "why",
+      "front": "Why should a handoff carry only what the subtask needs rather than the coordinator's full history?",
+      "back": "A **minimal handoff** is a clearer brief and **keeps unneeded personal data out of the subagent's context**. Sending everything adds ambiguity and data the subtask never needs (trap: T-STUFF, Context Stuffing).",
+      "src": [
+        "core:2",
+        "trap:T-STUFF"
+      ]
+    },
+    {
+      "id": "C1.4-07",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "recall",
+      "front": "Name the three legitimate seams for splitting work across more than one agent.",
+      "back": "**Parallel independent subtasks, tool sets or permissions that must stay apart, and context one agent cannot hold.** A department boundary counts only when it coincides with one of these (trap: T-ORGCHART, Agents by Org Chart).",
+      "src": [
+        "core:3",
+        "cheat:CS-D1-09",
+        "trap:T-ORGCHART"
+      ]
+    },
+    {
+      "id": "C1.4-08",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "apply",
+      "front": "Another team offers its deterministic service (fixed inputs and outputs) as a peer agent over agent-to-agent. Your agent is its only consumer. What should it use instead?",
+      "back": "**A tool that calls the service directly.** Agent-to-agent fits only a side that reasons or negotiates on its own across an ownership boundary, and with one consumer a direct call is simpler than an MCP server, which suits many clients sharing a live connection (trap: T-PROTOCOL, Wrong Integration Mechanism).",
+      "src": [
+        "core:3",
+        "trap:T-PROTOCOL"
+      ]
+    },
+    {
+      "id": "C1.4-09",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "apply",
+      "front": "One agent's growing catalogue makes it pick the wrong tool. Which two moves fix it, and which two band-aids fail?",
+      "back": "**Scope tools per task and load the rest on demand.** Longer tool descriptions and one merged mega-tool are the band-aids: neither fixes confusion that grows with the catalogue (trap: T-MEGATOOL, Mega-tool Band-aid).",
+      "src": [
+        "core:3",
+        "trap:T-MEGATOOL"
+      ]
+    },
+    {
+      "id": "C1.4-10",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "recall",
+      "front": "What does splitting work across agents cost?",
+      "back": "**More tokens, synthesis latency, harder tracing, and the loss of guaranteed ordering, halt on failure and a single audit trail.** Nested delegation multiplies those costs, so justify every level with a legitimate seam: parallel independent subtasks, tools or permissions that must stay apart, or context one agent cannot hold.",
+      "src": [
+        "core:4",
+        "cheat:CS-D1-09"
+      ]
+    },
+    {
+      "id": "C1.4-11",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "recall",
+      "front": "Name the three ways an orchestrator handles failures in a fan-out.",
+      "back": "**Retry a failed worker within a bound, require an explicit gap flag from each worker instead of a silent partial result, and reconcile results received against units dispatched** before synthesis. Asking the synthesis step to notice gaps is T-SELFCONF (Model Grades Itself).",
+      "src": [
+        "core:5",
+        "cheat:CS-D1-17",
+        "trap:T-SELFCONF"
+      ]
+    },
+    {
+      "id": "C1.4-12",
+      "d": 1,
+      "obj": "1.4",
+      "kind": "apply",
+      "front": "Concurrent workers in a fan-out would otherwise share the same mutable state. How should their workspaces be set up?",
+      "back": "**Give each worker its own workspace (a separate branch or worktree) and merge through an explicit handoff artefact.** Concurrent workers never write to the same mutable state.",
+      "src": [
+        "core:5"
+      ]
+    },
+    {
+      "id": "C1.5-01",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "define",
+      "front": "When is prompt chaining the right decomposition?",
+      "back": "**When a later step is meaningless without a valid earlier one.** Each step consumes the previous output, with programmatic gates that stop or reroute on failure; steps that consume no earlier output run as parallel sections instead.",
+      "src": [
+        "core:0",
+        "cheat:CS-D1-12"
+      ]
+    },
+    {
+      "id": "C1.5-02",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "apply",
+      "front": "In a chain, an extraction step returns blank or malformed fields and the next step invents values to fill them. What is the fix?",
+      "back": "**A programmatic gate between the steps that stops or reroutes the run when the earlier output fails its check.** An instruction telling the later step not to invent values only makes compliance more likely (trap: T-ENFORCE, Instruction as Guarantee).",
+      "src": [
+        "core:0",
+        "cheat:CS-D1-12",
+        "trap:T-ENFORCE"
+      ]
+    },
+    {
+      "id": "C1.5-03",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "apply",
+      "front": "Which decomposition fixes skipped or shallow sections in one long multi-part prompt?",
+      "back": "**Sectioning**: independent aspects run as parallel calls, with the split decided in code, and a final step combines them. A bigger window or a stronger model on the same single prompt does not fix it (trap: T-STUFF, Context Stuffing).",
+      "src": [
+        "core:1",
+        "cheat:CS-D1-11",
+        "trap:T-STUFF"
+      ]
+    },
+    {
+      "id": "C1.5-04",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "apply",
+      "front": "Several analyses are independent of each other but all need one earlier output. How do you arrange the steps?",
+      "back": "**Chain the shared step first, then run the independent analyses as parallel sections on its output.** Each one depends on that step but not on the others, so it is chained ahead of them and they are sectioned.",
+      "src": [
+        "core:0",
+        "core:1",
+        "cheat:CS-D1-11"
+      ]
+    },
+    {
+      "id": "C1.5-05",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "apply",
+      "front": "When does routing fit as a decomposition?",
+      "back": "**When input classes need different handling and one shared prompt degrades each of them.** Classify first, then send each class to its own prompt, schema, tools or tier; classes only a person may handle go to a queue.",
+      "src": [
+        "core:2",
+        "cheat:CS-D1-18"
+      ]
+    },
+    {
+      "id": "C1.5-06",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "distinguish",
+      "front": "Extraction and reply drafting both depend on each input's class. Which decomposition fits: sectioning or routing?",
+      "back": "**Routing**: classify first, then send each class to its own extraction and reply handling. Sectioning runs independent aspects in parallel, and these parts cannot run alongside the step that decides the class.",
+      "src": [
+        "core:1",
+        "core:2"
+      ]
+    },
+    {
+      "id": "C1.5-07",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "distinguish",
+      "front": "When is a model-decided split (orchestrator-workers) needed instead of sectioning?",
+      "back": "**When the subtasks cannot be known until the input has been inspected.** If the split can be written down in advance, sectioning is simpler and easier to test; either way, draw the lines by dependency and independence, never by which team owns a step (trap: T-ORGCHART).",
+      "src": [
+        "core:3",
+        "cheat:CS-D1-12",
+        "trap:T-ORGCHART"
+      ]
+    },
+    {
+      "id": "C1.5-08",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "apply",
+      "front": "When is voting worth its cost?",
+      "back": "**On high-stakes judgement calls where an error costs more than the extra runs.** Voting runs the same judgement several times and aggregates the results, so it multiplies cost. It does not make arithmetic deterministic: a payout figure stays in code however many runs agree.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C1.5-09",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "apply",
+      "front": "With voting on a call whose error costs are asymmetric, when may the system act automatically?",
+      "back": "**Only when the runs agree.** Disagreement between runs goes to a person, so automatic action is limited to calls where the repeated judgements match.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C1.5-10",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "define",
+      "front": "How does an evaluator-optimizer loop work from first draft to exit?",
+      "back": "**One call generates and another critiques the draft against stated criteria, repeating until the criteria pass or a retry cap is hit.** Whatever still fails at the cap is escalated rather than looped again.",
+      "src": [
+        "core:5",
+        "cheat:CS-D1-19"
+      ]
+    },
+    {
+      "id": "C1.5-11",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "why",
+      "front": "When does an evaluator-optimizer loop fail to earn its cost?",
+      "back": "**When the criteria are vague, or feedback does not measurably improve the draft.** The loop then adds cost without quality (with vague criteria it polishes nothing), so fix the criteria first.",
+      "src": [
+        "core:5",
+        "cheat:CS-D1-19"
+      ]
+    },
+    {
+      "id": "C1.5-12",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "apply",
+      "front": "A draft criterion can be checked in code (schema valid, citation resolves, totals match). What should evaluate it?",
+      "back": "**The code check is the evaluator** for that criterion, rather than a model critique. The loop still stops at a retry cap and escalates whatever still fails.",
+      "src": [
+        "core:5",
+        "cheat:CS-D1-19"
+      ]
+    },
+    {
+      "id": "C1.5-13",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "recall",
+      "front": "Before building a decomposition, what two properties should each subtask have?",
+      "back": "**An output you can verify on its own and a bounded context need.** Check both before building, alongside mapping every case category onto a subtask or route.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C1.5-14",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "apply",
+      "front": "How do you make sure no class of case is left unowned by a decomposition?",
+      "back": "**Map every case category from discovery onto a subtask or route, and slice evals by category.** An aggregate score alone would hide a category nobody handles (trap: T-AGGREGATE, Average Hides Slice).",
+      "src": [
+        "core:6",
+        "trap:T-AGGREGATE"
+      ]
+    },
+    {
+      "id": "C1.5-15",
+      "d": 1,
+      "obj": "1.5",
+      "kind": "why",
+      "front": "Where should you stop splitting a problem into subtasks, and why?",
+      "back": "**At real separability.** Each extra handoff loses context and adds latency, so splitting beyond the point where parts are genuinely separable only adds cost.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C1.6-01",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "recall",
+      "front": "How does the denominator of a gain name its value pillar?",
+      "back": "Gains **per unit of work are efficiency**, gains **per person are productivity**, and **work not feasible before is transformation** (a new service, a new segment, a decision nobody could afford at the old cost). Removing a role counts as efficiency too.",
+      "src": [
+        "core:0",
+        "cheat:CS-D1-13"
+      ]
+    },
+    {
+      "id": "C1.6-02",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "apply",
+      "front": "An existing process becomes dramatically faster per claim. Which pillar does the gain belong to?",
+      "back": "**Efficiency**, however large the gain. A faster version of the same process is not transformation, and relabelling it that way is T-OVERPROMISE (Reassuring Guarantee).",
+      "src": [
+        "core:0",
+        "cheat:CS-D1-13",
+        "trap:T-OVERPROMISE"
+      ]
+    },
+    {
+      "id": "C1.6-03",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "distinguish",
+      "front": "When can a gain be claimed as productivity rather than efficiency?",
+      "back": "**Only once output per person has actually risen**, such as claims closed per adjuster. Minutes saved per claim do not show that more work per person was done; claiming it anyway is T-ASSUME (Unstated Assumption).",
+      "src": [
+        "core:0",
+        "trap:T-ASSUME"
+      ]
+    },
+    {
+      "id": "C1.6-04",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "define",
+      "front": "How is the cost pillar measured?",
+      "back": "As **cost per unit of work against the discovery baseline, including review and rework**, with token spend tracked against volume. Seats, adoption and demo anecdotes are activity, not value.",
+      "src": [
+        "core:1"
+      ]
+    },
+    {
+      "id": "C1.6-05",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "recall",
+      "front": "Name the four parts of a performance SLA.",
+      "back": "**A latency percentile at peak load, a quality floor on a named eval, an error budget and defined degraded behaviour.** An average latency, or one that excludes surge days, fails the first part (trap: T-AVGSLA, SLA on Averages).",
+      "src": [
+        "core:2",
+        "trap:T-AVGSLA"
+      ]
+    },
+    {
+      "id": "C1.6-06",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "apply",
+      "front": "How is a performance SLA applied when comparing candidate designs?",
+      "back": "**As a gate: drop options that miss it before comparing cost or preference**, then choose among the survivors. Trading an SLA miss against savings in a weighted score is the wrong move (trap: T-AVGSLA, SLA on Averages).",
+      "src": [
+        "core:2",
+        "cheat:CS-D1-14",
+        "trap:T-AVGSLA"
+      ]
+    },
+    {
+      "id": "C1.6-07",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "apply",
+      "front": "An overnight batch's output is used as one set when a shift starts. What latency commitment fits instead of a per-request p95?",
+      "back": "**Completion within the delivery window, at peak intake**, keeping the error budget and defined degraded behaviour. A per-request percentile suits callers who wait on each request; excluding surge nights from the commitment is still T-AVGSLA (SLA on Averages).",
+      "src": [
+        "core:2",
+        "trap:T-AVGSLA"
+      ]
+    },
+    {
+      "id": "C1.6-08",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "recall",
+      "front": "What three properties make a value claim honest?",
+      "back": "**It is segmented by line or case type, it states its method, and it is measured end to end after human review.** It then commits to measured rates with error handling, never to certainty.",
+      "src": [
+        "core:3"
+      ]
+    },
+    {
+      "id": "C1.6-09",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "distinguish",
+      "front": "A value claim covers both code-enforced parts and model output. For which parts may it commit to certainty?",
+      "back": "**Only the deterministic parts you control.** Everything else gets a measured rate with error handling; promising certainty for model output is T-OVERPROMISE (Reassuring Guarantee).",
+      "src": [
+        "core:3",
+        "trap:T-OVERPROMISE"
+      ]
+    },
+    {
+      "id": "C1.6-10",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "recall",
+      "front": "A value case goes to executives. In whose terms is its impact framed, what does it carry, and where do the architecture diagrams go?",
+      "back": "**In their value pillar's terms, as the decision, the business impact, the risks and the ask.** Architecture diagrams go to the technical reviewers who sign off the design (trap: T-AUDIENCE, Wrong Artefact).",
+      "src": [
+        "core:4",
+        "trap:T-AUDIENCE"
+      ]
+    },
+    {
+      "id": "C1.6-11",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "apply",
+      "front": "How should a performance SLA be stated to an executive audience?",
+      "back": "**As the experience it protects**, for example first contact within the target during a catastrophe surge. Executives get it in their pillar's terms, while architecture detail goes to the technical reviewers who sign off the design.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C1.6-12",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "recall",
+      "front": "What three factors rank candidate use cases in a portfolio?",
+      "back": "**Quantified value, feasibility (data readiness and rights, integration) and risk.** Start where value is high and feasibility and risk are favourable, rather than prototyping the most exciting idea (trap: T-SKIPDISC, Build Before Agreeing).",
+      "src": [
+        "core:5",
+        "cheat:CS-D1-20",
+        "trap:T-SKIPDISC"
+      ]
+    },
+    {
+      "id": "C1.6-13",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "why",
+      "front": "Why can an SLA gate not be used to rank a portfolio of use cases?",
+      "back": "An SLA gate **eliminates designs that miss one system's SLA**; it does not rank use cases that have no SLA yet. Portfolio ranking is a different decision, scored on value, feasibility and risk.",
+      "src": [
+        "core:5",
+        "cheat:CS-D1-20"
+      ]
+    },
+    {
+      "id": "C1.6-14",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "why",
+      "front": "When do hours saved count as value?",
+      "back": "**Only through a named realisation path** (redeployed capacity, avoided hires, faster revenue), net of run cost, review and rework. Without such a path, the hours are freed capacity, not a value claim.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C1.6-15",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "recall",
+      "front": "What form should the numbers take when a value case goes to a finance audience?",
+      "back": "**Unit economics with explicit, adjustable assumptions and a sensitivity range.** Hours saved enter those numbers only through a named realisation path, net of run cost, review and rework.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C1.6-16",
+      "d": 1,
+      "obj": "1.6",
+      "kind": "apply",
+      "front": "How should a transformation proposal whose value is not yet known be funded?",
+      "back": "**As a bounded experiment with a decision point**, not judged against an efficiency baseline. Transformation is work that was not feasible before, so an efficiency baseline is the wrong yardstick.",
+      "src": [
+        "core:6"
+      ]
+    }
+  ]
+}

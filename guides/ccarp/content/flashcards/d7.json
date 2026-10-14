@@ -1,0 +1,572 @@
+{
+ "domain": 7,
+ "cards": [
+  {
+   "id": "C7.1-01",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "define",
+   "front": "What two questions make up the choice of scope for a Claude Code setting?",
+   "back": "**How far the setting must reach, and whether anyone below may override it.** Getting the reach right is not enough on its own: a rule nobody may loosen needs managed settings, which sit above all other scopes (trap: T-REACH, Reach Is Not Lock).",
+   "src": [
+    "core:0",
+    "cheat:CS-D7-01",
+    "trap:T-REACH"
+   ]
+  },
+  {
+   "id": "C7.1-02",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "distinguish",
+   "front": "How far does each scope reach: user config, committed project config and managed settings?",
+   "back": "**User config is personal and never propagates; committed project config reaches everyone in that repository; managed settings reach every machine or account the organisation deploys them to**, and they sit above all other scopes.",
+   "src": [
+    "core:0",
+    "cheat:CS-D7-02"
+   ]
+  },
+  {
+   "id": "C7.1-03",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "apply",
+   "front": "A team's own permission defaults for its repository have no policy mandate, and it wants to tune them through pull requests. Which scope fits?",
+   "back": "**Committed project settings in that repository**: they reach everyone working in it and stay the team's to change. Managed settings would be overreach here (the flip side of trap T-REACH, Reach Is Not Lock): they lock one team's defaults on every machine the organisation deploys to when no policy calls for a lock.",
+   "src": [
+    "core:0",
+    "cheat:CS-D7-01",
+    "trap:T-REACH"
+   ]
+  },
+  {
+   "id": "C7.1-04",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "recall",
+   "front": "Which three kinds of committed project config fix drift between a team's Claude Code setups?",
+   "back": "**CLAUDE.md, project settings and MCP config**, committed to the repository so everyone working in it gets the same shared, reviewable setup. Asking each developer to copy them into user config fails, because user config never propagates (trap: T-REACH, Reach Is Not Lock).",
+   "src": [
+    "core:1",
+    "cheat:CS-D7-02",
+    "trap:T-REACH"
+   ]
+  },
+  {
+   "id": "C7.1-05",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "why",
+   "front": "Why do committed MCP and settings files reference secrets as environment-variable placeholders?",
+   "back": "**So the files can be reviewed and committed like code** while the secret stays out of version control: the committed file carries only a `${ENV_VAR}` reference. Writing a real token into the file instead, even a shared one, puts a secret in the repository.",
+   "src": [
+    "core:1",
+    "cheat:CS-D7-02"
+   ]
+  },
+  {
+   "id": "C7.1-06",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "distinguish",
+   "front": "Both reach org-wide: when does a rule belong in managed settings rather than managed CLAUDE.md?",
+   "back": "**When a miss would be a violation rather than a style slip.** Managed CLAUDE.md standardises guidance such as coding standards; managed settings enforce. A firm, bolded line in managed CLAUDE.md still only guides (trap: T-ENFORCE, Instruction as Guarantee).",
+   "src": [
+    "core:2",
+    "cheat:CS-D7-01",
+    "trap:T-ENFORCE"
+   ]
+  },
+  {
+   "id": "C7.1-07",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "apply",
+   "front": "Org-wide coding standards must shape every session, including repositories created later, and a miss is cheap. Where do they belong?",
+   "back": "**Managed CLAUDE.md**, which reaches every machine it is deployed to. Committed copies bind only the repositories that contain them, can be edited in each checkout and miss new repositories (trap: T-REACH). Managed settings would be the wrong tier, because nothing here must be enforced.",
+   "src": [
+    "core:2",
+    "cheat:CS-D7-01",
+    "trap:T-REACH"
+   ]
+  },
+  {
+   "id": "C7.1-08",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "apply",
+   "front": "An allow rule at one scope and a deny rule at another both match the same call. Which wins?",
+   "back": "**The deny wins: a deny rule at any scope beats an allow rule at any scope.** Separately, nothing below managed settings can loosen a managed rule, so no lower-scope allow reopens what managed settings closed.",
+   "src": [
+    "core:3",
+    "cheat:CS-D7-08"
+   ]
+  },
+  {
+   "id": "C7.1-09",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "apply",
+   "front": "A team never needs a particular tool or MCP server. What is the right control for it?",
+   "back": "**Deny it or leave it out** instead of guarding it with confirmations, logging or alerts. Guards belong only on capabilities the team actually needs (trap: T-REMOVE, Guard Instead of Remove).",
+   "src": [
+    "core:3",
+    "trap:T-REMOVE"
+   ]
+  },
+  {
+   "id": "C7.1-10",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "recall",
+   "front": "Besides a match, what does a fail-closed PreToolUse hook block on, and why do those paths block?",
+   "back": "**Every failure its script can catch**, such as a missing scanner binary, a crash inside the check, or a scanner that overruns an internal time limit set below the hook's own timeout. They block only because the author made them block (exit code 2 or a deny decision in current docs); otherwise the hook exits with a non-blocking error and the call goes ahead.",
+   "src": [
+    "core:4",
+    "cheat:CS-D7-03"
+   ]
+  },
+  {
+   "id": "C7.1-11",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "recall",
+   "front": "Which two hook failures can no script turn into a block?",
+   "back": "**A hook command that cannot start (missing or non-executable script) and a command hook cancelled at its configured `timeout`.** Both are non-blocking errors and the call goes ahead, so watch for the hook-error notice and back the rule with a deny rule or the sandbox.",
+   "src": [
+    "core:4"
+   ]
+  },
+  {
+   "id": "C7.1-12",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "apply",
+   "front": "A PreToolUse hook blocks writes to a protected path, yet some changes get through without it ever firing. What gap explains that?",
+   "back": "**Matcher coverage: a hook sees only the tool calls its matcher selects.** A `Write|Edit` matcher never sees a file written through a Bash command, and a matcher that selects only the shell tool never sees an edit. Check a hook's coverage as well as its logic.",
+   "src": [
+    "core:4"
+   ]
+  },
+  {
+   "id": "C7.1-13",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "why",
+   "front": "Why does an audit of every tool-call attempt belong in PreToolUse rather than PostToolUse?",
+   "back": "**PostToolUse fires only after a successful call.** Failed calls fire PostToolUseFailure and denied calls fire neither, so only PreToolUse sees every attempt, including the ones that never ran.",
+   "src": [
+    "core:4"
+   ]
+  },
+  {
+   "id": "C7.1-14",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "distinguish",
+   "front": "What can still reach a file that a Read deny rule protects, and what closes that gap?",
+   "back": "**A script that opens the file itself.** In current docs a Read deny covers Claude's file tools and shell reads Claude Code recognises, such as `cat`. Permission rules are not an OS boundary, so where a subprocess could reach the resource, add the sandbox or an OS-level control.",
+   "src": [
+    "core:5",
+    "cheat:CS-D7-11"
+   ]
+  },
+  {
+   "id": "C7.1-15",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "define",
+   "front": "What goes into a versioned plugin from an organisation marketplace, and how far can it reach?",
+   "back": "**Skills, commands, hooks and MCP config in one package** that many repositories install and update together, and that an administrator can require on every machine. It replaces per-repository copies whose versions drift. If the requirement is enforcement rather than shared know-how, use managed settings instead.",
+   "src": [
+    "core:6",
+    "cheat:CS-D7-10"
+   ]
+  },
+  {
+   "id": "C7.1-16",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "recall",
+   "front": "Name the four practices that treat a shared Claude Code plugin as code.",
+   "back": "**Named owners, review before merge, staged rollout, and retirement of items nobody owns.** Review before merge matters because a plugin's hooks run commands on every developer machine.",
+   "src": [
+    "core:6",
+    "cheat:CS-D7-10"
+   ]
+  },
+  {
+   "id": "C7.1-17",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "recall",
+   "front": "What spreads shared Claude Code practice across teams faster than documents do?",
+   "back": "**A maintained starter setup (a paved path) plus a short onboarding path**, alongside the versioned plugin that packages the shared skills, commands, hooks and MCP config.",
+   "src": [
+    "core:6"
+   ]
+  },
+  {
+   "id": "C7.1-18",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "why",
+   "front": "Why prefer a credential helper over long-lived API keys exported in the shell?",
+   "back": "**Whatever sits in the agent's shell environment is readable by its shell commands.** Use a credential helper (such as `apiKeyHelper`) or a secret manager and deny reads of `.env` and secrets paths; a CLAUDE.md line telling Claude not to print them enforces nothing (trap: T-ENFORCE).",
+   "src": [
+    "core:7",
+    "cheat:CS-D7-11",
+    "trap:T-ENFORCE"
+   ]
+  },
+  {
+   "id": "C7.1-19",
+   "d": 7,
+   "obj": "7.1",
+   "kind": "apply",
+   "front": "How should Claude Code execution be set up for an untrusted repository?",
+   "back": "**Isolate it in a VM, or in the sandbox with both filesystem and network isolation, and mount no host secrets.** Isolation reduces what a malicious file can reach but is not a complete boundary. A dev container is not the answer: the docs recommend it only for trusted repositories, because a malicious project can still exfiltrate whatever sits inside it.",
+   "src": [
+    "core:7",
+    "cheat:CS-D7-11"
+   ]
+  },
+  {
+   "id": "C7.2-01",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "define",
+   "front": "What counts as evidence that a Claude Code enablement effort worked?",
+   "back": "**An outcome moved against a baseline and threshold agreed before rollout, plus the mechanism that moved it.** Outcomes are measures such as lead time, change-failure rate, escaped defects and review turnaround.",
+   "src": [
+    "core:0",
+    "cheat:CS-D7-04"
+   ]
+  },
+  {
+   "id": "C7.2-02",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "why",
+   "front": "Why do seats, usage and accepted lines fail to prove a rollout paid off?",
+   "back": "**They are input measures**: they show the tool is being used, not that an outcome moved against an agreed baseline. High acceptance and weekly active use still leave the decision owner with no evidence of change (trap: T-VIBES, Number Without Bar).",
+   "src": [
+    "core:0",
+    "cheat:CS-D7-04",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C7.2-03",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "apply",
+   "front": "No baseline was captured before rollout, and an expansion request is coming. What is the first step?",
+   "back": "**Build or capture a baseline before any expansion**, often rebuilt from version-control, CI and incident history, and agree the threshold with the decision owner before comparing it with the period since rollout. Expanding first, or measuring only from switch-on, leaves no before-state (trap: T-LATER, Right Answer, Wrong Time).",
+   "src": [
+    "core:1",
+    "cheat:CS-D7-04",
+    "trap:T-LATER"
+   ]
+  },
+  {
+   "id": "C7.2-04",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "apply",
+   "front": "What kind of developer-workflow step suits AI, and in what form should it run there?",
+   "back": "**An enumerable, toil-heavy step** such as first-pass review, test scaffolding or a fixed CI check, run as a workflow step rather than an autonomous agent. The decider is whether the steps can be listed in advance; an agent is justified only when each next step depends on what the last one found (trap: T-AGENTIC, Agentic by Default).",
+   "src": [
+    "core:2",
+    "cheat:CS-D7-06",
+    "trap:T-AGENTIC"
+   ]
+  },
+  {
+   "id": "C7.2-05",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "apply",
+   "front": "A coding agent wants to review and merge the change it just wrote. What does the review rule require instead?",
+   "back": "**An independent instance reviews it**: the session that wrote a change does not grade it, and no agent approves or merges its own work. Humans keep the merge unless the policy owner has approved auto-merge for a fully test-gated change class (trap: T-SELFCONF, Model Grades Itself).",
+   "src": [
+    "core:3",
+    "cheat:CS-D7-06",
+    "trap:T-SELFCONF"
+   ]
+  },
+  {
+   "id": "C7.2-06",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "recall",
+   "front": "What must the author be able to explain before an AI-assisted change merges?",
+   "back": "**The change itself, including its behaviour on untested inputs.** Keeping AI-assisted changes small and single-purpose makes that possible, and a verification checklist with a security line turns it into a merge gate.",
+   "src": [
+    "core:3"
+   ]
+  },
+  {
+   "id": "C7.2-07",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "recall",
+   "front": "Name the three parts of the advance policy a headless CI run needs.",
+   "back": "**A minimal explicit tool allowlist, a mode that denies whatever would prompt, and no capability the job never uses.** Nobody is there to answer prompts, so the policy is set before the run. Keeping an unused capability under logging is T-REMOVE, Guard Instead of Remove.",
+   "src": [
+    "core:4",
+    "cheat:CS-D7-05",
+    "trap:T-REMOVE"
+   ]
+  },
+  {
+   "id": "C7.2-08",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "why",
+   "front": "Why must a headless CI job load only the config the pipeline passes, even when it already has a tool allowlist?",
+   "back": "**Headless runs show no trust dialog or MCP approval prompt**, so a job that auto-discovers project config runs whatever hooks and MCP servers the checked-out branch defines, and the allowlist alone does not stop them loading. Load only the pipeline's config (bare mode in current docs) alongside the allowlist.",
+   "src": [
+    "core:5",
+    "cheat:CS-D7-05"
+   ]
+  },
+  {
+   "id": "C7.2-09",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "define",
+   "front": "What is a verification loop in agentic coding, and where is it named?",
+   "back": "**A check Claude can run and read (tests, a build, a linter or a screenshot), named in CLAUDE.md.** It lets Claude iterate to a pass instead of stopping at 'looks done'.",
+   "src": [
+    "core:6",
+    "cheat:CS-D7-09"
+   ]
+  },
+  {
+   "id": "C7.2-10",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "apply",
+   "front": "Before agentic work on legacy code that has no tests, what should be added first?",
+   "back": "**Characterisation tests.** Legacy code without tests is a common cause of poor agentic results, because Claude has no check to iterate against; a larger model or longer CLAUDE.md guidance does not supply one (trap: T-BIGMODEL, Bigger Model Reflex).",
+   "src": [
+    "core:6",
+    "cheat:CS-D7-09",
+    "trap:T-BIGMODEL"
+   ]
+  },
+  {
+   "id": "C7.2-11",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "recall",
+   "front": "Name the two checks that stop generated tests from giving false assurance.",
+   "back": "**Write them from the spec rather than the implementation, and confirm each one fails against deliberately broken code.** A generated test that never fails cannot tell working code from broken code.",
+   "src": [
+    "core:6",
+    "cheat:CS-D7-09"
+   ]
+  },
+  {
+   "id": "C7.2-12",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "why",
+   "front": "Review queues and CI waits dominate lead time. Why won't faster code generation move it?",
+   "back": "**Code generation is not the bottleneck.** Find what dominates lead time before targeting tooling, then aim the tooling at that step; speeding up a step that does not dominate lead time leaves lead time where it was.",
+   "src": [
+    "core:7"
+   ]
+  },
+  {
+   "id": "C7.2-13",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "recall",
+   "front": "Value from Claude Code comes from high-yield activities that differ by team. Through whom do those activities spread?",
+   "back": "**Supported champions.** The high-yield activities differ from team to team, and champions who are supported in that role spread them.",
+   "src": [
+    "core:7"
+   ]
+  },
+  {
+   "id": "C7.2-14",
+   "d": 7,
+   "obj": "7.2",
+   "kind": "distinguish",
+   "front": "What do Claude Code's OpenTelemetry metrics show, and what must they never be used for?",
+   "back": "**Usage and cost, not outcomes**: sessions, active time, cost, commits and pull requests, split by team attributes. Use them for enablement, disclosed to the people measured, and never to rate individuals.",
+   "src": [
+    "core:7"
+   ]
+  },
+  {
+   "id": "C7.3-01",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "apply",
+   "front": "What do you pull before widening access, reinstalling, restarting or failing over?",
+   "back": "**Traces, logs and the configuration that actually loaded for the failing slice.** Silent failures such as a dismissed approval show up only there; acting first is T-OBSERVE, Fix Before Seeing. Exception: harm is happening now and a known-good state exists, so roll back first, keep the evidence, then diagnose.",
+   "src": [
+    "core:0",
+    "cheat:CS-D7-07",
+    "trap:T-OBSERVE"
+   ]
+  },
+  {
+   "id": "C7.3-02",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "why",
+   "front": "Why does changing a component before observing it undermine a diagnosis?",
+   "back": "**It destroys the comparison you need.** A restart, reinstall or failover alters the state you were about to examine, so the before-and-after evidence for the failing slice is gone.",
+   "src": [
+    "core:0",
+    "trap:T-OBSERVE"
+   ]
+  },
+  {
+   "id": "C7.3-03",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "recall",
+   "front": "Where does each trigger point first: a settings rollout, a config merge, and 'nothing deployed'?",
+   "back": "**A settings rollout points at scope precedence, a config merge at context or hooks, and 'nothing deployed' at input or dependency drift.** Start from the triggering change and work out from there.",
+   "src": [
+    "core:1"
+   ]
+  },
+  {
+   "id": "C7.3-04",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "apply",
+   "front": "Only a CLAUDE.md file changed before a Claude Code workflow regressed, and someone proposes switching models. How do you use what stayed unchanged?",
+   "back": "**Eliminate the unchanged model as a suspect and start from the context change.** Switching models when only a context file changed blames a layer the stem calls unchanged: T-LAYER, Blame Untouched Layer.",
+   "src": [
+    "core:1",
+    "trap:T-LAYER"
+   ]
+  },
+  {
+   "id": "C7.3-05",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "recall",
+   "front": "In what order do Claude Code settings scopes resolve?",
+   "back": "**Managed, command-line arguments, local project, shared project, then user.** Deny rules from every scope are still checked before any allow, so no allow anywhere overrides a deny.",
+   "src": [
+    "core:2",
+    "cheat:CS-D7-08"
+   ]
+  },
+  {
+   "id": "C7.3-06",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "apply",
+   "front": "A tool call is denied. What do you establish before changing any rule?",
+   "back": "**Which rule matched, at which scope.** Then fix the deny where it lives: a wrong managed deny goes to its policy owner, because no allow at a lower scope can override it (trap: T-REACH, Reach Is Not Lock).",
+   "src": [
+    "core:2",
+    "cheat:CS-D7-08",
+    "trap:T-REACH"
+   ]
+  },
+  {
+   "id": "C7.3-07",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "recall",
+   "front": "What two silent causes typically break one team's project MCP server while others work?",
+   "back": "**A rejected or unanswered approval prompt, and an unset environment variable that loads with only a warning.** Both are silent, so inspect what loaded for that team: server status, approval state, environment variables and logs.",
+   "src": [
+    "core:3",
+    "cheat:CS-D7-07"
+   ]
+  },
+  {
+   "id": "C7.3-08",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "why",
+   "front": "Why can a misspelled hook matcher go unnoticed?",
+   "back": "**It never fires and never errors**, so nothing reports the failure. Like a dismissed MCP server approval, it shows up only when you inspect what actually loaded, not in any error output.",
+   "src": [
+    "core:3",
+    "cheat:CS-D7-07"
+   ]
+  },
+  {
+   "id": "C7.3-09",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "apply",
+   "front": "Runs have become slow or costly. What do you read from traces before touching timeouts, models or regions?",
+   "back": "**Token counts, cache hit rate and the slowest span.** They show which term grew. Raising the timeout first lets every run carry the extra cost before anything is measured (trap: T-LEVER, Lever Before Measurement).",
+   "src": [
+    "core:4",
+    "trap:T-LEVER"
+   ]
+  },
+  {
+   "id": "C7.3-10",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "recall",
+   "front": "What three things does Claude do well as an incident-investigation aid?",
+   "back": "**Triaging logs and traces, lining up change events with the failure timeline, and narrowing hypotheses.** Change events include a deploy, a config or model-version change, an MCP server's tool list, an index refresh or a schema change.",
+   "src": [
+    "core:5",
+    "cheat:CS-D7-12"
+   ]
+  },
+  {
+   "id": "C7.3-11",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "recall",
+   "front": "Name the three guardrails when Claude assists an incident investigation.",
+   "back": "**A human approves any production change** (a pre-approved, reversible runbook action aside), logs containing personal or health data go only to a configuration covered for that data, and AI-drafted summaries and postmortems are checked against the logs and timeline before filing. Letting the agent push its own fix is T-AGENTIC.",
+   "src": [
+    "core:5",
+    "cheat:CS-D7-12",
+    "trap:T-AGENTIC"
+   ]
+  },
+  {
+   "id": "C7.3-12",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "apply",
+   "front": "An agent reports it completed a write. Where do you confirm it happened?",
+   "back": "**In the system of record, not in the agent's summary.** An agent can report a write that never happened, so confirm side effects where they actually land before treating the task as done.",
+   "src": [
+    "core:6"
+   ]
+  },
+  {
+   "id": "C7.3-13",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "apply",
+   "front": "A defect in a Claude Code workflow has just been fixed. What should it become in the eval or test suite?",
+   "back": "**A regression case.** Add every fixed defect to the eval or test suite, so the suite catches that failure if it ever comes back.",
+   "src": [
+    "core:6"
+   ]
+  },
+  {
+   "id": "C7.3-14",
+   "d": 7,
+   "obj": "7.3",
+   "kind": "apply",
+   "front": "You keep getting pulled in to fix the same Claude Code problems. How should support scale instead?",
+   "back": "**Through enablement**: turn each one-off fix into a runbook entry and define a named escalation boundary, instead of staying the escalation point yourself.",
+   "src": [
+    "core:6"
+   ]
+  }
+ ]
+}

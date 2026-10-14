@@ -1,0 +1,524 @@
+[
+ {
+  "id": "P1-1.5-001",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "latency-sla",
+  "industry": "saas",
+  "family": "parallel-sections-latency-gate",
+  "counterTrap": false,
+  "signals": [
+   "none using another section's output",
+   "p95 under 15 seconds with no loss of that depth",
+   "minutes after the customer has logged a support ticket"
+  ],
+  "stem": "Brightmesh, a B2B analytics SaaS provider, builds an account briefing whenever a customer success manager opens an account before a call, often minutes after the customer has logged a support ticket. Every briefing carries five sections (usage trends, open tickets, billing events, contract terms, expansion signals), each built from its own data source, with none using another section's output. The first release used one prompt and produced shallow sections. The current release chains five calls of 8 to 10 seconds each and managers rate its depth highly, but the success team's launch condition is p95 under 15 seconds with no loss of that depth.",
+  "ask": "Which redesign BEST meets the launch condition?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Merge the five calls into one call over the five data sources, with a template giving each section a heading and a length",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "One call over every source is the first release with a template added: quick, but the five sections still share one response and come back shallow, which fails the no-loss-of-depth half of the launch condition."
+   },
+   {
+    "id": "b",
+    "text": "Start the five section calls at the same time rather than one after another, and join the finished sections into one briefing",
+    "correct": true,
+    "trap": null,
+    "why": "No section uses another's output, so the chain's serial waiting buys nothing. Calls started at the same time finish in about the time of the slowest, roughly 10 seconds, and each section keeps the focused call that gave it depth."
+   },
+   {
+    "id": "c",
+    "text": "Have a lead call review the account, then dispatch parallel calls for just the sections it judges this customer needs",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Every briefing carries all five sections, so there is no split to decide per account. The lead call runs before any section can start, adding serial time against the 15-second target, and a dropped section removes content managers expect."
+   },
+   {
+    "id": "d",
+    "text": "Build each account's briefing in an overnight batch run so that managers open a finished report without any wait",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "An overnight run meets the wait target only if yesterday's data is good enough. Managers often open briefings minutes after a customer logs a ticket, so the report would miss the reason for the call."
+   }
+  ],
+  "explain": "Binding constraint: a p95 latency launch condition that also forbids any loss of depth, on a briefing whose five sections are independent. Chain only steps that consume earlier output; run independent sections in parallel so wall-clock time falls to the slowest section without returning to one shallow prompt.",
+  "rule": "CS-D1-12",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-16",
+   "TIP-EL-06"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.5-002",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formB",
+  "type": "multi",
+  "select": 3,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "data-shape",
+  "industry": "education",
+  "family": "rubric-sections-with-dependent-steps",
+  "counterTrap": false,
+  "signals": [
+   "the criteria are rated independently",
+   "derives the band from the five criterion ratings",
+   "absent from the reference list"
+  ],
+  "stem": "Brookhaven Community College's writing centre uses Claude to give first-year students feedback on research essays against a five-criterion rubric: thesis, use of evidence, citation accuracy, organisation and mechanics. One prompt reads the essay and returns comments on each criterion plus an overall band. Tutors report that comments on the last two criteria are generic, that citation comments miss sources cited in the text but absent from the reference list, and that the overall band sometimes contradicts the criterion comments. The rubric derives the band from the five criterion ratings, and the criteria are rated independently of one another.",
+  "ask": "Which THREE changes BEST fix the problems the tutors report? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Rate each rubric criterion in its own call against the essay, so the last two criteria get the same attention as the first three",
+    "correct": true,
+    "trap": null,
+    "why": "The criteria are rated independently, so each can have its own call. Separate calls stop the later criteria from getting leftover attention in one long response, which is why organisation and mechanics come back generic."
+   },
+   {
+    "id": "b",
+    "text": "Add the full style guide and a dozen annotated model essays to the prompt, so each criterion has worked examples to follow",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "More examples add volume to the same single prompt. The five criteria still compete for attention in one response, and examples do nothing to tie citation comments to the reference list or the band to the ratings."
+   },
+   {
+    "id": "c",
+    "text": "Extract the in-text citations and the reference list in a first step, then judge citation accuracy against both lists",
+    "correct": true,
+    "trap": null,
+    "why": "Spotting a citation with no matching reference needs both lists in hand first. Extracting them as an earlier step gives the accuracy check something concrete to compare, which a single reading pass does not."
+   },
+   {
+    "id": "d",
+    "text": "Score the overall band in its own call, run in parallel with the five criterion calls, so feedback comes back sooner",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A parallel band call assumes the band is independent of the ratings, but the rubric derives the band from them. Scored alongside the ratings, it can still contradict the criterion comments, which is the reported fault."
+   },
+   {
+    "id": "e",
+    "text": "Ask tutors to flag unhelpful comments each week so the centre can track feedback quality for each rubric criterion",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Weekly flags are a sound feedback loop for later tuning, but they measure the problems rather than remove them. None of the three reported faults changes until the structure of the task does."
+   },
+   {
+    "id": "f",
+    "text": "Set the overall band in a final step from the five criterion ratings, rather than alongside the criterion comments",
+    "correct": true,
+    "trap": null,
+    "why": "The rubric defines the band as a function of the five ratings, so it is a dependent step. Chaining it after the ratings means the band can no longer disagree with the comments it summarises."
+   }
+  ],
+  "explain": "Binding constraint: the shape of the task. Independent criteria are sectioned into their own calls, while the citation check and the overall band each depend on earlier outputs and are chained after them.",
+  "rule": "CS-D1-11",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.5-003",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "determinism",
+  "industry": "retail",
+  "family": "gate-between-chain-steps",
+  "counterTrap": false,
+  "signals": [
+   "returned blank or malformed fields",
+   "often because the sheet gives no such figure",
+   "no page state a specification absent from the supplier's sheet"
+  ],
+  "stem": "Larkspur Outfitters, an outdoor-gear retailer, builds product pages with a three-step prompt chain: extract attributes from the supplier's spec sheet, write the description, then translate it for the French and German sites. In a pilot on 400 tents and jackets, about one page in fifteen stated a waterproof rating or weight that the spec sheet did not contain, and both translations repeated it. Traces show the extraction step returned blank or malformed fields for those products, often because the sheet gives no such figure, and the description step then filled the gaps. Larkspur's legal team requires that no page state a specification absent from the supplier's sheet.",
+  "ask": "What is the BEST next step for the pilot team?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Replace the chain with an agent that decides for each product which step to run next and when to redo its extraction",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "The steps and their order are known and fixed; the fault is that a failed step feeds the next one. An agent choosing its own path gives up that fixed order and still leaves the model to judge when a blank field matters."
+   },
+   {
+    "id": "b",
+    "text": "Add worked examples of each supplier's sheet layout to the extraction prompt so that it returns each field complete",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Better extraction helps only if each figure is on the sheet to be found. Many of the failing sheets give no such figure, so a blank field would still reach the description step, which fills it as before."
+   },
+   {
+    "id": "c",
+    "text": "Add an instruction to the description prompt not to state an attribute that is missing or blank in the extracted fields",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "An instruction makes invention less likely but cannot guarantee it, and legal needs every page to comply. Whether a blank field is respected would still rest on the model, one page at a time."
+   },
+   {
+    "id": "d",
+    "text": "Stop the run for any product whose extracted fields are blank or malformed, and send it to a merchandiser instead",
+    "correct": true,
+    "trap": null,
+    "why": "A check in code between the two dependent steps stops a failed extraction before the description and both translations are built on it. It holds whatever the model does, which is what the legal rule requires."
+   }
+  ],
+  "explain": "Binding constraint: no page may state a specification the supplier's sheet lacks, and the traces place the fault at the hand-off from extraction. Dependent steps need a programmatic gate so a failed step halts the run; a prompt instruction only makes invention less likely.",
+  "rule": "CS-D1-12",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-03",
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.5-004",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "airline",
+  "family": "runtime-split-orchestrator-workers",
+  "counterTrap": true,
+  "signals": [
+   "become clear only once the disruption record has been read",
+   "most appeared in only one or two events",
+   "A duty manager checks every draft"
+  ],
+  "stem": "Boreal Regional Airways' operations control centre wants Claude to draft the root-cause review it writes after each major disruption. The contributing factors become clear only once the disruption record has been read: one cancellation traced to a crew duty-time limit, another to a deferred maintenance item plus a slot swap. Last year's 40 reviews cited 23 distinct factors, drawn from more than a dozen data systems, and most appeared in only one or two events. Once identified, each factor can be analysed separately against its own data. A duty manager checks every draft before use, and the operations director wants a fixed set of analyses run on every event so reviews can be compared year on year.",
+  "ask": "Which design BEST fits the review drafting?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Run the six most frequent factor analyses on every event as parallel sections under standard headings, then merge them in code",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "A fixed set gives the director comparable reviews, but last year's reviews cited 23 factors, most seen only once or twice, so six common analyses would miss a factor in many events and run unneeded analyses in the rest."
+   },
+   {
+    "id": "b",
+    "text": "Load the disruption record and the linked crew, maintenance and slot data into one long-context call that drafts the review",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "One pass over every linked dataset makes the factors compete for attention in a single response, and nothing decides which of the dozen-plus data systems an event needs before they are loaded."
+   },
+   {
+    "id": "c",
+    "text": "Have a first call read each record and name its factors, then analyse each one in a parallel call and merge the results",
+    "correct": true,
+    "trap": null,
+    "why": "The split cannot be written down until the record is read, and each factor is independent once named, so a model-decided split with parallel workers fits. The duty manager's check contains an odd draft, and comparability can come from a standard layout in the merged review."
+   },
+   {
+    "id": "d",
+    "text": "Deploy specialist agents that pick relevant events from a shared queue and exchange findings until they agree on the cause",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Peer agents coordinating among themselves leave no single component owning the split or the merged review, so tracing why a cause was chosen gets harder. A first call that names the factors gives the same parallelism with one owner."
+   }
+  ],
+  "explain": "Binding constraint: the factors, and so the subtasks, emerge only after each record is read, and most recur rarely. That meets the condition for a model-decided split (orchestrator-workers), so the director's fixed set is the under-built choice; review of every draft contains the risk, and comparability can come from the merged layout.",
+  "rule": "CS-D1-12",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-06",
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.5-005",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "auditability",
+  "industry": "media",
+  "family": "shared-upstream-step-first",
+  "counterTrap": false,
+  "signals": [
+   "must cite identical scene boundaries",
+   "start the moment a transcript arrives"
+  ],
+  "stem": "Stillwater Broadcasting files a compliance review for each ad-supported episode it airs, covering sponsor reads, product placements, content advisories and caption quality. One prompt currently reviews the whole transcript and misses sponsor reads in the middle of long episodes, so the team has agreed to split the review into four parts. Advertisers and the broadcast regulator reconcile findings against scene timestamps, so all four parts must cite identical scene boundaries. The operations lead wants the four reviews to start the moment a transcript arrives, to protect same-day turnaround.",
+  "ask": "What should the redesigned pipeline do FIRST with each transcript?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Start the four reviews in parallel on the raw transcript, each in its own call and marking the scene boundaries it needs",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This protects turnaround, but it assumes the four reviews share nothing. Each would draw its own boundaries, so findings would cite different scenes for the same moment, which the reconciliation cannot accept."
+   },
+   {
+    "id": "b",
+    "text": "Pass every transcript to an orchestrator that decides which of the four reviews the episode needs, and in which order to run them",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "Every ad-supported episode gets all four reviews, so there is no split to decide per episode. An orchestrator adds a call and a model-chosen order to a path that is already fixed."
+   },
+   {
+    "id": "c",
+    "text": "Segment the transcript into timestamped scenes in one step, and hand that same scene list to all four of the reviews",
+    "correct": true,
+    "trap": null,
+    "why": "Scene boundaries are the one dependency the four reviews share, so they are produced once, first. The reviews then run in parallel on the same list, which keeps turnaround close to what the operations lead wants."
+   },
+   {
+    "id": "d",
+    "text": "Check each finding's timestamps against the broadcast log in a closing step, before the review is filed with the regulator",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A final check is a sound last gate, but it can only reject mismatches after four reviews have drawn their own boundaries. It belongs at the end of the pipeline, not at the start."
+   }
+  ],
+  "explain": "Binding constraint: findings are reconciled against identical scene timestamps, which outranks the wish to start all four reviews at once. Chain the shared dependency first, then run the independent reviews in parallel on its output.",
+  "rule": "CS-D1-11",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.5-006",
+  "rev": 1,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "pool",
+  "type": "multi",
+  "select": 3,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "irreversibility",
+  "industry": "logistics",
+  "family": "claim-routing-gate-voting",
+  "counterTrap": false,
+  "signals": [
+   "arrive as free-text emails",
+   "A paid claim cannot be recovered",
+   "a different outcome when the same claim was re-run"
+  ],
+  "stem": "Halvard Freight's claims desk uses one prompt to decide each cargo claim and draft the reply. Claims arrive as free-text emails with attachments and are damage, shortage or late-delivery claims, each governed by different contract clauses and evidence rules. An audit found late-delivery claims assessed against damage clauses, shortage claims decided before anyone checked the warehouse count record, and high-value claims receiving a different outcome when the same claim was re-run. A paid claim cannot be recovered from the customer, and the claims director will fund extra model calls on claims above $20,000.",
+  "ask": "Which THREE changes BEST address the audit findings? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Classify each claim by type first, then send it to that type's own assessment prompt, clauses and evidence checklist",
+    "correct": true,
+    "trap": null,
+    "why": "The three claim types follow different clauses and evidence rules, and the audit found them bleeding into each other inside one prompt. Routing gives each type its own prompt and checklist, which ends the cross-applied clauses."
+   },
+   {
+    "id": "b",
+    "text": "Add the complete carriage contract and the clause interpretation notes to the single prompt, so each claim type has its rules",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Every clause in one prompt is more volume in the same shared context. The types still mix, and nothing makes the count record a precondition for a shortage decision."
+   },
+   {
+    "id": "c",
+    "text": "Fetch the warehouse count record before a shortage claim is assessed, and hold the claim for an adjuster if no count record is found",
+    "correct": true,
+    "trap": null,
+    "why": "Deciding a shortage needs the count record, so fetching it is a dependent step that comes first. The hold gate stops an unrecoverable payout when the evidence is missing."
+   },
+   {
+    "id": "d",
+    "text": "Route each claim in code by the type the customer selected when filing it, which avoids adding a separate classification call",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This assumes a customer-selected type exists and is reliable, but claims arrive as free-text emails. There is no filed type to route on, so the classification step cannot be skipped."
+   },
+   {
+    "id": "e",
+    "text": "Assess claims above $20,000 several times independently, and send any disagreement between runs to a senior adjuster",
+    "correct": true,
+    "trap": null,
+    "why": "Outcomes that change on re-run show variance on the costliest, unrecoverable decisions. Voting across independent runs buys confidence where the director has funded extra calls, and a disagreement goes to a person."
+   },
+   {
+    "id": "f",
+    "text": "Store each decision with its prompt version and inputs so auditors can reconstruct how the claim was decided later",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "An audit record helps explain a decision afterwards, but it prevents none of the three findings. It is sound practice that leaves the outcomes the audit found unchanged."
+   }
+  ],
+  "explain": "Binding constraint: a paid claim cannot be recovered, so each audit finding needs a structural fix before payout. Route by claim type, chain the evidence fetch ahead of the decision with a hold gate, and vote on high-value claims where extra calls are funded.",
+  "rule": "CS-D1-11",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-MR-02",
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P1-1.5-007",
+  "rev": 2,
+  "domain": 1,
+  "obj": "1.5",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "manufacturing",
+  "family": "long-manual-chapter-extraction",
+  "counterTrap": false,
+  "signals": [
+   "each chapter is self-contained",
+   "a second run missed a different dozen",
+   "given in the 40 component chapters"
+  ],
+  "stem": "Fenwick Precision Plastics' plant engineering team is building a preventive-maintenance schedule for a new injection-moulding line from the equipment maker's 900-page manual set. The maker's warranty is void if any maintenance task given in the 40 component chapters is left off the schedule, and each chapter is self-contained. A first attempt passed the whole manual set to one long-context call; spot checks found tasks missing from about a dozen chapters, and a second run missed a different dozen. The plant IT lead would rather keep a single call, which is simpler to maintain.",
+  "ask": "Which approach BEST produces a complete schedule?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Extract tasks from each chapter in its own call using a fixed task schema, then merge and de-duplicate the lists in code",
+    "correct": true,
+    "trap": null,
+    "why": "Each chapter is self-contained, so each can have its own call with the same schema. Coverage then stops depending on one long response, and code can confirm that all 40 chapters returned a list before the schedule is merged."
+   },
+   {
+    "id": "b",
+    "text": "Give an agent search access to the manual set and let it choose chapters to read until it judges the schedule complete",
+    "correct": false,
+    "trap": "T-AGENTIC",
+    "why": "The chapters to read are known in advance: all 40 of them. An agent that stops when it judges the schedule complete can stop early, the same kind of gap the warranty cannot absorb."
+   },
+   {
+    "id": "c",
+    "text": "Extract tasks from the manual's service-interval summary chapter, which tabulates the maker's routine servicing in one place",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "This works only if the summary repeats every component task, and nothing shows that it does. The warranty covers the tasks given in the 40 component chapters, so any task the table omits would be lost."
+   },
+   {
+    "id": "d",
+    "text": "Keep the single long-context call but have it list tasks under each of the 40 chapter headings in turn before compiling the schedule",
+    "correct": false,
+    "trap": "T-ENFORCE",
+    "why": "Listing headings adds structure, but one response still has to cover 900 pages, and whether a chapter is skipped stays with the model, as the two runs showed. The warranty needs coverage that code can check chapter by chapter."
+   }
+  ],
+  "explain": "Binding constraint: the warranty is void if any component-chapter task is missed, and one long pass drops chapters unpredictably. Section the self-contained chapters into their own calls and merge in code, so coverage is checkable rather than left to one response, a summary table or a model that decides when it is done.",
+  "rule": "CS-D1-11",
+  "ladder": "pattern",
+  "tips": [
+   "TIP-EL-03",
+   "TIP-EL-16"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

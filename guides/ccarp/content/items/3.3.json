@@ -1,0 +1,429 @@
+[
+ {
+  "id": "P3-3.3-001",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.3",
+  "set": "formA",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "latency-sla",
+  "industry": "retail",
+  "family": "completion-time-dominant-terms",
+  "counterTrap": false,
+  "signals": [
+   "measured to the complete JSON response",
+   "smallest that clears the compatibility accuracy floor"
+  ],
+  "stem": "Fernhollow Outfitters answers gear-compatibility questions for a marketplace partner whose contract requires a p95 under 4 seconds at holiday peak, measured to the complete JSON response. Peak p95 is now 8 seconds. Traces show three independent lookups (stock, price and compatibility specs) running one after another at about 1.2 seconds each, then about 4 seconds of generation writing a 350-word explanation. The partner displays only a verdict and two short reasons. The current model tier is the smallest that clears the compatibility accuracy floor.",
+  "ask": "Which TWO changes BEST bring peak p95 within the contract? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Stream the response so the partner receives its first tokens well inside 4 seconds",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "The contract clock stops at the complete JSON response, and streaming makes the last token arrive no sooner. It helps a person watching a screen, not a partner system waiting for the finished payload."
+   },
+   {
+    "id": "b",
+    "text": "Run the stock, price and compatibility lookups in parallel instead of in sequence",
+    "correct": true,
+    "trap": null,
+    "why": "The lookups are independent, so running them together removes about 2.4 of the 3.6 seconds spent waiting in sequence. Trimming output alone would still leave p95 near 5 seconds, so this change is needed as well."
+   },
+   {
+    "id": "c",
+    "text": "Constrain the output to the verdict and two reasons the partner actually displays",
+    "correct": true,
+    "trap": null,
+    "why": "Generation time grows with output length, and 350 words the partner never shows is waste. Cutting to the displayed fields removes most of the 4 seconds; parallel lookups alone would leave p95 near 5.6 seconds."
+   },
+   {
+    "id": "d",
+    "text": "Serve compatibility questions from a faster model tier to shorten generation time",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "The current tier is already the smallest that clears the compatibility floor, so a faster tier buys speed by breaching a gating accuracy requirement. Parallel lookups and a shorter output reach the target without that loss."
+   },
+   {
+    "id": "e",
+    "text": "Add per-stage p95 alerts at peak so any future latency regressions are caught early",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Per-stage alerting is sound operations practice, but it only detects future regressions. It removes none of the 4 seconds by which the contract is being breached at peak today."
+   }
+  ],
+  "explain": "Binding constraint: a p95 contract measured to the complete response at peak. Measure the dominant terms (sequential lookups and a long output), then cut both; streaming does not shorten completion and a smaller tier breaks the accuracy floor.",
+  "rule": "CS-D3-07",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-09"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.3-002",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.3",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "next-step",
+  "constraint": "accuracy-floor",
+  "industry": "saas",
+  "family": "rerank-depth-vs-p95",
+  "counterTrap": false,
+  "signals": [
+   "agreed 92% accuracy floor",
+   "measured to the complete answer",
+   "almost always sits in the retriever's top 30"
+  ],
+  "stem": "Tessellate's in-app help assistant for its project-management product must meet an agreed 92% accuracy floor and a 2.5-second p95 at peak, measured to the complete answer. Without re-ranking it scores 88% at a 1.9-second p95. Adding a cross-encoder that re-ranks the top 100 retrieved passages lifts accuracy to 94%, but peak p95 rises to 3.4 seconds while the average rises only to 2.1 seconds. Traces put nearly all of the added time in re-ranking, which grows roughly in proportion to the candidates scored, and eval logs show the answering passage almost always sits in the retriever's top 30. The generation model and prompt are unchanged.",
+  "ask": "What should the architect do NEXT?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Ship the re-ranker as configured, since the 2.1-second average sits inside the budget",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "The commitment is a p95 at peak, and 3.4 seconds breaches it. The average hides the slow tail that users hit at busy times, so shipping on the mean fails the agreed budget on the first peak day."
+   },
+   {
+    "id": "b",
+    "text": "Remove the re-ranker and move generation to a more capable tier to recover accuracy",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The shortfall without re-ranking comes from passage ordering, not reasoning. A larger tier reads the same poorly ordered passages, adds generation time to the complete answer, and leaves the release relying on an untested gain against the 92% floor."
+   },
+   {
+    "id": "c",
+    "text": "Stream answers into the help widget so users see text sooner during peak hours",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "The p95 is measured to the complete answer, and the added 1.5 seconds is re-ranking that finishes before generation starts. Streaming changes when text first appears, not when the answer completes, so peak p95 stays near 3.4 seconds."
+   },
+   {
+    "id": "d",
+    "text": "Cut the re-rank depth from the top 100 retrieved passages to the top 30 candidates",
+    "correct": true,
+    "trap": null,
+    "why": "Re-rank time scales with candidates, so scoring 30 instead of 100 cuts the added 1.5 seconds to about 0.45, putting peak p95 near 2.35 seconds. The answering passage almost always sits in the top 30, so the precision that clears 92% should hold; confirm both bars before release."
+   }
+  ],
+  "explain": "Binding constraint: the 92% accuracy floor gates the release, so the re-ranker stays, and the budget is p95 at peak measured to the complete answer. Size the dominant term (re-rank depth) to what the recall evidence supports; streaming moves the first text, not completion.",
+  "rule": "CS-D3-08",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-14"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.3-003",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.3",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "audience",
+  "industry": "legal",
+  "family": "streaming-perceived-wait",
+  "counterTrap": true,
+  "signals": [
+   "stare at a blank panel",
+   "starts producing tokens within 2 seconds",
+   "would start reading the opening analysis"
+  ],
+  "stem": "Quillfield LLP's research assistant drafts case memos of about 1,500 words for associates, who stare at a blank panel for roughly 40 seconds until the finished memo appears at once. Traces show the model starts producing tokens within 2 seconds, but the web client waits for the full response before rendering anything. Associates say they would start reading the opening analysis while the rest arrives; a few also ask whether memos could finish sooner. The current tier was chosen because smaller tiers missed the firm's citation-accuracy bar.",
+  "ask": "What should the team do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Stream the memo into the associate's panel as each section is generated",
+    "correct": true,
+    "trap": null,
+    "why": "The complaint is a person watching a blank panel, and generation already begins within 2 seconds. Streaming lets associates read the opening analysis almost at once, with no change to the tier or its citation accuracy."
+   },
+   {
+    "id": "b",
+    "text": "Evaluate a faster tier against the citation bar to shorten total drafting time",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A faster tier may serve the secondary wish for quicker completion, but it must first clear the bar that smaller tiers failed. It is a later experiment, not the fix for the blank-panel wait."
+   },
+   {
+    "id": "c",
+    "text": "Cache the firm's standing research instructions to cut time to first token",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Tokens already begin within 2 seconds, so prompt processing is not what associates are waiting on. The 40-second blank panel comes from buffering the full memo, which caching does not touch."
+   },
+   {
+    "id": "d",
+    "text": "Commit to a service target that every memo finishes within 15 seconds",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "A hard per-request cap on a long generative memo is brittle and targets completion time, which is not the main complaint. It pushes the team toward cutting content or tier instead of showing progress."
+   }
+  ],
+  "explain": "Binding constraint: the wait is felt by a person watching the screen, and tokens already start quickly. Here streaming is the right lever because it fixes perceived wait; completion-time levers come later if still needed.",
+  "rule": "CS-D3-07",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-EL-09"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.3-004",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.3",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "banking",
+  "family": "deterministic-figures-vs-verify-latency",
+  "counterTrap": false,
+  "signals": [
+   "a wrong figure is a reportable error",
+   "3-second p95 at peak"
+  ],
+  "stem": "Northgate Savings Bank's card-dispute assistant must reply within a 3-second p95 at peak. Compliance requires every dispute deadline and provisional-credit amount quoted to a customer to match the card ledger, because a wrong figure is a reportable error. Today the model writes these figures into its reply and a second model call checks them against the ledger, adding about 1.4 seconds. Peak p95 is 3.9 seconds and the average is 2.6 seconds; without the check, p95 would be about 2.5 seconds.",
+  "ask": "Which change BEST meets the latency target?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Insert the deadline and amount from the ledger in code, and retire the checking call",
+    "correct": true,
+    "trap": null,
+    "why": "Figures copied from the ledger by code match it every time, which satisfies the compliance rule deterministically. The 1.4-second model check is then redundant, so removing it brings peak p95 to about 2.5 seconds."
+   },
+   {
+    "id": "b",
+    "text": "Retire the checking call and move replies to a more capable tier that states figures reliably",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "A stronger tier makes wrong figures rarer, not impossible, and a reportable error cannot rest on model reliability. Dropping the check trades a gating compliance requirement for speed."
+   },
+   {
+    "id": "c",
+    "text": "Stream each reply to the customer while the checking call runs alongside it",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Streaming shows the figures before the check has confirmed them, so a wrong amount could reach the customer. The check still finishes at the same moment, so completion time does not improve."
+   },
+   {
+    "id": "d",
+    "text": "Measure the target as an average across replies, which the current design already meets",
+    "correct": false,
+    "trap": "T-AVGSLA",
+    "why": "The 2.6-second average hides the slow tail customers hit at peak, and the agreed commitment is a p95. Restating the metric changes the report, not the experience customers have."
+   }
+  ],
+  "explain": "Binding constraint: regulation requires every quoted figure to match the ledger, which removes any option that weakens or bypasses verification before latency is weighed. Moving the guarantee into deterministic code makes the latency-costly model check unnecessary.",
+  "rule": "CS-D3-07",
+  "ladder": "control-strength",
+  "tips": [
+   "TIP-EL-12",
+   "TIP-EL-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.3-005",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "insurance",
+  "family": "per-stage-tier-assignment",
+  "counterTrap": false,
+  "signals": [
+   "about 2 seconds in classification, 4 in extraction and 3 in the note",
+   "matches the largest tier on classification and extraction",
+   "on routine and complex claims alike"
+  ],
+  "stem": "Ashgrove Mutual's first-notice-of-loss pipeline runs three steps in sequence on its largest model tier, each needing the previous step's output: classify the claim, extract policy and incident fields, then write a liability triage note for the adjuster. Contact-centre staff need the note within a 6-second p95 at storm-season peak. Peak traces show about 2 seconds in classification, 4 in extraction and 3 in the note. Stage evals show a fast tier matches the largest tier on classification and extraction at about a third of the latency, but its notes fall below the liability accuracy floor on routine and complex claims alike.",
+  "ask": "Which configuration BEST meets the latency target while holding the accuracy floor?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move classification alone to the fast tier and keep extraction and the triage note on the largest tier",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Evals show the fast tier matches on extraction as well, so keeping the largest tier there spends latency for no accuracy gain. Moving classification alone saves about 1.3 seconds and leaves the note near 7.7 seconds at peak."
+   },
+   {
+    "id": "b",
+    "text": "Route routine claims to the fast tier for every step and escalate complex claims to the largest tier",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Routing by difficulty suits failures confined to hard cases, but the fast tier's notes miss the liability floor on routine claims too. Every routine claim would then reach the adjuster with a note below the floor."
+   },
+   {
+    "id": "c",
+    "text": "Keep every step on the largest tier and run classification and extraction side by side",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Extraction needs the claim class that classification produces, so the two cannot overlap. Even if they could, the chain would still take about 7 seconds on the largest tier, above the 6-second target."
+   },
+   {
+    "id": "d",
+    "text": "Move classification and extraction to the fast tier and keep the triage note on the largest tier",
+    "correct": true,
+    "trap": null,
+    "why": "The fast tier matches on the two steps that hold 6 of the 9 seconds, and at a third of the latency they take about 2, so the note arrives in about 5 seconds. The note keeps the tier that clears the liability floor."
+   }
+  ],
+  "explain": "Binding constraint: the liability accuracy floor, measured per stage. Spend capability only where a stage needs it: the fast tier on classification and extraction, where evals show it matches and most of the time sits, and the largest tier on the triage note.",
+  "rule": "CS-D3-08",
+  "ladder": "cost-latency-lever",
+  "tips": [
+   "TIP-RD-01"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.3-006",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.3",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "airline",
+  "family": "tail-latency-output-length-diagnosis",
+  "counterTrap": false,
+  "signals": [
+   "time from request to first generated token stayed flat",
+   "three times the median output tokens",
+   "the mean rose only slightly"
+  ],
+  "stem": "Kestrel Airways' irregular-operations service drafts rebooking messages that are pushed to passengers as finished texts, under an 8-second p95 completion target at peak. To lift rebooking accuracy, last month's release added a fare-rule lookup before each draft and made the drafter set out alternatives for every leg of an itinerary. In the first storm since, p95 rose from 5 to 13 seconds while the mean rose only slightly. Model version and region were unchanged, time from request to first generated token stayed flat, and the slowest requests carried three times the median output tokens with the same input size.",
+  "ask": "What is the MOST likely cause of the p95 breach?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Storm demand queued requests at the provider, which delayed the start of generation",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Provider queueing would push back the first generated token, yet that stayed flat. Capacity sits in a layer the release did not touch, and the evidence places the extra seconds after generation starts."
+   },
+   {
+    "id": "b",
+    "text": "The new fare-rule lookup added a sequential wait ahead of drafting on every request",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "A lookup before drafting would delay the first generated token and slow every request, lifting the mean. The first token stayed flat and the mean barely moved, so the lookup is not the dominant term."
+   },
+   {
+    "id": "c",
+    "text": "A handful of outlier requests skewed the percentile, as the nearly steady mean suggests",
+    "correct": false,
+    "trap": "T-AGGREGATE",
+    "why": "The slowest requests share a trait, three times the median output, so the tail is a slice rather than noise. A nearly steady mean is how an aggregate hides a slow slice, not evidence that none exists."
+   },
+   {
+    "id": "d",
+    "text": "Setting out every leg's alternatives made multi-leg rebooking texts much longer to generate",
+    "correct": true,
+    "trap": null,
+    "why": "Everything before the first token is flat, so the time is added during generation, where output length drives completion. Alternatives for every leg multiply output on multi-leg itineraries, a minority slice, which lifts p95 while barely moving the mean."
+   }
+  ],
+  "explain": "Binding constraint: what changed. The release traded latency for accuracy in two places, and a flat first token with tripled output on the slowest requests points to the per-leg output, not the lookup. Measure that dominant term before choosing a lever that keeps the accuracy gain, such as generating legs in parallel.",
+  "rule": "CS-D3-07",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04",
+   "TIP-EL-09"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

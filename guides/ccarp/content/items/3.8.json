@@ -1,0 +1,426 @@
+[
+ {
+  "id": "P3-3.8-001",
+  "rev": 1,
+  "domain": 3,
+  "obj": "3.8",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "scale",
+  "industry": "airline",
+  "family": "small-stable-toolset-upfront",
+  "counterTrap": true,
+  "signals": [
+   "changed once in two years",
+   "small, stable slice of each prompt",
+   "picks the right tool on almost every request"
+  ],
+  "stem": "Kittiwake Air's gate-agent copilot uses seven tools (rebooking, seat map, baggage trace, standby list, fare rules, meal vouchers and flight status) plus a two-page irregular-operations checklist. The toolset has changed once in two years, and together the definitions and checklist are a small, stable slice of each prompt. Traces show the copilot picks the right tool on almost every request. A platform lead proposes adopting the tool-search pattern built for the airline's 300-tool maintenance agent to cut per-request token cost.",
+  "ask": "Which context strategy is BEST for the gate-agent copilot?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Defer all seven tools behind tool search so each request loads just the tools it needs",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Deferred loading pays off when definitions dominate a large or growing catalogue. Here they are a small slice, so discovery adds a search step and a chance to miss a tool while saving little."
+   },
+   {
+    "id": "b",
+    "text": "Keep the seven tools and the checklist loaded up front as a cached, unchanging prompt prefix",
+    "correct": true,
+    "trap": null,
+    "why": "Seven tools that rarely change, plus a short checklist, are a small slice of each prompt and selection is already accurate. Loading them up front stays simple and reliable, and caching the unchanging prefix answers the lead's cost concern."
+   },
+   {
+    "id": "c",
+    "text": "Shorten the checklist to its section headings and keep the seven tool definitions as they are",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Agents need the checklist's actual steps during disruptions, which is when the copilot matters most. Cutting it to headings removes required context to save tokens that caching would recover anyway."
+   },
+   {
+    "id": "d",
+    "text": "Merge the seven tools into one gate-operations tool with an action parameter to cut definitions",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "Merging lowers the definition count, but the model must then pick the right action through a parameter. Selection already works across seven distinct tools, so this adds ambiguity for no gain."
+   }
+  ],
+  "explain": "Binding constraint: catalogue scale. A small, stable toolset that is already selected accurately is best loaded up front in a cached prefix; progressive discovery pays off only when a large or growing catalogue dominates the context.",
+  "rule": "CS-D3-18",
+  "ladder": null,
+  "tips": [
+   "TIP-EL-05"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.8-002",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.8",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "change-scope",
+  "industry": "logistics",
+  "family": "deferred-tool-discoverability",
+  "counterTrap": false,
+  "signals": [
+   "model version, system prompt and customs MCP server are unchanged",
+   "session traces record every search call",
+   "Dispatchers are placing holds by hand meanwhile"
+  ],
+  "stem": "Kestrel Freight moved its dispatch agent from loading all 230 tool definitions on every request to tool search with deferred loading, keeping five high-use tools always loaded. Prompts shrank and billing tasks improved, but customs tasks now stall: the agent says it has no tool for placing a customs hold. The model version, system prompt and customs MCP server are unchanged, the hold tool succeeds when called directly, and session traces record every search call. Dispatchers are placing holds by hand meanwhile.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Check the customs MCP server's logs for failed or timed-out hold requests since the change",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The customs server is unchanged and the hold tool works when called directly; the agent never reaches the call because it cannot find the tool. Server logs sit on a layer the change did not touch."
+   },
+   {
+    "id": "b",
+    "text": "Add the customs hold tool to the always-loaded set so the agent no longer needs to search for it",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Pinning may prove to be the remedy, but choosing it now skips the trace comparison that shows whether the hold tool's metadata is at fault and whether other customs tools share the same gap."
+   },
+   {
+    "id": "c",
+    "text": "Return customs sessions to loading the full catalogue up front until the cause is found",
+    "correct": false,
+    "trap": "T-OBSERVE",
+    "why": "Rolling back customs sessions brings back the prompt bloat that deferral removed. With dispatchers placing holds by hand, no active harm forces a mitigation before the search traces already recorded have been read."
+   },
+   {
+    "id": "d",
+    "text": "Compare the stalled traces' search queries with the hold tool's name, description and argument text",
+    "correct": true,
+    "trap": null,
+    "why": "The only change is that the hold tool must now be found by search, which matches queries against its name, description, argument names and argument descriptions. Comparing the agent's queries with that metadata shows why discovery misses it before anything is changed."
+   }
+  ],
+  "explain": "Binding constraint: what changed. Only the discovery path changed, and deferred tools are found through their names, descriptions and argument text, so the first step is to compare the agent's recorded search queries with the hold tool's metadata. Dispatchers are working around the stall, so nothing forces a rollback or a pinned tool before that evidence is read.",
+  "rule": "CS-D3-18",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.8-003",
+  "rev": 3,
+  "domain": 3,
+  "obj": "3.8",
+  "set": "formC",
+  "type": "multi",
+  "select": 2,
+  "diff": 3,
+  "archetype": "which-n",
+  "constraint": "regulation",
+  "industry": "pharma",
+  "family": "skills-and-tool-search-regulated-sops",
+  "counterTrap": false,
+  "signals": [
+   "with no summarised versions in use",
+   "applies one market's SOP to another",
+   "wrong-tool picks are rising across all three servers"
+  ],
+  "stem": "Corvane Therapeutics' regulatory-writing agent drafts labelling updates for 40 markets. Its system prompt holds all 40 market-specific labelling SOPs in full, and on every request it loads 170 tool definitions from three MCP servers: safety database, document management and literature search. Context is near capacity, the agent sometimes applies one market's SOP to another, and wrong-tool picks are rising across all three servers. Quality assurance requires the approved SOP for the target market to be applied word for word, with no summarised versions in use.",
+  "ask": "Which TWO changes BEST free context and fix both errors within the QA requirement? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Replace each SOP with a QA-signed one-paragraph summary and load only the target market's summary for each task",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Loading one short summary per task frees even more context than full SOPs and stops the bleed, but QA forbids any summarised version in use, so only the approved full text may be loaded."
+   },
+   {
+    "id": "b",
+    "text": "Package the SOPs as one labelling Skill whose description stays loaded and whose per-market SOP files load in full on demand",
+    "correct": true,
+    "trap": null,
+    "why": "Only the Skill's short description sits in context, and the target market's approved SOP file loads in full when a task needs it. That frees context, stops other markets' SOPs competing, and keeps the approved wording intact."
+   },
+   {
+    "id": "c",
+    "text": "Defer the rarely used definitions on the three servers behind tool search so they load when a task needs them",
+    "correct": true,
+    "trap": null,
+    "why": "Wrong-tool picks are rising on every server because 170 definitions load on each request. Deferring the rarely used ones behind tool search narrows what the model chooses from across the whole catalogue and frees further context."
+   },
+   {
+    "id": "d",
+    "text": "Consolidate the safety database server's lookup tools into one tool with an action parameter to shrink the catalogue",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "Grouping related safety lookups behind an action parameter is sound tool design and trims some selection ambiguity, but it touches one of three servers. Document-management and literature definitions still load on every request, context stays near capacity and the SOP bleed is untouched."
+   },
+   {
+    "id": "e",
+    "text": "Move the full SOP block into a cached prompt prefix so resending it on every request costs less",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Caching cuts the cost and latency of resending the SOPs, but every SOP still occupies the context and competes on each request. Neither the SOP bleed nor the wrong-tool picks change."
+   }
+  ],
+  "explain": "Binding constraint: QA's word-for-word rule, which outweighs the context budget and excludes even per-task summaries. Progressive discovery within that rule fixes both errors: a labelling Skill loads the target market's full approved SOP when a task needs it, and tool search narrows the whole catalogue per request, whereas consolidating one server's tools leaves the other two servers' definitions loaded.",
+  "rule": "CS-D3-18",
+  "ladder": "integration-mechanism",
+  "tips": [
+   "TIP-MR-02",
+   "TIP-EL-05"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.8-004",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.8",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "accuracy-floor",
+  "industry": "telecom",
+  "family": "growing-catalogue-tool-search",
+  "counterTrap": false,
+  "signals": [
+   "tool-selection accuracy must return",
+   "two or three new servers arrive each month",
+   "A single alarm often needs tools from several teams' servers"
+  ],
+  "stem": "Brightwave Telecom's network-operations assistant connects to MCP servers from 25 engineering teams, exposing about 400 tools, and two or three new servers arrive each month. A single alarm often needs tools from several teams' servers. Every definition is loaded into the prompt on every request, and each expansion has pushed wrong-tool picks higher. The operations director has set a floor: tool-selection accuracy must return to its level before the latest expansion and hold there as more servers arrive.",
+  "ask": "Which change BEST meets the director's floor?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Defer every team's tools behind tool search so each request loads just the few definitions it needs",
+    "correct": true,
+    "trap": null,
+    "why": "Loading only the definitions a request needs shrinks the set the model chooses from, while tools on every server stay reachable for alarms that cross teams. The set stays small as new servers arrive, so accuracy recovers and holds."
+   },
+   {
+    "id": "b",
+    "text": "Cap every tool description at one short sentence so the whole catalogue takes less room",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Shorter descriptions save space but strip the purpose and usage detail the model relies on to tell 400 similar tools apart, so accuracy is likely to fall further rather than recover."
+   },
+   {
+    "id": "c",
+    "text": "Add a routing section to the system prompt mapping each alarm type to the owning team's server",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "A routing section is more prompt text to rewrite every month, and alarms that span several servers fit no single mapping. All 400 definitions still compete on each request, so the wording patch does not reduce what the model sees."
+   },
+   {
+    "id": "d",
+    "text": "Give each team's on-call engineers an assistant scoped to that team's own servers",
+    "correct": false,
+    "trap": "T-ORGCHART",
+    "why": "Scoping by team shrinks each tool set, but a single alarm often needs tools from several teams' servers, so each assistant would lack tools it needs. Tool search narrows the set per request instead."
+   }
+  ],
+  "explain": "Binding constraint: an accuracy floor on a large, growing catalogue whose alarms cross team boundaries. Tool search with deferred loading narrows what the model chooses from on each request while keeping every server reachable; team-scoped assistants lose cross-team tools, and shorter descriptions or routing text leave all 400 definitions competing.",
+  "rule": "CS-D3-18",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.8-005",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.8",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "best",
+  "constraint": "data-shape",
+  "industry": "public-sector",
+  "family": "procedure-library-metadata-first",
+  "counterTrap": false,
+  "signals": [
+   "new programmes are added each quarter",
+   "answers about programmes placed late in the prompt have started to skip steps",
+   "valid only when followed whole and in order"
+  ],
+  "stem": "Northvale County's caseworker assistant helps staff apply 85 benefit programme procedures, from housing vouchers to child-care subsidies. All 85 procedures are pasted into the system prompt, and new programmes are added each quarter. Prompts are nearing the context limit, and answers about programmes placed late in the prompt have started to skip steps. Each query concerns a single programme, and a procedure is valid only when followed whole and in order.",
+  "ask": "Which context strategy BEST fits this procedure library?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Keep each procedure's name and description in context and load its full text when a case matches",
+    "correct": true,
+    "trap": null,
+    "why": "Short descriptions let the assistant recognise which programme a case concerns, then load that one procedure whole and in order. Context stays small as programmes are added, and no procedure is left buried late in a crowded prompt."
+   },
+   {
+    "id": "b",
+    "text": "Keep the thirty most-used procedures in the prompt and drop the rest to stay within the budget",
+    "correct": false,
+    "trap": "T-BLUNTCUT",
+    "why": "Dropping procedures fits the budget, but caseworkers on the dropped programmes lose required guidance, and the thirty kept still crowd the prompt, so procedures late in it keep losing steps."
+   },
+   {
+    "id": "c",
+    "text": "Split the procedures into overlapping chunks and retrieve the twenty best-matching chunks per query",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Fixed-size chunks split a procedure's steps apart whatever the overlap, and twenty chunks per query mix in fragments from other programmes."
+   },
+   {
+    "id": "d",
+    "text": "Move to a model tier with a larger context window so every procedure fits, with room left to grow",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "A larger window postpones the limit but keeps all 85 procedures, plus each new programme, in one prompt, so procedures late in it keep losing steps."
+   }
+  ],
+  "explain": "Binding constraint: each procedure is a whole, ordered unit in a library that grows every quarter. Metadata-first loading brings in one procedure whole; chunk retrieval breaks the unit, and loading everything up front does not scale.",
+  "rule": "CS-D3-18",
+  "ladder": "integration-mechanism",
+  "tips": [
+   "TIP-EL-05"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P3-3.8-006",
+  "rev": 2,
+  "domain": 3,
+  "obj": "3.8",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "next-step",
+  "constraint": "data-shape",
+  "industry": "pharma",
+  "family": "always-loaded-core-set",
+  "counterTrap": false,
+  "signals": [
+   "the same four sample-lookup tools",
+   "answers take longer to finish",
+   "only a small share of sessions"
+  ],
+  "stem": "Tessaro Biologics' lab-informatics agent answers scientists' questions using 190 LIMS and ELN tools. To shrink its prompts, the team deferred every tool behind tool search. Prompt size fell and selection accuracy held, but traces show nearly every request now opens with two or three search calls that load the same four sample-lookup tools, and scientists complain that answers take longer to finish. The other tools appear in only a small share of sessions.",
+  "ask": "What is the BEST next step?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Return to loading all 190 definitions up front so no request waits on a search call",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Loading all 190 definitions removes the search wait but brings back the prompt size the team deferred to fix. Only four tools are needed on most requests, so the rest need not load."
+   },
+   {
+    "id": "b",
+    "text": "Stream the agent's responses so scientists see output while the search calls are running",
+    "correct": false,
+    "trap": "T-LEVER",
+    "why": "Streaming can make a wait feel shorter, but the complaint is that answers take longer to finish. The two or three search round trips still run on nearly every request, so completion time does not improve."
+   },
+   {
+    "id": "c",
+    "text": "Keep the four sample-lookup tools always loaded and leave the other tools deferred",
+    "correct": true,
+    "trap": null,
+    "why": "The same four tools are needed on nearly every request, so searching for them each time is pure overhead. Loading them up front removes those round trips, while the rarely used tools stay deferred and prompts stay small."
+   },
+   {
+    "id": "d",
+    "text": "Rewrite the four sample-lookup tool descriptions so that one search call finds all of them",
+    "correct": false,
+    "trap": "T-MEGATOOL",
+    "why": "Sharper descriptions might cut the searches to one, but nearly every request would still open with a search round trip for tools it almost always needs. Loading those four up front removes the search entirely."
+   }
+  ],
+  "explain": "Binding constraint: the usage pattern, with four tools needed on nearly every request. Keep high-use tools always loaded and defer the long tail; streaming or sharper descriptions leave a search round trip on nearly every request.",
+  "rule": "CS-D3-18",
+  "ladder": null,
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

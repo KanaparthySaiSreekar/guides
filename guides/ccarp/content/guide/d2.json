@@ -1,0 +1,231 @@
+{
+ "domain": 2,
+ "intro": "Domain 2 looks like prompt craft, but it tests lever selection. A typical item gives you one defect or constraint, such as a cost ceiling, a p95 budget, drifting output format, a cache hit rate near zero or a rule that must never break, and then offers four real techniques. You score by naming the defect class the stem proves and picking the lever that moves it without breaking the accuracy floor. The binding constraints are usually economic or behavioural: cost per request, tail latency, a pre-agreed eval bar, or an outcome that must hold every time. The distractors are reflexes: upgrade the model, add context, cut context or tier blindly, pull a lever before measuring, or trust the system prompt to enforce a rule. Watch for counter-traps, where evidence really does justify the higher tier.",
+ "delta": "From CCAR-F you keep three reflexes: few-shot for format versus step-by-step reasoning for logic, code enforcement over prompt wording, and stable content first for caching. API mechanics such as parameter names, cache lifetimes, price multipliers and stop reasons are low-yield, because Professional items turn on judgement rather than syntax. What is new is choosing tiers against cost, latency and eval evidence, deciding whether to compact, clear or filter context, and running prompts and Skills as owned, versioned, eval-gated artefacts.",
+ "sections": [
+  {
+   "obj": "2.1",
+   "core": [
+    "**Tier selection** is made per task, not per platform. Each pipeline step gets the cheapest tier that clears its own floor, so one application can run three tiers. The floor is a minimum, not the whole decision: when errors are priced and a higher tier's avoided errors are worth more than its extra cost, it wins even though both clear. Public benchmarks can shortlist tiers; only your own eval on your traffic decides.",
+    "**Routing** sends only the measured hard slice upward, triggered by signals you can test (case type, rider count, a validator failure). Never route on the model's self-reported confidence or on how important the customer seems.",
+    "Rule out prompt and retrieval before blaming the tier. Failures spread evenly across easy and hard cases point to the prompt; failures that cluster on multi-step reasoning, with retrieval verified and structured reasoning or higher effort already tried, point to capability.",
+    "Latency has an input term and an output term, judged at p95 under peak load. When output dominates, shorten it with templates, caps or lower reasoning effort, then confirm the bar still holds before you change tier. Streaming shortens the perceived wait, not completion time.",
+    "A tier that passed its eval becomes a hypothesis again after any model or prompt change. Re-run the per-slice gate every time and report slices, not only the mean.",
+    "Counter-trap: at low volume with a very costly error, starting on the top tier can be the proportionate call. The same holds when errors compound across many autonomous steps."
+   ],
+   "worked": {
+    "scenario": "Tomasz evaluates Meridian's mid tier, which answers policy questions for adjusters. Against a pre-agreed 95% grounded-answer floor it scores 96% overall, but only 81% on home claims where two or more riders interact, about 8% of volume. Traces show the correct clauses were retrieved, and step-by-step reasoning at higher effort lifted that slice only to 84%; the top tier scored 97% on it. Gerald will fund top-tier pricing on at most a tenth of traffic.",
+    "ask": "What should Meridian do with the policy Q&A tier?",
+    "options": [
+     { "text": "Move every policy question to the top tier so answers on all claim types get the strongest reasoning.", "correct": false, "trap": "T-BIGMODEL" },
+     { "text": "Keep the mid tier for every question, since the 96% overall score clears the floor.", "correct": false, "trap": "T-AGGREGATE" },
+     { "text": "Route home claims where riders interact to the top tier and keep the rest on the mid tier.", "correct": true, "trap": null },
+     { "text": "Retrieve more chunks per question so the model sees the full wording of every rider.", "correct": false, "trap": "T-STUFF" }
+    ],
+    "steps": {
+     "constraint": "Failures cluster on one measured slice (interacting riders) after retrieval and prompting were ruled out, and top-tier spend is capped at a tenth of traffic.",
+     "classify": "Prevent, at design time, in the model-selection layer. Lever ladder: the routing rung, holding the floor per slice. This is the counter-trap case where a higher tier is justified.",
+     "eliminate": "A is T-BIGMODEL: it pays top-tier prices on the 92% the mid tier already handles, far past Gerald's tenth. B is T-AGGREGATE: the mean hides a slice failing the floor by 14 points. D is T-STUFF: the right clauses are already retrieved, so more text adds tokens, not reasoning.",
+     "choose": "C spends capability only where evals show reasoning depth is binding, and the 8% slice fits inside the cap. A would win only if volume were tiny or the budget open, and the stem grants neither."
+    }
+   },
+   "faded": null,
+   "traps": ["T-BIGMODEL", "T-BLUNTCUT", "T-LEVER", "T-AGGREGATE"],
+   "contrast": {
+    "a": { "title": "Route the slice up", "text": "Failures cluster on a measured, reasoning-heavy slice after prompt and retrieval have been ruled out, and a higher tier clears the bar on that slice." },
+    "b": { "title": "Stay on the cheaper tier", "text": "Failures are spread evenly across case types, or the defect is format, retrieval, freshness or authorization, all of which survive on any tier." },
+    "decider": "Do the failures cluster on complex reasoning after prompt and retrieval are ruled out, or are they spread evenly?"
+   },
+   "explain": {
+    "prompt": "Why is the model's own confidence the wrong trigger for escalating a request to a higher tier?",
+    "model": "Self-reported confidence is not calibrated against your eval set, so it escalates cases the cheaper tier handles and misses confident errors. Route on signals you can measure and test, such as case type, rider count or a validator failure, so the slice that goes up is the one evals showed failing."
+   },
+   "bridge": "Foundations treats tiers as a capability ladder. Professional adds cost, tail latency and per-slice eval evidence as the deciders, so the reflex to unlearn is that the most capable tier is the safe choice."
+  },
+  {
+   "obj": "2.2",
+   "core": [
+    "A **system prompt** sets role and scope, success criteria the model can act on, boundaries and output format. It explains rules; it never enforces one that must hold every time.",
+    "Test every 'must never' by asking what stops the outcome if the model ignores the instruction completely. If nothing does, move the rule into a tool precondition, a validation gate, an authorization check or capability removal.",
+    "A **template** holds stable instructions plus typed variables (jurisdiction, product, language). One versioned template beats forked per-segment prompts that drift, and placing variables after the shared text keeps it cacheable.",
+    "**Guardrails** come as a pair: a preventive control before data or an action crosses the boundary, and a detective control that catches what slips through. A prompt instruction is neither.",
+    "Claimant text and attachments are untrusted data. Keep them out of the system prompt, label their source, state the untrusted-content policy and screen them with a lightweight classifier, but rely on least-privilege tools to cap what an injection can do.",
+    "Remove contradictions instead of asking the model to arbitrate them. When a rule in a long prompt is ignored, fix its position and separation, not its capitalisation. A conflict you cannot remove, such as a standing rule versus a runtime user request, gets an explicit stated precedence (the standing rule wins); that is a design decision, not arbitration by the model.",
+    "**Prompt structure** is a lever for adherence. Wrap each component in its own XML tag (instructions, documents, examples, user input). Put long material at the top and the query and instructions at the end: Anthropic's long-context tips report up to 30 percent better responses on complex multi-document inputs. Stable parts belong in the cached prefix, volatile retrieved content after the breakpoint. Moving and delimiting one buried rule fixes a placement problem; it does not fix a volume problem (2.4) or a rule that must hold every time, which belongs in code."
+   ],
+   "worked": {
+    "scenario": "After each web FNOL, Meridian sends the claimant an automated acknowledgement email drafted by the fast tier, with no adjuster in the loop. A spot check by Luis's team found that a few drafts in a thousand said the damage 'should be covered'. Priya's rule is that no automated message may state or imply a coverage decision, because only an adjuster can make one. The acknowledgement needs only the claim reference, loss date, next step and contact details.",
+    "ask": "Which change should Meridian make?",
+    "options": [
+     { "text": "Add a capitalised NEVER rule to the system prompt with three examples of banned coverage phrasing.", "correct": false, "trap": "T-ENFORCE" },
+     { "text": "Replace free-text drafting with an approved template filled only from validated claim-record fields.", "correct": true, "trap": null },
+     { "text": "Scan sent acknowledgements each night and email a correction to any claimant told they were covered.", "correct": false, "trap": "T-DETECT" },
+     { "text": "Move acknowledgement drafting to the top tier, which follows negative instructions more reliably.", "correct": false, "trap": "T-BIGMODEL" }
+    ],
+    "steps": {
+     "constraint": "A must-hold rule ('never state or imply coverage') on an automated, customer-facing message with no human before the claimant.",
+     "classify": "Prevent, not detect. Output layer in the send path, fixed at design time. Control ladder: climb past instruction and remove the capability, because a fixed template leaves the model no claimant-facing text to write.",
+     "eliminate": "A is T-ENFORCE: emphasis raises the odds, but nothing stops the next miss. C is T-DETECT: the claimant has already read the email, and a correction is a second harmful message. D is T-BIGMODEL: a stronger tier is still probabilistic.",
+     "choose": "B takes free text out of the send path, so the rule holds whatever the model would have written, and every field the email needs is already a known fact. A would suffice only if an occasional miss were acceptable, which Priya's rule excludes."
+    }
+   },
+   "faded": null,
+   "traps": ["T-ENFORCE", "T-BOUNDARY", "T-DETECT"],
+   "contrast": {
+    "a": { "title": "Instruction in the prompt", "text": "Tone, reading level, structure and brand voice, where a miss is cheap, reversible and often caught by a human before anything leaves." },
+    "b": { "title": "Enforcement in code", "text": "Money, identity, coverage statements, fraud-signal disclosure and ordering rules, where a single miss is a regulatory, financial or customer harm." },
+    "decider": "If the model ignores the instruction once, what happens, and can it be undone?"
+   },
+   "explain": {
+    "prompt": "Why does one template with typed variables beat fifty jurisdiction-specific system prompts?",
+    "model": "Forked prompts drift, each needs its own eval run, and a shared fix must be applied fifty times. One versioned template is a single artefact to review and gate, its variables can be validated before insertion, and keeping them after the shared text leaves a stable prefix to cache."
+   },
+   "bridge": "Foundations already taught that a programmatic precondition beats a stronger prompt for money or identity, and that carries over. Professional adds guardrail pairing (prevent before the boundary, detect after) and templates as governed artefacts; hook and settings syntax is low-yield here."
+  },
+  {
+   "obj": "2.3",
+   "core": [
+    "Name the defect before the technique. If shape varies, add **few-shot** examples; if logic fails, add structured step-by-step reasoning; if output must always parse, use a schema or tool contract plus validation; if facts are wrong, fix retrieval or grounding. Before any technique, make the instruction itself explicit (task, audience, output shape); examples cannot rescue an underspecified instruction. For output that must always parse, structured outputs and strict tool use constrain generation to the schema, but still handle a refusal or a `max_tokens` cut-off.",
+    "Good few-shot sets are a handful (three to five) of diverse, complete examples aimed at the ambiguous cases, including one correct 'cannot determine'. Near-identical examples anchor varied inputs to one pattern. Match examples to production inputs in length and messiness, because examples also set the length and depth of the output.",
+    "**Chain-of-thought**, whether the model's built-in thinking at a suitable effort setting or prompted step-by-step reasoning, earns its tokens on multi-step coverage or eligibility logic. On single-label classification it adds latency and cost without accuracy.",
+    "Exact arithmetic (deductibles, sub-limits, pro-rata amounts) belongs in a deterministic tool. Reasoning decides which terms apply; code computes the number.",
+    "When reasoning serves accuracy rather than the reader, keep it separate from the final answer so the answer can be parsed and validated on its own.",
+    "**Zero-shot** stays the default while it clears the bar. Every added technique is a prompt change that re-runs the eval gate.",
+    "**Fine-tuning** is rarely the lever. Prompts, examples, templates and retrieval are faster to change, easy to evaluate and survive model upgrades, and knowledge that changes belongs in retrieval or tools, never in weights. Docs, as of Sep 2026: the Claude API offers no fine-tuning, and it has been available only for specific older models on Amazon Bedrock, so an option that depends on it rests on an unstated assumption."
+   ],
+   "worked": {
+    "scenario": "Meridian's mid tier drafts coverage explanations for home claims, which adjusters edit in the Adjuster Workbench. Tomasz's slice eval shows that format, tone and cited clauses are right, but the payable amount is wrong in about one claim in six where a deductible, a sub-limit and depreciation all apply. Single-term claims are almost always correct. Gerald will not fund a tier change without evidence that the current tier cannot do the job.",
+    "ask": "Which change should Meridian try first?",
+    "options": [
+     { "text": "Move home coverage explanations to the top tier, which reasons better over interacting policy terms.", "correct": false, "trap": "T-BIGMODEL" },
+     { "text": "Send the full policy wording instead of just the cited clauses so every term is in view.", "correct": false, "trap": "T-STUFF" },
+     { "text": "Fine-tune the mid tier on five years of historical coverage explanations so it learns how the terms interact.", "correct": false, "trap": "T-ASSUME" },
+     { "text": "Have the model reason through the terms step by step and do the sums in a calculation tool.", "correct": true, "trap": null }
+    ],
+    "steps": {
+     "constraint": "Logic fails only when several terms interact; format, tone and citations are correct; no tier change without evidence.",
+     "classify": "Prevent, at design time, in the prompt-and-tool layer. Defect class: multi-step logic plus exact arithmetic, not format or retrieval.",
+     "eliminate": "A is T-BIGMODEL: nobody has shown the defect survives structured reasoning, which is the evidence Gerald asked for. B is T-STUFF: the right clauses are already cited, so more text adds cost and dilutes attention. C is T-ASSUME: it relies on a verified set of correct amounts and a fine-tuning route for this tier, neither of which the stem gives, and training does not make arithmetic exact.",
+     "choose": "D matches technique to failure: reasoning picks the terms and code does the sums. A becomes right only if the slice still fails after D, measured on the same eval."
+    }
+   },
+   "faded": null,
+   "traps": ["T-BIGMODEL", "T-STUFF", "T-ASSUME"],
+   "contrast": {
+    "a": { "title": "Few-shot examples", "text": "Output is right in substance but varies in structure, tone or labelling, especially on ambiguous cases." },
+    "b": { "title": "Structured reasoning", "text": "Output looks right but its multi-step logic is wrong, and the errors cluster on cases with several interacting conditions." },
+    "decider": "Is the output wrong in shape or wrong in logic?"
+   },
+   "explain": {
+    "prompt": "Why can adding few-shot examples make a classifier that already clears its bar worse?",
+    "model": "Examples anchor the model to their surface patterns. If zero-shot already clears the bar, a handful of similar examples can pull varied inputs toward those patterns and create new errors on cases that look nothing like them. Add examples against a measured format or ambiguity defect, then re-run the eval."
+   },
+   "bridge": "Few-shot for format versus chain-of-thought for reasoning carries straight over from Foundations. Foundations prep overweights API tricks for forcing output shape; Professional asks which technique fits the measured failure, and when to add none."
+  },
+  {
+   "obj": "2.4",
+   "core": [
+    "Everything in the request occupies the window: tool definitions, system prompt, retrieved text, history and tool results, cached parts included, plus the response being generated. Caching changes what a prefix costs, not how much room it takes.",
+    "**Context rot**: the more tokens in the window, the less reliably the model recalls any one fact in it, so mid-context facts get missed on large inputs. A bigger window is headroom, not a fix. Placing long documents above the query helps, but neither reordering nor 'read carefully' repairs a volume problem.",
+    "Reduce at the source. Retrieve the relevant sections, not the whole claim file, and have upstream steps pass structured facts instead of raw transcripts. Design tool responses for this: filters, pagination and truncation with sensible defaults, a concise or detailed response format the agent can choose, readable IDs, a truncation note that tells the agent how to get more, and errors that say what failed and whether a retry can help instead of an empty payload.",
+    "**Tool-result clearing** replaces used-up tool output with a placeholder; **compaction** summarises state the task still needs (decisions, open questions, next steps). Clear what is stale, compact what is live, and never truncate blindly.",
+    "If you write compaction instructions, make them complete: they replace the default summary prompt and define what survives, so anything they omit is gone. Clearing and compaction both rewrite history and invalidate the cache from the rewritten point onward, so do them in large steps, not every turn, and keep a breakpoint at the end of the system prompt so tools and system stay cached.",
+    "Isolation is a context tool too. A subagent explores in its own window and returns a short summary, so exploratory noise never reaches the main thread.",
+    "**Structured note-taking** is the long-horizon technique beside compaction and subagents: the agent writes progress, decisions and open items to a file or the memory tool outside the window and reads them back later. Memory persists across sessions, so treat it as a data store like any other: decide what may be written there, who can read it and how long it lasts, and keep secrets and unneeded personal data out of it."
+   ],
+   "worked": {
+    "scenario": "Meridian's read-only investigation agent supports an adjuster through a two-hour session on a complex water-damage claim. By mid-session every turn carries each repair invoice, weather report and ClaimsCore lookup fetched so far. Cost per turn has tripled, and twice the agent has contradicted a decision the adjuster confirmed early on: the detached garage is excluded from cover. Aiko's traces show most of the context is raw tool output that no later step reads.",
+    "ask": "Which change best addresses both the cost and the lost decision?",
+    "options": [
+     { "text": "Clear stale tool results and compact the session into a summary of confirmed decisions and open questions.", "correct": true, "trap": null },
+     { "text": "Keep only the ten most recent turns in each request so the session stays inside a fixed token budget.", "correct": false, "trap": "T-BLUNTCUT" },
+     { "text": "Move the session to a tier with a larger context window so every invoice, report and lookup still fits.", "correct": false, "trap": "T-BIGMODEL" },
+     { "text": "Enable prompt caching on the growing history so that each additional turn is billed at a lower rate.", "correct": false, "trap": "T-LEVER" }
+    ],
+    "steps": {
+     "constraint": "Cost and recall are degrading together, the bulk is raw tool output nothing reads again, and one early decision must survive.",
+     "classify": "Prevent, in the context-management layer, as part of long-session design. Lever ladder: remove waste first, then preserve live state.",
+     "eliminate": "B is T-BLUNTCUT: truncation drops the garage decision, the one fact that must survive. C is T-BIGMODEL: more room keeps the volume, the cost and the dilution. D is T-LEVER: caching lowers the price of a prefix but leaves occupancy, and so recall, unchanged.",
+     "choose": "A removes what is stale and keeps what is live. D would need price to be the only complaint with recall intact, and the stem shows both failing."
+    }
+   },
+   "faded": {
+    "scenario": "Meridian's FNOL extraction step receives full contact-centre call transcripts, some over forty minutes long, including identity checks, hold periods and small talk. On the longest calls the extracted loss date and location are wrong more often, and input cost per claim has risen with average call length. The extraction schema needs about a dozen loss fields (date, location, cause, damage and similar); caller identity and policy number already arrive verified from the contact-centre system. The extracted fields open the claim for same-day first contact, and the full transcript is already kept in the audit store.",
+    "ask": "What should Aiko change first?",
+    "options": [
+     { "text": "Truncate every transcript to its first fifteen minutes before it reaches the extraction step.", "correct": false, "trap": "T-BLUNTCUT", "why": "Loss details often come late in a call, so a fixed cut drops required facts on exactly the longest calls." },
+     { "text": "Pre-filter each transcript to the segments that describe the loss before extraction.", "correct": true, "trap": null, "why": "It cuts the volume behind both symptoms, keeps every field the schema needs and sends less personal data, while the full transcript stays in the audit store." },
+     { "text": "Send calls longer than thirty minutes to the top tier, which copes better with long inputs.", "correct": false, "trap": "T-BIGMODEL", "why": "The defect is volume, not reasoning depth, so a larger tier still pays for the noise and still has to find the facts inside it." },
+     { "text": "Run the extraction step as an overnight batch job to cut the token cost per transcript.", "correct": false, "trap": "T-LEVER", "why": "Batching suits work nobody is waiting on, but FNOL speed is the goal, and cheaper tokens do not restore recall." }
+    ],
+    "constraint": "Accuracy falls and cost rises together as transcripts lengthen, while the schema needs only a dozen fields.",
+    "classify": "Prevent, at the context-input layer, as a design-time pipeline change. Cost/latency-lever ladder, with the dominant term already measured: input volume.",
+    "reasoning": "A is T-BLUNTCUT, C is T-BIGMODEL and D is T-LEVER; none removes the noise that causes both symptoms. B reduces what enters the window, keeps every required field and serves GDPR minimisation as a side effect. The assumption to verify: measure the filter's recall on loss segments, because a filter that drops loss details is only a smarter blunt cut."
+   },
+   "traps": ["T-STUFF", "T-BLUNTCUT", "T-LEVER", "T-BIGMODEL"],
+   "contrast": {
+    "a": { "title": "Compact", "text": "The session is still live, and earlier decisions, open state or next steps must survive in some form." },
+    "b": { "title": "Clear or filter", "text": "The content is used-up tool output, or text the task never needed, so removing it outright loses nothing." },
+    "decider": "Will any later step need this content, in any form?"
+   },
+   "explain": {
+    "prompt": "Why does a larger context window not fix mid-context recall failures?",
+    "model": "Recall falls with the volume of material the model must attend to, not only with whether it fits. A bigger window invites more content, which usually deepens the dilution and raises cost. Reducing and structuring what enters the window treats the cause."
+   },
+   "bridge": "Foundations taught passing structured facts between agents and summarising long histories; both carry over. Foundations prep overweights compaction thresholds and stop reasons, which are low-yield here; Professional asks what to clear, compact or filter, and why."
+  },
+  {
+   "obj": "2.5",
+   "core": [
+    "**Prompt caching** reuses an identical prefix. Order it tools, then system prompt, then stable reference material, put the breakpoint after that, and place per-request content last. In a growing conversation, keep the breakpoint on the latest message; earlier turns never change, so each request reads the cache the previous one wrote.",
+    "A hit needs a byte-identical prefix, so any change upstream of the breakpoint invalidates the cache from that point on. Usual culprits: a timestamp or ID early in the system prompt, tools in varying order, shuffled documents, an edited Skill list. Changing the thinking configuration or effort level also invalidates cached message blocks, and on some models the tool and system caches too.",
+    "Caching cuts input cost and time-to-first-token on a repeated prefix. It does nothing for output-dominated cost or for prefixes rarely reused within the cache lifetime, so check the hit rate in traces. Cache reads do not count toward input-token rate limits on most models, so caching raises throughput as well. A prefix below the model's minimum cacheable length is silently not cached, so confirm hits in the usage fields. For a stable prefix reused at intervals longer than five minutes but within an hour, the 1-hour cache lifetime is the fix; beyond an hour no cache lifetime helps.",
+    "**Modular prompts** assemble one owned, versioned template from shared modules (tone, disclaimers, jurisdiction rules) instead of copies that drift between teams. Version the prompt, its output schema and its eval cases as one release unit, and record why each clause or tool was added, so accreted rules can be retired safely.",
+    "A **Skill** packages know-how that loads on demand: only its name and description sit in context until it is triggered. Treat each version as a full snapshot, pin it in production, and gate changes with evals and a named owner.",
+    "Know-how that fetches nothing is a Skill or module. A capability that must reach a live system for several clients is an MCP server.",
+    "Skill support differs by surface, so check yours. Docs, as of Sep 2026: the Skills API is not offered on Amazon Bedrock, though file-based Skills run through Claude Code and the Agent SDK. Where Skills are missing, ship the same content as a versioned prompt module."
+   ],
+   "worked": {
+    "scenario": "Three Meridian teams (claims drafting, the contact-centre copilot and complaints handling) each paste their own copy of the claimant-letter standards into their system prompts: plain-language rules, jurisdiction disclaimers and guidance for bereavement cases. The copies have drifted, and an updated EU disclaimer reached only one of them. The standards fetch no data and change about quarterly. Aiko has proposed building a letter-standards MCP server.",
+    "ask": "What is the best way for Meridian to reuse the standards?",
+    "options": [
+     { "text": "Build Aiko's proposed MCP server and have each team's client fetch the standards from it per letter.", "correct": false, "trap": "T-PROTOCOL" },
+     { "text": "Trim each team's copy down to the jurisdiction disclaimers alone, which cuts tokens and leaves less to drift.", "correct": false, "trap": "T-BLUNTCUT" },
+     { "text": "Publish the standards as one owned, eval-gated Skill or prompt module that each team pins by version.", "correct": true, "trap": null },
+     { "text": "Enable prompt caching on each team's system prompt so the repeated standards text costs less per call.", "correct": false, "trap": "T-LEVER" }
+    ],
+    "steps": {
+     "constraint": "Drift across three copies of know-how that fetches no live data. The failure is inconsistency, not cost.",
+     "classify": "Prevent, at the reuse and change-control layer, as a design decision. Integration ladder: stop at the Skill rung, because nothing live is reached.",
+     "eliminate": "A is T-PROTOCOL: an MCP server earns its keep when clients need a live system, and here it adds a server to run and secure for static text. B is T-BLUNTCUT: it drops the plain-language and bereavement rules the letters still need. D is T-LEVER: caching makes each copy cheaper and leaves the drift exactly where it is.",
+     "choose": "C creates one owned source that every team pins, with each change passing evals before release: a Skill where the runtime supports one, a prompt module where it does not. A would need the standards to depend on live data, such as disclaimers served from a regulatory system, which the stem rules out."
+    }
+   },
+   "faded": {
+    "scenario": "After the platform team added personalisation to Meridian's adjuster drafting assistant, the cache hit rate fell from most requests to almost none and time-to-first-token rose. The new build inserts each adjuster's name and preferred sign-off into the opening line of the system prompt, above the claims-handling guidelines. Nothing else changed. Gerald wants to know why cost per claim rose in the same week.",
+    "ask": "What should the team change?",
+    "options": [
+     { "text": "Lengthen the cache lifetime so entries survive longer in the gaps between requests.", "correct": false, "trap": "T-LEVER", "why": "Lifetime matters only when requests share a prefix, and requests from different adjusters no longer do; it treats a term that is not the problem." },
+     { "text": "Move drafting to the cheaper fast tier to offset the higher input cost per claim.", "correct": false, "trap": "T-BLUNTCUT", "why": "It trades draft quality for money without evidence the fast tier clears the bar, and the cache stays broken." },
+     { "text": "Serve the claims-handling guidelines through the policy-search MCP server on each request.", "correct": false, "trap": "T-PROTOCOL", "why": "Static guidelines need no live integration, and a per-request fetch adds latency while the prefix still differs per adjuster." },
+     { "text": "Move the adjuster's details below the cache breakpoint, into the per-request section.", "correct": true, "trap": null, "why": "The first differing content sits upstream of the breakpoint, so every request writes a new entry. Moving it restores one shared prefix." }
+    ],
+    "constraint": "Hit rate collapsed right after one change put per-adjuster content at the top of the system prompt; nothing else changed.",
+    "classify": "Detect the cause, then prevent recurrence, in the prompt-structure layer. Diagnosis ladder: the stem names the one change that preceded the drop.",
+    "reasoning": "A is T-LEVER, B is T-BLUNTCUT and C is T-PROTOCOL; each leaves a per-adjuster line above the breakpoint. D restores an identical prefix for every adjuster, so hits and first-token time recover with no content lost. Confirm with the cache-read token counts in the usage data, and add a CI check that fails when volatile values appear above the breakpoint."
+   },
+   "traps": ["T-LEVER", "T-BLUNTCUT", "T-PROTOCOL"],
+   "contrast": {
+    "a": { "title": "Skill or prompt module", "text": "The reusable thing is know-how: procedures, standards, templates or domain rules, with no live data to fetch." },
+    "b": { "title": "MCP server", "text": "Several clients need the same live capability over an external system, with per-user authorization and one owner." },
+    "decider": "Does the reusable thing need to reach a live system at runtime?"
+   },
+   "explain": {
+    "prompt": "Why should a production Skill be pinned to a version rather than tracking the latest one?",
+    "model": "A new version is a full snapshot that can change behaviour everywhere it loads. Pinning lets each consumer adopt it only after it passes that consumer's eval gate, keeps traces attributable to a known version, and stops an unreviewed description change from altering the system prompt and breaking the cached prefix."
+   },
+   "bridge": "Stable-first ordering for caching carries straight over from Foundations. Foundations prep overweights cache lifetimes, breakpoint counts and price multipliers; Professional asks whether caching is the right lever at all, and who owns and versions reusable prompts."
+  }
+ ],
+ "case": "Meridian picks models by measurement, not prestige. A fast tier extracts and classifies FNOL, a mid tier answers policy questions and drafts adjuster notes, and only coverage questions with several interacting riders, the slice where evals showed reasoning failures, escalate to the top tier. The per-slice gate re-runs whenever a model or prompt changes. Every prompt is a stable prefix (tools, system prompt, claims-handling guidelines), then the cache breakpoint, then per-claim content; an early build that opened with the current date got almost no hits until the date moved below the breakpoint. Few-shot examples and schema-constrained output fixed extraction drift, and structured reasoning is reserved for coverage explanations, with arithmetic in a tool. The system prompt sets scope and tone, while coverage statements, payments and fraud disclosure are enforced in code. Claim files are never stuffed into context: relevant sections are retrieved, and long investigation sessions clear stale tool results and compact live state. Jurisdiction and product are template variables, and letter standards ship as one owned, eval-gated prompt module that each team pins by version, because Bedrock does not support Agent Skills; it would become a Skill only in a runtime that loads file-based Skills, such as an Agent SDK service."
+}

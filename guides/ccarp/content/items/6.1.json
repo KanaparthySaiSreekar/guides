@@ -1,0 +1,584 @@
+[
+ {
+  "id": "P6-6.1-001",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "best",
+  "constraint": "ownership",
+  "industry": "public-sector",
+  "family": "reframe-literal-ask-with-sponsor",
+  "counterTrap": false,
+  "signals": [
+   "has not delegated scope decisions",
+   "invalid on first submission"
+  ],
+  "stem": "Tollbridge Borough Council's director of planning has commissioned a Claude tool that summarises planning applications for committee members. She holds the budget, owns the outcome and has not delegated scope decisions. The architect's interviews with case officers, plus six months of case-management data, show committee papers are rarely late. The delay sits earlier: many applications are invalid on first submission and bounce between officers and applicants over missing documents. Committee members call the current officer-written summaries adequate.",
+  "ask": "Which course of action is BEST for the architect?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Prototype a validation checker on last quarter's invalid submissions so the director can see what a retargeted tool would do",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "The case data already makes the argument. A prototype spends the director's budget on a scope she has not chosen, and presents her with a direction to approve rather than a decision to make."
+   },
+   {
+    "id": "b",
+    "text": "Share the case data with committee members, as the tool's intended users, and let them decide whether it should target validity",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Committee members use the summaries, but they neither hold the budget nor own the outcome. Handing them the reframe moves a scope decision the director has kept to people who already call the current summaries adequate."
+   },
+   {
+    "id": "c",
+    "text": "Share the case data with the director and ask her to decide whether the work shifts from committee summaries to first-time validity",
+    "correct": true,
+    "trap": null,
+    "why": "The evidence shows the underlying job differs from the literal ask, and the director holds the budget and every scope decision. Taking the findings to her lets the owner make the reframe on evidence, rather than the architect or the users making it for her."
+   },
+   {
+    "id": "d",
+    "text": "Agree summary-quality pass criteria with the director, scored against past officer-written summaries, before any build starts",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Pass criteria come once scope is settled. Fixed now, they set a bar for the literal ask, which the case data shows is not where the delay sits, and they anchor the director to summaries before the validity finding is on the table."
+   }
+  ],
+  "explain": "Binding constraint: decision ownership. Discovery shows the underlying job (first-time validity) differs from the literal ask, and the director, who holds the budget and has not delegated scope, makes the reframe from the architect's evidence; neither the architect nor the tool's users make it for her.",
+  "rule": "CS-D6-02",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-EL-13"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.1-002",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "lifecycle-stage",
+  "industry": "education",
+  "family": "owner-chooses-target-under-sprint-pressure",
+  "counterTrap": false,
+  "signals": [
+   "the named owner",
+   "feel better supported",
+   "wants design to start next sprint"
+  ],
+  "stem": "Larchmont Community College is scoping a Claude assistant that helps students plan course registrations. The architect has a baseline from the booking system (a median nine-day wait for an advising appointment, and 31% of registrations amended after enrolment), and the registrar has cleared the student-record and data-access rules. The dean of student success, the named owner, has said only that students should 'feel better supported'. The project manager wants design to start next sprint and has asked the architect to protect that date.",
+  "ask": "What should the architect do next?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Start a one-department registration planner next sprint and let the dean set targets once she has seen it working",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "It protects the sprint date but builds before any bar exists. The dean's reaction to a demo becomes the target, and nothing says whether the planner should beat the nine-day wait, the amendment rate, or both."
+   },
+   {
+    "id": "b",
+    "text": "Bring the dean candidate wait-time and amendment targets drawn from the baseline, and have her set the target before design",
+    "correct": true,
+    "trap": null,
+    "why": "Baseline, cleared rules and owner exist; the missing discovery output is a measurable target. Candidate figures from the baseline let the dean turn 'feel better supported' into a bar quickly, so design is delayed by days rather than started on a guess."
+   },
+   {
+    "id": "c",
+    "text": "Set a two-day wait and a 15% amendment target from the baseline and write them into the design brief so work starts next sprint",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "The figures are measurable, anchored to the baseline and keep the date, but the dean owns the target and has not agreed them. She can reject the bar after the build, leaving the design aimed at numbers nobody with authority accepted."
+   },
+   {
+    "id": "d",
+    "text": "Draft the design brief next sprint from the baseline and cleared rules, leaving a placeholder for the target the dean confirms",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "A design brief is right once the target is agreed. Cutting the nine-day wait and cutting amendments call for different features, so a brief drafted around a placeholder fixes choices the target should drive."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. Baseline, constraints and owner exist but the target is still a vague aim, so discovery is not finished: the named owner chooses a measurable bar against the baseline before design starts, however hard the sprint date presses.",
+  "rule": "CS-D6-01",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.1-003",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "first",
+  "constraint": "evidence",
+  "industry": "public-sector",
+  "family": "sponsor-only-discovery-gap",
+  "counterTrap": false,
+  "signals": [
+   "The renewal clerks who handle the inbox were not invited",
+   "has not been contacted"
+  ],
+  "stem": "Brenmark State Licensing Board plans a Claude assistant for professional licence renewals. After a half-day workshop, the deputy commissioner signed off a feature list: answer renewal emails, summarise applicant files and flag incomplete submissions. The renewal clerks who handle the inbox were not invited, nobody has measured current turnaround, and the team that owns the licensing records system has not been contacted. The programme office has marked discovery complete.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Escalate to the commissioner that the deputy commissioner's sign-off was premature and ask for discovery to be reopened",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "The gap is real, but the deputy commissioner owns the scope and has not seen the missing evidence. Going over her head takes the decision from its owner instead of bringing her the clerks' and records owner's input, and leaves the gap unfilled."
+   },
+   {
+    "id": "b",
+    "text": "Interview the renewal clerks and the records-system owner to baseline turnaround and list the data constraints",
+    "correct": true,
+    "trap": null,
+    "why": "Discovery produced only a sponsor wish list. The clerks can supply the current-process baseline and the records owner the data and access constraints, which gives the deputy commissioner the evidence to confirm or revise her list."
+   },
+   {
+    "id": "c",
+    "text": "Rank the signed-off features by value with the deputy commissioner and begin designing the top-ranked one",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "Ranking with the sponsor still designs from a wish list. With no baseline or constraint inventory, the value scores are guesses, and the top feature may rely on records data nobody has confirmed is reachable."
+   },
+   {
+    "id": "d",
+    "text": "Draft pilot success criteria and a test set of past renewal emails, working from the workshop's feature list",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Pilot criteria and test sets are right later, once a baseline and target exist. Drafted from the feature list alone, they encode the sponsor's assumptions rather than measured renewal performance."
+   }
+  ],
+  "explain": "Binding constraint: evidence quality. The only discovery input is one sponsor workshop; discovery is finished only when users and data owners supply a baseline and constraints, so interviewing them comes first and gives the owner evidence to act on.",
+  "rule": "CS-D6-01",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.1-004",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "residency",
+  "industry": "airline",
+  "family": "residency-before-model-shortlist",
+  "counterTrap": false,
+  "signals": [
+   "needs a working pilot before the winter schedule",
+   "which jurisdiction the legal team requires them to stay in",
+   "bases in both the UK and the EU"
+  ],
+  "stem": "Corvane Airways, which flies from bases in both the UK and the EU, wants a Claude assistant that drafts replies to passenger compensation claims. The commercial director, who owns the project, needs a working pilot before the winter schedule and has asked the architect to shortlist models this week. Claims files hold passport numbers and medical notes from disrupted passengers. Nobody yet knows where the claims platform stores these files, which jurisdiction the legal team requires them to stay in, or who can grant access.",
+  "ask": "What should the architect do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Shortlist models served from EU-region endpoints and benchmark them on anonymised claims, so residency is covered early",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Regional endpoints are the right kind of control, but legal has not said which jurisdiction applies, and with UK and EU bases it may not be the EU. The shortlist also ignores where the platform keeps the files today and who grants access."
+   },
+   {
+    "id": "b",
+    "text": "Run a two-week technical spike on synthetic claims to learn which hosting options the pilot will need and keep the date",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "A spike tests technical feasibility, but where the files must stay is a legal answer no synthetic build can reveal. If legal names a jurisdiction the spike did not use, the hosting path is redone and the winter date is lost."
+   },
+   {
+    "id": "c",
+    "text": "Ask the commercial director, as project owner, to record acceptance of the residency risk so the winter pilot date holds",
+    "correct": false,
+    "trap": "T-COMPLY",
+    "why": "The director owns the schedule, not the legal obligation. Residency is a gate that removes options before any trade-off, and a business risk acceptance cannot waive where regulated passenger data may be stored or processed."
+   },
+   {
+    "id": "d",
+    "text": "Establish with legal and the claims-platform owner where the files sit today, where they have to stay and who grants access",
+    "correct": true,
+    "trap": null,
+    "why": "These unknowns are the hidden binding constraints. Their answers fix which hosting paths and regional endpoints are allowed, so the shortlist and pilot are built on a route that can go live and the director's date is planned against real options."
+   }
+  ],
+  "explain": "Binding constraint: data residency, which gates the owner's schedule pressure. Surface where regulated data sits, where it must stay and who controls access before choosing models or building, because the answer decides which deployment paths exist at all.",
+  "rule": "CS-D6-03",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-EL-12",
+   "TIP-RD-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.1-005",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formC",
+  "type": "multi",
+  "select": 3,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "lifecycle-stage",
+  "industry": "insurance",
+  "family": "pre-build-discovery-artefacts",
+  "counterTrap": false,
+  "signals": [
+   "Compliance has already produced a constraint inventory",
+   "the stated aim is 'recover more'",
+   "each expect to approve go-live"
+  ],
+  "stem": "Halvergate Mutual's claims vice-president wants a Claude assistant that flags motor claims for subrogation recovery, and has asked the architect to start the build next month. Compliance has already produced a constraint inventory covering state claims-handling rules and access to adjuster notes. Nobody has measured how many recoverable claims are missed today, the stated aim is 'recover more', and the claims VP and the head of recoveries each expect to approve go-live.",
+  "ask": "Which THREE discovery outputs should the architect secure before the build starts? (Select THREE.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "A constraint inventory of state claims-handling rules and adjuster-note access, re-verified by the architect before build",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Compliance has already produced this inventory, so re-verifying it adds nothing a build decision is missing. The baseline, the target and a single owner are still absent, and a second pass over known rules supplies none of them."
+   },
+   {
+    "id": "b",
+    "text": "A pilot plan with a regional rollout sequence, rollback steps and a monitoring dashboard for recoveries",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Rollout, rollback and monitoring belong to the pilot and production stages. Without a baseline, a target and an owner there is nothing to monitor against and nobody to make the go-live call."
+   },
+   {
+    "id": "c",
+    "text": "A baseline of today's missed-recovery rate, drawn from closed-claim audits and the recoveries team's records",
+    "correct": true,
+    "trap": null,
+    "why": "Nobody has measured current misses, so 'recover more' cannot be tested. A baseline from audits and the recoveries team's records is what the target and any later pilot result will be judged against."
+   },
+   {
+    "id": "d",
+    "text": "A measurable recovery-rate target for flagged claims that the decision owner agrees before the build starts",
+    "correct": true,
+    "trap": null,
+    "why": "'Recover more' is a direction, not a target. A recovery-rate figure the owner agrees gives design a bar and lets go-live be judged rather than argued between two executives."
+   },
+   {
+    "id": "e",
+    "text": "A recovery target that the architect derives from industry benchmark data and publishes alongside the design",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Benchmarks can inform the conversation, but setting the target is the owner's decision. A figure the architect publishes alone can be rejected by either executive once results arrive."
+   },
+   {
+    "id": "f",
+    "text": "A single named owner for scope and go-live decisions, settled between the claims VP and head of recoveries",
+    "correct": true,
+    "trap": null,
+    "why": "Two executives each expect to approve go-live, so any result can be contested. One named owner is needed to agree the target, accept trade-offs and make the go or no-go call."
+   }
+  ],
+  "explain": "Binding constraint: lifecycle stage. Compliance's inventory already exists, so the discovery outputs still missing before build are a measured baseline, a measurable target the owner agrees and a single named owner; redoing the inventory, pilot planning and an architect-set target leave discovery open.",
+  "rule": "CS-D6-01",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-MR-01",
+   "TIP-MR-02"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.1-006",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.1",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "logistics",
+  "family": "pilot-misses-underlying-job",
+  "counterTrap": false,
+  "signals": [
+   "scoped in two head-office workshops",
+   "are unchanged since the proof of concept",
+   "flat since week two"
+  ],
+  "stem": "Fenwick Freight's operations director sponsored a Claude assistant that drafts delay notices for customers, scoped in two head-office workshops. Ten weeks into the depot pilot, the notices pass the agreed accuracy check and depot managers have told dispatchers to use them. Yet dispatchers ignore most notices and keep phoning customers, and usage has been flat since week two. Dispatchers say most calls are really about rebooking the missed delivery slot. The model, prompts and shipment feed are unchanged since the proof of concept.",
+  "ask": "What is the MOST likely cause of the low adoption?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The depot shipment feed carries less detail than the proof-of-concept data, so notices omit the rebooking options callers want",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The feed, model and prompts are unchanged since the proof of concept, and the notices pass the accuracy check. A data gap would show as inaccurate notices; here accurate notices go unused because they do a different job."
+   },
+   {
+    "id": "b",
+    "text": "Dispatchers lack a clear instruction from their managers, so they fall back on phoning customers about the missed slot",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "Depot managers have already told dispatchers to use the notices, so missing backing is an assumption the stem contradicts. Dispatchers give their own reason, and it concerns what the tool does, not who endorsed it."
+   },
+   {
+    "id": "c",
+    "text": "Trust in drafted notices takes longer than a pilot to build, and dispatchers will switch as the rollout reaches more depots",
+    "correct": false,
+    "trap": "T-ASSUME",
+    "why": "It assumes familiarity is the problem, which the stem contradicts: usage has been flat since week two of ten, so time is not closing the gap, and dispatchers say the tool does the wrong task. Widening the rollout unchanged would spread the same mismatch."
+   },
+   {
+    "id": "d",
+    "text": "Scoping came from head-office workshops alone, so the tool drafts notices when the dispatchers' real job is rebooking slots",
+    "correct": true,
+    "trap": null,
+    "why": "Requirements came from sponsor workshops, and the users describe a different underlying job. Accurate output on the literal ask with low, flat adoption is the signature of discovery that never reached the people doing the work."
+   }
+  ],
+  "explain": "Binding constraint: what changed. Model, prompts and feed are unchanged, accuracy passes, managers back the tool and usage is flat after ten weeks, so the cause sits upstream in discovery: scope came from head office and missed the dispatchers' underlying job of rebooking.",
+  "rule": "CS-D6-02",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.1-007",
+  "rev": 2,
+  "domain": 6,
+  "obj": "6.1",
+  "set": "pool",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "regulation",
+  "industry": "media",
+  "family": "rights-and-access-discovery-questions",
+  "counterTrap": false,
+  "signals": [
+   "resell to partner stations",
+   "syndicated agency copy and licensed sports footage logs",
+   "has not joined any meeting"
+  ],
+  "stem": "Stellwater Broadcasting wants Claude to turn its 30-year news archive into short explainer scripts that it will resell to partner stations, six of which have signed letters of intent. The head of digital, who sponsors the work, has supplied the archive index and a sample of 200 transcripts. The archive mixes staff-produced reports with syndicated agency copy and licensed sports footage logs, and the archive database is run by a separate technology division that has not joined any meeting.",
+  "ask": "Which TWO discovery questions should the architect resolve before any design work? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Ask rights and legal which archive material the licences allow to be processed by AI and resold to partners",
+    "correct": true,
+    "trap": null,
+    "why": "Agency copy and sports logs carry third-party terms. Whether they may be processed by AI and resold decides which parts of the archive the product can use at all, so it gates every design choice that follows."
+   },
+   {
+    "id": "b",
+    "text": "Ask partner stations which script formats, running times and delivery schedules their newsrooms would need",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Useful for design once the corpus is settled, but formats and running times do not change whether the archive may legally be resold or technically reached. The letters of intent already show demand."
+   },
+   {
+    "id": "c",
+    "text": "Ask the technology division what access, export and retention terms govern the archive database it runs",
+    "correct": true,
+    "trap": null,
+    "why": "The division that runs the archive has not been engaged. Its access, export and retention terms decide whether and how Claude can reach the corpus, which the index and 200-transcript sample do not reveal."
+   },
+   {
+    "id": "d",
+    "text": "Ask the head of digital whether a prototype built on the 200 sample transcripts meets the quality partners expect",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "It is phrased as a question, but it asks the sponsor to judge a prototype on transcripts that may not be licensed for resale. Quality matters only after rights and access settle which material the product may use."
+   },
+   {
+    "id": "e",
+    "text": "Ask finance what cost per script two model tiers would give at the resale volume the letters of intent suggest",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Cost per script is a real constraint, but benchmarking model tiers is a design-stage step. Until rights and access settle the usable corpus, the volume and per-script figures rest on transcripts that may be excluded from resale."
+   }
+  ],
+  "explain": "Binding constraint: licensing of third-party source content, reachable only through an unengaged data owner. Ask the questions that surface these hidden binding constraints before any prototype, cost or format decision.",
+  "rule": "CS-D6-03",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-MR-02",
+   "TIP-RD-03"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P6-6.1-008",
+  "rev": 1,
+  "domain": 6,
+  "obj": "6.1",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "least",
+  "constraint": "ownership",
+  "industry": "healthcare",
+  "family": "signed-off-discovery-next-build",
+  "counterTrap": true,
+  "signals": [
+   "has been signed off",
+   "as named owner",
+   "asked for the assistant to draft referral letters as well"
+  ],
+  "stem": "At Ashgrove Health, discovery for a Claude assistant that drafts hospital discharge summaries has been signed off. The chief medical information officer (CMIO), as named owner, approved a baseline from EHR audit logs of 38 minutes per summary, a target of 15 minutes with no rise in medication-reconciliation errors, and a constraint inventory for PHI handling and EHR access. This week the head of emergency medicine asked for the assistant to draft referral letters as well.",
+  "ask": "Which proposed next step is LEAST appropriate?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Build a thin prototype on de-identified sample records to test whether the agreed 15-minute target is feasible",
+    "correct": false,
+    "trap": "T-SKIPDISC",
+    "why": "This looks like building before discovery, but baseline, target, constraints and owner are signed off. A feasibility prototype against the agreed target is the expected next step, so it is appropriate here."
+   },
+   {
+    "id": "b",
+    "text": "Reopen discovery across the clinical departments so referral letters are captured before build work begins",
+    "correct": true,
+    "trap": null,
+    "why": "Discovery met its exit criteria and the named owner signed it off. One department head's request is a scope change for the CMIO to decide; reopening discovery stalls agreed work for a request nobody has accepted."
+   },
+   {
+    "id": "c",
+    "text": "Log the referral-letter request and take it to the CMIO to decide whether it enters scope now or later",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Routing the request to the named owner is right: scope belongs to the CMIO, not to the requester or the architect. Treating this step as unnecessary would leave someone other than the owner deciding scope."
+   },
+   {
+    "id": "d",
+    "text": "Record the pattern choice and rejected alternatives in an ADR as design work on the summariser starts",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "Design is the stage the project has now reached, so capturing the reasoning in an ADR is due, not premature. It preserves why the pattern was chosen for whoever maintains it."
+   }
+  ],
+  "explain": "Binding constraint: decision ownership over a signed-off scope. With baseline, target, constraints and owner agreed, prototyping and documenting design are due and a new request goes to the named owner, so reopening discovery is the least appropriate move.",
+  "rule": "CS-D6-01",
+  "ladder": "lifecycle",
+  "tips": [
+   "TIP-EL-13"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

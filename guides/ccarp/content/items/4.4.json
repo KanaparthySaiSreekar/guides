@@ -1,0 +1,498 @@
+[
+ {
+  "id": "P4-4.4-001",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "ownership",
+  "industry": "education",
+  "family": "prompt-edit-uniform-regression",
+  "counterTrap": false,
+  "signals": [
+   "rewrote the system prompt",
+   "the style stays in whatever fix is made",
+   "spread evenly across single-course lookups and multi-course planning questions"
+  ],
+  "stem": "Oakhollow Community College's course-help assistant answers students' questions from an index of course syllabi. Three weeks ago the instructional-design team rewrote the system prompt to add a Socratic tutoring style, and the dean has ruled that the style stays in whatever fix is made. Since then, answers giving the wrong assignment deadline have risen from 2% to 11% of sampled sessions, spread evenly across single-course lookups and multi-course planning questions. The syllabus index was rebuilt on its usual weekly schedule, the model version is pinned, and traces of failing sessions show the correct syllabus passage in the model's context.",
+  "ask": "Which change BEST resolves the deadline errors?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move multi-course planning questions to a stronger reasoning tier and keep single-course lookups on the current tier",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Errors are spread evenly across single-course lookups and multi-course planning, so question difficulty is not the pattern. A stronger tier on the hard slice leaves the single-course failures in place and adds cost without touching the cause."
+   },
+   {
+    "id": "b",
+    "text": "Raise the retrieval top-k so that more syllabus passages reach the model for each deadline question",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Traces already show the correct syllabus passage in the model's context, so retrieval is delivering the deadline. More passages add competing dates from other courses; they do not undo what the rewritten prompt changed about how the model uses its sources."
+   },
+   {
+    "id": "c",
+    "text": "Diff the rewritten prompt against the previous version, correct it, and re-score it on the sampled sessions",
+    "correct": true,
+    "trap": null,
+    "why": "The prompt rewrite is the only change, errors are even across difficulty, and the right passage reaches the model, which marks a prompt failure. Diffing isolates the instruction that overrides the syllabus, and correcting it in place keeps the style the dean requires."
+   },
+   {
+    "id": "d",
+    "text": "Restore the previous system prompt now and bring back the Socratic style once deadline accuracy recovers",
+    "correct": false,
+    "trap": "T-OWNER",
+    "why": "Reverting would likely restore accuracy quickest, but the dean has ruled that the Socratic style stays in whatever fix is made. Dropping it, even for a while, overrides that decision when a targeted correction can fix the deadlines and keep the style."
+   }
+  ],
+  "explain": "Binding constraint: the dean's ruling that the Socratic style stays, which rules out reverting the prompt even though that would be quickest. Errors spread evenly across difficulty with the correct passage in context mark a prompt failure, so diff the rewrite, correct it and re-score it rather than change the tier or retrieval.",
+  "rule": "CS-D4-11",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04",
+   "TIP-EL-13"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.4-002",
+  "rev": 1,
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formA",
+  "type": "single",
+  "select": 1,
+  "diff": 1,
+  "archetype": "most-likely-cause",
+  "constraint": "change-scope",
+  "industry": "energy",
+  "family": "parser-swap-table-corruption",
+  "counterTrap": false,
+  "signals": [
+   "replaced the PDF parser in the ingestion pipeline",
+   "answers about procedures remain accurate",
+   "the manuals themselves are unchanged"
+  ],
+  "stem": "Tarnway Energy's field-maintenance assistant answers line technicians' questions from 6,000 transformer and switchgear manuals. Last week the data team replaced the PDF parser in the ingestion pipeline so that scanned manuals could be read, then re-ingested the full library. Since then, answers quoting torque settings and voltage ratings are frequently wrong, while answers about procedures remain accurate. The model version, system prompt, generation settings, retrieval configuration and the manuals themselves are unchanged.",
+  "ask": "What is the MOST likely cause of the wrong specification values?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The current model tier struggles to reason over dense numeric specification tables",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The same tier answered these specification questions correctly before the re-ingestion, and the model version is unchanged. Nothing about its capability moved when the parser did."
+   },
+   {
+    "id": "b",
+    "text": "The new parser is mangling specification tables, so indexed chunks carry corrupted values",
+    "correct": true,
+    "trap": null,
+    "why": "The parser swap and re-ingestion are the only change, and the errors sit in tabular values while prose procedures stay accurate. That pattern matches table extraction damage in the newly indexed chunks."
+   },
+   {
+    "id": "c",
+    "text": "The index has fallen behind manufacturer revisions, so superseded ratings are being retrieved",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "The manuals are unchanged and the whole library was just re-ingested, so the index is as fresh as it has ever been. Staleness cannot explain a regression that began with the re-ingestion."
+   },
+   {
+    "id": "d",
+    "text": "Sampling variability is producing different numeric values for repeated questions",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Generation settings and the model are unchanged, and procedural answers are stable. Decoding randomness would not start suddenly after an ingestion change or single out table values."
+   }
+  ],
+  "explain": "Binding constraint: what changed. The parser swap touched ingestion alone and the damage is confined to tabular values, so the re-ingested chunks are the first suspect, and every layer the stem calls unchanged is ruled out.",
+  "rule": "CS-D4-09",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.4-003",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formB",
+  "type": "multi",
+  "select": 2,
+  "diff": 2,
+  "archetype": "which-n",
+  "constraint": "evidence",
+  "industry": "healthcare",
+  "family": "grounding-cite-verify-dosing",
+  "counterTrap": false,
+  "signals": [
+   "the retrieved passage was the governing guideline",
+   "the audit found no retrieval misses",
+   "match common textbook values"
+  ],
+  "stem": "Pellbrook Regional Health's nursing assistant answers medication-administration questions from the hospital's approved clinical guidelines. A pharmacy audit of 300 answers found 14 that gave a dosing interval different from the guideline passage retrieved in the same trace. In each of the 14, the retrieved passage was the governing guideline, and several of the wrong intervals match common textbook values. The guideline library, index and model version have not changed since go-live, and the audit found no retrieval misses.",
+  "ask": "Which TWO changes BEST stop contradicted dosing intervals from reaching nurses? (Select TWO.)",
+  "options": [
+   {
+    "id": "a",
+    "text": "Require the model to quote the guideline sentence that supports each dosing interval it gives",
+    "correct": true,
+    "trap": null,
+    "why": "The governing passage is already in context, yet the model substitutes textbook values. Requiring a quoted supporting sentence for each interval anchors the answer to the guideline and gives a pre-send check a specific text to compare against."
+   },
+   {
+    "id": "b",
+    "text": "Retrieve more guideline passages per question so that the governing dosing section is reliably included",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "The audit found no retrieval misses and every failing trace held the governing guideline. More passages add competing intervals from other guidelines, which feeds the substitution instead of stopping it."
+   },
+   {
+    "id": "c",
+    "text": "Re-embed the guideline library with a clinical-domain model to sharpen matching of dosing sections",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Retrieval already returned the governing guideline in all 14 cases, so better embeddings tune a layer that works. The error happens when the model writes the interval, after retrieval has succeeded."
+   },
+   {
+    "id": "d",
+    "text": "Add the 14 contradicted answers to the regression eval set so that future releases are scored against them",
+    "correct": false,
+    "trap": "T-FILLER",
+    "why": "Adding the failures to the regression set is sound practice and will catch a relapse in later releases, but it changes nothing about the answers nurses receive now: it neither anchors intervals to the guideline nor checks an answer before it is sent."
+   },
+   {
+    "id": "e",
+    "text": "Compare each stated interval with the retrieved guideline text and hold back any answer that disagrees",
+    "correct": true,
+    "trap": null,
+    "why": "Grounding instructions lower the contradiction rate but cannot bring it to zero. A programmatic comparison of each interval with the retrieved guideline catches the remaining contradictions before a nurse sees them."
+   }
+  ],
+  "explain": "Binding constraint: the evidence shows the governing passage retrieved and then contradicted, which is a grounding failure, not a retrieval one. Anchor each interval to a quoted source sentence and verify it against the guideline before release; retrieval fixes would suit a stem with retrieval misses.",
+  "rule": "CS-D4-10",
+  "ladder": "diagnosis",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.4-004",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formB",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "first",
+  "constraint": "change-scope",
+  "industry": "banking",
+  "family": "bundled-change-attribution",
+  "counterTrap": false,
+  "signals": [
+   "the same release shortened the system prompt",
+   "simple billing complaints also slipped",
+   "a go-live decision within a month"
+  ],
+  "stem": "Fallowmere Savings Bank is moving its complaint-triage classifier to a smaller model tier to meet a cost target, and the same release shortened the system prompt by removing the written category definitions. In a parallel run, where analysts still triage every complaint, agreement with analysts fell from 94% to 81%. Misses are heaviest on regulatory complaints such as fair-lending allegations, but simple billing complaints also slipped. The complaint mix, the labelled eval set and the routing code are unchanged. The chief operating officer wants a go-live decision within a month, and a live test arm would need about six weeks of complaints to reach a usable sample.",
+  "ask": "What should the ML platform lead do FIRST?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Send regulatory complaints back to the larger tier and keep billing complaints on the smaller tier",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Routing may become the design, but billing complaints also slipped and the prompt changed in the same release, so capability is not yet shown to be the cause. Routing now could keep paying for a larger tier that restored definitions alone might make unnecessary."
+   },
+   {
+    "id": "b",
+    "text": "Split the parallel run into live arms with one change per arm and compare them at the planned sample size",
+    "correct": false,
+    "trap": "T-LATER",
+    "why": "One change per arm is the right discipline, but live arms need about six weeks to fill, past the month the chief operating officer has set. Offline attribution on the unchanged labelled set comes first; capped live exposure confirms the chosen fix later."
+   },
+   {
+    "id": "c",
+    "text": "Refresh the labelled eval set from this month's complaints in case customer wording has drifted",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The complaint mix and the labelled set are unchanged, and the drop coincides with a release that altered both tier and prompt. Refreshing the data investigates a layer the release never touched and delays attribution."
+   },
+   {
+    "id": "d",
+    "text": "Re-score the labelled eval set on each tier with each prompt version before choosing any fix",
+    "correct": true,
+    "trap": null,
+    "why": "Two changes shipped together and the misses fit both a tier gap and a prompt gap. Scoring each tier with each prompt on the unchanged labelled set attributes the drop offline, well inside the month, and every later fix depends on that answer."
+   }
+  ],
+  "explain": "Binding constraint: what changed. A tier swap and a prompt cut shipped together and the mixed failure pattern cannot separate model mismatch from prompt failure, so attribute the drop first on the unchanged labelled set, which fits the chief operating officer's month where six-week live arms do not.",
+  "rule": "CS-D4-11",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-02",
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.4-005",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.4",
+  "set": "formC",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "most-likely-cause",
+  "constraint": "data-shape",
+  "industry": "e-commerce",
+  "family": "sparse-source-gap-filling",
+  "counterTrap": false,
+  "signals": [
+   "often omit attributes",
+   "the only listing retrieved",
+   "appear nowhere in the retrieved context"
+  ],
+  "stem": "Loomhaven's product-question assistant answers shoppers from an index of homeware listings. Since the marketplace opened to third-party sellers, whose listings often omit attributes such as fabric content or water resistance, customer-care agents report answers asserting attributes those listings never mention. Traces show the requested listing is the only listing retrieved, and the asserted attributes appear nowhere in the retrieved context or in the sellers' own feeds. Answers about fully specified first-party listings remain accurate. The model version, system prompt and retrieval settings have not changed since launch, when every listing was first-party.",
+  "ask": "What is the MOST likely cause of the invented attributes?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The current model tier lacks product knowledge about the less familiar third-party brands and their product ranges",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The assistant should answer from the listing, not from what it knows about a brand, so brand knowledge is not the gap. A larger tier would still fill the silent fields, only more fluently and more convincingly."
+   },
+   {
+    "id": "b",
+    "text": "The model fills attributes a listing is silent on from general knowledge instead of saying they are not listed",
+    "correct": true,
+    "trap": null,
+    "why": "The only listing in context is the right one and first-party answers stay accurate, so retrieval works. Errors appear exactly where the source is silent, which is the model completing gaps from general knowledge instead of staying grounded in the listing."
+   },
+   {
+    "id": "c",
+    "text": "The listing index lags seller updates, so attributes that sellers added after indexing are missing",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "The asserted attributes are absent from the sellers' own feeds, so there is no later update for the index to miss. Faster indexing would return the same sparse listing to the model."
+   },
+   {
+    "id": "d",
+    "text": "Retrieval mixes in near-duplicate listings from other sellers whose attributes then leak into answers",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Traces show the requested listing is the only listing retrieved and the asserted attributes appear nowhere in the context, so no other listing is there to copy from. Blaming retrieval aims the fix at a working layer."
+   }
+  ],
+  "explain": "Binding constraint: the data shape changed to sparse listings. With only the right listing in context and the attribute absent at source, the invented details are a grounding gap the new data exposed: constrain answers to the listing, have the model say an attribute is not listed when the listing is silent, and check each asserted attribute against the listing before the answer is sent.",
+  "rule": "CS-D4-10",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-RD-04"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.4-006",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 2,
+  "archetype": "next-step",
+  "constraint": "evidence",
+  "industry": "media",
+  "family": "reasoning-slice-tier-routing",
+  "counterTrap": true,
+  "signals": [
+   "every relevant article is retrieved",
+   "two prompt revisions with worked timeline examples brought no gain",
+   "on the timeline slice alone clears the bar"
+  ],
+  "stem": "Quillmoor Press's archive assistant helps journalists answer questions from 30 years of published articles. Evals show single-article fact questions pass the editors' bar, but questions that require reconciling conflicting reports across many articles into a dated timeline fail about half the time, usually by adopting a date that an early report gave and a later correction revised. Traces show every relevant article is retrieved for the failing questions, and two prompt revisions with worked timeline examples brought no gain. An offline run of a higher tier on the timeline slice alone clears the bar, and the news desk accepts its cost for that slice.",
+  "ask": "What is the BEST next step?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move every question type to the higher tier once a full-suite eval shows the fact answers do not regress",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "Fact questions already clear the bar on the current tier, so moving them adds cost and latency for no measured gain, and the news desk accepted the cost for the timeline slice only. The evidence supports a higher tier for that slice, not for all traffic."
+   },
+   {
+    "id": "b",
+    "text": "Keep the current tier and add a check that each date in a timeline answer appears in a retrieved article",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "Wrong timelines adopt dates that an early report did give, so each date appears in a retrieved article and the check passes them. This treats a reasoning failure over conflicting sources as a grounding failure."
+   },
+   {
+    "id": "c",
+    "text": "Raise top-k for timeline questions so that follow-up and correction stories also reach the model",
+    "correct": false,
+    "trap": "T-STUFF",
+    "why": "Traces show every relevant article, corrections included, already reaches the model. More passages add noise to a reconciliation task that is failing on reasoning, not on recall."
+   },
+   {
+    "id": "d",
+    "text": "Send timeline questions to the higher tier and keep single-article fact questions on the current tier",
+    "correct": true,
+    "trap": null,
+    "why": "Retrieval and prompt have both been ruled out, failures sit in the multi-article reasoning slice, and the higher tier clears the bar there at a cost the desk accepts. That is a genuine model mismatch, so move that slice up and leave passing traffic alone."
+   }
+  ],
+  "explain": "Binding constraint: the evidence. With retrieval verified and prompt revisions exhausted, failures confined to complex reasoning mark a model mismatch, the case where a higher tier is right, limited to the slice that needs it and backed by the slice eval.",
+  "rule": "CS-D4-11",
+  "ladder": "diagnosis",
+  "tips": [],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ },
+ {
+  "id": "P4-4.4-007",
+  "rev": 2,
+  "domain": 4,
+  "obj": "4.4",
+  "set": "pool",
+  "type": "single",
+  "select": 1,
+  "diff": 3,
+  "archetype": "best",
+  "constraint": "regulation",
+  "industry": "healthcare",
+  "family": "live-orders-misread-as-hallucination",
+  "counterTrap": false,
+  "signals": [
+   "drugs stopped earlier that day",
+   "each stopped drug appears in the retrieved extract",
+   "match active orders at discharge"
+  ],
+  "stem": "St Aldric's Hospital's discharge assistant drafts discharge summaries, including the medication list, from an index of patient-record extracts refreshed nightly. It passed a pilot on elective-surgery wards, where orders rarely change on discharge day. Since expanding to general medicine, pharmacists have flagged drafts listing drugs stopped earlier that day, and ward managers are calling it hallucination. Traces show each stopped drug appears in the retrieved extract, and the model version and prompt are unchanged since the pilot. The hospital's medication-reconciliation policy requires the discharge list to match active orders at discharge, and the EHR vendor bills per API call.",
+  "ask": "Which change BEST resolves the flagged medication errors?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Move the extract refresh from nightly to hourly, which removes most stopped drugs and keeps EHR API calls low",
+    "correct": false,
+    "trap": "T-LIVESTATE",
+    "why": "Hourly refresh narrows the lag and keeps per-call billing low, but a drug stopped shortly before discharge can still be listed. The policy requires the list to match active orders at discharge, which a lagging copy cannot promise, so cost does not decide this."
+   },
+   {
+    "id": "b",
+    "text": "Build the medication list from an EHR query of the patient's active orders, run when the draft is written",
+    "correct": true,
+    "trap": null,
+    "why": "Medication orders are live state that change during the stay. Reading active orders from the system of record when the draft is written is what meets the reconciliation policy; the per-call cost is secondary to that requirement."
+   },
+   {
+    "id": "c",
+    "text": "Require a cited source line for each listed drug and drop any drug the model cannot cite",
+    "correct": false,
+    "trap": "T-LAYER",
+    "why": "The stopped drugs are in the retrieved extract, so each has a valid citation and would pass this check. It treats a stale-source fault as hallucination and releases the same wrong list with citations attached."
+   },
+   {
+    "id": "d",
+    "text": "Evaluate a stronger tier on general-medicine discharges and switch to it if it clears the pilot's bar",
+    "correct": false,
+    "trap": "T-BIGMODEL",
+    "why": "The model faithfully lists what the extract contains, which is why the same tier passed the pilot. Any tier given a nightly copy will list drugs stopped since then, so evaluating a stronger tier measures the wrong fault."
+   }
+  ],
+  "explain": "Binding constraint: the reconciliation policy requires the list to match active orders at discharge, which outranks per-call cost. The drugs are in the source, so this is stale live state rather than hallucination, fixed by reading the system of record at request time.",
+  "rule": "CS-D1-04",
+  "ladder": "diagnosis",
+  "tips": [
+   "TIP-EL-08",
+   "TIP-EL-12"
+  ],
+  "facts": {
+   "level": "principle",
+   "asOf": null
+  },
+  "src": {
+   "kind": "original",
+   "ref": null,
+   "origId": null
+  },
+  "status": "verified",
+  "verify": [],
+  "obj2": null
+ }
+]

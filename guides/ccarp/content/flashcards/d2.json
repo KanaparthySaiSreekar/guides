@@ -1,0 +1,822 @@
+{
+  "domain": 2,
+  "cards": [
+    {
+      "id": "C2.1-01",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "define",
+      "front": "At what level is model tier selection made, and which tier does each step get?",
+      "back": "**Per task, not per platform**: each pipeline step gets the cheapest tier that clears its own floor, so one application can run three tiers. Putting the top tier on every request to be safe is the Bigger Model Reflex (trap: T-BIGMODEL).",
+      "src": [
+        "core:0",
+        "cheat:CS-D2-01",
+        "trap:T-BIGMODEL"
+      ]
+    },
+    {
+      "id": "C2.1-02",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "why",
+      "front": "When does a higher tier win even though a cheaper tier also clears the floor?",
+      "back": "**When errors are priced and the higher tier's avoided errors are worth more than its extra cost.** The floor is a minimum, not the whole decision. Without priced errors the default stands: the cheapest tier that clears, so extra margin above the bar is no reason to pay more (trap: T-BIGMODEL).",
+      "src": [
+        "core:0",
+        "cheat:CS-D2-01",
+        "trap:T-BIGMODEL"
+      ]
+    },
+    {
+      "id": "C2.1-03",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "apply",
+      "front": "A vendor benchmark shows a cheaper new tier beating your current one. What can that benchmark do, and what decides the switch?",
+      "back": "**The benchmark can shortlist the tier; only your own eval on your traffic decides.** Score the candidate against the bar agreed in advance on your own labelled traffic before switching, because a public score was not measured on your traffic.",
+      "src": [
+        "core:0",
+        "cheat:CS-D2-01"
+      ]
+    },
+    {
+      "id": "C2.1-04",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "define",
+      "front": "Which requests should tier routing send upward, and what kind of signal may trigger it?",
+      "back": "**Only the measured hard slice**, triggered by signals you can test, such as case type, rider count or a validator failure. Never route on the model's self-reported confidence (trap: T-SELFCONF, Model Grades Itself) or on how important the customer seems.",
+      "src": [
+        "core:1",
+        "cheat:CS-D2-01",
+        "trap:T-SELFCONF"
+      ]
+    },
+    {
+      "id": "C2.1-05",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "apply",
+      "front": "Eval failures are spread evenly across easy and hard cases. Which layer does that implicate?",
+      "back": "**The prompt, not the tier.** Failures that ignore difficulty point away from capability, so rule out prompt and retrieval before blaming the tier (trap: T-BIGMODEL, Bigger Model Reflex). An even spread also leaves no measured slice worth routing up.",
+      "src": [
+        "core:2",
+        "cheat:CS-D2-02",
+        "trap:T-BIGMODEL"
+      ]
+    },
+    {
+      "id": "C2.1-06",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "recall",
+      "front": "What three conditions must hold before failures point to a tier capability limit?",
+      "back": "**Failures cluster on multi-step reasoning, retrieval is verified, and structured reasoning or higher effort has already been tried.** If that slice still misses the bar, route only it up, not the whole workload (trap: T-BIGMODEL); holding it on the cheaper tier to protect budget is a Blunt Cut (trap: T-BLUNTCUT).",
+      "src": [
+        "core:2",
+        "cheat:CS-D2-02",
+        "trap:T-BIGMODEL",
+        "trap:T-BLUNTCUT"
+      ]
+    },
+    {
+      "id": "C2.1-07",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "recall",
+      "front": "Name the two terms that make up latency, and the measure latency is judged on.",
+      "back": "**An input term and an output term, judged at p95 under peak load.** Reporting an average instead is SLA on Averages (trap: T-AVGSLA), and the dominant term decides which lever to pull (trap: T-LEVER, Lever Before Measurement).",
+      "src": [
+        "core:3",
+        "trap:T-AVGSLA",
+        "trap:T-LEVER"
+      ]
+    },
+    {
+      "id": "C2.1-08",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "apply",
+      "front": "Traces show output tokens dominate a p95 latency overrun. What is the move, and what do you confirm before changing tier?",
+      "back": "**Shorten the output with templates, caps or lower reasoning effort, then confirm the eval bar still holds.** Trimming input targets the term that does not dominate (trap: T-LEVER, Lever Before Measurement). Switch tier only if output is already minimal and a faster tier is measured to clear the bar.",
+      "src": [
+        "core:3",
+        "cheat:CS-D2-03",
+        "trap:T-LEVER"
+      ]
+    },
+    {
+      "id": "C2.1-09",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "apply",
+      "front": "Users stare at a blank screen while a long answer generates. Does streaming fix that, and does it shorten completion time?",
+      "back": "**It fixes the perceived wait, not completion time.** The first tokens appear sooner, but a completion-time target still needs a shorter output or parallel calls (trap: T-LEVER, Lever Before Measurement).",
+      "src": [
+        "core:3",
+        "trap:T-LEVER"
+      ]
+    },
+    {
+      "id": "C2.1-10",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "define",
+      "front": "What does a tier that passed its eval become after any model or prompt change?",
+      "back": "**A hypothesis again.** The earlier pass was evidence about the old configuration only, so re-run the per-slice gate after every model or prompt change before trusting that tier, and keep measuring after launch.",
+      "src": [
+        "core:4",
+        "cheat:CS-D2-01"
+      ]
+    },
+    {
+      "id": "C2.1-11",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "why",
+      "front": "Why must a tier eval report slices and not only the mean?",
+      "back": "**A passing mean can hide a slice that fails the floor.** Report per-slice results and gate on them, so a weak case type cannot ship behind a healthy average (trap: T-AGGREGATE, Average Hides Slice).",
+      "src": [
+        "core:4",
+        "trap:T-AGGREGATE"
+      ]
+    },
+    {
+      "id": "C2.1-12",
+      "d": 2,
+      "obj": "2.1",
+      "kind": "recall",
+      "front": "Name the two conditions under which starting on the top tier can be the proportionate call.",
+      "back": "**Low volume with a very costly error, or errors that compound across many autonomous steps.** These are the counter-trap cases where the top tier can be proportionate rather than the Bigger Model Reflex (trap: T-BIGMODEL).",
+      "src": [
+        "core:5",
+        "cheat:CS-D2-01",
+        "trap:T-BIGMODEL"
+      ]
+    },
+    {
+      "id": "C2.2-01",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "recall",
+      "front": "Name the four things a system prompt should set.",
+      "back": "**Role and scope, success criteria the model can act on, boundaries, and output format.** It explains rules but never enforces one that must hold every time (trap: T-ENFORCE, Instruction as Guarantee).",
+      "src": [
+        "core:0",
+        "cheat:CS-D2-04",
+        "trap:T-ENFORCE"
+      ]
+    },
+    {
+      "id": "C2.2-02",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "apply",
+      "front": "When is a system prompt instruction the right primary control, with no code enforcement behind it?",
+      "back": "**When the requirement is tone, style or preference and an occasional miss is cheap and recoverable**, often caught by a human before anything leaves. A semantic content-scope rule with no deterministic check point also belongs there, backed by a separate classifier screen (the right-when case of T-ENFORCE).",
+      "src": [
+        "core:0",
+        "cheat:CS-D2-04",
+        "trap:T-ENFORCE"
+      ]
+    },
+    {
+      "id": "C2.2-03",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "recall",
+      "front": "What single question tests whether a 'must never' rule is actually enforced?",
+      "back": "**What stops the outcome if the model ignores the instruction completely?** If the answer is nothing, the rule lives only in the prompt and has to move into code.",
+      "src": [
+        "core:1",
+        "cheat:CS-D2-04"
+      ]
+    },
+    {
+      "id": "C2.2-04",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "recall",
+      "front": "Name the four places a 'must never' rule can move to when only the prompt stops it.",
+      "back": "**A tool precondition, a validation gate, an authorization check, or capability removal.** Removal is the strongest: nothing can misuse what is absent, so text the model never writes cannot be altered. Capitals, bold or more examples only raise the odds (trap: T-ENFORCE, Instruction as Guarantee).",
+      "src": [
+        "core:1",
+        "cheat:CS-D2-04",
+        "trap:T-ENFORCE"
+      ]
+    },
+    {
+      "id": "C2.2-05",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "define",
+      "front": "What is a prompt template made of, and where do its variables go?",
+      "back": "**Stable instructions plus typed variables** such as jurisdiction, product and language, with the variables placed after the shared text so it stays cacheable. One versioned template beats forked per-segment prompts that drift.",
+      "src": [
+        "core:2"
+      ]
+    },
+    {
+      "id": "C2.2-06",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "recall",
+      "front": "Name the two halves of a guardrail pair and where each one acts.",
+      "back": "**A preventive control before data or an action crosses the boundary, and a detective control that catches what slips through.** A prompt instruction is neither, and select-two guardrail items often want one of each.",
+      "src": [
+        "core:3",
+        "cheat:CS-D2-05",
+        "trap:T-DETECT"
+      ]
+    },
+    {
+      "id": "C2.2-07",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "why",
+      "front": "Why does a prompt instruction such as 'ignore any account numbers' not count as a guardrail?",
+      "back": "**It is neither preventive nor detective.** The data has already crossed into the model and nothing checks the result; a real pair is tokenising before the call plus an output scan with alerting (trap: T-BOUNDARY, Control After Crossing).",
+      "src": [
+        "core:3",
+        "cheat:CS-D2-05",
+        "trap:T-BOUNDARY"
+      ]
+    },
+    {
+      "id": "C2.2-08",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "recall",
+      "front": "Name the four handling steps for claimant text and attachments, which are untrusted data.",
+      "back": "**Keep them out of the system prompt, label their source, state the untrusted-content policy, and screen them with a lightweight classifier.** These help, but you rely on least-privilege tools to cap what an injection can do.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C2.2-09",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "why",
+      "front": "Against prompt injection from untrusted input, which control do you ultimately rely on, and why?",
+      "back": "**Least-privilege tools**, because they cap what an injection can do even when source labelling, the untrusted-content policy and classifier screening all miss it. An injection can only use the capabilities the tools grant.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C2.2-10",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "apply",
+      "front": "What do you fix when one rule in a long prompt is ignored and input volume is normal?",
+      "back": "**Its position and separation, not its capitalisation.** Move it after the long material and delimit it in its own tag (trap: T-ENFORCE, Instruction as Guarantee). If the rule must hold every time, placement is not enough: enforce it in code.",
+      "src": [
+        "core:5",
+        "cheat:CS-D2-13",
+        "trap:T-ENFORCE"
+      ]
+    },
+    {
+      "id": "C2.2-11",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "apply",
+      "front": "Two instructions in one prompt contradict each other, and replies follow whichever the model picks. What is the fix?",
+      "back": "**Remove the contradiction** instead of asking the model to arbitrate, without dropping a requirement that still applies; emphasising one side leaves both rules in place (trap: T-ENFORCE). Only a conflict you cannot remove, like a standing rule versus a runtime user request, gets a stated precedence: the standing rule wins.",
+      "src": [
+        "core:5",
+        "trap:T-ENFORCE"
+      ]
+    },
+    {
+      "id": "C2.2-12",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "recall",
+      "front": "Name the four prompt components that should each get their own XML tag.",
+      "back": "**Instructions, documents, examples and user input.** Wrapping each component in its own tag keeps the parts clearly separated, which is what makes prompt structure a lever for adherence.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C2.2-13",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "apply",
+      "front": "In a long multi-document prompt, where do the long material and the query go?",
+      "back": "**Long material at the top, the query and instructions at the end.** Anthropic's long-context tips report up to 30 percent better responses on complex multi-document inputs; stable parts sit in the cached prefix and volatile retrieved content after the breakpoint.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C2.2-14",
+      "d": 2,
+      "obj": "2.2",
+      "kind": "distinguish",
+      "front": "Moving and delimiting one buried rule fixes which problem, and which two problems does it not fix?",
+      "back": "**It fixes a placement problem.** It does not fix a volume problem, which needs less context entering the window (2.4), or a rule that must hold every time, which belongs in code.",
+      "src": [
+        "core:6",
+        "cheat:CS-D2-13",
+        "cheat:CS-D2-08"
+      ]
+    },
+    {
+      "id": "C2.3-01",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "recall",
+      "front": "Match each defect to its technique: shape varies, logic fails, output must always parse, facts are wrong.",
+      "back": "**Few-shot for shape, structured step-by-step reasoning for logic, a schema or tool contract plus validation for parsing, and retrieval or grounding for wrong facts.** Name the defect before choosing the technique.",
+      "src": [
+        "core:0",
+        "cheat:CS-D2-06"
+      ]
+    },
+    {
+      "id": "C2.3-02",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "why",
+      "front": "What must you make explicit before adding any prompting technique, and why?",
+      "back": "**The instruction itself: the task, the audience and the output shape.** Examples cannot rescue an underspecified instruction, so any technique layered on a vague one inherits the gap.",
+      "src": [
+        "core:0"
+      ]
+    },
+    {
+      "id": "C2.3-03",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "apply",
+      "front": "Structured outputs or strict tool use constrain generation to a schema. Which two outcomes must you still handle?",
+      "back": "**A refusal and a `max_tokens` cut-off.** Constraining generation to the schema does not stop either one, so the caller must still detect and handle them.",
+      "src": [
+        "core:0"
+      ]
+    },
+    {
+      "id": "C2.3-04",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "recall",
+      "front": "What makes a good few-shot set: how many examples, of what kind, and aimed at which cases?",
+      "back": "**Three to five diverse, complete examples aimed at the ambiguous cases, including one correct 'cannot determine'.** Diversity matters because near-identical examples anchor varied inputs to one pattern.",
+      "src": [
+        "core:1"
+      ]
+    },
+    {
+      "id": "C2.3-05",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "why",
+      "front": "Why should few-shot examples match production inputs in length and messiness?",
+      "back": "**Because examples also set the length and depth of the output.** Short, clean examples used on long, messy traffic teach the wrong output length and depth for the real inputs.",
+      "src": [
+        "core:1"
+      ]
+    },
+    {
+      "id": "C2.3-06",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "distinguish",
+      "front": "Where does chain-of-thought earn its tokens, and where does it only add latency and cost?",
+      "back": "**It earns them on multi-step coverage or eligibility logic; on single-label classification it adds latency and cost without accuracy.** This holds for built-in thinking at a suitable effort setting and for prompted step-by-step reasoning alike.",
+      "src": [
+        "core:2",
+        "cheat:CS-D2-07"
+      ]
+    },
+    {
+      "id": "C2.3-07",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "apply",
+      "front": "Where should exact arithmetic such as deductibles, sub-limits and pro-rata amounts be done?",
+      "back": "**In a deterministic tool.** Reasoning decides which terms apply; code computes the number. More examples or more retrieved context do not repair these errors (trap: T-STUFF, Context Stuffing).",
+      "src": [
+        "core:3",
+        "cheat:CS-D2-07",
+        "trap:T-STUFF"
+      ]
+    },
+    {
+      "id": "C2.3-08",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "apply",
+      "front": "Written step-by-step working fixed multi-step errors, but the answer must be parsed on its own. What happens to the working?",
+      "back": "**Keep it, but separate it from the final answer**, so the answer can be parsed and validated on its own and only the answer is passed on. Dropping the working, as an answer-only format does, removes the reasoning that fixed the multi-step logic.",
+      "src": [
+        "core:4",
+        "core:2",
+        "cheat:CS-D2-07"
+      ]
+    },
+    {
+      "id": "C2.3-09",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "define",
+      "front": "What is the default prompting technique, and what does each added technique trigger?",
+      "back": "**Zero-shot stays the default while it clears the bar.** Every added technique is a prompt change that re-runs the eval gate. Examples added when zero-shot already clears can anchor varied inputs to one pattern, and if evals show them hurting, removing them is the fix.",
+      "src": [
+        "core:5",
+        "cheat:CS-D2-06"
+      ]
+    },
+    {
+      "id": "C2.3-10",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "recall",
+      "front": "Name three reasons prompts, examples, templates and retrieval beat fine-tuning as a lever.",
+      "back": "**They are faster to change, easy to evaluate, and survive model upgrades.** That is why fine-tuning is rarely the lever; exhaust prompting, examples and retrieval first.",
+      "src": [
+        "core:6",
+        "cheat:CS-D2-14"
+      ]
+    },
+    {
+      "id": "C2.3-11",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "apply",
+      "front": "Policy rules that change over time need to reach the model. Where does that knowledge belong?",
+      "back": "**In retrieval or tools, never in weights.** Fine-tuning on a manual means retraining whenever policy changes, while retrieval or a cached prompt updates with the source.",
+      "src": [
+        "core:6",
+        "cheat:CS-D2-14"
+      ]
+    },
+    {
+      "id": "C2.3-12",
+      "d": 2,
+      "obj": "2.3",
+      "kind": "why",
+      "front": "Why is an answer option that depends on fine-tuning Claude usually suspect?",
+      "back": "**It rests on an unstated assumption.** Per the docs as of Sep 2026, the Claude API offers no fine-tuning, and it has been available only for specific older models on Amazon Bedrock (trap: T-ASSUME, Unstated Assumption).",
+      "src": [
+        "core:6",
+        "cheat:CS-D2-14",
+        "trap:T-ASSUME"
+      ]
+    },
+    {
+      "id": "C2.4-01",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "recall",
+      "front": "Name everything in a request that occupies the context window.",
+      "back": "**Tool definitions, the system prompt, retrieved text, history and tool results (cached parts included), plus the response being generated.** Input and output draw on the same window.",
+      "src": [
+        "core:0"
+      ]
+    },
+    {
+      "id": "C2.4-02",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "distinguish",
+      "front": "What does caching change about a prefix, and what does it leave unchanged?",
+      "back": "**It changes what the prefix costs, not how much room it takes.** A cached prefix still occupies the window, so caching cannot repair a volume or recall problem (trap: T-LEVER, Lever Before Measurement).",
+      "src": [
+        "core:0",
+        "cheat:CS-D2-10",
+        "trap:T-LEVER"
+      ]
+    },
+    {
+      "id": "C2.4-03",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "define",
+      "front": "What is context rot?",
+      "back": "**The more tokens in the window, the less reliably the model recalls any one fact in it**, so mid-context facts get missed on large inputs. It is a volume effect, which is why a bigger window is headroom, not a fix.",
+      "src": [
+        "core:1"
+      ]
+    },
+    {
+      "id": "C2.4-04",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "why",
+      "front": "On a large input, mid-context facts get missed. Why do a bigger window, reordering or 'read carefully' fail to fix it?",
+      "back": "**None of them reduces volume, and recall falls as tokens in the window grow.** A bigger window is headroom, and long documents above the query help, but only reducing what enters the window, without dropping what the task needs, treats it (trap: T-STUFF, Context Stuffing).",
+      "src": [
+        "core:1",
+        "cheat:CS-D2-08",
+        "trap:T-STUFF"
+      ]
+    },
+    {
+      "id": "C2.4-05",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "apply",
+      "front": "A step receives the whole claim file and raw transcripts from upstream steps. What two changes reduce its context at the source?",
+      "back": "**Retrieve the relevant sections rather than the whole claim file, and have upstream steps pass structured facts instead of raw transcripts.** Cutting what enters the window treats cost and recall together.",
+      "src": [
+        "core:2",
+        "cheat:CS-D2-08"
+      ]
+    },
+    {
+      "id": "C2.4-06",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "distinguish",
+      "front": "When is cutting context reducing at the source, and when is it a Blunt Cut?",
+      "back": "**It is reducing at the source when the task never needed the removed content**: stale tool output, noise, or material evals show is unnecessary. Cutting content the task needs is a Blunt Cut (trap: T-BLUNTCUT); if the required material fits, keep it and restructure, stable content first so it caches.",
+      "src": [
+        "core:2",
+        "cheat:CS-D2-08",
+        "trap:T-BLUNTCUT"
+      ]
+    },
+    {
+      "id": "C2.4-07",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "recall",
+      "front": "Name the design features of a tool response built to keep the agent's context small.",
+      "back": "**Filters, pagination and truncation with sensible defaults, a concise or detailed format the agent can choose, readable IDs, and a truncation note that says how to get more.** The agent then pulls only what it needs.",
+      "src": [
+        "core:2"
+      ]
+    },
+    {
+      "id": "C2.4-08",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "apply",
+      "front": "What should a tool return when a call fails, instead of an empty payload?",
+      "back": "**An error that says what failed and whether a retry can help.** An empty payload tells the agent nothing, while a clear error lets it decide whether retrying is worthwhile.",
+      "src": [
+        "core:2"
+      ]
+    },
+    {
+      "id": "C2.4-09",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "distinguish",
+      "front": "What is the difference between tool-result clearing and compaction?",
+      "back": "**Clearing replaces used-up tool output with a placeholder; compaction summarises state the task still needs (decisions, open questions, next steps).** Clear what is stale, compact what is live.",
+      "src": [
+        "core:3",
+        "cheat:CS-D2-09"
+      ]
+    },
+    {
+      "id": "C2.4-10",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "why",
+      "front": "Why is truncating the oldest turns the wrong way to fit a long session into the window?",
+      "back": "**Blind truncation silently drops context the task still needs**, such as an early confirmed decision. Never truncate blindly; clear stale tool output and compact live state instead (trap: T-BLUNTCUT, Blunt Cut).",
+      "src": [
+        "core:3",
+        "cheat:CS-D2-09",
+        "trap:T-BLUNTCUT"
+      ]
+    },
+    {
+      "id": "C2.4-11",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "why",
+      "front": "Why must custom compaction instructions be complete?",
+      "back": "**They replace the default summary prompt and define what survives**, so anything they omit is gone after compaction. Cover every kind of state the task still needs, such as decisions, open questions and next steps.",
+      "src": [
+        "core:4",
+        "cheat:CS-D2-09"
+      ]
+    },
+    {
+      "id": "C2.4-12",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "apply",
+      "front": "Clearing and compaction invalidate the cache from the rewritten point onward. How do you limit that cost?",
+      "back": "**Do them in large steps, not every turn, and keep a breakpoint at the end of the system prompt** so tools and system stay cached. Each pass rewrites history, so everything after the rewritten point loses its cache.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C2.4-13",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "define",
+      "front": "How does a subagent act as a context-management tool?",
+      "back": "**It explores in its own window and returns a short summary**, so exploratory noise never reaches the main thread. Isolation keeps the main context small without losing the findings.",
+      "src": [
+        "core:5"
+      ]
+    },
+    {
+      "id": "C2.4-14",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "define",
+      "front": "What is structured note-taking in long-horizon agent work?",
+      "back": "**The agent writes progress, decisions and open items to a file or the memory tool outside the window, then reads them back later.** It is the long-horizon technique beside compaction and subagents.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C2.4-15",
+      "d": 2,
+      "obj": "2.4",
+      "kind": "recall",
+      "front": "Agent memory persists across sessions. Name the three decisions it needs and what to keep out of it.",
+      "back": "**What may be written there, who can read it, and how long it lasts**; keep secrets and unneeded personal data out of it. Treat memory as a data store like any other.",
+      "src": [
+        "core:6"
+      ]
+    },
+    {
+      "id": "C2.5-01",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "recall",
+      "front": "What is the prefix order for prompt caching, and where does the breakpoint go?",
+      "back": "**Tools, then system prompt, then stable reference material, with the breakpoint after that and per-request content last.** Caching reuses only an identical prefix, so content every request shares must come before anything that varies per client or per request.",
+      "src": [
+        "core:0",
+        "cheat:CS-D2-10"
+      ]
+    },
+    {
+      "id": "C2.5-02",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "apply",
+      "front": "In a growing conversation, where should the cache breakpoint sit?",
+      "back": "**On the latest message.** Earlier turns never change, so each request reads the cache the previous request wrote, and the growing history keeps hitting the cache turn after turn.",
+      "src": [
+        "core:0"
+      ]
+    },
+    {
+      "id": "C2.5-03",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "recall",
+      "front": "Name four usual culprits that break prompt-cache hits.",
+      "back": "**A timestamp or ID early in the system prompt, tools in varying order, shuffled documents, and an edited Skill list.** A hit needs a byte-identical prefix, so any change upstream of the breakpoint invalidates the cache from that point on; content after the breakpoint can change freely.",
+      "src": [
+        "core:1",
+        "cheat:CS-D2-11",
+        "trap:T-LEVER"
+      ]
+    },
+    {
+      "id": "C2.5-04",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "apply",
+      "front": "Which configuration change, apart from editing prompt text, also invalidates cached message blocks?",
+      "back": "**Changing the thinking configuration or effort level.** On some models it also invalidates the tool and system caches, so keep those settings stable where you rely on the cache.",
+      "src": [
+        "core:1"
+      ]
+    },
+    {
+      "id": "C2.5-05",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "distinguish",
+      "front": "What does prompt caching cut, and in which two cases does it do nothing?",
+      "back": "**It cuts input cost and time-to-first-token on a repeated prefix.** It does nothing for output-dominated cost or for a prefix rarely reused within the cache lifetime, so check the hit rate in traces (trap: T-LEVER).",
+      "src": [
+        "core:2",
+        "cheat:CS-D2-10",
+        "trap:T-LEVER"
+      ]
+    },
+    {
+      "id": "C2.5-06",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "why",
+      "front": "Why can prompt caching raise throughput as well as cutting cost?",
+      "back": "**Cache reads do not count toward input-token rate limits on most models.** Cached input uses less of the limit, so more requests fit through, which makes caching a throughput lever as well as a cost one.",
+      "src": [
+        "core:2"
+      ]
+    },
+    {
+      "id": "C2.5-07",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "apply",
+      "front": "Caching is on, the prefix is byte-identical and reused within seconds, and nothing else changes, yet usage shows no cache reads. What is the likely cause?",
+      "back": "**The prefix is below the model's minimum cacheable length**, so it is silently not cached. Confirm hits in the usage fields rather than assuming them.",
+      "src": [
+        "core:2"
+      ]
+    },
+    {
+      "id": "C2.5-08",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "apply",
+      "front": "A stable prefix is reused at intervals longer than five minutes but within an hour, and keeps missing. What fixes it?",
+      "back": "**The 1-hour cache lifetime**, since the default five-minute lifetime expires between reuses; beyond an hour no lifetime helps. It fixes expiry only: if a value upstream of the breakpoint changes per request, a longer lifetime does nothing (trap: T-LEVER).",
+      "src": [
+        "core:2",
+        "cheat:CS-D2-11",
+        "trap:T-LEVER"
+      ]
+    },
+    {
+      "id": "C2.5-09",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "define",
+      "front": "What are modular prompts?",
+      "back": "**One owned, versioned template assembled from shared modules** such as tone, disclaimers and jurisdiction rules, instead of copies that drift between teams.",
+      "src": [
+        "core:3",
+        "cheat:CS-D2-12"
+      ]
+    },
+    {
+      "id": "C2.5-10",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "recall",
+      "front": "Name the three things versioned together as one prompt release unit.",
+      "back": "**The prompt, its output schema and its eval cases.** Versioning them as one release unit means the evals always test the exact prompt and schema that ship.",
+      "src": [
+        "core:3"
+      ]
+    },
+    {
+      "id": "C2.5-11",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "why",
+      "front": "Why record the reason each clause or tool was added to a prompt?",
+      "back": "**So accreted rules can be retired safely.** Without the recorded reason, nobody can tell whether an old clause still does a job, so rules only pile up.",
+      "src": [
+        "core:3"
+      ]
+    },
+    {
+      "id": "C2.5-12",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "define",
+      "front": "What part of a Skill sits in context before it is triggered?",
+      "back": "**Only its name and description.** A Skill packages know-how that loads on demand, so its full body enters context only when triggered. That keeps rarely needed know-how out of every other request's window, which caching cannot do.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C2.5-13",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "recall",
+      "front": "Name the three rules for managing Skill versions in production.",
+      "back": "**Treat each version as a full snapshot, pin it in production, and gate changes with evals and a named owner.** Skills are run as owned, versioned, eval-gated artefacts, like prompts.",
+      "src": [
+        "core:4"
+      ]
+    },
+    {
+      "id": "C2.5-14",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "apply",
+      "front": "Shared know-how already ships as a Skill, and several clients now also need live data from a claims system. Where does that live access belong?",
+      "back": "**In an MCP server; the know-how itself can stay a Skill.** A capability that must reach a live system for several clients is an MCP server, while know-how that fetches nothing stays a Skill or prompt module. Wrapping static know-how in an MCP server only adds a server to run and secure (trap: T-PROTOCOL, Wrong Integration Mechanism).",
+      "src": [
+        "core:5",
+        "cheat:CS-D2-12",
+        "trap:T-PROTOCOL"
+      ]
+    },
+    {
+      "id": "C2.5-15",
+      "d": 2,
+      "obj": "2.5",
+      "kind": "apply",
+      "front": "Your runtime surface does not support Skills. How do you ship the same know-how?",
+      "back": "**As a versioned prompt module with the same content.** Skill support differs by surface: per the docs as of Sep 2026, the Skills API is not offered on Amazon Bedrock, though file-based Skills run through Claude Code and the Agent SDK.",
+      "src": [
+        "core:6"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,552 @@
+[
+ {
+  "id": "TIP-RD-01",
+  "group": "reading",
+  "text": "Read the question line first, then find the one binding constraint in the stem before you look at options.",
+  "why": "When two options are both sound, the stated constraint (cost, latency SLA, irreversibility, regulation, audience, lifecycle stage) is what separates them.",
+  "phase": "any",
+  "source": "Community",
+  "domains": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ],
+  "traps": [
+   "T-ASSUME",
+   "T-FILLER"
+  ]
+ },
+ {
+  "id": "TIP-RD-02",
+  "group": "reading",
+  "text": "Treat FIRST and BEFORE PROCEEDING as questions about lifecycle stage.",
+  "why": "Most distractors are correct actions for a later stage. Pick the step that has to come before the others.",
+  "phase": "any",
+  "source": "Derived",
+  "domains": [
+   1,
+   4,
+   6
+  ],
+  "traps": [
+   "T-LATER",
+   "T-SKIPDISC"
+  ]
+ },
+ {
+  "id": "TIP-RD-03",
+  "group": "reading",
+  "text": "Mark the load-bearing words: just/only, irreversible, externally visible, regulated, PHI, every machine, before proceeding.",
+  "why": "Each of these turns a preference into a hard requirement, and that rules out whole families of options at once.",
+  "phase": "learning",
+  "source": "Community",
+  "domains": [
+   1,
+   5,
+   7
+  ],
+  "traps": [
+   "T-ENFORCE",
+   "T-REACH",
+   "T-COMPLY"
+  ]
+ },
+ {
+  "id": "TIP-RD-04",
+  "group": "reading",
+  "text": "On diagnosis stems, name the component the triggering change touched, and use what the stem says stayed the same to rule out causes.",
+  "why": "Official Sample 3: a document refresh with model and latency unchanged points to retrieval or indexing, not to weights, temperature or the context window.",
+  "phase": "any",
+  "source": "Official",
+  "domains": [
+   3,
+   4
+  ],
+  "traps": [
+   "T-LAYER",
+   "T-OBSERVE"
+  ]
+ },
+ {
+  "id": "TIP-EL-01",
+  "group": "eliminating",
+  "text": "Remove a capability the role does not need. Do not guard it.",
+  "why": "Logging, confirmation prompts and business-hours limits are compensating controls. Least privilege means the role never holds the tool (official Sample 1).",
+  "phase": "any",
+  "source": "Official",
+  "domains": [
+   3,
+   5
+  ],
+  "traps": [
+   "T-REMOVE",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "TIP-EL-02",
+  "group": "eliminating",
+  "text": "Eliminate 'use a bigger model' when the defect is authorization, retrieval, structure or process.",
+  "why": "A stronger model changes neither what the system is allowed to do nor what it retrieves. Official Sample 1 rejects model size as unrelated to authorization scope, and community item banks treat 'upgrade the model' as a standing distractor for non-capability defects.",
+  "phase": "any",
+  "source": "Derived",
+  "domains": [
+   1,
+   2,
+   3,
+   5
+  ],
+  "traps": [
+   "T-BIGMODEL"
+  ]
+ },
+ {
+  "id": "TIP-EL-03",
+  "group": "eliminating",
+  "text": "If an outcome must happen every time, choose enforcement in code over any instruction.",
+  "why": "A prompt, bold text or a CLAUDE.md line only makes the behaviour more likely. Tool removal, permission deny rules, fail-closed hooks and workflow gates are what guarantee it.",
+  "phase": "any",
+  "source": "Community",
+  "domains": [
+   1,
+   5,
+   7
+  ],
+  "traps": [
+   "T-ENFORCE",
+   "T-AUTHZ"
+  ]
+ },
+ {
+  "id": "TIP-EL-04",
+  "group": "eliminating",
+  "text": "Decide whether the stem asks you to prevent the harm or to detect it, then drop the controls of the other kind.",
+  "why": "An audit log or a dashboard tells you afterwards. It does not stop the harm, so it is the wrong answer when the stem asks how to stop it.",
+  "phase": "any",
+  "source": "Derived",
+  "domains": [
+   5,
+   3
+  ],
+  "traps": [
+   "T-DETECT",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "TIP-EL-05",
+  "group": "eliminating",
+  "text": "Restructure and cache before you cut. Never truncate required context, and never downsize 'regardless of fit'.",
+  "why": "Official Sample 2: stable content first plus prompt caching fixes cost and latency together. Moving policy into few-shot examples does not create a cacheable prefix.",
+  "phase": "any",
+  "source": "Official",
+  "domains": [
+   2
+  ],
+  "traps": [
+   "T-BLUNTCUT",
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "TIP-EL-06",
+  "group": "eliminating",
+  "text": "Pick the simplest pattern that meets the need: augmented call, then workflow, then agent. Split into multiple agents only where the work is genuinely independent.",
+  "why": "When one augmented call is enough, the workflow and agent options are both wrong. Team or department boundaries are not evidence for an architecture.",
+  "phase": "any",
+  "source": "Community",
+  "domains": [
+   1
+  ],
+  "traps": [
+   "T-AGENTIC",
+   "T-ORGCHART"
+  ]
+ },
+ {
+  "id": "TIP-EL-07",
+  "group": "eliminating",
+  "text": "Choose the integration mechanism by how widely it is reused and what it carries. A live connection to an external system that many teams share goes behind MCP, shared know-how that fetches nothing becomes a versioned Skill, and a one-off call needs neither.",
+  "why": "Wrapping a single consumer in a protocol layer is over-engineering. Hand-wiring the same capability into several products is duplication.",
+  "phase": "learning",
+  "source": "Community",
+  "domains": [
+   3
+  ],
+  "traps": [
+   "T-PROTOCOL",
+   "T-MEGATOOL"
+  ]
+ },
+ {
+  "id": "TIP-EL-08",
+  "group": "eliminating",
+  "text": "Fix retrieval precision and chunk boundaries rather than volume, and get live state from the system of record.",
+  "why": "Raising top-k or the window adds noise when the top hits are wrong or a chunk splits the answer. Re-indexing more often still serves stale status.",
+  "phase": "any",
+  "source": "Community",
+  "domains": [
+   3
+  ],
+  "traps": [
+   "T-STUFF",
+   "T-LIVESTATE"
+  ]
+ },
+ {
+  "id": "TIP-EL-09",
+  "group": "eliminating",
+  "text": "Measure which term dominates cost or latency before you pick a lever.",
+  "why": "Batch suits only non-interactive work. Streaming improves perceived latency, not completion time. Caching helps only a stable prefix.",
+  "phase": "any",
+  "source": "Derived",
+  "domains": [
+   2,
+   4
+  ],
+  "traps": [
+   "T-LEVER"
+  ]
+ },
+ {
+  "id": "TIP-EL-10",
+  "group": "eliminating",
+  "text": "Send work to human review by reversibility, blast radius and cost, using calibrated system signals. Never use the model's self-rated confidence.",
+  "why": "A self-reported score is not a calibrated gate. Blanket 100% review at volume, or a random 10%, puts reviewers where the risk is not and turns them into a rubber stamp.",
+  "phase": "any",
+  "source": "Community",
+  "domains": [
+   5,
+   4
+  ],
+  "traps": [
+   "T-SELFCONF",
+   "T-RUBBERSTAMP"
+  ]
+ },
+ {
+  "id": "TIP-EL-11",
+  "group": "eliminating",
+  "text": "Reject any metric offered as proof without a threshold agreed in advance (measuring a baseline first is fine), and any A/B test whose metric, sample size and stopping rule were set after the results came in.",
+  "why": "An uncalibrated LLM judge, a stale or circular eval set, and tuning on the test set all produce numbers nobody can defend.",
+  "phase": "any",
+  "source": "Community",
+  "domains": [
+   4
+  ],
+  "traps": [
+   "T-VIBES",
+   "T-PEEK",
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "TIP-EL-12",
+  "group": "eliminating",
+  "text": "Treat legal and regulatory constraints as gates. Never weigh them like a cost.",
+  "why": "A gating objection removes an option before any trade-off applies. ZDR is not HIPAA coverage, and encryption or consent is not data minimisation.",
+  "phase": "any",
+  "source": "Derived",
+  "domains": [
+   5,
+   1
+  ],
+  "traps": [
+   "T-COMPLY",
+   "T-BOUNDARY"
+  ]
+ },
+ {
+  "id": "TIP-EL-13",
+  "group": "eliminating",
+  "text": "Take the evidence back to the decision owner. Never guarantee probabilistic model behaviour.",
+  "why": "Quietly redefining the metric, lowering the bar, or abandoning or extending the pilot on your own authority is deciding for the stakeholder.",
+  "phase": "any",
+  "source": "Community",
+  "domains": [
+   6
+  ],
+  "traps": [
+   "T-OWNER",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "TIP-EL-14",
+  "group": "eliminating",
+  "text": "Write performance SLAs as a percentile at peak load with an error budget.",
+  "why": "Averages, 'excluding surge days' and hard per-request maximums all misstate how a generative workload behaves.",
+  "phase": "learning",
+  "source": "Derived",
+  "domains": [
+   6,
+   1
+  ],
+  "traps": [
+   "T-AVGSLA",
+   "T-OVERPROMISE"
+  ]
+ },
+ {
+  "id": "TIP-EL-15",
+  "group": "eliminating",
+  "text": "Choose the artefact for its audience: a decision-relevant measure with stated limits for executives, and an ADR for preserving reasoning.",
+  "why": "Architecture diagrams for executives, code comments, meeting recordings and chat threads do not work as decision records.",
+  "phase": "learning",
+  "source": "Community",
+  "domains": [
+   6
+  ],
+  "traps": [
+   "T-AUDIENCE"
+  ]
+ },
+ {
+  "id": "TIP-EL-16",
+  "group": "eliminating",
+  "text": "When two finalists remain, write down the assumption each one needs.",
+  "why": "The wrong option depends on a fact the stem never states.",
+  "phase": "mock",
+  "source": "Community",
+  "domains": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ],
+  "traps": [
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "TIP-MR-01",
+  "group": "multi-response",
+  "text": "Read the 'select N' count before you read the stem, and check it again before you move on.",
+  "why": "Every item states how many responses to select. Choosing the wrong number of options is a free way to lose an item.",
+  "phase": "any",
+  "source": "Official",
+  "domains": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ],
+  "traps": [
+   "T-FILLER"
+  ]
+ },
+ {
+  "id": "TIP-MR-02",
+  "group": "multi-response",
+  "text": "Judge each option on its own against the constraint, and drop the true-but-irrelevant good practice.",
+  "why": "The filler is usually the next most reasonable practice, which does not change the outcome. One vendor (Preporato) reports no partial credit, which the official guide does not confirm, so assume one filler pick costs the whole item.",
+  "phase": "mock",
+  "source": "Community",
+  "domains": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ],
+  "traps": [
+   "T-FILLER",
+   "T-ASSUME"
+  ]
+ },
+ {
+  "id": "TIP-MR-03",
+  "group": "multi-response",
+  "text": "In D5 and D6, check the balance of your pair. If both picks are technical, or both preventive, re-read the stem.",
+  "why": "Correct pairs often combine one preventive control with one detective control, or one technical action with one stakeholder action.",
+  "phase": "mock",
+  "source": "Community",
+  "domains": [
+   5,
+   6
+  ],
+  "traps": [
+   "T-FILLER",
+   "T-DETECT"
+  ]
+ },
+ {
+  "id": "TIP-TM-01",
+  "group": "timing",
+  "text": "Run the first pass at about 1:45 per item and check yourself at 17/30:00, 34/60:00 and 51/90:00.",
+  "why": "63 items in 120 minutes is about 1:54 each; a 1:45 first pass finishes near 110:00 and leaves 10 minutes for flagged items and selection counts.",
+  "phase": "mock",
+  "source": "Derived",
+  "domains": []
+ },
+ {
+  "id": "TIP-TM-02",
+  "group": "timing",
+  "text": "Put in a best answer, flag the item and move on once it passes 3 minutes.",
+  "why": "One item you are stuck on uses the time of two you could answer.",
+  "phase": "mock",
+  "source": "Community",
+  "domains": []
+ },
+ {
+  "id": "TIP-TM-03",
+  "group": "timing",
+  "text": "Answer every item, including the ones you flagged.",
+  "why": "The March 2026 CCAR-F guide scores unanswered items as incorrect with no guessing penalty. The CCAR-P guide does not restate this, and no penalty for guessing is documented.",
+  "phase": "any",
+  "source": "Derived",
+  "domains": []
+ },
+ {
+  "id": "TIP-TM-04",
+  "group": "timing",
+  "text": "Keep the last 10 minutes for flagged items and selection counts. Change an answer only when you find a specific error.",
+  "why": "A missed constraint word or a wrong count is worth fixing. Swapping a reasoned pick for an anxious one is not.",
+  "phase": "mock",
+  "source": "Community",
+  "domains": []
+ },
+ {
+  "id": "TIP-DM-01",
+  "group": "domain",
+  "text": "Study on the CCAR-P blueprint, 17/13/19/16/14/14/7. Do not use 27/18/20/20/15.",
+  "why": "27% is the CCAR-F Domain 1 weight. A trainer built on it, or on the 6-scenario bank, teaches Foundations.",
+  "phase": "learning",
+  "source": "Official",
+  "domains": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ]
+ },
+ {
+  "id": "TIP-DM-02",
+  "group": "domain",
+  "text": "Split study time by domain weight multiplied by your own error rate.",
+  "why": "The default order is D3 19 > D1 17 > D4 16 > D5 = D6 14 > D2 13 > D7 7, re-sorted by your measured gaps.",
+  "phase": "learning",
+  "source": "Derived",
+  "domains": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ]
+ },
+ {
+  "id": "TIP-DM-03",
+  "group": "domain",
+  "text": "Put deliberate time into D5 and D6, and track every domain's score separately.",
+  "why": "Together they are 28%, and technically strong candidates report losing most points there. Pass/fail comes from the total scaled score (720 on 100–1,000, not 72%) and domain percentages are diagnostic only, so a comfortable overall practice average can hide a weak domain that drags the total down.",
+  "phase": "learning",
+  "source": "Community",
+  "domains": [
+   5,
+   6
+  ],
+  "traps": [
+   "T-AGGREGATE"
+  ]
+ },
+ {
+  "id": "TIP-DM-04",
+  "group": "domain",
+  "text": "Keep D7 light, but learn the difference between how far a setting reaches and whether it can be overridden.",
+  "why": "D7 is about 4 items. 'Cannot be disabled on any machine' calls for managed settings, while project config covers only the repos that adopt it.",
+  "phase": "learning",
+  "source": "Community",
+  "domains": [
+   7
+  ],
+  "traps": [
+   "T-REACH",
+   "T-ENFORCE"
+  ]
+ },
+ {
+  "id": "TIP-DM-05",
+  "group": "domain",
+  "text": "Drill decisions, not definitions, and calibrate only on banks weighted to the CCAR-P blueprint. Include select-TWO and matching-style items.",
+  "why": "Passers report that real items are harder than the 3 official samples and test judgement more than API recall. One passer also reported a dropdown matching format.",
+  "phase": "mock",
+  "source": "Community",
+  "domains": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ]
+ },
+ {
+  "id": "TIP-DM-06",
+  "group": "domain",
+  "text": "Build and run one end-to-end Claude solution covering RAG, evaluation and observability.",
+  "why": "This is the official guide's Sec. 7 prep advice. Failures you have seen yourself make diagnosis stems obvious.",
+  "phase": "learning",
+  "source": "Official",
+  "domains": [
+   1,
+   3,
+   4,
+   5
+  ]
+ },
+ {
+  "id": "TIP-LG-01",
+  "group": "logistics",
+  "text": "Before you plan anything, confirm your employer is in the Claude Partner Network and that you can register with a company-domain email.",
+  "why": "Only people at Claude Partner Network organisations are eligible, and personal email addresses are rejected.",
+  "phase": "any",
+  "source": "Official",
+  "domains": []
+ },
+ {
+  "id": "TIP-LG-02",
+  "group": "logistics",
+  "text": "Reschedule or cancel at least 48 hours ahead.",
+  "why": "The guide says 24 hours but the FAQ and Pearson say 48. Following the stricter rule protects your fee.",
+  "phase": "taper",
+  "source": "Official",
+  "domains": []
+ },
+ {
+  "id": "TIP-LG-03",
+  "group": "logistics",
+  "text": "Run the OnVUE system test on the exact machine and network you will use, make sure your registered name matches your ID, and clear your desk.",
+  "why": "Candidates report losing their sitting over a second monitor, a visible phone or an open tab. A name mismatch can forfeit the fee.",
+  "phase": "taper",
+  "source": "Community",
+  "domains": []
+ },
+ {
+  "id": "TIP-LG-04",
+  "group": "logistics",
+  "text": "When you pass, set a renewal reminder for month 10.",
+  "why": "The credential is valid for 12 months. Renewing on time is a free non-proctored assessment; letting it lapse means a full-fee retake.",
+  "phase": "any",
+  "source": "Official",
+  "domains": []
+ }
+]

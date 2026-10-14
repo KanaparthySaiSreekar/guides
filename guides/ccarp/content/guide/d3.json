@@ -1,0 +1,706 @@
+{
+ "domain": 3,
+ "intro": "Domain 3 carries the most weight, and almost every item asks one question: which layer owns this concern? Each stem pairs a symptom or requirement with one binding constraint: a role that only reads, a caller who must be known, a query shape, a count of consumers, a p95 budget or a daily volume. The wrong options are real engineering moves at the wrong layer or aimed at the wrong defect. Expect guards instead of removal, prompts as authorization, retrieval volume against a boundary defect, a bigger model for a retrieval miss, a protocol for one consumer and a dashboard as instrumentation. Name the defect class, then choose the lightest sufficient fix at the layer that owns it.",
+ "delta": "Role-scoped toolsets, least privilege, the basic MCP-versus-direct choice and 'a prompt is not enforcement' carry over from CCAR-F. Wiring mechanics (.mcp.json scopes, isError fields, tool_choice values) are low-yield: the exam asks which mechanism and why. New at this level: RAG chunking, indexing and retrieval by query shape; MCP authorization (audience checks, no passthrough, per-user identity); tracing and sampling at scale; latency against a p95 budget; and agent-to-agent as a third mechanism.",
+ "sections": [
+  {
+   "obj": "3.1",
+   "core": [
+    "**Capability bloat** is any tool, scope, credential or data field an agent holds that its role never uses. Each widens the blast radius of a mistake or injection and adds a wrong choice for the model.",
+    "**Least privilege** is subtraction. Confirmation prompts, audit logs and time windows are compensating or detective controls for capabilities the role needs, never a substitute for removing one it does not. Allowlists only grow, so recertify them on a schedule and prune what no role still uses.",
+    "A needed but risky capability is narrowed (caps, single-record scope, allowlisted targets) and gated by reversibility and blast radius, enforced in the tool handler, not the prompt.",
+    "Wrong-tool picks that rise with catalogue size are a bloat symptom: scope toolsets per role, split along real domain seams and delete duplicates. A mode-switch **mega-tool** only moves the confusion into a parameter; a routing paragraph adds words, not separation.",
+    "Two overlapping tools in a small, stable set are a description problem. Sharpen those two descriptions first. A tool Claude never calls usually needs a description that says when to use it, and when not to, not only what it does.",
+    "In Claude Code, a subagent without a `tools` allowlist inherits all its parent's tools, and current docs let subagents spawn subagents to a configurable depth. Scope every level.",
+    "Design tools around **agent tasks, not API endpoints**. A typed workflow tool (`schedule_event`, which finds availability and books) replaces a chain of `list_users`, `list_events` and `create_event` calls, and related operations on one resource can share a tool with an `action` parameter; Anthropic's tool guidance recommends both. The trap is different: a dispatcher whose `mode` switches between unrelated domains. Namespace names by service and resource (`github_list_prs`), and promote an action out of a broad execute or shell tool into its own typed tool when it must be gated, audited or rendered."
+   ],
+   "worked": {
+    "scenario": "Meridian's contact-centre copilot helps call handlers answer claimants: it reads claim status through the ClaimsCore facade, searches policy wording and drafts callback notes. Before the EU rollout, Aiko Brennan reviews its tool manifest and finds `update_reserve` and `reassign_claim`, inherited because the team cloned the adjuster assistant's configuration to save time. Call handlers hold no reserve or reassignment authority in the identity provider. Priya Raman wants the change that most reduces risk before go-live.",
+    "ask": "Which change best applies least privilege?",
+    "options": [
+     {
+      "text": "Keep both tools, but make the call handler confirm every reserve or reassignment call in a dialog",
+      "correct": false,
+      "trap": "T-REMOVE"
+     },
+     {
+      "text": "Remove both tools and give the copilot its own role-specific tool configuration",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Add a system-prompt rule that the copilot must never change reserves or reassign claims",
+      "correct": false,
+      "trap": "T-ENFORCE"
+     },
+     {
+      "text": "Log every call to both tools and alert claims operations whenever either one fires",
+      "correct": false,
+      "trap": "T-DETECT"
+     }
+    ],
+    "steps": {
+     "constraint": "'Call handlers hold no reserve or reassignment authority.' The role never exercises these capabilities, so least privilege binds. The cloned configuration explains how the bloat arrived; it does not justify keeping it.",
+     "classify": "Prevent. The layer is the agent's tool configuration, its capability surface. The stage is pre-rollout review, the cheapest moment to subtract.",
+     "eliminate": "The confirmation dialog is T-REMOVE: it guards a capability the role should not hold, and a handler mid-call will click through it. The prompt rule is T-ENFORCE: it lowers the odds, but injected text in a call transcript or claim note can still trigger the call. The log-and-alert option is T-DETECT: the alert arrives after the reserve has changed, and the ask is to reduce risk, not to find out.",
+     "choose": "Remove both tools and give the copilot its own configuration. ClaimsCore might reject the call under the handler's identity anyway, but removal leaves nothing to reject and one fewer tool to mis-select. A guarded version would fit only if handlers sometimes needed these actions, and the identity provider says they never do."
+    }
+   },
+   "faded": {
+    "scenario": "Meridian's adjuster assistant connects to a shared MCP gateway where the claims, underwriting, billing and HR teams have each registered tools, so it now sees about 140. Traces show wrong-tool picks climbing: underwriting's `quote_lookup` called where the claims `policy_lookup` was meant, and three near-duplicate claim lookups used interchangeably. Luis Ferreira wants wrong-tool calls cut without losing any tool adjusters actually use. Adjusters never perform underwriting, billing or HR work.",
+    "ask": "Which change best addresses the root cause?",
+    "options": [
+     {
+      "text": "Merge every lookup into one `lookup` tool that takes a domain parameter",
+      "correct": false,
+      "trap": "T-MEGATOOL",
+      "why": "It hides the count but moves the same ambiguity into a parameter the model must still choose, and keeps other teams' data in reach."
+     },
+     {
+      "text": "Keep all 140 tools, but require a confirmation whenever the assistant calls a tool outside the claims domain",
+      "correct": false,
+      "trap": "T-REMOVE",
+      "why": "It guards capabilities the role never needs, adding friction to wrong-tool calls instead of making them impossible."
+     },
+     {
+      "text": "Scope the assistant to the claims tools adjusters use and delete the duplicate lookups",
+      "correct": true,
+      "trap": null,
+      "why": "It cuts the choice set to what the role needs, removing the cross-domain confusion and the duplicates at the source."
+     },
+     {
+      "text": "Move the assistant to the most capable model tier to improve tool selection",
+      "correct": false,
+      "trap": "T-BIGMODEL",
+      "why": "The defect is structural, an overloaded and overlapping catalogue. It survives any tier and costs more on every call."
+     }
+    ],
+    "constraint": "Given: 'Adjusters never perform underwriting, billing or HR work', plus wrong-tool picks that grow with the catalogue. The binding constraint is least privilege at catalogue scale.",
+    "classify": "Given: prevent, at the tool-configuration layer of a production system, diagnosed from traces.",
+    "reasoning": "Eliminate the merged lookup as T-MEGATOOL: a mode parameter relocates the choice rather than removing it. Eliminate the out-of-domain confirmation as T-REMOVE: those tools are unneeded, so guarding them is the wrong control type. Eliminate the tier upgrade as T-BIGMODEL: selection confusion from overlap is a structural defect. Choose role scoping plus deleting the duplicates. If adjusters still need a large set after scoping, progressive discovery (3.8) is the next step, and sharpening descriptions fixes only a residual pair that still overlaps."
+   },
+   "traps": [
+    "T-REMOVE",
+    "T-MEGATOOL",
+    "T-ENFORCE",
+    "T-DETECT"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Remove the capability",
+     "text": "The role's tasks never exercise it: a drafting role holding a payment tool, a read-only reporter holding delete. Nothing can misuse what is absent."
+    },
+    "b": {
+     "title": "Scope and gate it",
+     "text": "The role needs it but the action is risky or hard to reverse, such as an adjuster changing a reserve. Narrow the scope and gate it by blast radius."
+    },
+    "decider": "Does any task in this role's job actually use the capability?"
+   },
+   "explain": {
+    "prompt": "Why does a confirmation prompt fail as the least-privilege answer for a tool the role never needs?",
+    "model": "The capability stays in reach, so a mis-selection, an injected instruction or a fatigued click can still fire it. Removal leaves nothing to misuse and one fewer tool to mis-select. Confirmations fit only when the role needs the action."
+   },
+   "bridge": "Foundations' role-scoped toolsets apply directly. Its prep overweights description tuning and tool_choice; here removal and per-role scoping come first, with description tuning for a residual overlapping pair."
+  },
+  {
+   "obj": "3.2",
+   "core": [
+    "**Authentication** proves who is calling; **authorization** decides what that caller may reach. Most exam gaps are authorization at the wrong layer, not a missing login.",
+    "Enforce authorization outside the model: where the caller is first known, and again at the system that owns the data. A role check in the system prompt can be talked out of.",
+    "The agent acts with the **calling user's own permissions** through a delegated, scoped identity. A shared over-privileged service account erases the per-user boundary, and the audit trail names the integration, not the person.",
+    "An MCP server accepts only tokens issued for it (**audience validation**) and never forwards the caller's token downstream: the spec forbids **token passthrough** as a confused-deputy risk. Each downstream call uses its own token for that service, tied to the user. Tokens go in the Authorization header, never a query string.",
+    "Apply entitlement filters inside the retrieval query, before data enters the context; redacting the answer acts after the exposure. Secrets stay in the tool layer, never in prompts or committed config.",
+    "When a stem asks you to stop and prove, pair per-user authorization (prevent) with an audit record keyed to the real user (detect). Logging never replaces the preventive half.",
+    "**Tenant isolation** in a shared index is enforced by the server: inject the tenant filter from the authenticated session, never as a tool argument the model fills in, and use per-tenant namespaces or indexes where contracts demand hard separation. Entitlement changes, revocations above all, must reach the index or its filter quickly, so state the propagation delay as a requirement.",
+    "**Internal agents** need authorization between them too. Give each agent its own identity, have the receiving agent enforce an allowlist of what each caller may ask for, and never let delegated scope exceed the original user's. Credentials stay with the host or a vault that injects them outside the model's context, are short-lived where possible and rotate without an outage. Never write a secret into persistent memory, which replays it into later sessions."
+   ],
+   "worked": {
+    "scenario": "Underwriting wants Meridian's policy-search MCP server behind a new broker-portal assistant. In the first build, the portal sends each broker's portal session token to the MCP server, which forwards it unchanged to PolicyVault and the ClaimsCore facade. PolicyVault accepts it because it checks only the signature, so a broker can reach wordings and claims for accounts they never placed. Priya flags the design at architecture review, before any broker has access.",
+    "ask": "Which change closes the gap?",
+    "options": [
+     {
+      "text": "Keep forwarding the token, and instruct the assistant to discuss only the policies and claims the broker placed",
+      "correct": false,
+      "trap": "T-AUTHZ"
+     },
+     {
+      "text": "Log each forwarded request with the broker ID and have compliance review the log weekly",
+      "correct": false,
+      "trap": "T-DETECT"
+     },
+     {
+      "text": "Filter retrieved wording and claim records against the broker's accounts before the answer is displayed",
+      "correct": false,
+      "trap": "T-BOUNDARY"
+     },
+     {
+      "text": "Validate token audience at the MCP server and get a separate broker-scoped token for each downstream call",
+      "correct": true,
+      "trap": null
+     }
+    ],
+    "steps": {
+     "constraint": "'Forwards it unchanged' and 'checks only the signature'. The binding constraint is the security boundary between an external broker and Meridian's data: the token was never issued for these services, and nothing downstream checks which accounts the broker may reach.",
+     "classify": "Prevent. The layer is identity and authorization at the MCP server and the data owners. The stage is design review, before exposure, where a preventive fix is cheapest.",
+     "eliminate": "The prompt instruction is T-AUTHZ: the model becomes the gatekeeper while the credential still reaches everything. The weekly log review is T-DETECT: it finds the leak after brokers have seen other accounts. Filtering before display is T-BOUNDARY: the restricted records have already entered the model's context when the filter runs.",
+     "choose": "Audience validation plus a separate, broker-scoped token for each downstream service restores each service's own authorization decision. The display filter would need the stem to say restricted data may sit in the model's context and only its display is the risk, which an external broker boundary rules out."
+    }
+   },
+   "faded": {
+    "scenario": "Meridian's adjuster assistant reads claims through the ClaimsCore facade using a single integration account that can see every claim in the region. A home-claims adjuster asks about a colleague's health-rider claim and receives a summary that includes diagnosis notes. Each adjuster's assignments and line-of-business entitlements are already recorded in the identity provider, and ClaimsCore can enforce them per user. Priya wants the gap closed, not just reported.",
+    "ask": "Which change best closes the gap?",
+    "options": [
+     {
+      "text": "Call ClaimsCore under each adjuster's delegated identity so it enforces their entitlements",
+      "correct": true,
+      "trap": null,
+      "why": "It moves the decision to the data owner using the real caller, so the health claim is never returned and the audit trail names the adjuster."
+     },
+     {
+      "text": "Tell the assistant in its system prompt to discuss only claims assigned to the requesting adjuster",
+      "correct": false,
+      "trap": "T-AUTHZ",
+      "why": "The model becomes the gatekeeper while the shared account still returns every claim, and one persuasive request defeats it."
+     },
+     {
+      "text": "Keep the integration account and redact diagnosis fields from the assistant's answers",
+      "correct": false,
+      "trap": "T-BOUNDARY",
+      "why": "The health data has already crossed into the model's context before redaction runs, so minimum necessary is already breached."
+     },
+     {
+      "text": "Alert compliance whenever the assistant returns a claim not assigned to the requester",
+      "correct": false,
+      "trap": "T-DETECT",
+      "why": "Useful as a second layer, but it reports the disclosure after it happens, and the ask is to close the gap."
+     }
+    ],
+    "constraint": "Given: 'a single integration account that can see every claim', while per-user entitlements already exist and ClaimsCore can enforce them. The binding constraint is least privilege at the identity layer, sharpened by health data.",
+    "classify": "Given: prevent, at the identity and data-owner layer, in production. This is a live gap, not a design review.",
+    "reasoning": "Eliminate the system-prompt rule as T-AUTHZ: a prompt cannot narrow what a shared credential returns. Eliminate redaction as T-BOUNDARY: it acts after the health data entered the context. Eliminate the compliance alert as T-DETECT: detection is the right second layer but the wrong answer to 'close the gap'. Choose the adjuster's delegated identity, with an audit record keyed to the adjuster alongside it. The alert would become the answer only if the stem asked how the team would find out about a disclosure."
+   },
+   "traps": [
+    "T-AUTHZ",
+    "T-BOUNDARY",
+    "T-DETECT",
+    "T-ENFORCE"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Delegated user identity",
+     "text": "What a caller may see differs by user, role, assignment or authority limit. The agent carries the user's scoped identity; the data owner enforces it on every call."
+    },
+    "b": {
+     "title": "Scoped service identity",
+     "text": "The data is non-sensitive and identical for every user, such as published product guides, or a backend job has no end user. One narrowly scoped service identity is enough, read-only wherever the job only reads."
+    },
+    "decider": "Would the correct answer change depending on who is asking?"
+   },
+   "explain": {
+    "prompt": "Why is token passthrough a security gap even when the forwarded token is genuine?",
+    "model": "Accepting it means downstream services give up their own audience check. A token stolen at any hop then works wherever it is accepted, and logs cannot tell which client called. Downstream trusts the token as if the MCP server had vetted it: a confused deputy. A separate audience-bound token per hop keeps each decision and audit trail intact."
+   },
+   "bridge": "Foundations' 'secrets in environment variables' and 'a prompt is not enforcement' still hold. What is new is OAuth-level reasoning: audience validation, no passthrough, delegated identity and where the check sits."
+  },
+  {
+   "obj": "3.3",
+   "core": [
+    "Start every latency decision by measuring the dominant term: time to first token, output length, sequential calls, retrieval and re-ranking spans, or peak queueing. Pull the lever that targets it.",
+    "**Streaming** shows output as it is generated, so the first tokens appear sooner; completion time does not change. It helps a person watching, not a system waiting on the full result. Streaming also has a reliability use: long requests without it can fail when networks drop idle connections, and the docs point very long outputs to streaming or Batch. That keeps the connection alive; it still does not meet a deadline on total completion time.",
+    "State budgets as **p95 at peak** with surge days included, never as averages. The tail is where timeouts fire and users give up.",
+    "**Tier routing** sends the measured easy slice to a faster tier and escalates the hard slice. Verify the floor per slice at peak, not on the blended total. Keep one tier if the slices overlap so often that misroutes cost more than the latency saved.",
+    "Every pipeline stage must earn its latency: a re-ranker or verification pass is justified by the accuracy it buys on a named eval against the p95 it spends.",
+    "Output length drives generation time, so shorter templates and output caps cut completion time; caching a long, stable prefix cuts input processing; independent calls run in parallel. A hard synchronous timeout needs an async job with an ID.",
+    "A justified configuration states measured accuracy per slice, p95 at peak and the floor it respects."
+   ],
+   "worked": {
+    "scenario": "Meridian's contact-centre copilot posts a validated suggestion card, an answer with its cited clause, to the handler's screen while the claimant is on the line; the card renders only once complete. Every call runs on one mid tier. At catastrophe-surge load p95 is over budget, and traces show generation dominates, with re-ranking a smaller share. Tomasz Wiśniewski's slice evals show a faster tier clears the accuracy floor on routine coverage and status questions, but not on multi-policy disputes, about 3% of calls. Dana Okafor will not lower the floor.",
+    "ask": "Which configuration is best justified?",
+    "options": [
+     {
+      "text": "Move all traffic to the most capable tier so accuracy is protected on every call",
+      "correct": false,
+      "trap": "T-BIGMODEL"
+     },
+     {
+      "text": "Stream the model's output token by token so the suggestion card completes sooner for the handler",
+      "correct": false,
+      "trap": "T-LEVER"
+     },
+     {
+      "text": "Route routine questions to the faster tier, keep disputes on the mid tier, verify each slice",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Remove the re-ranking stage from the pipeline to reclaim its share of the latency budget",
+      "correct": false,
+      "trap": "T-BLUNTCUT"
+     }
+    ],
+    "steps": {
+     "constraint": "Two constraints bind together: a p95 budget measured at surge load and an accuracy floor that will not move. The trace breakdown names the dominant term, and the slice evals make a split possible.",
+     "classify": "Neither prevent nor detect. This is a configuration trade-off at the model-routing layer, made in production with surge traces and slice evals in hand.",
+     "eliminate": "Moving all traffic to the top tier is T-BIGMODEL: it adds latency to every call, and no slice has shown a need for more than the mid tier. Streaming is T-LEVER: early tokens would arrive sooner, but the card renders only when complete, so completion time is unchanged. Removing the re-ranker is T-BLUNTCUT: it cuts a stage whose contribution to the floor nobody has measured, and it is not the dominant term anyway.",
+     "choose": "Slice-based routing shortens the dominant term on most calls and proves the floor slice by slice. Disputes are about 3% of calls, inside the 5% tail, so keeping them on the mid tier leaves p95 set by the routed routine traffic; re-measure p95 at surge to confirm. Dropping the re-ranker would need an eval showing it adds no accuracy on these slices, and even then it trims only a minor term."
+    }
+   },
+   "faded": null,
+   "traps": [
+    "T-LEVER",
+    "T-BIGMODEL",
+    "T-AVGSLA",
+    "T-BLUNTCUT"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Stream the output",
+     "text": "A person reads the answer as it arrives, and the complaint is the blank wait. Streaming fixes that wait and leaves completion time alone."
+    },
+    "b": {
+     "title": "Cut completion time",
+     "text": "A system, a rendered card or a deadline needs the whole result. Shorten output, parallelise independent calls, route easy traffic to a faster tier or go asynchronous."
+    },
+    "decider": "Is someone reading as it arrives, or does something wait for the whole answer?"
+   },
+   "explain": {
+    "prompt": "Why must a tier-routing decision be verified per slice rather than on overall accuracy?",
+    "model": "Blended accuracy can rise while the hard slice degrades, because the easy slice dominates the volume. The floor applies to every critical slice, and hard queries misrouted to the fast tier show up only in that slice's numbers."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "3.4",
+   "core": [
+    "**Instrumentation** decides what gets recorded; dashboards, alerts and runbooks only consume it. If only rate, errors and latency are captured, a quality regression is invisible: add content tracing before another dashboard.",
+    "A usable trace carries one correlation ID across every span, plus prompt and model versions, retrieved chunk IDs and scores, tool calls with arguments and results, per-span latency, token counts and the output. Split token usage into cache reads, cache writes, uncached input and output, and record the stop reason and any human approval (who approved, when, and what they saw). Unbounded identifiers such as claim or user IDs belong in traces and logs; metrics keep bounded labels, because label cardinality is what makes metrics expensive.",
+    "Quality failures look healthy to infrastructure metrics: a confident wrong answer and a refusal both arrive as successful responses. Record refusals, escalations, overrides and guardrail blocks as signals.",
+    "**Tail-based sampling** fits scale: every request gets a light correlated record, and full payloads are kept, once the outcome is known, for errors, escalations, overrides, flagged slices and a random baseline. Hold payloads until late signals such as overrides arrive. Uniform sampling loses most rare failures. An intermittent failure is diagnosed from the captured original run, not by trying to reproduce it.",
+    "Localise a regression by comparing failing and passing traces, sliced by what the change touched: index version, prompt version, region, product. An aggregate can stay flat while one slice collapses.",
+    "Traces are data too: claim or health payloads inherit residency, minimisation and retention rules, so redact or tokenise sensitive fields at capture and keep EU traces in the EU. Where a regime forbids storing content at all, trace structure only (IDs, versions, token counts, scores, stop reasons) and evaluate content on consented or synthetic sets."
+   ],
+   "worked": {
+    "scenario": "Meridian's policy-search MCP server now handles hundreds of thousands of calls a day from its three consumers, more during catastrophe surges. Keeping full request and response payloads for every call exceeds the logging budget and conflicts with Priya's retention rules for EU claim data. Aiko still needs to investigate any answer an adjuster overrides, and Tomasz needs quality trends per product line. The team is choosing a tracing strategy before the next catastrophe season.",
+    "ask": "Which tracing strategy fits best?",
+    "options": [
+     {
+      "text": "Keep full payloads for a uniform random 1% of calls and track one overall quality score for the server",
+      "correct": false,
+      "trap": "T-AGGREGATE"
+     },
+     {
+      "text": "Keep a light record per call and full payloads for errors, overrides, flagged slices and a random baseline",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Stop payload tracing entirely and rely on the existing latency and error-rate dashboards to track answer quality",
+      "correct": false,
+      "trap": "T-OBSERVE"
+     },
+     {
+      "text": "Keep full payloads for every call, but delete them after two days to fit the budget",
+      "correct": false,
+      "trap": "T-BLUNTCUT"
+     }
+    ],
+    "steps": {
+     "constraint": "Scale plus a budget and a retention limit, set against two requirements: every overridden answer stays investigable, and product lines can be compared.",
+     "classify": "Detect. The layer is observability. The stage is production operations at volume.",
+     "eliminate": "The uniform 1% sample is T-AGGREGATE: it keeps about one in a hundred of the rare overrides, and one overall score hides a failing product line. Relying on dashboards is T-OBSERVE: they consume rate, errors and latency, and none of those reveals a wrong answer. The two-day window is T-BLUNTCUT: it deletes evidence before complaints and audits arrive, and storage still scales with every call.",
+     "choose": "The light record plus tail-based payloads keeps what you will need by outcome and slice, while every call stays correlated. The uniform sample would need failures common enough that 1% catches them and no product slice that matters, and the stem rules out both."
+    }
+   },
+   "faded": null,
+   "traps": [
+    "T-OBSERVE",
+    "T-AGGREGATE",
+    "T-DETECT",
+    "T-BLUNTCUT"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Head sampling",
+     "text": "Keep or drop is decided uniformly at request start. Fine for homogeneous traffic when only aggregates such as throughput and spend matter."
+    },
+    "b": {
+     "title": "Tail-based sampling",
+     "text": "Keep or drop is decided once the outcome is known, so every error, escalation and override survives. Use it when rare failures and slices must stay investigable."
+    },
+    "decider": "Do you need the rare bad request in full, or only the aggregate?"
+   },
+   "explain": {
+    "prompt": "Why is a new dashboard not the answer when the team cannot see why quality dropped?",
+    "model": "A dashboard renders signals that are already collected. If traces lack retrieved chunk IDs, prompt and model versions and tool results, no view can show which layer changed. Instrument first; dashboards come after."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "3.5",
+   "core": [
+    "Chunk by the corpus's own units: clause, section, endorsement, table, row. A fixed-size window that splits an exception from its rule creates a **content defect** no retrieval setting repairs.",
+    "Give every chunk a **contextual header** or metadata (product, edition, jurisdiction, effective dates, section path), so 'this excess does not apply' still says which excess, where and when. Anthropic's **contextual retrieval** generates a short context line for each chunk and prepends it before both embedding and BM25 indexing; in its published tests that cut failed retrievals by 49 percent, and by 67 percent with re-ranking.",
+    "When a unit is too long to match well, index smaller child passages but return the whole parent unit (**parent-document retrieval**): precise matching, complete context.",
+    "Index for the queries you expect: lexical fields for identifiers and clause numbers, embeddings for concepts, structured fields for filters. Chunking decides what can be found; indexing decides how.",
+    "Split by **volatility**: slow-changing knowledge goes in the index (or, if small and stable, well under ~200k tokens, into a cached prompt prefix with no RAG); claim status, reserves and payments come from the system of record at request time, composed with the retrieved text. Faster re-indexing only serves stale state sooner.",
+    "Raising top-k or swapping the embedding model does not reconnect text that ingestion cut apart, and arbitrary overlap on its own cannot guarantee a unit stays whole. Fix the boundary; use a measured overlap or parent retrieval only as a complement for units longer than a chunk.",
+    "After a corpus refresh with model and prompt unchanged, suspect chunking, metadata and embeddings before anything else.",
+    "**Ingestion is a pipeline with its own gates.** Keep the index fresh with incremental upserts and deletes from change events plus a periodic full rebuild to reconcile, against a stated maximum staleness. Count parse failures and check coverage against the source before tuning retrieval, since nothing downstream recovers text that never arrived. Gate a refreshed index before it goes live: complete, superseded versions purged, one embedding model throughout. Changing the embedding model means re-embedding the whole corpus; never mix embedding spaces in one index."
+   ],
+   "worked": {
+    "scenario": "Meridian ingested PolicyVault's travel wordings in fixed-size windows. Adjusters report the assistant stating that pre-existing conditions are covered when the wording excludes undeclared ones. Aiko pulls the traces: the retrieved chunk holds the cover grant, while the exclusion sits in the next chunk, which begins mid-sentence and carries no heading. The model version, prompt and retriever settings have not changed since launch.",
+    "ask": "Which change fixes the root cause?",
+    "options": [
+     {
+      "text": "Raise top-k so that the neighbouring chunk holding the exclusion is also retrieved",
+      "correct": false,
+      "trap": "T-STUFF"
+     },
+     {
+      "text": "Move to a larger model that is better at inferring likely exclusions",
+      "correct": false,
+      "trap": "T-BIGMODEL"
+     },
+     {
+      "text": "Re-index PolicyVault nightly so that every endorsement and edition is always current",
+      "correct": false,
+      "trap": "T-LIVESTATE"
+     },
+     {
+      "text": "Re-chunk on clause boundaries and add a header naming product, edition and section",
+      "correct": true,
+      "trap": null
+     }
+    ],
+    "steps": {
+     "constraint": "'The exclusion sits in the next chunk, which begins mid-sentence and carries no heading.' The traces establish a boundary defect in the indexed content itself, and nothing about model, prompt or retriever changed.",
+     "classify": "Not a control question. The layer is ingestion and chunking in the retrieval pipeline, and the stage is a production fix after trace-based diagnosis.",
+     "eliminate": "Raising top-k is T-STUFF: a headless fragment ranks poorly and, even when retrieved, cannot be reliably reattached to the grant it limits, while extra chunks add noise. The larger model is T-BIGMODEL: no tier reasons correctly about text it never receives intact. Nightly re-indexing is T-LIVESTATE: the wording is current, so freshness is not the defect.",
+     "choose": "Re-chunking on clause boundaries repairs the unit, and the header gives every chunk its context. Raising top-k would need traces showing intact chunks with the right unit simply missing from the results, which is a recall gap, not a split."
+    }
+   },
+   "faded": {
+    "scenario": "Luis wants the Meridian adjuster assistant to answer, in one reply, both whether burst-pipe water damage is covered under a home policy and what the claim's current reserve and status are. A prototype indexes nightly ClaimsCore exports next to PolicyVault wording. Adjusters see yesterday's status on claims updated this morning, and one reserve figure was cited after a payment had already reduced it. The prototype must be fixed before the pilot starts.",
+    "ask": "Which design should replace the prototype?",
+    "options": [
+     {
+      "text": "Re-index the ClaimsCore exports every fifteen minutes instead of nightly, and timestamp each chunk",
+      "correct": false,
+      "trap": "T-LIVESTATE",
+      "why": "It shrinks the stale window without closing it: a status changed a minute ago is still wrong, the timestamp only labels the staleness, and the mainframe gains an export load."
+     },
+     {
+      "text": "Retrieve wording from the index; read status and reserve live from ClaimsCore via the async facade",
+      "correct": true,
+      "trap": null,
+      "why": "It splits by volatility: wording from the index, transactional state from the system of record at request time, composed into one answer."
+     },
+     {
+      "text": "Load the claim's full exported history and every relevant wording into the context for each question",
+      "correct": false,
+      "trap": "T-STUFF",
+      "why": "It adds cost and noise, still depends on an export snapshot, and does not make the reserve live."
+     },
+     {
+      "text": "Switch to a newer embedding model and rebuild the combined index from scratch",
+      "correct": false,
+      "trap": "T-LAYER",
+      "why": "The embeddings match correctly. The defect is that transactional data sits in an index at all."
+     }
+    ],
+    "constraint": "Given: 'yesterday's status on claims updated this morning' and a reserve cited after it changed. The binding constraint is volatility: claim status must be read live from the system of record.",
+    "classify": "Given: not a control question. The layer is retrieval architecture (index versus system of record), at the prototype stage before the pilot.",
+    "reasoning": "Eliminate fifteen-minute re-indexing as T-LIVESTATE: faster re-indexing serves stale state sooner, never live state. Eliminate loading everything as T-STUFF: volume does not change where the data comes from. Eliminate the embedding swap as T-LAYER: the embeddings were never the broken layer. Choose the index for wording plus a live ClaimsCore read, composed into one answer. The mainframe gateway's hard 2-second timeout is why that read goes through the async facade with a job ID rather than a direct synchronous call."
+   },
+   "traps": [
+    "T-STUFF",
+    "T-LIVESTATE",
+    "T-LAYER",
+    "T-BIGMODEL"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Index it",
+     "text": "Reference knowledge that changes on a schedule: policy wordings, endorsements, procedures. Chunk on its units, add headers, and re-index when a new edition lands."
+    },
+    "b": {
+     "title": "Call the system of record",
+     "text": "Values that change with each transaction: status, reserve, payments. Fetch them through a tool at request time and compose them with the retrieved text."
+    },
+    "decider": "Does the value change with each transaction on the claim, or on a publishing schedule?"
+   },
+   "explain": {
+    "prompt": "Why can't a larger top-k repair a clause split across two chunks?",
+    "model": "The orphaned half has no heading, so it ranks poorly and, when retrieved, cannot be reliably reattached to the rule it modifies. You add noise, cost and latency while the unit stays broken. Fix it at ingestion: unit boundaries plus contextual headers."
+   },
+   "bridge": "Foundations left embeddings and vector-store internals largely out of scope, so little carries over beyond grounding answers in cited sources. Chunking, indexing and the index-versus-live-state split are new."
+  },
+  {
+   "obj": "3.6",
+   "core": [
+    "Classify the traffic first. Exact identifiers (policy numbers, clause IDs, form codes) are a **lexical** problem because embeddings blur adjacent codes; paraphrased concepts are **semantic**; mixed traffic needs a **hybrid** retriever or a router.",
+    "Structured records answer counts, sums and ranges through a structured query in a tool, not similarity search over rows turned into sentences: top-k never adds up to an aggregate.",
+    "**Metadata filters** (jurisdiction, product, edition in force at the date of loss) narrow the search before or inside the query. Telling the model to ignore out-of-scope passages is a prompt doing a filter's job.",
+    "**Re-ranking** fixes precision: the right passage is in the candidate set but ranked too low. Its added latency must fit the p95 budget.",
+    "Widen k or add sources only for a measured recall gap, where the right passage never reaches the candidates. Volume thrown at a precision problem adds noise, cost and latency.",
+    "Measure retrieval separately from generation, per slice. Wrong passages is a retrieval defect; right passages with a wrong answer is a grounding defect.",
+    "Counter-case: a small, stable corpus that fits comfortably in context with caching may need no retrieval at all.",
+    "**Query-side fixes** often beat index changes: rewrite or expand the query (expand acronyms, pull out identifiers, split a multi-part question), run iterative multi-hop retrieval when the next query depends on the last answer, and use soft recency boosting where newer is better but older is not wrong, as opposed to a hard effective-date filter. Judge retrieval on a sample of real production queries, not only curated ones."
+   ],
+   "worked": {
+    "scenario": "Meridian's contact-centre handlers type queries such as 'HM-2291 clause 7.3 wind excess' as well as 'does my cover include a tree falling on the garage?' Policy search runs on a single dense-embedding index. Tomasz's retrieval eval shows strong recall on conceptual questions but frequent misses whenever a query contains a form code or clause number: a neighbouring clause comes back instead of the one named.",
+    "ask": "Which change best fits the traffic?",
+    "options": [
+     {
+      "text": "Upgrade the generation model so it notices when the returned clause is the wrong one",
+      "correct": false,
+      "trap": "T-BIGMODEL"
+     },
+     {
+      "text": "Raise top-k so the named clause is more likely to appear among the results",
+      "correct": false,
+      "trap": "T-STUFF"
+     },
+     {
+      "text": "Route identifier queries to a new lexical index and keep semantic search for concepts",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Re-index PolicyVault more often in case the clause numbering has changed since ingestion",
+      "correct": false,
+      "trap": "T-LIVESTATE"
+     }
+    ],
+    "steps": {
+     "constraint": "Data shape and query pattern: misses cluster on exact identifiers while conceptual queries retrieve well. Two query shapes are being served by one strategy.",
+     "classify": "Not a control question. The layer is the retriever, and the stage is production tuning driven by eval evidence.",
+     "eliminate": "The generation upgrade is T-BIGMODEL: a retrieval miss survives any tier. Raising top-k is T-STUFF: more near-identical clauses add noise, and the embeddings still rank the neighbour close to the target. More frequent re-indexing is T-LIVESTATE: nothing suggests the numbering is stale; this is a matching failure.",
+     "choose": "Lexical search plus routing gives each query shape its matching method. Raising top-k is the runner-up; it would need evidence that the named clause sits just below the cut-off and that the model reliably picks it out from near-identical neighbours, and even then lexical matching fixes identifier queries more directly."
+    }
+   },
+   "faded": {
+    "scenario": "For Meridian's home-claim questions, Tomasz measures that the correct wording passage is among the top 50 candidates in 94% of eval queries, but in the top five passed to the model in only 60%. The displaced slots go to near-identical clauses from other jurisdictions and superseded editions. The adjuster assistant has some p95 headroom, and every answer must cite the edition in force at the date of loss.",
+    "ask": "Which change is best?",
+    "options": [
+     {
+      "text": "Filter by jurisdiction and edition in force before search, then re-rank within the latency headroom",
+      "correct": true,
+      "trap": null,
+      "why": "Filtering removes the wrong editions from competition and re-ranking fixes the precision defect the numbers show, inside the budget."
+     },
+     {
+      "text": "Pass all 50 candidates to the model so the right passage is always somewhere in its context",
+      "correct": false,
+      "trap": "T-STUFF",
+      "why": "Recall is not the problem. Fifty passages multiply noise, cost and latency, and the wrong editions are still there."
+     },
+     {
+      "text": "Instruct the model to disregard any passages from other jurisdictions or superseded editions",
+      "correct": false,
+      "trap": "T-ENFORCE",
+      "why": "An instruction cannot guarantee the edition-in-force requirement, and the wrong passages still take the top slots."
+     },
+     {
+      "text": "Re-embed the whole corpus with a newer embedding model and rebuild the index from scratch",
+      "correct": false,
+      "trap": "T-LAYER",
+      "why": "Recall at 50 is already high, so the embeddings are not the broken layer; ranking and scope are."
+     }
+    ],
+    "constraint": "Given: 94% recall at 50 but 60% at five, with the displaced slots taken by other jurisdictions and superseded editions. That is high recall, low precision and a scope that was never filtered.",
+    "classify": "Given: the retriever layer (filtering and ranking), production tuning under a p95 budget. The edition-in-force rule must hold on every answer.",
+    "reasoning": "Eliminate passing all 50 as T-STUFF: widening k answers a recall gap that does not exist. Eliminate the instruction as T-ENFORCE: a rule that must hold every time needs a filter, not a request. Eliminate re-embedding as T-LAYER: the evidence clears the embeddings. Choose filter-then-re-rank, and confirm re-ranking stays inside the headroom at peak. A re-ranker alone is the runner-up; it would need the wrong editions to differ enough in text for ranking to push them out every time, and superseded editions of the same clause rarely do."
+   },
+   "traps": [
+    "T-STUFF",
+    "T-BIGMODEL",
+    "T-LIVESTATE",
+    "T-ENFORCE"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Re-rank the candidates",
+     "text": "The right passage is in the candidate set but ranked below noise. Precision is the defect; a re-ranker reorders what you have, within the latency budget."
+    },
+    "b": {
+     "title": "Widen k or add sources",
+     "text": "The right passage never reaches the candidates. Recall is the measured defect: retrieve more or broaden sources, after ruling out a chunking fault."
+    },
+    "decider": "Is the right passage in the candidate set at all?"
+   },
+   "explain": {
+    "prompt": "Why is a metadata filter better than an instruction to ignore out-of-scope passages?",
+    "model": "The filter guarantees the wrong jurisdiction or edition never competes for the top slots. The instruction relies on the model noticing metadata on every passage, and noise still fills the context. A rule that must hold on every answer belongs in the query."
+   },
+   "bridge": null
+  },
+  {
+   "obj": "3.7",
+   "core": [
+    "Pick the **lightest mechanism that reaches every consumer**. A direct API or CLI call suits one consumer or a fixed pipeline you own; tools inside one app suit a single model choosing among a few actions.",
+    "An **MCP server** fits when several clients or teams need the same live capability at runtime: authentication, error handling and change management are built once, not per integration. Map each capability to the right primitive: tools for actions the model chooses, resources for context the application supplies, prompts for templates a user invokes.",
+    "**Agent-to-agent** fits only when the counterpart reasons independently, usually across an ownership boundary, and must negotiate rather than be called. Only messages cross. The A2A protocol, now under the Linux Foundation, is the main open standard; it complements MCP, which connects a model to tools and data.",
+    "A **Skill** packages know-how (procedures, templates, domain rules) and connects to no external system; for know-how alone, an MCP server is overhead.",
+    "The mechanism never relaxes the auth rules: an MCP server still validates audience, acts with the caller's identity and never passes tokens through.",
+    "Counter-case: MCP for a single app is right when the host accepts capabilities only over MCP, or when the stem states reuse by other hosts.",
+    "The **deployment surface** (Claude API, Amazon Bedrock, Google Cloud's Agent Platform, formerly Vertex AI, Microsoft Foundry or Claude Platform on AWS) is chosen by who operates inference and whose controls already govern it: identity, billing, audit, residency and contract. On Bedrock and Google Cloud the cloud provider operates inference inside its own boundary; Claude Platform on AWS is operated by Anthropic, which is the data processor, with AWS providing sign-in and Marketplace billing. Model IDs, feature availability and retirement dates differ by surface, so check parity and pin model versions on each."
+   ],
+   "worked": {
+    "scenario": "Each night a Meridian reconciliation job compares ClaimsCore reserves with the finance ledger and asks Claude to summarise each mismatch for the finance team. One platform team owns the job and both APIs, the call sequence never varies, and no model decides when to call anything. A developer proposes wrapping the ledger API in a new MCP server 'for consistency with policy search'. Nobody else has asked for ledger access.",
+    "ask": "Which integration mechanism fits?",
+    "options": [
+     {
+      "text": "Wrap the ledger API in an MCP server so future consumers can reuse it",
+      "correct": false,
+      "trap": "T-PROTOCOL"
+     },
+     {
+      "text": "Call the ledger API directly under the job's own scoped identity and pass mismatches to Claude",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Build a finance agent that negotiates each mismatch with a reconciliation agent over agent-to-agent messages",
+      "correct": false,
+      "trap": "T-AGENTIC"
+     },
+     {
+      "text": "Call the ledger directly, reusing the integration account that already reads every claim and ledger",
+      "correct": false,
+      "trap": "T-AUTHZ"
+     }
+    ],
+    "steps": {
+     "constraint": "Reuse: one consumer, a fixed sequence, both ends owned by one team, and 'nobody else has asked'.",
+     "classify": "Integration mechanism at the design stage, recorded in an ADR. It is not a control question, although the shared-account option smuggles one in.",
+     "eliminate": "The MCP wrapper is T-PROTOCOL: a protocol layer with a single consumer adds a server to run, secure and version for no reuse. The negotiating finance agent is T-AGENTIC: the call sequence never varies and nobody on either side makes a decision, so agents and a protocol between them add autonomy the job never uses. Reusing the broad integration account is T-AUTHZ: the mechanism is right, but a backend job should run under its own narrowly scoped identity, and a shared account widens its reach and blurs the audit trail.",
+     "choose": "A direct call under the job's own narrowly scoped identity is the lightest mechanism that reaches the only consumer. The MCP wrapper would need a stated second consumer, or a host that accepts capabilities only over MCP."
+    }
+   },
+   "faded": {
+    "scenario": "A reinsurer plans a recovery agent that would agree recovery amounts with Meridian on large catastrophe claims. Each company has its own contract terms, data and approval rules, and both sides expect to counter-propose. The reinsurer's architect asks Aiko to give their agent access to Meridian's policy-search MCP server and its ClaimsCore tools. Any amount Meridian accepts still needs sign-off from a named Meridian approver.",
+    "ask": "Which mechanism fits?",
+    "options": [
+     {
+      "text": "Expose Meridian's MCP tools to the reinsurer's agent under a partner service account",
+      "correct": false,
+      "trap": "T-AUTHZ",
+      "why": "It hands a partner's reasoning your capability surface through a shared identity, so your authorization must anticipate their every call."
+     },
+     {
+      "text": "Have each company integrate the other's claims and policy APIs directly into its own agent",
+      "correct": false,
+      "trap": "T-PROTOCOL",
+      "why": "Direct APIs suit a function call, not a counterpart that proposes, rejects and counter-proposes under its own policy."
+     },
+     {
+      "text": "Merge both companies' tools into one shared MCP server with a company parameter",
+      "correct": false,
+      "trap": "T-MEGATOOL",
+      "why": "One merged server widens both blast radii and erases the boundary the two organisations need to keep."
+     },
+     {
+      "text": "Agent-to-agent: only proposals cross; each side keeps its own tools, data and credentials",
+      "correct": true,
+      "trap": null,
+      "why": "Two independent reasoners across an ownership boundary. Only the negotiation crosses, and each side authorises and fails on its own terms."
+     }
+    ],
+    "constraint": "Given: 'each company has its own contract terms, data and approval rules' and both sides counter-propose. The binding constraint is an ownership and security boundary between two independent reasoners.",
+    "classify": "Given: integration mechanism plus security boundary, at the design stage before any partner access is granted.",
+    "reasoning": "Eliminate the partner service account as T-AUTHZ: it is a shared, over-privileged identity over internal tools. Eliminate direct API integration as T-PROTOCOL: the counterpart reasons, so a request-response API misses the negotiation. Eliminate the merged server as T-MEGATOOL: merging tools collapses the boundary. Choose agent-to-agent, with the named approver kept as the human gate on any accepted amount. Direct APIs would win only if the reinsurer's side were a deterministic service making no decisions of its own."
+   },
+   "traps": [
+    "T-PROTOCOL",
+    "T-AUTHZ",
+    "T-AGENTIC",
+    "T-MEGATOOL"
+   ],
+   "contrast": {
+    "a": {
+     "title": "MCP server",
+     "text": "Several clients or teams need the same live connection to a system, such as policy search on three surfaces. Build it once, with per-user authorization."
+    },
+    "b": {
+     "title": "Agent-to-agent",
+     "text": "The counterpart reasons independently, often in another organisation, and must negotiate and fail independently. Only messages cross; tools, data and credentials stay home."
+    },
+    "decider": "Does the other side just execute a function, or does it make its own decisions?"
+   },
+   "explain": {
+    "prompt": "Why is exposing internal MCP tools to a partner's agent worse than agent-to-agent, even under a scoped account?",
+    "model": "The partner's reasoning now drives your tools, so your authorization must anticipate every call their agent might make, and your audit trail records a partner account. Agent-to-agent keeps actions inside your boundary under your policy; only proposals cross, and either side can refuse."
+   },
+   "bridge": "Foundations' MCP-versus-direct choice carries over intact, with agent-to-agent added as a third answer. Transport and config details stay low-yield."
+  },
+  {
+   "obj": "3.8",
+   "core": [
+    "**Monolithic context** loads every tool definition, instruction and reference up front. **Progressive discovery** exposes a short index (names and one-line descriptions) and loads full definitions only when a request needs them.",
+    "Every always-loaded definition costs context on every request and competes for attention during tool selection, even when a call uses one tool.",
+    "The mechanisms are **tool search** over deferred tool definitions, **Skills** whose metadata stays in context while the body loads on trigger, and subagents that each hold a narrow toolset. For reference knowledge the same principle is **just-in-time loading**: the agent keeps lightweight references (file paths, stored queries, links) and reads documents through search or file tools when a task needs them. Tool search leaves the cached prefix intact, because deferred definitions stay out of it and discovered ones are appended inline; editing the `tools` array itself invalidates the whole cache.",
+    "Scope first, then discover: role scoping decides what a role may use, discovery decides when those definitions load.",
+    "Truncating every description so the whole catalogue fits is a blunt cut that degrades selection on every tool. Keep descriptions complete and load them on demand.",
+    "Discovery is a step that can fail. Keep the most-used tools always loaded, and measure selection accuracy and latency after the switch.",
+    "Counter-case: a small, stable toolset that most requests use is fine loaded up front."
+   ],
+   "worked": {
+    "scenario": "After role scoping, Meridian's contact-centre copilot still legitimately needs about 120 tools across policy search, claim status, correspondence and scheduling, plus 30 language-specific call procedures. Loading all of it up front consumes a large share of context on every call, and traces show selection accuracy falling as the set grew. Most calls use three or four tools and one procedure. Aiko must reduce context without removing anything the copilot uses.",
+    "ask": "Which context strategy fits?",
+    "options": [
+     {
+      "text": "Shorten every tool description to a single line so the whole catalogue fits comfortably",
+      "correct": false,
+      "trap": "T-BLUNTCUT"
+     },
+     {
+      "text": "Merge the catalogue into a handful of broad tools whose mode parameter switches across unrelated domains",
+      "correct": false,
+      "trap": "T-MEGATOOL"
+     },
+     {
+      "text": "Keep the most-used tools loaded, defer the rest behind tool search, and load procedures as Skills",
+      "correct": true,
+      "trap": null
+     },
+     {
+      "text": "Put every tool definition and procedure in the system prompt and rely on prompt caching for cost",
+      "correct": false,
+      "trap": "T-STUFF"
+     }
+    ],
+    "steps": {
+     "constraint": "A large, still-growing catalogue that is already role-scoped, 'without removing anything the copilot uses', and a typical call that needs only a small slice of it.",
+     "classify": "Not a control question. This is the context-strategy layer in production, measured by selection accuracy and per-call context.",
+     "eliminate": "One-line descriptions are T-BLUNTCUT: they trade selection accuracy on every tool for tokens. Cross-domain mode tools are T-MEGATOOL: they hide the count and move the ambiguity into arguments. Grouping operations on one resource behind an action parameter is sound tool design (3.1), but it cannot shrink 120 tools and 30 procedures to the slice a call needs. Everything in a cached system prompt is T-STUFF: caching lowers the cost of the prefix, but every definition still competes for attention during selection.",
+     "choose": "Deferred loading plus Skills brings in what a call needs when it needs it. The cached monolith would need a small, stable set used on most calls, which 120 tools and 30 procedures are not."
+    }
+   },
+   "faded": null,
+   "traps": [
+    "T-MEGATOOL",
+    "T-STUFF",
+    "T-BLUNTCUT",
+    "T-REMOVE"
+   ],
+   "contrast": {
+    "a": {
+     "title": "Monolithic context",
+     "text": "A small, stable set that most requests use. Loading it up front is simpler, caches as a stable prefix and has no discovery step to miss."
+    },
+    "b": {
+     "title": "Progressive discovery",
+     "text": "A large or growing catalogue where each request uses a small slice. Expose names and short descriptions, and load full definitions or Skill bodies on demand."
+    },
+    "decider": "Does a typical request use most of what is loaded, or a small slice?"
+   },
+   "explain": {
+    "prompt": "Why is progressive discovery not a substitute for removing tools a role never needs?",
+    "model": "Discovery changes when a definition loads, not whether the role can call it. A deferred payment tool is still one search away, including for an injected instruction. Remove what the role never uses first (3.1), then defer what remains."
+   },
+   "bridge": "Claude Code Skills and subagent tool scoping from Foundations show the same progressive-disclosure idea; here it is an architecture decision with a counter-case."
+  }
+ ],
+ "case": "Inference runs on Bedrock in Meridian's AWS accounts through EU and US in-Region or geography-bound endpoints, never global cross-Region routing, which cannot guarantee location. Policy search is one MCP server shared by the claims assistant, the contact-centre copilot and underwriting; it validates token audience, acts with the caller's identity and never forwards tokens. The single-caller nightly reconciliation job calls APIs directly under its own scoped identity. No agent-to-agent link runs today; only a counterpart that reasons for itself, such as a reinsurer's negotiating agent, would justify one. PolicyVault wording is chunked on clause boundaries with product, edition, jurisdiction and date headers. Edition-in-force filters run before search, identifiers go lexical and concepts semantic, and a re-ranker earns its place inside the p95 budget. Claim status and reserves come live from ClaimsCore through the async facade. Drafts stream, and model tiers are checked per slice at surge. The drafting role has no payment tool, each role sees only its own tools, large catalogues load on demand, and tail-sampled traces keep every failure and override."
+}

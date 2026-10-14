@@ -1,0 +1,1152 @@
+{
+ "domain": 4,
+ "cards": [
+  {
+   "id": "C4.1-01",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "recall",
+   "front": "Name the four things a decision-ready metric fixes before the build.",
+   "back": "A **decision-ready metric** fixes the measure, the pass threshold, the sample and the scoring instrument, all before the build. Without all four, the number cannot gate a release; a number with no pre-agreed bar is T-VIBES (Number Without Bar).",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-01",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.1-02",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "apply",
+   "front": "No baseline exists yet, but the sponsor wants go-live thresholds fixed now. What comes first?",
+   "back": "**Measure the current baseline first**, then set each threshold from it. Measure the current process, not the new system: a bar picked after seeing the candidate's own results is not a pre-agreed bar (trap: T-VIBES, Number Without Bar).",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-01",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.1-03",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "define",
+   "front": "When does a proxy metric, such as a judge score or token count, earn a place on the scorecard?",
+   "back": "Only once it is **shown to move with the outcome** the decision owner cares about. Every metric is anchored to that outcome; a proxy that has not been shown to track it cannot stand in for it.",
+   "src": [
+    "core:1"
+   ]
+  },
+  {
+   "id": "C4.1-04",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "why",
+   "front": "Why are reference-overlap scores such as ROUGE or BLEU the wrong way to grade summaries?",
+   "back": "They **reward matching wording, not faithfulness**: the score reflects how closely the words overlap a reference. Grade summaries on **factual consistency with the source** instead.",
+   "src": [
+    "core:1"
+   ]
+  },
+  {
+   "id": "C4.1-05",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "apply",
+   "front": "Overall accuracy clears the bar, but one critical line of business falls short. What does the release gate on?",
+   "back": "The **worst critical slice**, not the overall mean. Accuracy is defined per slice (line of business, language, document type), so the short slice blocks the release; shipping on the aggregate is T-AGGREGATE (Average Hides Slice).",
+   "src": [
+    "core:2",
+    "trap:T-AGGREGATE"
+   ]
+  },
+  {
+   "id": "C4.1-06",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "define",
+   "front": "For an interactive path, which latency statistic gates a release, and under what load is it measured?",
+   "back": "A **tail percentile measured at peak**, such as p95 at peak, not one mean across the day. A single daily mean hides the users who churn (trap: T-AVGSLA, SLA on Averages).",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-02",
+    "trap:T-AVGSLA"
+   ]
+  },
+  {
+   "id": "C4.1-07",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "distinguish",
+   "front": "Which latency measure matters for a person watching the answer, and which for a caller waiting on it?",
+   "back": "**Time-to-first-token** for a person watching; **completion time** for a caller waiting on the whole result. Track the two separately, each as a tail percentile at peak.",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-02"
+   ]
+  },
+  {
+   "id": "C4.1-08",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "apply",
+   "front": "A release gate normally checks a latency percentile at peak. What does a batch workload's gate check instead?",
+   "back": "**A delivery window**: batch work commits to completing within the window rather than to per-request latency. It is the stated exception to gating on p95 at peak.",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-02",
+    "trap:T-AVGSLA"
+   ]
+  },
+  {
+   "id": "C4.1-09",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "define",
+   "front": "What does cost per completed task include, and what is it compared against?",
+   "back": "It counts the whole task, **including retries, tool turns and human rework**, not just the first call. It is compared against a **measured pre-AI baseline**.",
+   "src": [
+    "core:4"
+   ]
+  },
+  {
+   "id": "C4.1-10",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "why",
+   "front": "Why does cost per request mislead when evaluating an agent?",
+   "back": "It **flatters agents that loop**: each request can look cheap while retries and extra tool turns multiply the requests per task. Measure cost per completed task instead.",
+   "src": [
+    "core:4"
+   ]
+  },
+  {
+   "id": "C4.1-11",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "recall",
+   "front": "What sizing calculation gives a feasibility verdict before building, and what are the three verdicts?",
+   "back": "**Volume times tokens per task times price**, checked against the budget, plus a measured tool round trip against the latency budget. The verdict is **feasible, feasible with constraints, or not feasible**.",
+   "src": [
+    "core:4"
+   ]
+  },
+  {
+   "id": "C4.1-12",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "recall",
+   "front": "Name the four failures that safety and security gates score on adversarial and red-team sets.",
+   "back": "**PII leakage, injection success, unauthorized tool actions and unsupported claims**. Safety and security are separate gates with their own thresholds; folding them into one blended quality score is T-AGGREGATE.",
+   "src": [
+    "core:5",
+    "cheat:CS-D4-03",
+    "trap:T-AGGREGATE"
+   ]
+  },
+  {
+   "id": "C4.1-13",
+   "d": 4,
+   "obj": "4.1",
+   "kind": "apply",
+   "front": "What threshold can a safety gate carry on an irreversible path?",
+   "back": "**Zero tolerance**: any observed failure blocks the release. Agree that bar and the attack set before the red team runs, so it returns a pass or a fail. A small live rollout cannot stand in for the gate, because every failure it lets through is already irreversible.",
+   "src": [
+    "core:5",
+    "core:0",
+    "cheat:CS-D4-03"
+   ]
+  },
+  {
+   "id": "C4.2-01",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "define",
+   "front": "Where do an eval set's cases come from, and how is the set composed?",
+   "back": "It is **sampled from real production demand**, stratified by the slices that matter, with **adversarial and edge cases added in known proportions**. Before launch, it is seeded from historical records and cases written by subject-matter experts.",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-04"
+   ]
+  },
+  {
+   "id": "C4.2-02",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "apply",
+   "front": "When do model-generated inputs add useful volume to an eval set?",
+   "back": "**Only when seeded from real traffic and checked against it.** Labels or grades produced by the system under test are different: they are **circular**, so they cannot measure it, and cases it writes share its blind spots (trap: T-VIBES, Number Without Bar).",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-04",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.2-03",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "recall",
+   "front": "Besides adversarial and edge cases, which three kinds of case must an eval set deliberately include?",
+   "back": "**Negative cases** where the right answer is to decline or say 'not found', **ambiguous cases** that should trigger a clarifying question or escalation, and **every past failure** as a regression case.",
+   "src": [
+    "core:0"
+   ]
+  },
+  {
+   "id": "C4.2-04",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "distinguish",
+   "front": "Which builds the stronger eval set: a few hand-graded cases, or many cases with slightly noisier automated grading?",
+   "back": "**Many cases with slightly noisier automated grading** beat a few hand-graded ones: prefer volume over polish. The cases still come from real production demand, stratified by the slices that matter.",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-04"
+   ]
+  },
+  {
+   "id": "C4.2-05",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "why",
+   "front": "Why must the eval set stay held out from prompt tuning?",
+   "back": "Iterating until the test set passes **turns it into training data**, and the score stops predicting production. Keep the held-out set for measurement only (trap: T-VIBES, Number Without Bar).",
+   "src": [
+    "core:1",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.2-06",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "define",
+   "front": "What is an eval set's refresh trigger, and what happens when it fires?",
+   "back": "A **traffic shift**, such as a new region, product, language or format. Sample fresh cases from the new traffic and **score the new segment as its own slice**; the set itself is versioned.",
+   "src": [
+    "core:2",
+    "cheat:CS-D4-06"
+   ]
+  },
+  {
+   "id": "C4.2-07",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "why",
+   "front": "Why can an eval score hold steady while errors rise in a newly added language?",
+   "back": "The set was **frozen before that segment existed**, so the new language is absent from it, not diluted in it: no score on the old set can see it. Refresh from current traffic and score the new segment as its own slice; trusting the steady overall score is T-AGGREGATE (Average Hides Slice).",
+   "src": [
+    "core:2",
+    "cheat:CS-D4-06",
+    "trap:T-AGGREGATE"
+   ]
+  },
+  {
+   "id": "C4.2-08",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "recall",
+   "front": "Name the three graders on the eval-grading ladder, cheapest first.",
+   "back": "**Code checks** where truth is crisp, a **rubric LLM judge** for open-ended quality, and **targeted expert review** where stakes or specialism demand it. They follow the ladder's first rung (metric, threshold and slices agreed in advance); pick the cheapest valid grader for each property.",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-04"
+   ]
+  },
+  {
+   "id": "C4.2-09",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "recall",
+   "front": "What are the two kinds of code check on the eval-grading ladder?",
+   "back": "**Exact match** against a reference, and **property checks** such as valid JSON, citing a retrieved ID or staying within length. Both suit properties where the truth is crisp.",
+   "src": [
+    "core:3"
+   ]
+  },
+  {
+   "id": "C4.2-10",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "apply",
+   "front": "Human raters disagree on many labels under a vague rubric. What must happen before those labels can calibrate an LLM judge?",
+   "back": "**Make the rubric specific, with anchored score levels, and confirm the raters now agree with each other.** Calibration measures the judge against human labels, and a rubric the raters cannot agree on cannot calibrate a judge.",
+   "src": [
+    "core:3",
+    "core:6"
+   ]
+  },
+  {
+   "id": "C4.2-11",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "apply",
+   "front": "What must be measured before an LLM judge gates anything?",
+   "back": "Its **agreement with human labels**, then rechecked on fresh labels over time. A judge is an instrument, and an instrument never checked against people cannot gate a release (trap: T-VIBES).",
+   "src": [
+    "core:4",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.2-12",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "apply",
+   "front": "A judge's agreement with human labels was measured last week on this prompt's own output, and nothing has changed since. What is the next move?",
+   "back": "**Scale it**: score the full held-out set with the calibrated judge, alongside code checks where truth is crisp. Scaling is right once the judge is validated against human labels (the T-VIBES exception); recheck on fresh labels when a drift signal appears, such as scores rising while complaints rise.",
+   "src": [
+    "core:4",
+    "core:3",
+    "cheat:CS-D4-04",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.2-13",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "apply",
+   "front": "Judge scores keep rising while complaints and overrides rise too. What does that signal?",
+   "back": "**The judge has drifted**: its scores no longer track human outcomes. Recalibrate it against fresh human labels of current output before trusting any trend, rather than trusting the judge and calling it model drift (trap: T-VIBES).",
+   "src": [
+    "core:4",
+    "cheat:CS-D4-05",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.2-14",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "why",
+   "front": "Why doesn't averaging repeated runs, or temperature 0, fix an uncalibrated judge?",
+   "back": "Both make the judge **repeatable, not correct**: a miscalibrated judge becomes wrong the same way every time (trap: T-VIBES). Correctness shows only in its measured agreement with human labels. Temperature 0 is an option only on models that still accept it.",
+   "src": [
+    "core:4",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.2-15",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "distinguish",
+   "front": "At what level are mixed grading methods chosen, and what does that look like for one draft?",
+   "back": "**Per property, not per output**. One draft can have its codes exact-matched, its tone judged by a rubric judge and its decline rationale reviewed by an expert. Each property gets the cheapest valid grader.",
+   "src": [
+    "core:5",
+    "cheat:CS-D4-04"
+   ]
+  },
+  {
+   "id": "C4.2-16",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "recall",
+   "front": "Name the three design features of a sound judge rubric and verdict.",
+   "back": "A **specific rubric with anchored score levels**, a **constrained verdict** (pass or fail, or a small scale) and **reasoning before the score**.",
+   "src": [
+    "core:6",
+    "cheat:CS-D4-22"
+   ]
+  },
+  {
+   "id": "C4.2-17",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "apply",
+   "front": "What should an LLM judge see, and not see, when it grades an output?",
+   "back": "**In its own context: the output and the criteria, but not the generator's rationale.** Having the generating model rate its own answers makes the eval instrument circular (trap: T-VIBES, Number Without Bar), even at temperature 0.",
+   "src": [
+    "core:6",
+    "cheat:CS-D4-22",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.2-18",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "why",
+   "front": "Why prefer a judge from a different model or version than the generator, and why pin it?",
+   "back": "A different model or version **limits self-preference**, the judge favouring output like its own. Pinning the judge's version **keeps score trends comparable**, since a changed judge is a changed instrument.",
+   "src": [
+    "core:6",
+    "cheat:CS-D4-22"
+   ]
+  },
+  {
+   "id": "C4.2-19",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "define",
+   "front": "What does an agent eval grade?",
+   "back": "The **outcome and end state** (the booking exists, the record is correct), not whether the agent followed one exact tool-call path, since several paths can be right. Where a step is mandated, check that step explicitly as well.",
+   "src": [
+    "core:7",
+    "cheat:CS-D4-21"
+   ]
+  },
+  {
+   "id": "C4.2-20",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "recall",
+   "front": "Besides the end state, what does an agent eval track, and how are multi-turn conversations graded?",
+   "back": "**Trajectory metrics** (steps, retries, wrong-tool calls) are kept as diagnostics, not the grade. Multi-turn conversations are graded **as whole conversations as well as turn by turn**.",
+   "src": [
+    "core:7",
+    "cheat:CS-D4-21"
+   ]
+  },
+  {
+   "id": "C4.2-21",
+   "d": 4,
+   "obj": "4.2",
+   "kind": "apply",
+   "front": "What protects an agent eval when you tune tool descriptions against it?",
+   "back": "**Hold out a split**. Tuning tool descriptions against the whole eval turns it into training data, the same failure as tuning a prompt on the test set.",
+   "src": [
+    "core:7",
+    "core:1"
+   ]
+  },
+  {
+   "id": "C4.3-01",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "recall",
+   "front": "Name the four things pre-registration fixes before the first A/B result is seen.",
+   "back": "The **primary metric, guardrail metrics, sample size and stopping rule**. A rule chosen after peeking manufactures winners (trap: T-PEEK, Decide After Peeking).",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-07",
+    "trap:T-PEEK"
+   ]
+  },
+  {
+   "id": "C4.3-02",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "why",
+   "front": "Why does stopping an A/B test at an unplanned peek, while the variant leads, tend to produce a false winner?",
+   "back": "**Repeated looks inflate the false-positive rate**, and stopping at the look that happens to favour the variant locks in that lead before the planned sample can test it (trap: T-PEEK, Decide After Peeking). Run to the planned sample unless a pre-declared rule fires.",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-07",
+    "trap:T-PEEK"
+   ]
+  },
+  {
+   "id": "C4.3-03",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "apply",
+   "front": "A pre-registered test ends neutral on its primary metric, but slicing afterwards finds one segment well ahead. What is that segment lead worth?",
+   "back": "**A lead to test, not a winner.** The segment was chosen after the results were seen, which is deciding after peeking (trap: T-PEEK), and every extra cut is another look. Keep the pre-registered verdict and give the segment its own test, pre-registered and sized for it.",
+   "src": [
+    "core:0",
+    "core:5",
+    "cheat:CS-D4-07",
+    "trap:T-PEEK"
+   ]
+  },
+  {
+   "id": "C4.3-04",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "recall",
+   "front": "What two things can a bundled variant hide even when it beats control?",
+   "back": "**Which change helped**, and **a regression from one change masked by a gain from another**. Change one variable per arm so each result is attributable (trap: T-PEEK).",
+   "src": [
+    "core:1",
+    "cheat:CS-D4-08",
+    "trap:T-PEEK"
+   ]
+  },
+  {
+   "id": "C4.3-05",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "apply",
+   "front": "Sampling varies from run to run. How should a prompt change be judged against the baseline?",
+   "back": "On **repeated runs over the whole set**, never a single run, with the **eval set itself held fixed** between baseline and candidate so that only the change differs.",
+   "src": [
+    "core:1"
+   ]
+  },
+  {
+   "id": "C4.3-06",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "apply",
+   "front": "A bundled test has already run and the variant won. What is the next move?",
+   "back": "Treat the win as **a direction**, not a verdict, and follow up with **ablation arms** that test the changes separately, so you can keep the change that helped and drop one that hurt.",
+   "src": [
+    "core:1",
+    "cheat:CS-D4-08"
+   ]
+  },
+  {
+   "id": "C4.3-07",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "recall",
+   "front": "Put the iteration stages in order, from offline testing to full rollout.",
+   "back": "**Pass the offline eval on the held-out set**, then **run the online test under capped exposure** (a small traffic share or one region) with guardrails that halt it by pre-declared rule, **then widen**. Jumping straight to every region skips a stage (trap: T-LATER, Right Answer, Wrong Time).",
+   "src": [
+    "core:2",
+    "core:3",
+    "cheat:CS-D4-08",
+    "trap:T-LATER"
+   ]
+  },
+  {
+   "id": "C4.3-08",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "define",
+   "front": "What runs on every prompt, model or index change, and what gates every release?",
+   "back": "An **automated regression eval in CI** runs on every change, and the **full held-out suite gates every release**, so a gain on one slice cannot ship hiding a regression elsewhere. If the full suite is slow, a fast subset per change plus the full suite before release is sound tiering. Spot-checking favourites is T-VIBES.",
+   "src": [
+    "core:2",
+    "cheat:CS-D4-17",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.3-09",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "recall",
+   "front": "Name the two legitimate grounds for stopping an A/B test early.",
+   "back": "A **guardrail metric** (PII leakage, severe misroutes, complaint rate) firing its pre-declared rule, or a **pre-registered interim analysis** meeting its own stricter threshold. A primary metric that merely looks significant at an unplanned peek is not a reason to stop.",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-07",
+    "trap:T-PEEK"
+   ]
+  },
+  {
+   "id": "C4.3-10",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "apply",
+   "front": "At what unit should an A/B test randomise, and why must the arms run concurrently?",
+   "back": "Randomise at **the unit that matters** (claim or claimant) and **run the arms concurrently**, so seasonality or a catastrophe surge cannot pose as a treatment effect. Splitting arms by channel or by period instead adds a second difference that can pose as the effect.",
+   "src": [
+    "core:4",
+    "core:1"
+   ]
+  },
+  {
+   "id": "C4.3-11",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "apply",
+   "front": "The A/B winner leads overall but loses on a critical slice. Where does the result go next?",
+   "back": "**Back to the decision owner**, not straight to rollout: results are read by slice and with their uncertainty (trap: T-AGGREGATE, Average Hides Slice). If the losing slice breaches a guardrail or a legal duty, that gate rules the variant out rather than being traded against the overall gain.",
+   "src": [
+    "core:5",
+    "core:3",
+    "trap:T-AGGREGATE"
+   ]
+  },
+  {
+   "id": "C4.3-12",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "recall",
+   "front": "How much notice does Anthropic give before retiring a publicly released model, and what happens to requests afterwards?",
+   "back": "**At least 60 days' notice**, and after retirement **requests to that model fail**. Migrate before the date, treating the model change like any other release.",
+   "src": [
+    "core:6"
+   ]
+  },
+  {
+   "id": "C4.3-13",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "apply",
+   "front": "Whose retirement schedule does a Claude deployment on Amazon Bedrock follow?",
+   "back": "**AWS's own dates**: Amazon Bedrock and Google Cloud set their own retirement schedules. Anthropic's dates cover the Claude API, Claude Platform on AWS and Microsoft Foundry, so a Bedrock deployment like Meridian's checks AWS.",
+   "src": [
+    "core:6"
+   ]
+  },
+  {
+   "id": "C4.3-14",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "recall",
+   "front": "A model's retirement date is announced. Name the three migration steps to finish before it.",
+   "back": "**Re-tune the prompt** for the new model, **run the full regression suite** with the migration as the one change under test, then **roll out under capped exposure**. Pin model versions, not moving aliases; swapping the ID and watching complaints is T-VIBES.",
+   "src": [
+    "core:6",
+    "cheat:CS-D4-16",
+    "trap:T-VIBES"
+   ]
+  },
+  {
+   "id": "C4.3-15",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "why",
+   "front": "Why re-tune the prompt for a replacement model before running the regression suite?",
+   "back": "A prompt tuned for the incumbent **handicaps the challenger**, so testing the new model on the old prompt understates it. Re-tune first, then make the migration the one change under test.",
+   "src": [
+    "core:6",
+    "cheat:CS-D4-16"
+   ]
+  },
+  {
+   "id": "C4.3-16",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "define",
+   "front": "What is shadow mode, and what kind of change does it suit?",
+   "back": "The candidate runs **on live traffic without its output being served**, compared with the incumbent or with human decisions. It suits **replacing a legacy system**, widening segment by segment by measured agreement. Because nothing is served, it cannot show harm that appears only when people act on the output.",
+   "src": [
+    "core:7",
+    "cheat:CS-D4-18"
+   ]
+  },
+  {
+   "id": "C4.3-17",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "distinguish",
+   "front": "What separates a canary from an A/B test?",
+   "back": "**The question each asks.** A **canary** asks 'does it break?': a small share of traffic against the baseline on guardrail metrics, with widening gates and rollback criteria set in advance. An **A/B test** asks 'which is better?' on a pre-registered primary metric.",
+   "src": [
+    "core:7",
+    "cheat:CS-D4-18"
+   ]
+  },
+  {
+   "id": "C4.3-18",
+   "d": 4,
+   "obj": "4.3",
+   "kind": "recall",
+   "front": "What keeps every rollout stage reversible, and how do prompts, tools and config reach production?",
+   "back": "A **feature flag or kill switch** keeps each stage reversible, and prompts, tools and config move through **separate development, staging and production environments**.",
+   "src": [
+    "core:7"
+   ]
+  },
+  {
+   "id": "C4.4-01",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "apply",
+   "front": "Where does diagnosing a regression start, and how do the variables the stem calls unchanged help?",
+   "back": "At the **triggering change**; each unchanged variable strikes the options that blame its layer. A content refresh with model and latency steady points to ingestion, chunking, metadata or the index, not the model (trap: T-LAYER, Blame Untouched Layer).",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-09",
+    "trap:T-LAYER"
+   ]
+  },
+  {
+   "id": "C4.4-02",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "why",
+   "front": "Why score retrieval separately from generation?",
+   "back": "The same wrong answer can come from two faults with different fixes: **wrong passages in context is a retrieval fault**, while **the right passages with a contradicting answer is a grounding fault**. Separate scores show which layer to fix.",
+   "src": [
+    "core:1",
+    "cheat:CS-D4-10"
+   ]
+  },
+  {
+   "id": "C4.4-03",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "why",
+   "front": "The right passage was in context but the answer contradicts it. Why is raising top-k the wrong fix?",
+   "back": "The needed passage is **already in context**, so more chunks add only noise and cost (trap: T-STUFF, Context Stuffing). It is a grounding fault: constrain to sources, cite passage IDs and verify claims instead.",
+   "src": [
+    "core:1",
+    "cheat:CS-D4-10",
+    "trap:T-STUFF"
+   ]
+  },
+  {
+   "id": "C4.4-04",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "recall",
+   "front": "The right passages were in context and the answer still hallucinated. Name the four generation fixes.",
+   "back": "**Constrain answers to the supplied sources, cite passage IDs, verify claims against the cited text, and allow 'not stated'**. Retrieval already delivered the passage, so re-indexing or retrieval changes target the wrong layer (trap: T-LAYER, Blame Untouched Layer).",
+   "src": [
+    "core:2",
+    "cheat:CS-D4-10",
+    "trap:T-LAYER"
+   ]
+  },
+  {
+   "id": "C4.4-05",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "why",
+   "front": "When the needed passage is missing from context, why still allow a 'not stated' answer while retrieval is fixed?",
+   "back": "So the model **admits the gap instead of filling it**. Fixing retrieval is the real remedy for a missing passage, but permission to say 'not stated' stops the model inventing an answer to cover the gap.",
+   "src": [
+    "core:2"
+   ]
+  },
+  {
+   "id": "C4.4-06",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "recall",
+   "front": "Name three techniques that reduce hallucination, including the one that flags a likely fabrication.",
+   "back": "**Extract word-for-word quotes before answering**, give **explicit permission to say the information is not there**, and **compare several runs**, where disagreement flags a likely fabrication.",
+   "src": [
+    "core:2"
+   ]
+  },
+  {
+   "id": "C4.4-07",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "define",
+   "front": "What does the Citations feature return, and what can it not be combined with?",
+   "back": "**Pointers into the supplied documents that are guaranteed valid**, and cited text does not count as output tokens. It **cannot be combined with structured outputs**, so chain two calls when you need both.",
+   "src": [
+    "core:2"
+   ]
+  },
+  {
+   "id": "C4.4-08",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "distinguish",
+   "front": "What failure pattern separates a prompt failure from a model mismatch?",
+   "back": "A **prompt failure spreads evenly across easy and hard items**, usually after a prompt or template change. A **model mismatch concentrates on complex items** whose inputs are correct.",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-11"
+   ]
+  },
+  {
+   "id": "C4.4-09",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "apply",
+   "front": "Failures cluster on complex items even though their inputs are correct. What is the sequence of fixes?",
+   "back": "First add **step-by-step reasoning or higher effort** for that slice; if it still fails, it is a model mismatch, so **route only that slice up a tier, gated by evals**. A tier change fits here because the failures concentrate on the hard slice; moving all traffic up is still T-BIGMODEL (Bigger Model Reflex).",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-11",
+    "trap:T-BIGMODEL"
+   ]
+  },
+  {
+   "id": "C4.4-10",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "why",
+   "front": "After a prompt edit, failures rose equally on simple and complex items. Why won't a larger model tier fix them?",
+   "back": "An even spread across difficulty is the **prompt-failure signature**; a model mismatch would concentrate on the complex items (trap: T-BIGMODEL, Bigger Model Reflex). Diff the prompt change and fix it against the evals.",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-11",
+    "trap:T-BIGMODEL"
+   ]
+  },
+  {
+   "id": "C4.4-11",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "apply",
+   "front": "In a parallel run (humans still decide every case), a smaller tier and a cut prompt shipped together. Hard items fail most; easy ones slipped too. What comes first?",
+   "back": "**Attribute before fixing**: re-score the unchanged eval set on each tier with each prompt version, one change at a time, before choosing a fix. Nothing is served yet, so there is no user harm for a rollback to contain. The mixed pattern fits both a prompt failure and a model mismatch, so routing the hard slice up a tier now is T-BIGMODEL (Bigger Model Reflex).",
+   "src": [
+    "core:3",
+    "core:0",
+    "cheat:CS-D4-11",
+    "trap:T-BIGMODEL",
+    "cheat:CS-D4-19"
+   ]
+  },
+  {
+   "id": "C4.4-12",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "apply",
+   "front": "Quality dropped but nothing was deployed. Which two causes do you suspect, and what comes before naming one?",
+   "back": "**Input drift** (new claim types, languages, attachment formats) or an **upstream dependency**. Compare failing with passing traces before naming a cause.",
+   "src": [
+    "core:4",
+    "trap:T-OBSERVE"
+   ]
+  },
+  {
+   "id": "C4.4-13",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "apply",
+   "front": "The assistant quotes an out-of-date claim status. What is the fix?",
+   "back": "**Read the system of record at request time.** An answer wrong about current state is a live-state fault: the stale value is in the indexed copy itself, so citation checks pass it, and indexing more often only gives you stale data faster (trap: T-LIVESTATE, Indexing Live State).",
+   "src": [
+    "core:5",
+    "trap:T-LIVESTATE"
+   ]
+  },
+  {
+   "id": "C4.4-14",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "distinguish",
+   "front": "Policy answers lag behind a scheduled wording update. What must be true for more frequent re-indexing to be the right fix?",
+   "back": "The content must be **document-style knowledge that changes on a schedule** (policies, catalogues), and the **lag between update and index must be the measured problem**. This is the T-LIVESTATE exception; data that changes with every transaction, such as claim status, still comes from the system of record.",
+   "src": [
+    "core:5",
+    "trap:T-LIVESTATE"
+   ]
+  },
+  {
+   "id": "C4.4-15",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "define",
+   "front": "How does error analysis set the order of fixes?",
+   "back": "It **groups failures by root cause**, then **ranks the groups by frequency times impact**. One memorable failure is not a priority on its own; the ranked groups, not the most vivid example, set what gets fixed first.",
+   "src": [
+    "core:6"
+   ]
+  },
+  {
+   "id": "C4.4-16",
+   "d": 4,
+   "obj": "4.4",
+   "kind": "distinguish",
+   "front": "What does quality that is bad from the first turn point to, versus quality that degrades as the session grows?",
+   "back": "**Bad from the first turn** points to the prompt, grounding or retrieval. **Degrading as the session grows** points to context load. Onset is a clue to which layer failed.",
+   "src": [
+    "core:6"
+   ]
+  },
+  {
+   "id": "C4.5-01",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "recall",
+   "front": "Into which terms do you break cost and time per completed task before choosing a lever?",
+   "back": "**Input tokens, output tokens, turns, retries and per-stage latency**. Find the dominant term first; a lever that misses the largest term changes little (trap: T-LEVER, Lever Before Measurement).",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-12",
+    "trap:T-LEVER"
+   ]
+  },
+  {
+   "id": "C4.5-02",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "apply",
+   "front": "A cost breakdown shows a large identical prefix resent on every request. Which lever fits, and which two quantities does it cut?",
+   "back": "**Prompt caching, which cuts input cost and time-to-first-token** on that repeated prefix. Output tokens are unaffected, so caching helps only when repeated input is the dominant term.",
+   "src": [
+    "core:1",
+    "cheat:CS-D4-12"
+   ]
+  },
+  {
+   "id": "C4.5-03",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "why",
+   "front": "Why does a claim ID or timestamp near the top of the prompt break every cache hit?",
+   "back": "The cached prefix runs **tools, then system, then messages**, and a hit needs it identical; a per-request value near the top makes every prefix different. Put **stable content first and per-request values after it**.",
+   "src": [
+    "core:1",
+    "trap:T-BLUNTCUT"
+   ]
+  },
+  {
+   "id": "C4.5-04",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "apply",
+   "front": "Output tokens dominate the cost. Which lever cuts it, given that caching does not?",
+   "back": "**Shorter, templated output**. Caching leaves output tokens unaffected, so output-heavy cost falls only when the output itself shrinks; reaching for caching here is T-LEVER.",
+   "src": [
+    "core:1",
+    "trap:T-LEVER"
+   ]
+  },
+  {
+   "id": "C4.5-05",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "apply",
+   "front": "Which workloads suit batch processing, given what it trades away?",
+   "back": "**Work nobody waits on whose deadline allows a window measured in hours**: overnight digests, backfills, bulk classification. Batch trades an immediate response for a lower price (on the Claude API most batches finish within an hour, but the limit is 24 hours), so it is never the lever for an interactive or SLA-bound path (trap: T-LEVER).",
+   "src": [
+    "core:2",
+    "cheat:CS-D4-13",
+    "trap:T-LEVER"
+   ]
+  },
+  {
+   "id": "C4.5-06",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "distinguish",
+   "front": "How do batch and caching discounts combine on the Claude API versus Amazon Bedrock?",
+   "back": "On the **Claude API they stack**, but cache hits inside a batch are best-effort because requests run concurrently and in any order (the 1-hour cache lifetime helps). On **Amazon Bedrock**, prompt caching is not supported with batch inference, so a batched job gets the batch price only.",
+   "src": [
+    "core:2"
+   ]
+  },
+  {
+   "id": "C4.5-07",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "recall",
+   "front": "Name the two checks to make before committing a large batch job.",
+   "back": "**Eligibility**: Anthropic's docs as of Sep 2026 list the Message Batches API as ineligible for ZDR and HIPAA readiness, and on Bedrock or Google Cloud the provider's own eligibility and BAA apply. Then **run a small real-data sample** before the full job.",
+   "src": [
+    "core:2"
+   ]
+  },
+  {
+   "id": "C4.5-08",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "recall",
+   "front": "Under an accuracy floor, which three levers are preferred because they leave the model's input unchanged?",
+   "back": "**Caching, batching and removing true waste**. They are preferred over trimming required context or downsizing the whole workload, which change what the model reads or can do (trap: T-BLUNTCUT, Blunt Cut).",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-13",
+    "trap:T-BLUNTCUT"
+   ]
+  },
+  {
+   "id": "C4.5-09",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "apply",
+   "front": "When may a slice of traffic move to a cheaper model tier?",
+   "back": "Only when **evals on that slice show it clears the bar**; the hard slice stays where it is. Downsizing the whole workload without slice evidence is T-BLUNTCUT, and a slice that loops or reruns on the cheaper tier can cost more per completed task.",
+   "src": [
+    "core:4",
+    "trap:T-BLUNTCUT"
+   ]
+  },
+  {
+   "id": "C4.5-10",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "apply",
+   "front": "A team proposes enabling streaming to cut cost per task. What does streaming change, and what does it leave alone?",
+   "back": "**Only the perceived wait; completion time and cost are unchanged.** Enabling streaming to meet a cost or completion-time target is T-LEVER (Lever Before Measurement): measure the dominant term first.",
+   "src": [
+    "core:5",
+    "trap:T-LEVER"
+   ]
+  },
+  {
+   "id": "C4.5-11",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "recall",
+   "front": "A caller with a hard timeout needs the complete result. Name the three fixes that help.",
+   "back": "**Shorter output, parallel steps (when the steps are independent), or an async job that returns a job ID**. Streaming does not help, because the caller needs the whole result, not the first words.",
+   "src": [
+    "core:5"
+   ]
+  },
+  {
+   "id": "C4.5-12",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "distinguish",
+   "front": "What does a workspace per use case provide that a separate API key does not?",
+   "back": "**Its own spend and rate limits, and its own line in cost reporting**. A separate key adds attribution in usage reports only: keys carry no limits of their own, and cost reports group by workspace, not key.",
+   "src": [
+    "core:6",
+    "cheat:CS-D4-23"
+   ]
+  },
+  {
+   "id": "C4.5-13",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "why",
+   "front": "Why does moving deferrable work to batch free headroom for interactive traffic?",
+   "back": "**Batch has its own rate limits**, so deferrable work stops consuming the limits that interactive requests depend on, and it gets the lower batch price as well.",
+   "src": [
+    "core:6"
+   ]
+  },
+  {
+   "id": "C4.5-14",
+   "d": 4,
+   "obj": "4.5",
+   "kind": "recall",
+   "front": "Name the three capacity and spend checks to complete before launch.",
+   "back": "**Plan capacity for peak** against your rate limits, **ramp traffic gradually** because sharp increases can hit acceleration limits, and **forecast spend at production volume** so the first invoice is not the first signal.",
+   "src": [
+    "core:6"
+   ]
+  },
+  {
+   "id": "C4.6-01",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "recall",
+   "front": "Quality drops. What should the traces you pull first contain, and how are they joined?",
+   "back": "**Prompt and model version, retrieved chunk IDs, tool calls and results, and the output**, for failing and passing requests alike, joined by **correlation ID**. Rate, error and latency charts look the same before and after.",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-14",
+    "trap:T-OBSERVE"
+   ]
+  },
+  {
+   "id": "C4.6-02",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "distinguish",
+   "front": "Quality drops. What decides whether you roll back first or pull traces first?",
+   "back": "**Whether a known-good state exists.** If nothing was deployed there is none to roll back to, so pull failing and passing traces first (trap: T-OBSERVE, Fix Before Seeing). If the drop follows a known release and users are being harmed, roll back behind the flag first, then diagnose from the traces already captured.",
+   "src": [
+    "core:0",
+    "cheat:CS-D4-14",
+    "cheat:CS-D4-19",
+    "trap:T-OBSERVE"
+   ]
+  },
+  {
+   "id": "C4.6-03",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "define",
+   "front": "How do dashboards, alerts and runbooks relate to instrumentation?",
+   "back": "They **consume instrumentation; they are not instrumentation**. If a span was never captured, no dashboard can show it, and dashboards support diagnosis but detect nothing on their own (trap: T-OBSERVE).",
+   "src": [
+    "core:1",
+    "core:7",
+    "trap:T-OBSERVE"
+   ]
+  },
+  {
+   "id": "C4.6-04",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "recall",
+   "front": "To diagnose a quality drop later, which requests must tail-based sampling have kept, and why keep normal traffic too?",
+   "back": "**Every error, escalation, override and guardrail block, plus a random baseline of normal traffic.** Rare failures survive, and the normal requests remain as the comparison set that failing traces are read against.",
+   "src": [
+    "core:2"
+   ]
+  },
+  {
+   "id": "C4.6-05",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "distinguish",
+   "front": "What does errors-only logging lose, and what does uniform sampling lose?",
+   "back": "**Errors-only logging deletes the comparison set** of normal requests; **uniform sampling drops most rare failures**. Tail-based sampling keeps both (trap: T-OBSERVE).",
+   "src": [
+    "core:2",
+    "cheat:CS-D4-15",
+    "trap:T-OBSERVE"
+   ]
+  },
+  {
+   "id": "C4.6-06",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "why",
+   "front": "Why must PII be redacted at capture rather than by a later job in the warehouse?",
+   "back": "Redacting or tokenising **before the record is written** keeps the data from ever landing in the log store; a later scrub acts after it has already crossed (trap: T-BOUNDARY, Control After Crossing).",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-15",
+    "trap:T-BOUNDARY"
+   ]
+  },
+  {
+   "id": "C4.6-07",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "recall",
+   "front": "Name the two tiers of a PII-minimised logging design.",
+   "back": "A **light record for every request**, and **heavy payloads held behind access control and a retention limit**. PII is minimised at capture for both.",
+   "src": [
+    "core:3",
+    "cheat:CS-D4-15"
+   ]
+  },
+  {
+   "id": "C4.6-08",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "define",
+   "front": "What does a drift alert need, and at what level?",
+   "back": "A **baseline and a threshold per slice**, for signals such as quality, refusal rate, cost per claim, cache hit rate and p95 at peak. An alert on the global mean misses a failing segment (trap: T-AGGREGATE).",
+   "src": [
+    "core:4",
+    "trap:T-AGGREGATE"
+   ]
+  },
+  {
+   "id": "C4.6-09",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "distinguish",
+   "front": "When is a log or alert the right control, and when is it the wrong type?",
+   "back": "Monitoring is a **detective control**: right when the stem asks **how anyone would find out**, wrong when it asks **what prevents** the failure (trap: T-DETECT, Detection for Prevention).",
+   "src": [
+    "core:5",
+    "trap:T-DETECT"
+   ]
+  },
+  {
+   "id": "C4.6-10",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "recall",
+   "front": "Name four leading indicators that warn of quality trouble before users complain.",
+   "back": "**Falling retrieval relevance, a rising abstention or no-grounded-answer rate, more iterations per task, and a shifting stop-reason mix**. Complaints, overrides and churn are lagging; track both, with leading signals tuned to fire early.",
+   "src": [
+    "core:6",
+    "cheat:CS-D4-20"
+   ]
+  },
+  {
+   "id": "C4.6-11",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "apply",
+   "front": "What earns a page to a named owner, and where do cost drift and single ratings go?",
+   "back": "Only **sustained, user-impacting symptoms** such as SLO or error-budget burn earn a page. Trends such as cost drift or single ratings go to a **review queue**, so pages stay trusted.",
+   "src": [
+    "core:7",
+    "cheat:CS-D4-20",
+    "trap:T-OBSERVE"
+   ]
+  },
+  {
+   "id": "C4.6-12",
+   "d": 4,
+   "obj": "4.6",
+   "kind": "why",
+   "front": "Why does an alert built on error rates never see refusals?",
+   "back": "**Refusals arrive as successful responses**, so the error rate does not move. The same holds for any wrong but fluent answer, which returns at normal speed and volume; such failures need a signal on content, such as a refusal rate tracked per slice.",
+   "src": [
+    "core:7",
+    "core:4"
+   ]
+  }
+ ]
+}
